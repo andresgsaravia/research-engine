@@ -4,7 +4,7 @@
 
 import webapp2 
 import jinja2
-import os, re, string, hashlib
+import os, re, string, hashlib, logging
 from google.appengine.ext import db
 from google.appengine.api import users
 
@@ -31,11 +31,13 @@ class GenericPage(webapp2.RequestHandler):
 
     # Database queries.
     def get_user_data(self, user):
+        logging.debug("DB READ: User preferences. ")
         return db.GqlQuery("SELECT * FROM RegisteredUsers WHERE userid = :1", user.user_id()).get()
 
     def get_username(self, user):
         if not user:
             return "Anonymous"
+        logging.debug("DB READ: Username. ")
         u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE userid = :1", user.user_id()).get()
         if u:
             return u.username

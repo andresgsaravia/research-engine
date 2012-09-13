@@ -14,9 +14,11 @@ class NewUserPage(GenericPage):
             self.redirect("/")
             return
         # Check if user is already in database.
+        logging.debug("DB READ: Checking if user exists. ")
         u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE userid = :1", user.user_id()).get()
         if u is None:
             u = RegisteredUsers(userid = user.user_id(), email = user.email(), username = user.nickname())
+            logging.debug("DB WRITE: New user")
             u.put()
             self.render("new_user.html")
         else:
@@ -75,6 +77,7 @@ class SettingsPage(GenericPage):
             u_data.username = username
             u_data.email = email
             u_data.about_me = about_me
+            logging.debug("DB WRITE: User's settings updated. ")
             u_data.put()
             params['username'] = username
             params['email'] = email
