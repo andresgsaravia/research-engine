@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Settings</h2>
+
+<form method="post">
+  <table>
+
+    <tr>
+      <td class="label">
+	Username
+      </td>
+      <td>
+	<input type="text" name="username" value="{{username}}">
+      </td>
+      <td class="error">
+	{{error_username}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Email
+      </td>
+      <td>
+	<input type="text" name="email" value="{{email}}">
+      </td>
+      <td class="error">
+	{{error_email}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	About Me
+      </td>
+      <td>
+	<input type="text" name="about_me" value="{{about_me}}">
+      </td>
+      <td class="error">
+	{{error_about_me}}
+      </td>
+    </tr>
+
+
+  </table>
+  <input type="submit" value="Submit changes">
+
+  <p>{{bottom_message}}</p>
+
+</form>
+
+{% endblock %}

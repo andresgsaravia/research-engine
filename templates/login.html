@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if user %}
+<p>Welcome back {{username}}, you are already logged in</p>
+<p>If you are not {{username}} you can <a href="{{logout_url}}">Logout</a></p>
+
+{% else %}
+<p>You need a Google Account to login with our site.</p>
+<p><a href="{{login_url}}">Click here to login</a></p>
+{% endif %}
+
+{% endblock %}
