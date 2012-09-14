@@ -22,7 +22,7 @@ class NewUserPage(GenericPage):
             u.put()
             self.render("new_user.html")
         else:
-            self.redirect("/settings")
+            self.redirect("/")
 
 
 class LoginPage(GenericPage):
