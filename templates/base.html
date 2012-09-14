@@ -2,20 +2,20 @@
 	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Virtual Home</title>
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="content-language" content="" />
+    <title>Research Engine</title>
     <link href="css/style.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
     <div id="page">
       <div id="header">
-        <h1><a href="/">Virtual Home</a></h1>
-        <p id="subtitle">{{username}}</p>
+        <h1><a href="/">Research Engine</a></h1>
       </div>
+
+      <div id="login_area">
+        <p>{{login_message | safe}}</p>
+      </div>
+
       <div id="menu">
 	<ul>
 	  <li><a href="/news">News</a></li>
@@ -30,37 +30,19 @@
 
       <div id="main">	
         <div id="sidebar">
-          <h2>Quisque luctus</h2>
-          <ul>
-            <li><a href="#">Fusce laoreet, ligula et rhoncus</a></li>
-            <li><a href="#">Adipiscing gravida pulvinar eget</a></li>
-            <li><a href="#">Cras consectetur commodo</a></li>
-            <li><a href="#">Vulputate aliquam ipsum dictum</a></li>
-            <li><a href="#">Vestibulum imperdiet accumsan</a></li>
-          </ul>
-          <h2>Integer rhoncus</h2>
-          <div class="box">
-            <p>Mauris sollicitudin tincidunt magna vitae semper. Curabitur ut pharetra quam. Integer rhoncus convallis urna vitae mattis. Sed pharetra massa ac metus fermentum et iaculis enim accumsan.</p>
-          </div>
-          <h2>Mauris sagittis</h2>
-          <ul>
-            <li><a href="#">Suspendisse faucibus purus</a></li>
-            <li><a href="#">Tincidunt nec accumsan</a></li>
-            <li><a href="#">Fusce laoreet, ligula et rhoncus</a></li>
-            <li><a href="#">Adipiscing gravida pulvinar eget</a></li>
-            <li><a href="#">Cras consectetur commodo</a></li>
-          </ul>
-        </div><!-- sidebar -->   
+          <h2>Sidebar :D</h2>
+	  <p> some elements will be here</p>
+	  <p> However I have none at the moment.</p>
+	  {% block sidebar %}
+	  {% endblock %}
+        </div>
  
         <div id="content">
 	  {% block content %}
-	  {% endblock %}
-          
-        </div><!-- content -->
-      </div><!-- main -->
-      <div id="login_area">
-        <p>{{login_message | safe}}</p>
+	  {% endblock %}          
         </div>
-      </div><!-- page -->
-    </body>
-  </html>
+
+      </div>
+    </div>
+  </body>
+</html>
