@@ -5,9 +5,7 @@ This project aims to bring together some of the most useful tools in a researche
 
 The framework used is [Google's App Engine](https://developers.google.com/appengine/) with Python 2.7. You can access this application on it's [Appspot website](http://research-engine.appspot.com/) however it's not anywhere near to provide even basic functionality at this time. 
 
-Code developed here is released under a [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) license, please look into it's details before using this package.
-
-
+I will provide some documentation and status updates in the doc/ folder.
 
 ## Motivation ##
 
@@ -28,11 +26,10 @@ As I envision, the work of a researcher fall into three closely related categori
 - **Production:** The actual *meat* of research is producing new knowledge and advancing the scientific understanding. This often (but not always) involves writing articles and submitting them to journals. I think we particularly lack tools to work un collaboration. 
 
 
-## Documentation ##
-
-As soon as I have something to *document* I will do it here.
-
-
 ## Installation ##
 
 If you want to play around with the code you will need [Google's App Engine](https://developers.google.com/appengine/), please look into their documentation for instructions on how to get an instance working on your machine. If you want to make it public you will also need to register an app.
+
+## License ##
+
+Code developed here is released under a [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) license, please look into it's details before using this package.
