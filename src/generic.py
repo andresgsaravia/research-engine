@@ -55,7 +55,7 @@ class GenericPage(webapp2.RequestHandler):
         user = users.get_current_user()
         if user:
             kw['username'] = self.get_username(user)
-            kw['login_message'] = ('You are signed in as %s. <a href="/logout">Logout</a>' % 
+            kw['login_message'] = ('You are signed in as <a href="/settings">%s</a>. <a href="/logout">Logout</a>' % 
                                    kw['username'])            
         else:
             kw['login_message'] = ('You are not logged in. <a href="/login">Login</a>')
