@@ -32,4 +32,4 @@ If you want to play around with the code you will need [Google's App Engine](htt
 
 ## License ##
 
-Code developed here is released under a [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) license, please look into it's details before using this package.
+Code developed here is released under a [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) license, please look into it's details before using this package. You can find a copy of it in doc/LICENSE.txt
