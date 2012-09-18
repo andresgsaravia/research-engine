@@ -1,12 +1,13 @@
-#+TITLE: Status updates and roadmap of future features
+#+TITLE: Status updates and roadmap of future features.
 #+DATE: <2012-09-17 Mon>
 #+EMAIL: ags3006@gmail.com
 
 In this file I will keep brainstorming ideas about development of the project.
 
-* [0/5] To Do
+* [0/6] To Do
 ** TODO Write about each of the three major lines in the README file.
 ** TODO Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
 ** TODO Is [[http://mendeley.com/][Mendeley]] a better choice to resolve article's metadata?
 ** TODO Have a look at [[https://code.google.com/p/course-builder/][Course Builder]] to see if I can/should integrate it with my project.
 ** TODO I should ask some colleagues to know what features they would love.
+** TODO Find a way to integrate Google Reader and be able to parse (and subscribe to) RSS feeds.

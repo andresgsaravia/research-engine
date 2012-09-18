@@ -25,11 +25,28 @@ As I envision, the work of a researcher fall into three closely related categori
 - **Teaching:** Researchers are often required to provide lectures to new students but there are many other *teaching* activities like writing divulgation articles for a general public, maintaining a repository of specialized knowledge or giving a talk in a conference. I would also include here giving an opinion about other people's articles.
 - **Production:** The actual *meat* of research is producing new knowledge and advancing the scientific understanding. This often (but not always) involves writing articles and submitting them to journals. I think we particularly lack tools to work un collaboration. 
 
+### Learning ###
+
+The main source of learning for a scientist is journal articles. I would like to have simple and systematic way of organizing the literature according to interest areas and in a sequential way. It would also be nice to have some sort of tracking according to citations to give a clear panorama of the development of concepts. It is also crucial to have a way to make highlights and notes and be able to share them with colleagues. Much of this functionality is provided by [Mendeley](http://www.mendeley.com/) so perhaps using their API is appropiate, however their services are limited for a free account and I consider their proces rather steep.
+
+To keep up with the latest news there should be a way to aggregate RSS feeds (perhaps even use a ppppcurrent Google Reader account) and easily translate one such entry to an article entry. Perhaps some social capabilities like Twitter, Facebook or Google+ would be nice but I will procastrinate on this one since I'm not sure it would be a good idea. 
+
+Another important aspect is to have a way to be informed about upcoming conferences, seminars, webinars, Google+ hangouts or online courses. Perhaps an integration with Google Calendar (or other calendar services) would be helpful also.
+
+### Teaching ###
+
+The world is changing the way it learns specialized topics. I really like projects like [Udacity](http://udacity.com) and [Coursera](http://coursera.org). There are terrific toold for online teaching like [Moodle](http://moodle.org) but, since I'm using Google's App Engine I think it's worth exploring the newly born [Course Builder](https://code.google.com/p/course-builder).
+
+### Production ###
+
+I consider as *production* many things. Of course we need to write journal articles since the infamous *publish or perish* is still the norm. But we also produce much more content than that which could be improved and shared with the help of online tools. For example blog entries for the lay audience and for specialized readers, review of articles, comments about recent news, seminar talks, software coding.
+
+An integration with version control platforms (such as [GitHub](https://github.com) or [Launchpad](https://launchpad.net) could be useful for software writing (however it may be unnecesary) and [Google Drive](https://drive.google.com) or [Dropbox](https://www.dropbox.com) could be nice for the collaborative writing of papers.
 
 ## Installation ##
 
-If you want to play around with the code you will need [Google's App Engine](https://developers.google.com/appengine/), please look into their documentation for instructions on how to get an instance working on your machine. If you want to make it public you will also need to register an app.
+If you want to play around with the code you will need [Google's App Engine](https://developers.google.com/appengine/), please look into their documentation for instructions on how to get an instance working on your machine. If you want to make it public you will also need to register an app with them.
 
 ## License ##
 
-Code developed here is released under a [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) license, please look into it's details before using this package. You can find a copy of it in doc/LICENSE.txt
+Code developed here is released under a [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0.html) license so you have the freedom to do almost anything you like with it, but please look into it's details before using this package. You can find a copy of it in doc/LICENSE.txt or in [this link](http://www.gnu.org/licenses/gpl-3.0.html)
