@@ -4,10 +4,34 @@
 
 In this file I will keep brainstorming ideas about development of the project.
 
-* [0/6] To Do
-** TODO Write about each of the three major lines in the README file.
+* [0/6] Brainstorm
 ** TODO Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
 ** TODO Is [[http://mendeley.com/][Mendeley]] a better choice to resolve article's metadata?
 ** TODO Have a look at [[https://code.google.com/p/course-builder/][Course Builder]] to see if I can/should integrate it with my project.
 ** TODO I should ask some colleagues to know what features they would love.
 ** TODO Find a way to integrate Google Reader and be able to parse (and subscribe to) RSS feeds.
+** TODO Check out App Engine's Memcache facilites.
+
+* [1/2] Documentation
+** TODO Start the User's Manual documents.
+** DONE Write about each of the three major lines in the README file.
+   However I should write some more in the future
+* [0/2] Authentication
+** TODO Facebook authentication?
+** TODO Create new account from scratch.
+* [0/2] Debugging
+** TODO I should start adding some assertions and/or logging statements should a bug appear.
+** TODO I need a test unit reachable only to administrators.
+* [0/7] Collaborative writing of papers.
+  All related to write a paper with collaboratos
+** TODO Where should this be located?
+** TODO [0/4] Add references to the current paper
+*** TODO Parse article's metadata from DOI using [[http://www.crossref.org][CrossRef]]
+*** TODO Save new article in database
+*** TODO Link article to current paper
+*** TODO Add comments to the article
+** TODO Add collaborators to the paper
+** TODO Version control
+** TODO Status of the paper
+** TODO Submission history
+** TODO Peer review process (open to anyone after acceptance by journal?)
