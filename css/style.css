@@ -60,7 +60,6 @@ h1 a {
 
 #menu ul li a:hover {
     text-decoration: underline;
-    text-align: center;
     font-size: 1.2em;
     color: #ffffff;
 }
@@ -113,4 +112,21 @@ textarea {
 .label {
     text-align: right;
     font-size: 1.2em;
+}
+
+#footer {
+    position: absolute;
+    padding-left: 25em;
+    text-align: center;
+    bottom: 0;
+    font-size: 0.8em;
+}
+
+#footer a {
+    text-decoration: none;
+    color: #13619C;
+}
+
+#foooter a:hover {
+    text-decoration: underline;
 }

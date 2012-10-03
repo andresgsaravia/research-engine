@@ -41,7 +41,7 @@ The world is changing the way it learns specialized topics. I really like projec
 
 I consider as *production* many things. Of course we need to write journal articles since the infamous *publish or perish* is still the norm. But we also produce much more content than that which could be improved and shared with the help of online tools. For example blog entries for the lay audience and for specialized readers, review of articles, comments about recent news, seminar talks, software coding.
 
-An integration with version control platforms (such as [GitHub](https://github.com) or [Launchpad](https://launchpad.net) could be useful for software writing (however it may be unnecesary) and [Google Drive](https://drive.google.com) or [Dropbox](https://www.dropbox.com) could be nice for the collaborative writing of papers.
+An integration with version control platforms (such as [GitHub](https://github.com) or [Launchpad](https://launchpad.net)) could be useful for software writing (however it may be unnecesary) and [Google Drive](https://drive.google.com) or [Dropbox](https://www.dropbox.com) could be nice for the collaborative writing of papers.
 
 ## Installation ##
 
