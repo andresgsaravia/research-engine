@@ -5,7 +5,7 @@
 }
 
 body {
-    margin: 0;
+    margin: 0 auto;
     padding-top: 0;
     padding-right: 3%;
     padding-left: 3%;
@@ -23,6 +23,10 @@ h1 {
 h1 a {
     text-decoration: none;
     color: black;
+}
+
+h2 {
+    text-align: center;
 }
 
 .error {
@@ -64,6 +68,10 @@ h1 a {
     color: #ffffff;
 }
 
+#content {
+    text-align: center;
+}
+
 /* sidebar */
 
 #sidebar {
@@ -94,19 +102,23 @@ h1 a {
 
 /* other */
 
-input[type=text] {
+#settings table{
+    margin: 0px auto;
+}
+
+#settings input[type=text] {
     width: 500px;
+    font-size: 1.2em;
+}
+
+#settings textarea {
+    width: 500px;
+    height: 300px;
     font-size: 1.2em;
 }
 
 input[type=submit] {
-    font-size: 1.2em;
-}
-
-textarea {
-    width: 500px;
-    height: 300px;
-    font-size: 1.2em;
+    font-size: 1.1em;
 }
 
 .label {
@@ -129,4 +141,20 @@ textarea {
 
 #foooter a:hover {
     text-decoration: underline;
+}
+
+.login {
+    width: 500px;
+    margin: 0 auto;
+    font-size: 1.2em;
+}
+
+.login-label {
+    text-align: right;
+}
+
+.center-submit {
+    text-align: center;
+    padding-top: 1em;
+    font-size: 1.2em;
 }

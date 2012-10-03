@@ -2,13 +2,53 @@
 
 {% block content %}
 
-{% if user %}
+{% if username %}
 <p>Welcome back {{username}}, you are already logged in</p>
-<p>If you are not {{username}} you can <a href="{{logout_url}}">Logout</a></p>
+<p>If you are not {{username}} you can <a href="/logout">Logout</a></p>
 
 {% else %}
-<p>You need a Google Account to login with our site.</p>
-<p><a href="{{login_url}}">Click here to login</a></p>
+<style>
+  input[type=text] { width: 250px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; }
+  input[type=password] { width: 250px; font-size: 18px; font-family: Helvetica, Arial, sans-serif;}
+</style>
+
+  <h2>Login</h2>
+
+  <form method="post">
+    <table class="login">
+
+      <tr>
+	<td class="login-label">
+	  Username
+	</td>
+	<td>
+	  <input type="text" name="usern" value="{{usern}}">
+	</td>
+	<td class="error">
+	  {{error_username}}
+	</td>
+      </tr>
+
+      <tr>
+	<td class="login-label">
+	  Password
+	</td>
+	<td>
+	  <input type="password" name="password" value="">
+	</td>
+	<td class="error">
+	  {{error_password}}
+	</td>
+      </tr>
+
+    </table>
+    <div class="center-submit">
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+
+
+
 {% endif %}
 
 {% endblock %}

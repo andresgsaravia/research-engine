@@ -4,6 +4,7 @@
 
 <h2>Settings</h2>
 
+<div id="settings">
 <form method="post">
   <table>
 
@@ -12,7 +13,7 @@
 	Username
       </td>
       <td>
-	<input type="text" name="username" value="{{username}}">
+	<input type="text" name="usern" value="{{usern}}">
       </td>
       <td class="error">
 	{{error_username}}
@@ -45,10 +46,12 @@
 
 
   </table>
-  <input type="submit" value="Submit changes">
+  <div class="center-submit">
+    <input type="submit" value="Submit changes">
+  </div>
 
   <p>{{bottom_message}}</p>
 
 </form>
-
+</div>
 {% endblock %}

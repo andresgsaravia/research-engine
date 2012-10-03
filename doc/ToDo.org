@@ -4,15 +4,15 @@
 
 In this file I will keep brainstorming ideas about development of the project.
 
-* [0/7] Brainstorm
+* [1/7] Brainstorm
 ** TODO Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
 ** TODO Is [[http://mendeley.com/][Mendeley]] a better choice to resolve article's metadata?
 ** TODO Have a look at [[https://code.google.com/p/course-builder/][Course Builder]] to see if I can/should integrate it with my project.
 ** TODO I should ask some colleagues to know what features they would love.
 ** TODO Find a way to integrate Google Reader and be able to parse (and subscribe to) RSS feeds.
 ** TODO Check out App Engine's Memcache facilites.
-
-** TODO Make an "About" section with a link to the [[https://github.com/andresgsaravia/research-engine][github repository]].
+** DONE Make an "About" section with a link to the [[https://github.com/andresgsaravia/research-engine][github repository]].
+   Done in the footer area
 * [1/2] Documentation
 ** TODO Start the User's Manual documents.
 ** DONE Write about each of the three major lines in the README file.
@@ -39,3 +39,7 @@ In this file I will keep brainstorming ideas about development of the project.
 ** TODO Peer review process (open to anyone after acceptance by journal?)
 * [0/1] Miscellaneous
 ** TODO Meanwhile write something in the front page.
+* [0/3] Design
+** TODO In the settings, login and logout page the error messages should not displace the text-input boxes.
+** TODO Center the footer correctly
+** TODO The menu items should be centered around the main content, not the whole page.
