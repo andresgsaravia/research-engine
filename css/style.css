@@ -26,6 +26,8 @@ body {
 }
 
 .content {
+    margin-left: 2.5%;
+    width: 75%;
     padding-bottom: 3em;
 }
 
@@ -56,7 +58,6 @@ body {
 
 .menu {
     height: 40px;
-/*    width: 700px;*/
     background: #4c4e5a;
     border-radius: 5px;
 }
@@ -165,6 +166,20 @@ body {
     left: -100px;
 }
 
+/* sidebar */
+
+.sidebar {
+    background: #D0D0D0;
+    position: relative;
+    float: right;
+    width: 20%;
+    height: 40em;
+    text-align: center;
+    margin-right: 0.5em;
+    margin-top: 2em;
+    border: 1px solid #4c4e5a;
+    border-radius: 0.8em;
+}
 
 /* Footer */
 
