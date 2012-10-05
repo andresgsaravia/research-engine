@@ -8,8 +8,8 @@ handlers:
 - url: /css
   static_dir: css
 
-- url: /css/images
-  static_dir: css/images
+- url: /images
+  static_dir: images
 
 - url: /.*
   script: home.app
