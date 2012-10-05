@@ -94,8 +94,7 @@ class GenericPage(webapp2.RequestHandler):
     def render(self, template, **kw):
         kw['username'] = self.get_username()
         if kw['username'] is None:
-            kw['login_message'] = ('You are not logged in. <a title="If you are an existing user, click here." href="/login">Login</a> or <a title="If you are a new user, click here." href="/signup">Signup</a>')
+            kw['login_message'] = ('<a href="/login">Login</a><ul><li><a href="/signup">Signup</a></li></ul>')
         else:
-            kw['login_message'] = ('You are signed in as <a title="Click here to edit your settings." href="/settings">%s</a>. <a href="/logout">Logout</a>' % 
-                                   kw['username'])            
+            kw['login_message'] = ('<a title="Click here to edit your settings." href="/settings">%s</a><ul> <li><a href="/logout">Logout</a></li></ul>' % kw['username'])            
         self.write(self.render_str(template, **kw))

@@ -7,41 +7,38 @@
   </head>
 
   <body>
-    <div id="page">
-      <div id="header">
-        <h1><a title="Still in alpha phase..." href="/">Research Engine</a><sub>(&alpha;)</sub></h1>
-      </div>
-
-      <div id="login_area">
-        <p>{{login_message | safe}}</p>
-      </div>
-      
-      <div id="menu">
+  <div class="wrapper">
+        
+    <ul class="menu">
+      <li><a title="Latest updates from your sources." href="/news">News</a></li>
+      <li><a title="Write and organize your ideas and progress." href="/notebook">Notebook</a></li>
+      <li><a title="Reviews of articles and blog posts." href="/reviews">Reviews</a>
 	<ul>
-	  <li><a title="Latest updates from your sources." href="/news">News</a></li>
-	  <li><a title="Write and organize your ideas and progress." href="/notebook">Notebook</a></li>
-	  <li><a title="Reviews of articles and blog posts." href="/reviews">Reviews</a></li>
-	  <li><a title="Classes you are giving." href="/classroom">Classroom</a></li>
-	  <li><a title="Projects in collaboration with your peers." href="/collaborations">Collaborations</a></li>
+	  <li><a href="/reviews/articles">Articles</a></li>
+	  <li><a href="/reviews/blog_posts">Blog posts</a></li>
 	</ul>
-      </div>
-
-      <div id="main">	
-        <div id="sidebar">
-          <h2>Actions</h2>
-	  {% block sidebar %}
-	  {% endblock %}
-        </div>
- 
-        <div id="content">
-	  {% block content %}
-	  {% endblock %}          
-        </div>
-
-      </div>
+      </li>
+      <li><a title="Classes you are giving." href="/classroom">Classroom</a></li>
+      <li><a title="Projects in collaboration with your peers." href="/collaborations">Collaborations</a></li>
+      <li>{{login_message | safe}}</li>
+    </ul>
+    
+    <div class="sidebar">
+      {% block sidebar %}
+      {% endblock %}
     </div>
-    <div id="footer">
+
+    <div class="content">
+      <div class="site-title"><h1><a title="Still in alpha phase..." href="/">Research Engine (&alpha;)</a></h1></div>
+      
+      {% block content %}
+      {% endblock %}          
+    </div>
+
+    <div class="footer">
       <p>You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="https://github.com/andresgsaravia/research-engine">github repository</a> under a <a title="Please make sure you understand this license before using the source code for this project." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></p>
     </div>
+    
+  </div>
   </body>
 </html>

@@ -39,7 +39,8 @@ In this file I will keep brainstorming ideas about development of the project.
    In the "Collaborations" menu, of course...
 * [0/1] Miscellaneous
 ** TODO Meanwhile write something in the front page.
-* [0/3] Design
+* [2/4] Design
 ** TODO In the settings, login and logout page the error messages should not displace the text-input boxes.
-** TODO Center the footer correctly
-** TODO The menu items should be centered around the main content, not the whole page.
+** DONE Center the footer correctly
+** DONE The menu items should be centered around the main content, not the whole page.
+** TODO Test the layout in IE
