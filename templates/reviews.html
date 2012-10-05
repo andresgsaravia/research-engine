@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+
+<p><a href="/reviews/new" title="Add new article or blog post to review">New entry</a></p>
+
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Your reviews</h2>
+
+{% if username %}
+<p>Your reviewed articles! (coming soon) <p>
+
+{% else %}
+<p>You are not logged in. In a future update you will be able to access public reviews here, however until that time comes, you should <a href="/login">login</a> with an existing account or <a href="/signup">signup<a/> for a new account. It's free!</p>
+
+{% endif %}
+
+{% endblock %}

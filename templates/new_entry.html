@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+
+<p><a href="/reviews/new" title="Add new article or blog post to review">New entry</a></p>
+
+{% endblock %}
+
+
+{% block content %}
+<h2>New Entry</h2>
+
+<div id="new_entry">
+<form method="post">
+  <table>
+    <tr>
+      <td class="label">
+	Kind of entry
+      </td>
+      <td>
+	<select name="kind">
+	  <option value="article">Article</option>
+	  <option value="blogp">Blog post</option>
+	  <option value="other">Other</option>
+	</select>
+      </td>
+    </tr>
+    
+  </table>
+  <div class="center-submit">
+    <input type="submit" value="Submit">
+  </div>
+
+</form>
+</div>
+{% endblock %}
