@@ -11,12 +11,15 @@ html {
 }
 
 body {
+    margin: 0;
+    padding: 0;
     height: 100%;
     width: 100%;
     background-color: #EEEEEE;
 }
 
 .wrapper {
+    position: relative;
     background-color: white;
     margin: 0 auto;
     min-height: 100%;
@@ -173,7 +176,7 @@ body {
     position: relative;
     float: right;
     width: 20%;
-    height: 40em;
+    height: 20em;
     text-align: center;
     margin-right: 0.5em;
     margin-top: 2em;
@@ -184,13 +187,13 @@ body {
 /* Footer */
 
 .footer {
-    width: 50%;
-    height: 1.6em;
+    width: 70%;
+    height: 2em;
     margin-left: 15%;
     text-align: center;
     position: absolute;
     bottom: 2px;
-    font-size: 0.8em;
+    font-size: 0.6em;
     border: 1px solid #4c4e5a;
     border-radius: 0.8em;
     background: #EEEEEE;
