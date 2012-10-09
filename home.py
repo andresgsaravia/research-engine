@@ -20,5 +20,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/news', frontend.UnderConstructionPage),
                                ('/notebook', frontend.UnderConstructionPage),
                                ('/classroom', frontend.UnderConstructionPage),
-                               ('/collaborations', frontend.UnderConstructionPage)],
+                               ('/collaborations', frontend.UnderConstructionPage),
+                               # Tests
+                               ("/tests/big_page", tests.BigPage)],
                               debug = True)
