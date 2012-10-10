@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link href="/css/logging.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block content %}
 
 <h2>Signup</h2>
-
+<br/>
 {% if username %}
 <p>Welcome back {{username}}, you are already logged in.</p>
 <p>If you are not {{username}} you can <a href="/logout">Logout</a></p>
 
 {% else %}
   <form method="post">
-    <table class="login">
+    <table>
       
       <tr>
-	<td class="label">
+	<td>
 	  Username
 	</td>
 	<td>
@@ -25,7 +29,7 @@
       </tr>
 
       <tr>
-	<td class="label">
+	<td>
 	  Password
 	</td>
 	<td>
@@ -37,7 +41,7 @@
       </tr>
 
       <tr>
-	<td class="label">
+	<td>
 	  Verify Password
 	</td>
 	<td>
@@ -49,7 +53,7 @@
       </tr>
 
       <tr>
-	<td class="label">
+	<td>
 	  Email (optional)
 	</td>
 	<td>
@@ -61,8 +65,8 @@
       </tr>
 
     </table>
-    <div class="center-submit">
-      <input type="submit" value="Submit">
+    <div class="submit-button">
+      <input type="submit" value="Signup">
     </div>
   </form>
 

@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link href="/css/logging.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
 {% block content %}
 
 {% if username %}
@@ -7,18 +12,14 @@
 <p>If you are not {{username}} you can <a href="/logout">Logout</a></p>
 
 {% else %}
-<style>
-  input[type=text] { width: 250px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; }
-  input[type=password] { width: 250px; font-size: 18px; font-family: Helvetica, Arial, sans-serif;}
-</style>
 
   <h2>Login</h2>
-
+  <br/>
   <form method="post">
-    <table class="login">
+    <table>
 
       <tr>
-	<td class="login-label">
+	<td>
 	  Username
 	</td>
 	<td>
@@ -30,7 +31,7 @@
       </tr>
 
       <tr>
-	<td class="login-label">
+	<td>
 	  Password
 	</td>
 	<td>
@@ -42,11 +43,12 @@
       </tr>
 
     </table>
-    <div class="center-submit">
-      <input type="submit" value="Submit">
+    <div class="submit-button">
+      <input type="submit" value="login">
     </div>
   </form>
 
+<br/>
 <p>If you don't have an account you can <a href="/signup">signup</a> for free.</p>
 
 {% endif %}

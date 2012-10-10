@@ -3,13 +3,14 @@
 
 In this file I will keep brainstorming ideas about development of the project.
 
-* [1/7] Brainstorm
+* [2/7] Brainstorm
 ** TODO Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
-** TODO Is [[http://mendeley.com/][Mendeley]] a better choice to resolve article's metadata?
 ** TODO Have a look at [[https://code.google.com/p/course-builder/][Course Builder]] to see if I can/should integrate it with my project.
 ** TODO I should ask some colleagues to know what features they would love.
 ** TODO Find a way to integrate Google Reader and be able to parse (and subscribe to) RSS feeds.
 ** TODO Check out App Engine's Memcache facilites.
+** DONE Is [[http://mendeley.com/][Mendeley]] a better choice to resolve article's metadata?
+   I think not. I'm suscribed to Mendeley's e-mail list and they seem to have a lot of problems lately. Also, CrossRef seems to work just fine and, for now, I don't need more.
 ** DONE Make an "About" section with a link to the [[https://github.com/andresgsaravia/research-engine][github repository]].
    Done in the footer area
 * [1/2] Documentation

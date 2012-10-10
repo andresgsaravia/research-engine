@@ -32,6 +32,8 @@ body {
     margin-left: 2.5%;
     width: 75%;
     padding-bottom: 3em;
+    text-align: justify;
+    padding-top: 1.5em;
 }
 
 .site-title {
@@ -45,6 +47,10 @@ body {
     text-decoration: none;
     color: black;
     font-size: 0.5em;
+}
+
+.error {
+    color:red;
 }
 
 /* Menu */
