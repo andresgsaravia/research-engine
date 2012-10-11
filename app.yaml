@@ -13,6 +13,7 @@ handlers:
 
 - url: /.*
   script: home.app
+  secure: always
 
 libraries:
 - name: jinja2
