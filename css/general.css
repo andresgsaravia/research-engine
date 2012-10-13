@@ -18,6 +18,10 @@ body {
     background-color: #EEEEEE;
 }
 
+h2 {
+    padding-bottom: 1em;
+}
+
 .wrapper {
     position: relative;
     background-color: white;

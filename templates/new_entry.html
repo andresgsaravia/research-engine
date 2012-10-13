@@ -1,36 +1,54 @@
 {% extends "base.html" %}
 
-{% block sidebar %}
 
-<p><a href="/reviews/new" title="Add new article or blog post to review">New entry</a></p>
-
+{% block head %}
+<link href="/css/reviews.css" rel="stylesheet" type="text/css" />
 {% endblock %}
+
 
 
 {% block content %}
 <h2>New Entry</h2>
 
-<div id="new_entry">
+{% if username %}
+
 <form method="post">
   <table>
     <tr>
-      <td class="label">
-	Kind of entry
+      <td>
+	Kind of entry:
       </td>
       <td>
-	<select name="kind">
-	  <option value="article">Article</option>
-	  <option value="blogp">Blog post</option>
-	  <option value="other">Other</option>
-	</select>
+	<input type="radio" name="species" value="arxiv">arXiv article</input><br/>
+	<input type="radio" name="species" value="article">Published article (by DOI)</input><br/>
+	<input type="radio" name="species" value="webpage">Web page (blog post)</input><br/>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	DOI / arXiv id / url:
+      </td>
+      <td>
+	<input type="text" name="identifier"></input>
+      </td>
+      <td>
+	{{error}}
       </td>
     </tr>
     
   </table>
-  <div class="center-submit">
+  <div class="submit-button">
     <input type="submit" value="Submit">
   </div>
 
 </form>
-</div>
+
+
+{% else %}
+
+<p>You are not logged in. Please <a href="/login">login</a> with an existing account or <a href="/signup">signup</a> for a new one. It's free!</p>
+
+{% endif %}
+
 {% endblock %}
