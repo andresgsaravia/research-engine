@@ -12,8 +12,11 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/new_user', users.NewUserPage),
                                ('/settings', users.SettingsPage),
                                # Reviews module
-                               ('/reviews', reviews.MainPage),
-                               ('/reviews/new', reviews.New),
+                               ('/library', library.MainPage),
+                               ('/library/articles', library.Articles),
+                               ('/library/blog_posts', library.BlogPosts),
+                               ('/library/software', library.Software),
+                               ('/library/new', library.New),
                                # Empty placeholders
                                ('/reviews/articles', frontend.UnderConstructionPage),
                                ('/reviews/blog_posts', frontend.UnderConstructionPage),

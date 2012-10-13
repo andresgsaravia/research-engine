@@ -3,7 +3,9 @@
 
 In this file I will keep brainstorming ideas about development of the project.
 
-* [2/7] Brainstorm
+* [2/9] Brainstorm
+** TODO Perhaps it's better to have a "Library" section instead of "Reviews"
+** TODO Check github's API to make an interface to it.
 ** TODO Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
 ** TODO Have a look at [[https://code.google.com/p/course-builder/][Course Builder]] to see if I can/should integrate it with my project.
 ** TODO I should ask some colleagues to know what features they would love.
@@ -21,9 +23,9 @@ In this file I will keep brainstorming ideas about development of the project.
 ** TODO Facebook authentication?
 ** TODO Integrate Google Login to the accounts.
 ** DONE Create new account from scratch.
-* [0/2] Debugging
-** TODO I should start adding some assertions and/or logging statements should a bug appear.
+* [1/2] Debugging
 ** TODO I need a test unit reachable only to administrators.
+** DONE I should start adding some assertions and/or logging statements should a bug appear.
 * [1/7] Collaborative writing/reviewing of papers.
   All related to write a paper with collaboratos
 ** TODO [0/4] Add references to the current paper
