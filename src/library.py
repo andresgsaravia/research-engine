@@ -11,14 +11,6 @@ ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}$'
 class KnowledgeItems(db.Model):
     species = db.StringProperty(required = True)
     identifier = db.StringProperty(required = True)
-    metadata = db.ReferenceProperty(required = True)
-
-# This is user-specific. Each of these items should have as parent one of KnowledgeItems
-class LibraryItems(db.Model):
-    user = db-ReferenceProperty(required = True)
-    review = db.TextProperty(required = False)
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
     
 # Each of the following classes should have as parent one of KnowledgeItems
 class arXiv(db.Model):
@@ -28,6 +20,13 @@ class arXiv(db.Model):
     date = db.DateProperty(required = True)
     abstract = db.TextProperty(required = False)       # Are there articles without abstract?
     link = db.LinkProperty(required = True)
+
+# This is user-specific. Each of these items should have as parent one of KnowledgeItems
+class LibraryItems(db.Model):
+    user = db.ReferenceProperty(required = True)
+    review = db.TextProperty(required = False)
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
 
 
 ## Handlers ##

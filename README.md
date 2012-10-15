@@ -1,7 +1,9 @@
 Research Engine
 ===============
 
-This project aims to bring together some of the most useful tools in a researcher's daily work. It is intended to be a place to facilitate the organization of knowledge, ideas and resources needed to do research. This project also stems from the spirit of [Open Science](https://en.wikipedia.org/wiki/Open_science) trying to make non-sensitive content freely accessible to anyone thus facilitating and potentiating research capabilities.
+This project aims to bring together some of the most useful tools in a researcher's daily work. It is intended to be a place to facilitate the organization of knowledge, ideas and resources needed to do research. 
+
+This project also stems from the spirit of [Open Science](https://en.wikipedia.org/wiki/Open_science) trying to make non-sensitive content freely accessible to anyone thus facilitating and potentiating research capabilities. So it will aim to build a human and machine-accessible knowledge repository. However, I assume researchers are willingly to perform only actions that are self-beneficial.
 
 The framework used is [Google's App Engine](https://developers.google.com/appengine/) with Python 2.7. You can access this application on it's [Appspot website](http://research-engine.appspot.com/) however it's not anywhere near to provide even basic functionality at this time. 
 
@@ -27,21 +29,21 @@ As I envision, the work of a researcher fall into three closely related categori
 
 ### Learning ###
 
-The main source of learning for a scientist is journal articles. I would like to have simple and systematic way of organizing the literature according to interest areas and in a sequential way. It would also be nice to have some sort of tracking according to citations to give a clear panorama of the development of concepts. It is also crucial to have a way to make highlights and notes and be able to share them with colleagues. Much of this functionality is provided by [Mendeley](http://www.mendeley.com/) so perhaps using their API is appropiate, however their services are limited for a free account and I consider their proces rather steep.
+The main source of learning for a scientist is journal articles. I would like to have simple and systematic way of organizing the literature according to interest areas and in a sequential way. It would also be nice to have some sort of tracking according to citations to give a clear panorama of the development of concepts. It is also crucial to have a way to make highlights and notes and be able to share them with colleagues. Much of this functionality is provided by [Mendeley](http://www.mendeley.com/) so perhaps using their API is appropriate, however their services are limited for a free account and I consider their process rather steep.
 
-To keep up with the latest news there should be a way to aggregate RSS feeds (perhaps even use a ppppcurrent Google Reader account) and easily translate one such entry to an article entry. Perhaps some social capabilities like Twitter, Facebook or Google+ would be nice but I will procastrinate on this one since I'm not sure it would be a good idea. 
+To keep up with the latest news there should be a way to aggregate RSS feeds (perhaps even use a current Google Reader account) and easily translate one such entry to an article entry. Perhaps some social capabilities like Twitter, Facebook or Google+ would be nice but I will procrastinate on this one since I'm not sure it would be a good idea. 
 
 Another important aspect is to have a way to be informed about upcoming conferences, seminars, webinars, Google+ hangouts or online courses. Perhaps an integration with Google Calendar (or other calendar services) would be helpful also.
 
 ### Teaching ###
 
-The world is changing the way it learns specialized topics. I really like projects like [Udacity](http://udacity.com) and [Coursera](http://coursera.org). There are terrific toold for online teaching like [Moodle](http://moodle.org) but, since I'm using Google's App Engine I think it's worth exploring the newly born [Course Builder](https://code.google.com/p/course-builder).
+The world is changing the way it learns specialized topics. I really like projects like [Udacity](http://udacity.com) and [Coursera](http://coursera.org). There are terrific tools for online teaching like [Moodle](http://moodle.org) but, since I'm using Google's App Engine I think it's worth exploring the newly born [Course Builder](https://code.google.com/p/course-builder).
 
 ### Production ###
 
 I consider as *production* many things. Of course we need to write journal articles since the infamous *publish or perish* is still the norm. But we also produce much more content than that which could be improved and shared with the help of online tools. For example blog entries for the lay audience and for specialized readers, review of articles, comments about recent news, seminar talks, software coding.
 
-An integration with version control platforms (such as [GitHub](https://github.com) or [Launchpad](https://launchpad.net)) could be useful for software writing (however it may be unnecesary) and [Google Drive](https://drive.google.com) or [Dropbox](https://www.dropbox.com) could be nice for the collaborative writing of papers.
+An integration with version control platforms (such as [GitHub](https://github.com) or [Launchpad](https://launchpad.net)) could be useful for software writing (however it may be unnecessary) and [Google Drive](https://drive.google.com) or [Dropbox](https://www.dropbox.com) could be nice for the collaborative writing of papers.
 
 ## Installation ##
 
