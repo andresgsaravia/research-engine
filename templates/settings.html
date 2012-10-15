@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link href="/css/settings.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block content %}
 
 <h2>Settings</h2>
 
-<div id="settings">
 <form method="post">
   <table>
 
@@ -46,12 +49,12 @@
 
 
   </table>
-  <div class="center-submit">
+  <div class="submit-button">
     <input type="submit" value="Submit changes">
   </div>
 
   <p>{{bottom_message}}</p>
 
 </form>
-</div>
+
 {% endblock %}

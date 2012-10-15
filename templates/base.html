@@ -10,7 +10,8 @@
 
   <body>
   <div class="wrapper">
-        
+
+    <div class="menu-wrapper">
     <ul class="menu">
       <li><a title="Latest updates from your sources." href="/news">News</a></li>
       <li><a title="Write and organize your ideas and progress." href="/notebook">Notebook</a></li>
@@ -26,22 +27,8 @@
       <li><a title="Projects in collaboration with your peers." href="/collaborations">Collaborations</a></li>
       <li>{{login_message | safe}}</li>
     </ul>
-
-    <div class="site-title"><h1><a title="Still in alpha phase..." href="/">Research Engine (&alpha;)</a></h1></div>
-    
-    <div class="sidebar">
-      <h3> This is the sidebar</h3>
-      <p>Some useful tools will be here in the future.</p><br/>
-      <p>Meanwhile I give you a list of items:</p>
-      <ul>
-	<li>Item 1</li>
-	<li>Iterm 2</li>
-	<li>That's enough...</li>
-	<li>... for now.</li>
-      </ul>
-      {% block sidebar %}
-      {% endblock %}
     </div>
+    
     
     <div class="content">      
       {% block content %}
@@ -49,6 +36,7 @@
     </div>
 
     <div class="footer">
+      <p><b>Research Engine</b> (alpha)</p>
       <p>You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="https://github.com/andresgsaravia/research-engine">github repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></p>
     </div>
     

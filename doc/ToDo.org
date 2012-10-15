@@ -3,14 +3,15 @@
 
 In this file I will keep brainstorming ideas about development of the project.
 
-* [2/9] Brainstorm
+* [3/9] Brainstorm
 ** TODO Perhaps it's better to have a "Library" section instead of "Reviews"
 ** TODO Check github's API to make an interface to it.
-** TODO Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
 ** TODO Have a look at [[https://code.google.com/p/course-builder/][Course Builder]] to see if I can/should integrate it with my project.
 ** TODO I should ask some colleagues to know what features they would love.
 ** TODO Find a way to integrate Google Reader and be able to parse (and subscribe to) RSS feeds.
 ** TODO Check out App Engine's Memcache facilites.
+** DONE Look into [[http://www.crossref.org][CrossRef's API]] to find a way to retrieve article's metadata.
+   Indeed I can. I have registered an email to do so and I now need to find a way to parse the xml response.
 ** DONE Is [[http://mendeley.com/][Mendeley]] a better choice to resolve article's metadata?
    I think not. I'm suscribed to Mendeley's e-mail list and they seem to have a lot of problems lately. Also, CrossRef seems to work just fine and, for now, I don't need more.
 ** DONE Make an "About" section with a link to the [[https://github.com/andresgsaravia/research-engine][github repository]].
@@ -40,10 +41,12 @@ In this file I will keep brainstorming ideas about development of the project.
 ** TODO Peer review process (open to anyone after acceptance by journal?)
 ** DONE Where should this be located?
    In the "Collaborations" menu, of course...
-* [0/1] Miscellaneous
+* [0/2] Miscellaneous
 ** TODO Meanwhile write something in the front page.
-* [2/4] Design
+** TODO Add custom error handlers.
+* [2/5] Design
 ** TODO In the settings, login and logout page the error messages should not displace the text-input boxes.
+** TODO Test the layout in IE
+** TODO Will the sidebar be really useful one day?
 ** DONE Center the footer correctly
 ** DONE The menu items should be centered around the main content, not the whole page.
-** TODO Test the layout in IE
