@@ -90,7 +90,7 @@ def add_new_WebPage(identifier):
     pass
 
 
-def get_add_KnowledgeItem(species, identifier):
+def get_add_knowledge_item(species, identifier):
     """Returns a KnowledgeItem of the given species and identifier. If it doesn't exist, create it."""
     if species == "arXiv": db_name = "arXiv"
     elif species == "article": db_name = "PublishedArticle"
@@ -101,12 +101,12 @@ def get_add_KnowledgeItem(species, identifier):
         assert False
 
     logging.debug("DB READ: Checking if %s item exists in KnowledgeItems." % db_name)
-    q = db.GqlQuery("SELECT * FROM %s WHERE item_id = %s" % (db_name, identifier)).get()
+    q = db.GqlQuery("SELECT * FROM %s WHERE item_id = '%s'" % (db_name, identifier)).get()
     if q: return q
     return eval('add_new_%s("%s")' % (db_name, identifier))
     
 
-def add_KnowledgeItem_to_library(username, item):
+def add_to_library(username, item):
     logging.debug("DB READ: Looking for :1 to add an item to its library.", username)
     user = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", username).get()
     if not user:
@@ -178,8 +178,8 @@ class New(GenericPage):
             self.render("new_knowledge.html", **params)
         else:
             try:
-                item = get_add_KnowledgeItem(species, identifier)  # Retrieves the item. If it's not present, adds it.
-                add_KnowledgeItem_to_library(username, item)
+                item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
+                add_to_library(username, item)
                 self.redirect("/library/item/%s" % str(item.key().id()))
             except:
                 params['error'] = "Could not retrieve " + species
