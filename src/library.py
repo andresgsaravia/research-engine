@@ -12,14 +12,7 @@ SOFTWARE_RE = r''
 WEBPAGE_RE = r''
 
 
-## Data Models ##
-
-# This is a site-wide repository.
-class KnowledgeItems(db.Model):
-    species = db.StringProperty(required = True)
-    identifier = db.StringProperty(required = True)
-    metadata = db.ReferenceProperty(required = True)           # Must refer to one of arXiv, PublishedArticles, Software, etc...
-    
+## Data Models ##    
 
 # Specific knowledge items.
 class arXiv(db.Model):
@@ -50,7 +43,7 @@ class LibraryItems(db.Model):
     tags = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
 
 
-# Each review should have as parent one of KnowledgeItems.
+# Each review should have as parent one of arXiv, PublishesArticles, Software or WebPage
 class Reviews(db.Model):
     author = db.ReferenceProperty(required = True)
     review = db.TextProperty(required = True)
@@ -84,14 +77,18 @@ def add_new_arXiv(identifier):
     new.put()
     return new
 
+
 def add_new_PublishedArticle(identifier):
     pass
+
 
 def add_new_Software(identifier):
     pass
 
+
 def add_new_WebPage(identifier):
     pass
+
 
 def get_add_KnowledgeItem(species, identifier):
     """Returns a KnowledgeItem of the given species and identifier. If it doesn't exist, create it."""
@@ -108,13 +105,18 @@ def get_add_KnowledgeItem(species, identifier):
     if q: return q
     return eval('add_new_%s("%s")' % (db_name, identifier))
     
-    
 
 def add_KnowledgeItem_to_library(username, item):
-    pass
-
+    logging.debug("DB READ: Looking for :1 to add an item to its library.", username)
+    user = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", username).get()
+    if not user:
+        logging.error("Attempted to fetch a non existing user with username :1 while adding an item to its library.", username)
+        return None
+    library_item = LibraryItems(item = item.key(), tags = [], parent = user)
+    logging.debug("DB WRITE: Adding an item to :1's library", username)
+    library_item.put()
+    return
     
-
 
 ## Handlers ##
 
@@ -175,13 +177,13 @@ class New(GenericPage):
         if have_error:
             self.render("new_knowledge.html", **params)
         else:
-#            try:
-            item = get_add_KnowledgeItem(species, identifier)  # Retrieves the item. If it's not present, adds it.
-            add_KnowledgeItem_to_library(username, item)
-            self.redirect("/library/item/%s" % str(item.key().id()))
-#            except:
-#                params['error'] = "Could not retrieve " + species
-#                self.render("new_knowledge.html", **params)
+            try:
+                item = get_add_KnowledgeItem(species, identifier)  # Retrieves the item. If it's not present, adds it.
+                add_KnowledgeItem_to_library(username, item)
+                self.redirect("/library/item/%s" % str(item.key().id()))
+            except:
+                params['error'] = "Could not retrieve " + species
+                self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
