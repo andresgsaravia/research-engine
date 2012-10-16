@@ -11,12 +11,13 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/signup', users.SignupPage),
                                ('/new_user', users.NewUserPage),
                                ('/settings', users.SettingsPage),
-                               # Reviews module
+                               # Library module
                                ('/library', library.MainPage),
                                ('/library/articles', library.Articles),
                                ('/library/blog_posts', library.BlogPosts),
                                ('/library/software', library.Software),
                                ('/library/new', library.New),
+                               ('/library/item/([0-9]+)', library.Item),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),
                                ('/notebook', frontend.UnderConstructionPage),

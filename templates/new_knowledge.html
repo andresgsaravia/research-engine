@@ -19,10 +19,10 @@
 	Kind of entry:
       </td>
       <td>
-	<input type="radio" name="species" value="arxiv">arXiv article</input><br/>
-	<input type="radio" name="species" value="article">Published article (by DOI)</input><br/>
-	<input type="radio" name="species" value="software">Sotfware</input><br/>
-	<input type="radio" name="species" value="webpage">Web page (blog post)</input><br/>
+	<input type="radio" name="species" value="arXiv" checked> arXiv article</input><br/>
+	<input type="radio" name="species" value="article"> Published article (by DOI)</input><br/>
+	<input type="radio" name="species" value="software"> Sotfware</input><br/>
+	<input type="radio" name="species" value="webpage"> Web page (blog post)</input><br/>
       </td>
     </tr>
 
@@ -33,9 +33,6 @@
       <td>
 	<input type="text" name="identifier"></input>
       </td>
-      <td>
-	{{error}}
-      </td>
     </tr>
     
   </table>
@@ -43,6 +40,10 @@
     <input type="submit" value="Submit">
   </div>
 
+  <div class="error">
+    <br/>
+    {{error}}
+  </div>
 </form>
 
 
