@@ -17,7 +17,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/library/blog_posts', library.BlogPosts),
                                ('/library/software', library.Software),
                                ('/library/new', library.New),
-                               ('/library/item/([0-9]+)', library.Item),
+                               ('/library/item/(.+)', library.Item),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),
                                ('/notebook', frontend.UnderConstructionPage),

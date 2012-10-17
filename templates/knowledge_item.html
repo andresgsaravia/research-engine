@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link href="/css/knowledge_item.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+{{item.full_render() | safe}}
+
+{% endblock %}

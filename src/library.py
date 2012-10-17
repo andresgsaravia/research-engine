@@ -25,6 +25,10 @@ class arXiv(db.Model):
     abstract = db.TextProperty(required = False)       # Are there articles without abstract?
     link = db.LinkProperty(required = True)
 
+    def full_render(self):
+        return render_str("arXiv_item_full.html", item = self)
+    def short_render(self):
+        return render_str("arXiv_item_full.html", item = self)
 
 class PublishedArticles(db.Model):
     item_id = db.StringProperty(required = True)       # DOI
@@ -36,18 +40,33 @@ class PublishedArticles(db.Model):
     issue = db.StringProperty(required = False)         # Could this be an int?
     page = db.StringProperty(required = False)
     # Article
-    title = db.StringProperty(required = True)
+    title = db.StringProperty(required = False)         # Some CrossRef records are mising titles... WTF!
     authors = db.StringListProperty(required = True)
     abstract = db.TextProperty(required = False)        # Crossref doesn't provide this. Maybe we can fetch it in some other way.
     link = db.LinkProperty(required = True)
+
+    def full_render(self):
+        return render_str("article_item_full.html", item = self)
+    def short_render(self):
+        return render_str("article_item_full.html", item = self)
 
 
 class Software(db.Model):
     item_id = db.StringProperty(required = True)
 
+    def full_render(self):
+        pass
+    def short_render(self):
+        pass
+
 
 class WebPage(db.Model):
     item_id = db.StringProperty(required = True)
+
+    def full_render(self):
+        pass
+    def short_render(self):
+        pass
 
 
 # This is user-specific. Each of these items should have as parent the current user.
@@ -66,6 +85,12 @@ class Reviews(db.Model):
 
 
 ## Helper functions ##
+
+def try_get_nodeValue(tree, node_name):
+    try:
+        return tree.getElementsByTagName(node_name)[0].childNodes[0].nodeValue
+    except:
+        return None
 
 def arXiv_metadata(arXiv_id):
     tree = minidom.parseString(urllib2.urlopen(ARXIV_QUERY_URL + arXiv_id).read().replace("\n", ""))
@@ -86,20 +111,20 @@ def CrossRef_metadata(doi):
     tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", ""))
     params = {}
     params["item_id"] = doi
-    params["journal"] = tree.getElementsByTagName("full_title")[0].childNodes[0].nodeValue
-    params["abbrev_journal"] = tree.getElementsByTagName("abbrev_title")[0].childNodes[0].nodeValue
-    params["year"] = int(tree.getElementsByTagName("journal_issue")[0].getElementsByTagName("year")[0].childNodes[0].nodeValue)
-    params["volume"] = tree.getElementsByTagName("volume")[0].childNodes[0].nodeValue
-    params["issue"] = tree.getElementsByTagName("issue")[0].childNodes[0].nodeValue
-    params["page"] = tree.getElementsByTagName("first_page")[0].childNodes[0].nodeValue
-    params["title"] = tree.getElementsByTagName("title")[0].childNodes[0].nodeValue
+    params["journal"] = try_get_nodeValue(tree, "full_title")             # metadata is sometimes missing...
+    params["abbrev_journal"] = try_get_nodeValue(tree, "abbrev_title")    # ... so I use try-except to fetch it
+    params["year"] = int(try_get_nodeValue(tree, "year"))
+    params["volume"] = try_get_nodeValue(tree, "volume")
+    params["issue"] = try_get_nodeValue(tree, "issue")
+    params["page"] = try_get_nodeValue(tree, "first_page")
+    params["title"] = try_get_nodeValue(tree, "title")
     params["authors"] = []
     for author in tree.getElementsByTagName("person_name"):
         given_name = author.getElementsByTagName("given_name")[0].childNodes[0].nodeValue
         surname = author.getElementsByTagName("surname")[0].childNodes[0].nodeValue
-        params["authors"].append(given_name + " " + surname)
+        params["authors"].append(given_name + " " + surname)   # To have consistency with arXiv items.
     params["abstract"] = ""
-    params["link"] = tree.getElementsByTagName("resource")[0].childNodes[0].nodeValue
+    params["link"] = try_get_nodeValue(tree, "resource")
     return params
 
 
@@ -162,7 +187,16 @@ def add_to_library(username, item):
 
 class MainPage(GenericPage):
     def get(self):
-        self.write("library's main page.")
+        username = self.get_username()
+        if not username: self.redirect("/login")
+        logging.debug("DB READ: RegisteredUsers to get a user's library")
+        user = RegisteredUsers.all().filter("username =", username).get()
+        logging.debug("DB READ: Fetching a user's library items.")
+        q = LibraryItems.all().ancestor(user.key()).order("-added")
+        items = []
+        for i in q.run():
+            items.append(i.item)
+        self.render("library_main.html", items = items)
 
 
 class Articles(GenericPage):
@@ -220,14 +254,19 @@ class New(GenericPage):
             try:
                 item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
                 add_to_library(username, item)
-                self.redirect("/library/item/%s" % str(item.key().id()))
+                self.redirect("/library/item/%s" % str(item.key()))
             except:
                 params['error'] = "Could not retrieve " + species
                 self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
-    def get(self, item_id):
+    def get(self, item_key):
         username = self.get_username()
-        if not username: self.redirect("/login")
-        self.write(item_id)
+        logging.debug("DB READ: Querying for item with key :1", item_key)
+        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
+        if not item:
+            logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
+            self.error(404)
+        else:
+            self.render("knowledge_item.html", item = item)

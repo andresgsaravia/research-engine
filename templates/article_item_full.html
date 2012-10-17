@@ -1,0 +1,26 @@
+<div class="item">
+  
+  <div class="item-title">
+    {{item.title}}
+  </div>
+  
+  <div class="item-published">
+    <em>{{item.journal}}</em> <b>{{item.volume}}</b>, {{item.page}}
+  </div>
+
+  <div class="item-date">
+    {{item.year}}
+  </div>
+
+  <div class="authors-list">
+    <ul>
+      {% for author in item.authors %}
+        <li>{{author}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="item-link">
+    <a href="{{item.link}}">External link</a>
+  </div>
+</div>
