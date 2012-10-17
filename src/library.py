@@ -91,16 +91,15 @@ def add_new_WebPage(identifier):
 
 
 def get_add_knowledge_item(species, identifier):
-    """Returns a KnowledgeItem of the given species and identifier. If it doesn't exist, create it."""
+    """Returns a knowledge-item of the given species and identifier. If it doesn't exist, create it."""
     if species == "arXiv": db_name = "arXiv"
     elif species == "article": db_name = "PublishedArticle"
     elif species == "software": db_name = "Software"
     elif species == "webpage": db_name = "WebPage"
     else:
-        logging.error("Wrong KnowledgeItem species: %s" % species)
+        logging.error("Wrong knowledge-item species: %s" % species)
         assert False
-
-    logging.debug("DB READ: Checking if %s item exists in KnowledgeItems." % db_name)
+    logging.debug("DB READ: Checking if %s item exists in database." % db_name)
     q = db.GqlQuery("SELECT * FROM %s WHERE item_id = '%s'" % (db_name, identifier)).get()
     if q: return q
     return eval('add_new_%s("%s")' % (db_name, identifier))
@@ -112,10 +111,13 @@ def add_to_library(username, item):
     if not user:
         logging.error("Attempted to fetch a non existing user with username :1 while adding an item to its library.", username)
         return None
+    logging.debug("DB READ: Looking for an item in :1's library", username)
+    library_item = LibraryItems.all().ancestor(user.key()).filter("item =", item.key()).get()
+    if library_item: return None
     library_item = LibraryItems(item = item.key(), tags = [], parent = user)
     logging.debug("DB WRITE: Adding an item to :1's library", username)
     library_item.put()
-    return
+    return None
     
 
 ## Handlers ##
