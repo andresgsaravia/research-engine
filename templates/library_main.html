@@ -6,8 +6,15 @@
 
 {% block content %}
 
+{% if not items %}
+<p>You have nothing yet in your Library. Try <a href="/library/new">adding a new item</a>.</p>
+
+{% else %}
+
 {% for item in items %}
   {{item.short_render() | safe}}
 {% endfor %}
+
+{% endif %}
 
 {% endblock %}

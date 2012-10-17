@@ -198,7 +198,7 @@ class MainPage(GenericPage):
             items = []
             for i in q.run():
                 items.append(i.item)
-                self.render("library_main.html", items = items)
+            self.render("library_main.html", items = items)
 
 
 class Articles(GenericPage):
