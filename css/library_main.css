@@ -1,0 +1,10 @@
+/* Style for the display of a user's library */
+
+.item + .item {
+    border-top: 2px solid #666;
+    margin-top: 2em;
+}
+
+.item-title {
+    margin-top: 0.5em;
+}
