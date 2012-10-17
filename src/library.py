@@ -7,7 +7,9 @@ import xml.dom.minidom as minidom
 ARXIV_QUERY_URL = "http://export.arxiv.org/api/query?id_list="
 ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}$'
 
+CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=crossref%40andresgsaravia.com.mx&format=unixref&id="
 DOI_RE = r''
+
 SOFTWARE_RE = r''
 WEBPAGE_RE = r''
 
@@ -25,7 +27,19 @@ class arXiv(db.Model):
 
 
 class PublishedArticles(db.Model):
-    item_id = db.StringProperty(required = True)
+    item_id = db.StringProperty(required = True)       # DOI
+    # Journal
+    journal = db.StringProperty(required = True)
+    abbrev_journal = db.StringProperty(required = False)
+    year = db.IntegerProperty(required = True)
+    volume = db.StringProperty(required = False)        # Sometimes there are letters here so it can't be an int.
+    issue = db.StringProperty(required = False)         # Could this be an int?
+    page = db.StringProperty(required = False)
+    # Article
+    title = db.StringProperty(required = True)
+    authors = db.StringListProperty(required = True)
+    abstract = db.TextProperty(required = False)        # Crossref doesn't provide this. Maybe we can fetch it in some other way.
+    link = db.LinkProperty(required = True)
 
 
 class Software(db.Model):
@@ -67,7 +81,27 @@ def arXiv_metadata(arXiv_id):
     params["abstract"] = tree.getElementsByTagName("summary")[0].childNodes[0].nodeValue
     params["link"] = tree.getElementsByTagName("entry")[0].getElementsByTagName("id")[0].childNodes[0].nodeValue
     return params
-    
+
+def CrossRef_metadata(doi):
+    tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", ""))
+    params = {}
+    params["item_id"] = doi
+    params["journal"] = tree.getElementsByTagName("full_title")[0].childNodes[0].nodeValue
+    params["abbrev_journal"] = tree.getElementsByTagName("abbrev_title")[0].childNodes[0].nodeValue
+    params["year"] = int(tree.getElementsByTagName("journal_issue")[0].getElementsByTagName("year")[0].childNodes[0].nodeValue)
+    params["volume"] = tree.getElementsByTagName("volume")[0].childNodes[0].nodeValue
+    params["issue"] = tree.getElementsByTagName("issue")[0].childNodes[0].nodeValue
+    params["page"] = tree.getElementsByTagName("first_page")[0].childNodes[0].nodeValue
+    params["title"] = tree.getElementsByTagName("title")[0].childNodes[0].nodeValue
+    params["authors"] = []
+    for author in tree.getElementsByTagName("person_name"):
+        given_name = author.getElementsByTagName("given_name")[0].childNodes[0].nodeValue
+        surname = author.getElementsByTagName("surname")[0].childNodes[0].nodeValue
+        params["authors"].append(given_name + " " + surname)
+    params["abstract"] = ""
+    params["link"] = tree.getElementsByTagName("resource")[0].childNodes[0].nodeValue
+    return params
+
 
 # For the add_new_X functions, X should match the database's name. They must return the item just added.
 def add_new_arXiv(identifier):
@@ -78,8 +112,12 @@ def add_new_arXiv(identifier):
     return new
 
 
-def add_new_PublishedArticle(identifier):
-    pass
+def add_new_PublishedArticles(identifier):
+    params = CrossRef_metadata(identifier)
+    new = PublishedArticles(**params)
+    logging.debug("DB WRITE: Adding a new PublishedArticle with DOI :1", identifier)
+    new.put()
+    return new
 
 
 def add_new_Software(identifier):
@@ -93,7 +131,7 @@ def add_new_WebPage(identifier):
 def get_add_knowledge_item(species, identifier):
     """Returns a knowledge-item of the given species and identifier. If it doesn't exist, create it."""
     if species == "arXiv": db_name = "arXiv"
-    elif species == "article": db_name = "PublishedArticle"
+    elif species == "article": db_name = "PublishedArticles"
     elif species == "software": db_name = "Software"
     elif species == "webpage": db_name = "WebPage"
     else:
@@ -179,13 +217,13 @@ class New(GenericPage):
         if have_error:
             self.render("new_knowledge.html", **params)
         else:
-            try:
-                item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
-                add_to_library(username, item)
-                self.redirect("/library/item/%s" % str(item.key().id()))
-            except:
-                params['error'] = "Could not retrieve " + species
-                self.render("new_knowledge.html", **params)
+#            try:
+            item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
+            add_to_library(username, item)
+            self.redirect("/library/item/%s" % str(item.key().id()))
+#            except:
+#                params['error'] = "Could not retrieve " + species
+#                self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
