@@ -188,15 +188,17 @@ def add_to_library(username, item):
 class MainPage(GenericPage):
     def get(self):
         username = self.get_username()
-        if not username: self.redirect("/login")
-        logging.debug("DB READ: RegisteredUsers to get a user's library")
-        user = RegisteredUsers.all().filter("username =", username).get()
-        logging.debug("DB READ: Fetching a user's library items.")
-        q = LibraryItems.all().ancestor(user.key()).order("-added")
-        items = []
-        for i in q.run():
-            items.append(i.item)
-        self.render("library_main.html", items = items)
+        if not username: 
+            self.redirect("/login")
+        else:
+            logging.debug("DB READ: RegisteredUsers to get a user's library")
+            user = RegisteredUsers.all().filter("username =", username).get()
+            logging.debug("DB READ: Fetching a user's library items.")
+            q = LibraryItems.all().ancestor(user.key()).order("-added")
+            items = []
+            for i in q.run():
+                items.append(i.item)
+                self.render("library_main.html", items = items)
 
 
 class Articles(GenericPage):

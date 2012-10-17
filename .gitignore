@@ -26,5 +26,8 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+# AppEngine stuff
+index.yaml
+
 #Apple BS
 .DS_Store
