@@ -217,13 +217,13 @@ class New(GenericPage):
         if have_error:
             self.render("new_knowledge.html", **params)
         else:
-#            try:
-            item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
-            add_to_library(username, item)
-            self.redirect("/library/item/%s" % str(item.key().id()))
-#            except:
-#                params['error'] = "Could not retrieve " + species
-#                self.render("new_knowledge.html", **params)
+            try:
+                item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
+                add_to_library(username, item)
+                self.redirect("/library/item/%s" % str(item.key().id()))
+            except:
+                params['error'] = "Could not retrieve " + species
+                self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
