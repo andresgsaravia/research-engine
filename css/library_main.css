@@ -10,7 +10,7 @@
     width: 18%;
     border: 1px solid black;
     text-align: center;
-    background: #E0E8ED;
+    background: #F4F5FE;
     min-height: 20em;
 }
 
@@ -54,7 +54,6 @@
     padding-left: 0.5em;
     padding-top: 0.2em;
     padding-bottom: 0.2em;
-    background: white;
 }
 
 .item .authors-list {
@@ -68,15 +67,10 @@
     color: black;
 }
 
-.article-item .item-published {
-    background: #DFF0EB;
-    border-bottom: 1px solid #ACC1BB;
-    border-left: 1px solid #ACC1BB;
+.article-item .item-published a {
+    color: #435E57;
 }
 
-.arXiv-item .item-published {
-    background: #FCE6E6;
-    border-bottom: 1px solid #E07A7A;
-    border-left: 1px solid #E07A7A;
+.arXiv-item .item-published a {
+    color: #630101;
 }
-
