@@ -4,7 +4,7 @@
     margin-top: 1em;
     border: 1px solid black;
     border-radius: 0.5em;
-    background: #dddddd;
+    background: white;
     box-shadow: 0.2em 0.2em 0.1em #444444;
 }
 
@@ -15,7 +15,7 @@
     padding-right: 1em;
     border-bottom: solid 1px black;
     font-weight: bold;
-    background: #cccccc;
+    background: #dddddd;
     border-top-left-radius: 0.5em;
     border-top-right-radius: 0.5em;
 }
