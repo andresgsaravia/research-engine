@@ -28,7 +28,10 @@ class arXiv(db.Model):
     def full_render(self):
         return render_str("arXiv_item_full.html", item = self)
     def short_render(self):
-        return render_str("arXiv_item_full.html", item = self)
+        authors_string = self.authors[0]
+        if len(self.authors) > 1:
+            authors_string += "<em> et al.</em>"
+        return render_str("arXiv_item_short.html", item = self, authors_string = authors_string)
 
 class PublishedArticles(db.Model):
     item_id = db.StringProperty(required = True)       # DOI
@@ -48,7 +51,10 @@ class PublishedArticles(db.Model):
     def full_render(self):
         return render_str("article_item_full.html", item = self)
     def short_render(self):
-        return render_str("article_item_full.html", item = self)
+        authors_string = self.authors[0]
+        if len(self.authors) > 1:
+            authors_string += "<em> et al.</em>"
+        return render_str("article_item_short.html", item = self, authors_string = authors_string)
 
 
 class Software(db.Model):
@@ -197,7 +203,7 @@ class MainPage(GenericPage):
             q = LibraryItems.all().ancestor(user.key()).order("-added")
             items = []
             for i in q.run():
-                items.append(i.item)
+                items.append(i)
             self.render("library_main.html", items = items)
 
 

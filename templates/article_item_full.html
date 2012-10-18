@@ -1,11 +1,11 @@
-<div class="item">
+<div class="item"><div class="article-item">
   
   <div class="item-title">
-    {{item.title}}
+    <a href="/library/item/{{item.key()}}">{{item.title}}</a>
   </div>
   
   <div class="item-published">
-    <em>{{item.journal}}</em> <b>{{item.volume}}</b>, {{item.page}}
+    <a href="{{item.link}}"><em>{{item.abbrev_journal}}</em> <b>{{item.volume}}</b>, {{item.page}}</a>
   </div>
 
   <div class="item-date">
@@ -19,8 +19,4 @@
       {% endfor %}
     </ul>
   </div>
-
-  <div class="item-link">
-    <a href="{{item.link}}">External link</a>
-  </div>
-</div>
+</div></div>

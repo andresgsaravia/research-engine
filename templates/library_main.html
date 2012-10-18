@@ -13,9 +13,31 @@
 
 {% else %}
 
+<div class="sidebar">
+  <h3>Categories</h3>
+  <ul>
+    <li>Category 1</li>
+    <li>Category 2</li>
+    <li>Category 3</li>
+    <li>Category 4</li>
+  </ul>
+</div>
+
+
+<div class="items-wrapper">
 {% for item in items %}
-  {{item.short_render() | safe}}
+  <div class="item">
+    {{item.item.short_render() | safe}}
+    <div class="tags">
+      <p><b>Tags: </b>
+	{% for t in item.tags %}
+          {{t}}, 
+	{% endfor %}
+      </p>
+    </div>
+  </div>
 {% endfor %}
+</div>
 
 {% endif %}
 

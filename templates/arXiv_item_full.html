@@ -1,11 +1,11 @@
-<div class="item">
+<div class="item"><div class="arXiv-item">
   
   <div class="item-title">
-    {{item.title}}
+    <a href="/library/item/{{item.key()}}">{{item.title}}</a>
   </div>
   
   <div class="item-published">
-    <em>arXiv</em>
+    <a href="{{item.link}}"><em>arXiv, {{item.item_id}}</em></a>
   </div>
 
   <div class="item-date">
@@ -20,7 +20,4 @@
     </ul>
   </div>
 
-  <div class="item-link">
-    <a href="{{item.link}}">External link</a>
-  </div>
-</div>
+</div></div>

@@ -1,0 +1,15 @@
+<div class="arXiv-item">
+  
+  <div class="item-title">
+    <a href="/library/item/{{item.key()}}">{{item.title}}</a>
+  </div>
+  
+  <div class="item-published">
+    <a href="{{item.link}}"><em>arXiv, {{item.item_id}}. {{item.date.year}}</em></a>
+  </div>
+
+  <div class="authors-list">
+    {{authors_string | safe }}
+  </div>
+
+</div>

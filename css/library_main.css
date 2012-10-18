@@ -1,10 +1,82 @@
 /* Style for the display of a user's library */
 
-.item + .item {
-    border-top: 2px solid #666;
-    margin-top: 2em;
+.items-wrapper {
+    width: 80%
 }
 
-.item-title {
-    margin-top: 0.5em;
+.sidebar {
+    position: relative;
+    float: right;
+    width: 18%;
+    border: 1px solid black;
+    text-align: center;
+    background: #E0E8ED;
+    min-height: 20em;
 }
+
+.item {
+    border: 1px solid black;
+    border-radius: 0.5em;
+    background: #dddddd;
+    box-shadow: 0.2em 0.2em 0.1em #444444;
+}
+
+.item + .item {
+    margin-top: 0.7em;
+}
+
+.item .tags {
+    padding-left: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+.item .item-title {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-bottom: 1px solid black;
+    background: #cccccc;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.item .item-title a {
+    font-weight: bold;
+    font-size: 1em;
+    color: black;
+}
+
+.item-published {
+    position: relative;
+    float: right;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    background: white;
+}
+
+.item .authors-list {
+    padding-top: 0.7em;
+    padding-bottom: 0.7em;
+    padding-left: 0.5em;
+}
+
+.item-published a {
+    font-weight: normal;
+    color: black;
+}
+
+.article-item .item-published {
+    background: #DFF0EB;
+    border-bottom: 1px solid #ACC1BB;
+    border-left: 1px solid #ACC1BB;
+}
+
+.arXiv-item .item-published {
+    background: #FCE6E6;
+    border-bottom: 1px solid #E07A7A;
+    border-left: 1px solid #E07A7A;
+}
+
