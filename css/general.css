@@ -85,12 +85,14 @@ a:hover {
     margin-left: 0.3em;
     margin-right: 0.3em;
     height: 40px;
-    background: #4c4e5a;
+    background: #4c4e5a;   /* fallback */
+    background-image: -moz-linear-gradient(top, #4c4e5a, #8c8e9a);
+    background-image: -webkit-linear-gradient(top, #4c4e5a, #8c8e9a);
+    box-shadow: 0.3em 0.3em 0.2em #444444;
     border-radius: 5px;
 }
 
 .menu li {
-
     position: relative;
     list-style: none;
     float: left;
@@ -134,10 +136,6 @@ a:hover {
     border-right: none;
 }
 
-.menu li:nth-last-child(2) a {
-    border-right: 1px solid #393942;
-}
-
 .menu li:hover > a {
     color: #66E6FF;
 }
@@ -148,7 +146,10 @@ a:hover {
     left: 0px;
 
     opacity: 0;
-    background: #1f2024;
+    background: #1f2024;  /*fallback*/
+    background-image: -moz-linear-gradient(top, #1f2024, #9fa0a4);
+    background-image: -webkit-linear-gradient(top, #1f2024, #9fa0a4);
+    box-shadow: 0.3em 0.3em 0.2em #444444;
 
     border-radius: 0 0 5px 5px;
 
