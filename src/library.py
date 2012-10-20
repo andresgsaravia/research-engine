@@ -5,7 +5,7 @@ import urllib2, datetime
 import xml.dom.minidom as minidom
 
 ARXIV_QUERY_URL = "http://export.arxiv.org/api/query?id_list="
-ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}$'
+ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}(v[0-9]+)?$'
 
 CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=crossref%40andresgsaravia.com.mx&format=unixref&id="
 DOI_RE = r''
@@ -99,6 +99,7 @@ def try_get_nodeValue(tree, node_name):
         return None
 
 def arXiv_metadata(arXiv_id):
+    arXiv_id = arXiv_id.split('v')[0]     # For now we remove the version from the query.
     tree = minidom.parseString(urllib2.urlopen(ARXIV_QUERY_URL + arXiv_id).read().replace("\n", ""))
     params = {}
     params["item_id"] = arXiv_id
