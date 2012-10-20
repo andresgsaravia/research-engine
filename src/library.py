@@ -203,10 +203,7 @@ class MainPage(GenericPage):
             logging.debug("DB READ: RegisteredUsers to get a user's library")
             user = RegisteredUsers.all().filter("username =", username).get()
             logging.debug("DB READ: Fetching a user's library items.")
-            q = LibraryItems.all().ancestor(user.key()).order("-added")
-            items = []
-            for i in q.run():
-                items.append(i)
+            items = LibraryItems.all().ancestor(user.key()).order("-added")
             self.render("library_main.html", items = items)
 
 
