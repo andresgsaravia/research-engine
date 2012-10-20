@@ -118,8 +118,10 @@ def CrossRef_metadata(doi):
     tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", ""))
     params = {}
     params["item_id"] = doi
-    params["journal"] = try_get_nodeValue(tree, "full_title")             # metadata is sometimes missing...
-    params["abbrev_journal"] = try_get_nodeValue(tree, "abbrev_title")    # ... so I use try-except to fetch it
+    # metadata is sometimes missing so I use try-except to fetch it.
+    params["journal"] = try_get_nodeValue(tree, "full_title")
+    if params["journal"]: params["journal"] = params["journal"].title()
+    params["abbrev_journal"] = try_get_nodeValue(tree, "abbrev_title")
     params["year"] = int(try_get_nodeValue(tree, "year"))
     params["volume"] = try_get_nodeValue(tree, "volume")
     params["issue"] = try_get_nodeValue(tree, "issue")
