@@ -35,6 +35,12 @@
 	{% endfor %}
       </p>
     </div>
+    <div class="delete-button">
+      <form method="post">
+	<input type="submit" value="Delete"/>
+	<input type="hidden" name="item_key" value="{{item.key()}}"/>
+      </form>
+    </div>
   </div>
 {% endfor %}
 </div>

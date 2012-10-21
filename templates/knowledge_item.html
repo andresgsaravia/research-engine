@@ -10,6 +10,11 @@
   {{item.full_render() | safe}}
 </div>
 
+<form method="post" action="/library">
+  <input type="submit" value="{{button_text}}">
+  <input type="hidden" name="item_key" value="{{item_key}}">
+</form>
+
 <div class="comments">
   <h3>Comments</h3>
   <p>Comments about this item will be here soon.</p>

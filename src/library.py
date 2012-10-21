@@ -206,6 +206,9 @@ class MainPage(GenericPage):
             items = LibraryItems.all().ancestor(user.key()).order("-added")
             self.render("library_main.html", items = items)
 
+    def post(self):
+        item_key = self.request.get("item_key")
+        self.write(item_key)
 
 class Articles(GenericPage):
     def get(self):
@@ -271,10 +274,13 @@ class New(GenericPage):
 class Item(GenericPage):
     def get(self, item_key):
         username = self.get_username()
+        params = {}
+        params["item_key"] = item_key
         logging.debug("DB READ: Querying for item with key :1", item_key)
-        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
-        if not item:
+        params["item"] = db.Query().filter("__key__ =", db.Key(item_key)).get()
+        if not params["item"]:
             logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
             self.error(404)
         else:
-            self.render("knowledge_item.html", item = item)
+            params["button_text"] = "Add / delete this item"
+            self.render("knowledge_item.html", **params)
