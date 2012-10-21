@@ -209,8 +209,11 @@ class MainPage(GenericPage):
     def post(self):
         username = self.get_username()
         item_key = self.request.get("item_key")
+        logging.debug("DB READ: RegisteredUsers to get a user's library")
         user = RegisteredUsers.all().filter("username =", username).get()
+        logging.debug("DB READ: Getting an item to use it as reference to delete a LibraryItem later.")
         item = db.get(item_key)
+        logging.debug("DB WRITE: Deleting a library item.")
         LibraryItems.all().ancestor(user.key()).filter("item =", item).get().delete()
         self.redirect("/library")
 
