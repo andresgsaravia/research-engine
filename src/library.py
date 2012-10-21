@@ -207,8 +207,12 @@ class MainPage(GenericPage):
             self.render("library_main.html", items = items)
 
     def post(self):
+        username = self.get_username()
         item_key = self.request.get("item_key")
-        self.write(item_key)
+        user = RegisteredUsers.all().filter("username =", username).get()
+        item = db.get(item_key)
+        LibraryItems.all().ancestor(user.key()).filter("item =", item).get().delete()
+        self.redirect("/library")
 
 class Articles(GenericPage):
     def get(self):
