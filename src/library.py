@@ -350,22 +350,22 @@ class Edit(GenericPage):
                 params["abstract"]= self.request.get("abstract")
                 params["link"] = self.request.get("link")
                 params["error"] = ''
-                if params["title"]: item.title = params["title"]
+                if params["title"]: item.title = params["title"].lstrip().rstrip()
                 if params["authors_string"]:
                     authors = []
                     for author in params["authors_string"].split(";"):
-                        authors.append(author)
+                        authors.append(author.rstrip().lstrip())
                     if authors: item.authors = authors
                 if params["date"]:
                     try:
-                        item.date = datetime.datetime.strptime(params["date"], "%Y-%m-%d")
+                        item.date = datetime.datetime.strptime(params["date"].lstrip().rstrip(), "%Y-%m-%d")
                     except ValueError:
                         have_error = True
                         params["error"] += "Please check the date is correct. "
-                if params["abstract"]: item.abstract = params["abstract"]
+                if params["abstract"]: item.abstract = params["abstract"].lstrip().rstrip()
                 if params["link"]: 
                     try:
-                        item.link = params["link"]
+                        item.link = params["link"].lstrip().rstrip()
                     except db.BadValueError:
                         have_error = True
                         params["error"] += "Please check the Link value is a valid URL. "
