@@ -1,0 +1,81 @@
+<form method="post">
+  <table>
+
+    <tr>
+      <td class="label">
+	arXiv ID:
+      </td>
+      <td>
+	{{item.item_id}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Title:
+      </td>
+      <td>
+	<input type="text" name="title" value="{{item.title}}" />
+      </td>
+      <td class="error">
+	{{title_error}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Authors:
+	<br/><div class="comment">Separated by semicolons</div>
+      </td>
+      <td>
+	<input type="text" name="authors_string" value="{{authors_string}}" />
+      </td>
+      <td class="error">
+	{{authors_error}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Date:
+	<br/><div class="comment">YYYY-MM-DD</div>
+      </td>
+      <td>
+	<input type="text" name="date" value="{{date_string}}" />
+      </td>
+      <td class="error">
+	{{date_error}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Abstract:
+      </td>
+      <td>
+	<textarea name="abstract">{{item.abstract}}</textarea>
+      </td>
+      <td class="error">
+	{{abstract_error}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Link:
+      </td>
+      <td>
+	<input type="text" name="link" value="{{item.link}}" />
+      </td>
+      <td class="error">
+	{{link_error}}
+      </td>
+    </tr>
+  </table>
+
+  <div class="update_button">
+    <form method="post" action="/library/item/edit/{{item.key()}}">
+      <input type="submit" value="Update" />
+    </form>
+  </div>
+</form>

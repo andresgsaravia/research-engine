@@ -32,6 +32,14 @@ class arXiv(db.Model):
         if len(self.authors) > 1:
             authors_string += "<em> et al.</em>"
         return render_str("arXiv_item_short.html", item = self, authors_string = authors_string)
+    def edit_render(self):
+        params = {'item' : self, 'authors_string' : ''}
+        for author in self.authors:
+            params["authors_string"] += (author + "; ")
+        params["authors_string"]  = params["authors_string"][:-2]
+        params["date_string"] = datetime.datetime.strftime(self.date, "%Y-%m-%d")
+        return render_str("arXiv_item_edit.html", **params)
+
 
 class PublishedArticles(db.Model):
     item_id = db.StringProperty(required = True)       # DOI
@@ -55,6 +63,12 @@ class PublishedArticles(db.Model):
         if len(self.authors) > 1:
             authors_string += "<em> et al.</em>"
         return render_str("article_item_short.html", item = self, authors_string = authors_string)
+    def edit_render(self):
+        authors_string = ''
+        for author in self.authors:
+            authors_string += (author + "; ")
+        authors_string = authors_string[:-2]
+        return render_str("article_item_edit.html", item = self, authors_string = authors_string)
 
 
 class Software(db.Model):
@@ -64,7 +78,8 @@ class Software(db.Model):
         pass
     def short_render(self):
         pass
-
+    def edit_render(self):
+        pass
 
 class WebPage(db.Model):
     item_id = db.StringProperty(required = True)
@@ -72,6 +87,8 @@ class WebPage(db.Model):
     def full_render(self):
         pass
     def short_render(self):
+        pass
+    def edit_render(self):
         pass
 
 
@@ -302,3 +319,70 @@ class Item(GenericPage):
             else:
                 params["button_text"] = "Add to your library"
             self.render("knowledge_item.html", **params)
+
+
+class Edit(GenericPage):
+    def get(self, item_key):
+        logging.debug("DB READ: Getting knowledge item from key")
+        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
+        if not item: 
+            logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
+            self.error(404)
+        else:
+            self.render("knowledge_item_edit.html", item = item)
+
+    def post(self, item_key):
+        username = self.get_username()
+        if not username: self.redirect("/login")
+        params = {}
+        logging.debug("DB READ: Getting knowledge item from key")
+        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
+        if not item:
+            logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
+            self.error(404)
+        else:
+            kind = item.kind()
+            have_error = False
+            if kind == "arXiv":
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get("authors_string")
+                params["date"] = self.request.get("date")
+                params["abstract"]= self.request.get("abstract")
+                params["link"] = self.request.get("link")
+                params["error"] = ''
+                if params["title"]: item.title = params["title"]
+                if params["authors_string"]:
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(author)
+                    if authors: item.authors = authors
+                if params["date"]:
+                    try:
+                        item.date = datetime.datetime.strptime(params["date"], "%Y-%m-%d")
+                    except ValueError:
+                        have_error = True
+                        params["error"] += "Please check the date is correct. "
+                if params["abstract"]: item.abstract = params["abstract"]
+                if params["link"]: 
+                    try:
+                        item.link = params["link"]
+                    except db.BadValueError:
+                        have_error = True
+                        params["error"] += "Please check the Link value is a valid URL. "
+            elif kind == "PublishedArticles":
+                pass
+            elif kind == "Software":
+                pass
+            elif kind == "WebPage":
+                pass
+            else:
+                logging.error("Wrong knowledge-item species: %s" % species)
+                assert False
+
+            if have_error:
+                self.render("knowledge_item_edit.html", item = item, **params)
+            else:
+                logging.debug("DB WRITE: Updating %s item metadata." % kind)
+                item.put()
+                self.redirect("/library/item/%s" % item.key())
+

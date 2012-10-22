@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/knowledge_item_edit.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+<div class="item">
+  {{item.edit_render() | safe}}
+</div>
+<br/><div class="error">{{error}}</div>
+{% endblock %}
