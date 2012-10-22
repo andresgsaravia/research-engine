@@ -211,7 +211,11 @@ class MainPage(GenericPage):
         item_key = self.request.get("item_key")
         user = RegisteredUsers.all().filter("username =", username).get()
         item = db.get(item_key)
-        LibraryItems.all().ancestor(user.key()).filter("item =", item).get().delete()
+        library_item = LibraryItems.all().ancestor(user.key()).filter("item =", item).get()
+        if library_item:
+            library_item.delete()
+        else:
+            add_to_library(username, item)
         self.redirect("/library")
 
 class Articles(GenericPage):
