@@ -6,6 +6,12 @@
 
 {% block content %}
 
-{{item.full_render() | safe}}
+<div class="item">
+  {{item.full_render() | safe}}
+</div>
 
+<div class="comments">
+  <h3>Comments</h3>
+  <p>Comments about this item will be here soon.</p>
+</div>
 {% endblock %}

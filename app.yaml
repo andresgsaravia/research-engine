@@ -12,7 +12,7 @@ handlers:
   static_dir: images
 
 - url: /.*
-  script: home.app
+  script: main.app
   secure: always
 
 libraries:

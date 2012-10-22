@@ -28,7 +28,10 @@ class arXiv(db.Model):
     def full_render(self):
         return render_str("arXiv_item_full.html", item = self)
     def short_render(self):
-        return render_str("arXiv_item_full.html", item = self)
+        authors_string = self.authors[0]
+        if len(self.authors) > 1:
+            authors_string += "<em> et al.</em>"
+        return render_str("arXiv_item_short.html", item = self, authors_string = authors_string)
 
 class PublishedArticles(db.Model):
     item_id = db.StringProperty(required = True)       # DOI
@@ -48,7 +51,10 @@ class PublishedArticles(db.Model):
     def full_render(self):
         return render_str("article_item_full.html", item = self)
     def short_render(self):
-        return render_str("article_item_full.html", item = self)
+        authors_string = self.authors[0]
+        if len(self.authors) > 1:
+            authors_string += "<em> et al.</em>"
+        return render_str("article_item_short.html", item = self, authors_string = authors_string)
 
 
 class Software(db.Model):
@@ -188,15 +194,17 @@ def add_to_library(username, item):
 class MainPage(GenericPage):
     def get(self):
         username = self.get_username()
-        if not username: self.redirect("/login")
-        logging.debug("DB READ: RegisteredUsers to get a user's library")
-        user = RegisteredUsers.all().filter("username =", username).get()
-        logging.debug("DB READ: Fetching a user's library items.")
-        q = LibraryItems.all().ancestor(user.key()).order("-added")
-        items = []
-        for i in q.run():
-            items.append(i.item)
-        self.render("library_main.html", items = items)
+        if not username: 
+            self.redirect("/login")
+        else:
+            logging.debug("DB READ: RegisteredUsers to get a user's library")
+            user = RegisteredUsers.all().filter("username =", username).get()
+            logging.debug("DB READ: Fetching a user's library items.")
+            q = LibraryItems.all().ancestor(user.key()).order("-added")
+            items = []
+            for i in q.run():
+                items.append(i)
+            self.render("library_main.html", items = items)
 
 
 class Articles(GenericPage):

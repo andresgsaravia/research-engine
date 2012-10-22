@@ -1,26 +1,33 @@
-<div class="item">
+<div class="article-item">
   
   <div class="item-title">
-    {{item.title}}
+    <p>{{item.title}}</p>
   </div>
   
   <div class="item-published">
-    <em>{{item.journal}}</em> <b>{{item.volume}}</b>, {{item.page}}
+    <a href="{{item.link}}"><em>{{item.journal}}</em> <b>{{item.volume}}</b>, {{item.page}}</a>
   </div>
 
   <div class="item-date">
-    {{item.year}}
+    <p><b>Published:</b> {{item.year}}</p>
   </div>
 
   <div class="authors-list">
+    <p><b>Authors:</b></p>
     <ul>
       {% for author in item.authors %}
         <li>{{author}}</li>
       {% endfor %}
     </ul>
   </div>
+  <br/>
 
-  <div class="item-link">
-    <a href="{{item.link}}">External link</a>
+  <div class="item-abstract">
+    <p><b>Abstract: </b>{{item.abstract}}</p>
   </div>
+
+  <div class="identifier">
+    <b>DOI:</b> <a href="http://dx.doi.org/{{item.item_id}}">{{item.item_id}}</a>
+  </div>
+
 </div>

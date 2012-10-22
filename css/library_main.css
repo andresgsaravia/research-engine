@@ -1,0 +1,87 @@
+/* Style for the display of a user's library */
+
+.sidebar {
+    position: relative;
+    float: right;
+    width: 18%;
+    border: 1px solid #aaaaaa;
+    text-align: center;
+    background: #fafafa;
+    min-height: 20em;
+}
+
+.sidebar li {
+    list-style: none;
+    font-size: 0.9em;
+}
+
+.sidebar h3 {
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+    color: #606060;
+}
+
+.items-wrapper {
+    width: 80%
+}
+
+.item {
+    border: 1px solid black;
+    border-radius: 0.5em;
+    background: white;
+    box-shadow: 0.2em 0.2em 0.1em #444444;
+}
+
+.item + .item {
+    margin-top: 0.7em;
+}
+
+.item .tags {
+    padding-left: 0.5em;
+    padding-bottom: 0.2em;
+}
+
+.item .item-title {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-bottom: 1px solid black;
+    background: #dddddd;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.item .item-title a {
+    font-weight: bold;
+    font-size: 1em;
+    color: black;
+}
+
+.item-published {
+    position: relative;
+    float: right;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.item .authors-list {
+    padding-top: 0.7em;
+    padding-bottom: 0.7em;
+    padding-left: 0.5em;
+}
+
+.item-published a {
+    font-weight: normal;
+    color: black;
+}
+
+.article-item .item-published a {
+    color: #435E57;
+}
+
+.arXiv-item .item-published a {
+    color: #630101;
+}

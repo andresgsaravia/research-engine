@@ -1,0 +1,14 @@
+<div class="article-item">
+  
+  <div class="item-title">
+    <a href="/library/item/{{item.key()}}">{{item.title}}</a>
+  </div>
+  
+  <div class="item-published">
+    <a href="{{item.link}}"><em>{{item.abbrev_journal}}</em> <b>{{item.volume}}</b>, {{item.page}}. {{item.year}}</a>
+  </div>
+
+  <div class="authors-list">
+    {{authors_string | safe}}
+  </div>
+</div>

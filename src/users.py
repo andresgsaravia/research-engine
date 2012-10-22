@@ -33,7 +33,7 @@ class SignupPage(GenericPage):
         elif password != verify:
             params['error_verify'] = "Your passwords didn't match."
             have_error = True
-        if email and not re.match(EMAIL_RE, email):
+        if not re.match(EMAIL_RE, email):
             params['error_email'] = "That doesn't seem like a valid email."
             have_error = True
         # Render

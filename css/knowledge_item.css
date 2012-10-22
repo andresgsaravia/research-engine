@@ -1,1 +1,65 @@
 /* Style for a single knowledge item */
+
+.item {
+    margin-top: 1em;
+    border: 1px solid black;
+    border-radius: 0.5em;
+    background: white;
+    box-shadow: 0.2em 0.2em 0.1em #444444;
+}
+
+.item .item-title {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-bottom: solid 1px black;
+    font-weight: bold;
+    background: #dddddd;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.item-published {
+    position: relative;
+    float: right;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.item .item-date {
+    padding: 1em;
+}
+
+.item .authors-list {
+    padding-left: 1em;
+}
+
+.item .authors-list li {
+    list-style: none;
+    display: block;
+    position: relative;
+    float: left;
+    padding-right: 1em;
+}
+
+.item .item-abstract {
+    padding: 1em;
+}
+
+.item .identifier {
+    padding-bottom: 1em;
+    padding-left: 1em;
+}
+
+.item .identifier a {
+    font-weight: normal;
+}
+
+.comments h3 {
+    padding-top: 1.5em;
+    font-size: 1.4em;
+    padding-bottom: 1em;
+}

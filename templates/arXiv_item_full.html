@@ -1,15 +1,15 @@
-<div class="item">
+<div class="arXiv-item">
   
   <div class="item-title">
-    {{item.title}}
+    <p>{{item.title}}</p>
   </div>
   
   <div class="item-published">
-    <em>arXiv</em>
+    <a href="{{item.link}}"><em>arXiv, {{item.item_id}}</em></a>
   </div>
 
   <div class="item-date">
-    {{item.date}}
+    <p><b>Published: </b> {{item.date.year}}-{{item.date.month}}-{{item.date.day}}</p>
   </div>
 
   <div class="authors-list">
@@ -19,8 +19,14 @@
       {% endfor %}
     </ul>
   </div>
+  <br/>
 
-  <div class="item-link">
-    <a href="{{item.link}}">External link</a>
+  <div class="item-abstract">
+    <p><b>Abstract: </b>{{item.abstract}}</p>
   </div>
+
+  <div class="identifier">
+    <b>ID:</b> <a href="http://dx.doi.org/{{item.item_id}}">{{item.item_id}}</a>
+  </div>
+
 </div>
