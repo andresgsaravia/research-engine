@@ -5,7 +5,7 @@ import urllib2, datetime
 import xml.dom.minidom as minidom
 
 ARXIV_QUERY_URL = "http://export.arxiv.org/api/query?id_list="
-ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}$'
+ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}(v[0-9]+)?$'
 
 CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=crossref%40andresgsaravia.com.mx&format=unixref&id="
 DOI_RE = r''
@@ -99,6 +99,7 @@ def try_get_nodeValue(tree, node_name):
         return None
 
 def arXiv_metadata(arXiv_id):
+    arXiv_id = arXiv_id.split('v')[0]     # For now we remove the version from the query.
     tree = minidom.parseString(urllib2.urlopen(ARXIV_QUERY_URL + arXiv_id).read().replace("\n", ""))
     params = {}
     params["item_id"] = arXiv_id
@@ -117,8 +118,10 @@ def CrossRef_metadata(doi):
     tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", ""))
     params = {}
     params["item_id"] = doi
-    params["journal"] = try_get_nodeValue(tree, "full_title")             # metadata is sometimes missing...
-    params["abbrev_journal"] = try_get_nodeValue(tree, "abbrev_title")    # ... so I use try-except to fetch it
+    # metadata is sometimes missing so I use try-except to fetch it.
+    params["journal"] = try_get_nodeValue(tree, "full_title")
+    if params["journal"]: params["journal"] = params["journal"].title()
+    params["abbrev_journal"] = try_get_nodeValue(tree, "abbrev_title")
     params["year"] = int(try_get_nodeValue(tree, "year"))
     params["volume"] = try_get_nodeValue(tree, "volume")
     params["issue"] = try_get_nodeValue(tree, "issue")
@@ -200,12 +203,16 @@ class MainPage(GenericPage):
             logging.debug("DB READ: RegisteredUsers to get a user's library")
             user = RegisteredUsers.all().filter("username =", username).get()
             logging.debug("DB READ: Fetching a user's library items.")
-            q = LibraryItems.all().ancestor(user.key()).order("-added")
-            items = []
-            for i in q.run():
-                items.append(i)
+            items = LibraryItems.all().ancestor(user.key()).order("-added")
             self.render("library_main.html", items = items)
 
+    def post(self):
+        username = self.get_username()
+        item_key = self.request.get("item_key")
+        user = RegisteredUsers.all().filter("username =", username).get()
+        item = db.get(item_key)
+        LibraryItems.all().ancestor(user.key()).filter("item =", item).get().delete()
+        self.redirect("/library")
 
 class Articles(GenericPage):
     def get(self):
@@ -271,10 +278,13 @@ class New(GenericPage):
 class Item(GenericPage):
     def get(self, item_key):
         username = self.get_username()
+        params = {}
+        params["item_key"] = item_key
         logging.debug("DB READ: Querying for item with key :1", item_key)
-        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
-        if not item:
+        params["item"] = db.Query().filter("__key__ =", db.Key(item_key)).get()
+        if not params["item"]:
             logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
             self.error(404)
         else:
-            self.render("knowledge_item.html", item = item)
+            params["button_text"] = "Add / delete this item"
+            self.render("knowledge_item.html", **params)
