@@ -10,10 +10,12 @@
   {{item.full_render() | safe}}
 </div>
 
-<form method="post" action="/library">
-  <input type="submit" value="{{button_text}}">
-  <input type="hidden" name="item_key" value="{{item_key}}">
-</form>
+<div class="add_delete_button">
+  <form method="post" action="/library">
+    <input type="submit" value="{{button_text}}">
+    <input type="hidden" name="item_key" value="{{item_key}}">
+  </form>
+</div>
 
 <div class="comments">
   <h3>Comments</h3>

@@ -85,3 +85,8 @@
 .arXiv-item .item-published a {
     color: #630101;
 }
+
+.item .delete-button {
+    position: relative;
+    float: right;
+}
