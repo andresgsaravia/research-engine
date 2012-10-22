@@ -10,15 +10,15 @@
   {{item.full_render() | safe}}
 </div>
 
+<div class="edit_link">
+     <a href="/library/item/edit/{{item_key}}">Edit information</a>
+</div>
+
 <div class="add_delete_button">
   <form method="post" action="/library">
     <input type="submit" value="{{button_text}}">
     <input type="hidden" name="item_key" value="{{item_key}}">
   </form>
-</div>
-
-<div class="edit_link">
-     <a href="/library/item/edit/{{item_key}}">Edit</a>
 </div>
 
 <div class="comments">

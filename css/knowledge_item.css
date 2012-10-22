@@ -67,3 +67,14 @@
 .add_delete_button {
     padding-top: 1em;
 }
+
+.edit_link {
+    padding-top: 1em;
+    padding-right: 0.5em;
+    position: relative;
+    float: right;
+}
+
+.edit_link a {
+    color: #8B0000;
+}
