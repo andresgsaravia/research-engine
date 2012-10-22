@@ -209,8 +209,11 @@ class MainPage(GenericPage):
     def post(self):
         username = self.get_username()
         item_key = self.request.get("item_key")
+        logging.debug("DB READ: Getting user from username.")
         user = RegisteredUsers.all().filter("username =", username).get()
+        logging.debug("DB READ: Getting knowledge item from its key.")
         item = db.get(item_key)
+        logging.debug("DB READ: Getting LibraryItem.")
         library_item = LibraryItems.all().ancestor(user.key()).filter("item =", item).get()
         if library_item:
             library_item.delete()
@@ -282,6 +285,8 @@ class New(GenericPage):
 class Item(GenericPage):
     def get(self, item_key):
         username = self.get_username()
+        logging.debug("DB READ: Getting user from username.")
+        user = RegisteredUsers.all().filter("username =", username).get()
         params = {}
         params["item_key"] = item_key
         logging.debug("DB READ: Querying for item with key :1", item_key)
@@ -290,5 +295,10 @@ class Item(GenericPage):
             logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
             self.error(404)
         else:
-            params["button_text"] = "Add / delete this item"
+            logging.debug("DB READ: Checking if an item is in a user's library.")
+            library_item = LibraryItems.all().ancestor(user.key()).filter("item =", db.get(item_key)).get()
+            if library_item:
+                params["button_text"] = "Delete from your library"
+            else:
+                params["button_text"] = "Add to your library"
             self.render("knowledge_item.html", **params)
