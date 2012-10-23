@@ -117,7 +117,7 @@ def try_get_nodeValue(tree, node_name):
 
 def arXiv_metadata(arXiv_id):
     arXiv_id = arXiv_id.split('v')[0]     # For now we remove the version from the query.
-    tree = minidom.parseString(urllib2.urlopen(ARXIV_QUERY_URL + arXiv_id).read().replace("\n", ""))
+    tree = minidom.parseString(urllib2.urlopen(ARXIV_QUERY_URL + arXiv_id).read().replace("\n", " "))
     params = {}
     params["item_id"] = arXiv_id
     params["title"] = tree.getElementsByTagName("entry")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
