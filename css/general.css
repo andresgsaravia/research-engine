@@ -1,5 +1,9 @@
 /* Released under a GPLv3 license */
 
+/* 
+Color Scheme: http://colorschemedesigner.com/#3L61TlRK-w0w0
+*/
+
 * {
     margin: 0px;
     padding: 0px;
@@ -24,7 +28,7 @@ h2 {
 a {
     text-decoration: none;
     font-weight: bold;
-    color: #003366;
+    color: #566DA0;
 }
 
 a:hover {
@@ -37,7 +41,7 @@ a:hover {
     min-height: 100%;
     min-width: 750px;
     width: 100%;
-
+    background: #F0F0F0;
 }
 
 .content {
@@ -68,7 +72,7 @@ a:hover {
 /* Menu */
 
 .menu-wrapper {
-    padding-top: 0.1em;
+    padding-bottom: 1em;
 }
 
 .menu,
@@ -82,14 +86,11 @@ a:hover {
 }
 
 .menu {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
     height: 40px;
-    background: #4c4e5a;   /* fallback */
-    background-image: -moz-linear-gradient(top, #62646B, #8c8e9a);
-    background-image: -webkit-linear-gradient(top, #62646B, #8c8e9a);
-    box-shadow: 0.3em 0.3em 0.2em #444444;
-    border-radius: 5px;
+    background: #7F9FEA;   /* fallback */
+    background-image: -moz-linear-gradient(top, #7F9FEA, #537AD5);
+    background-image: -webkit-linear-gradient(top,#7F9FEA, #537AD5);
+    box-shadow: 0em 0.3em 0.2em #566DA0;
 }
 
 .menu li {
@@ -112,8 +113,8 @@ a:hover {
     line-height: 28px;
     text-decoration: none;
 
-    border-left: 1px solid #393942;
-    border-right: 1px solid #4f5058;
+    border-left: 1px solid #9BB3EA;
+    border-right: 1px solid #1B3D8A;
 
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
@@ -137,7 +138,7 @@ a:hover {
 }
 
 .menu li:hover > a {
-    color: #66E6FF;
+    color: #FFDF9F;
 }
 
 .menu ul {
@@ -146,10 +147,8 @@ a:hover {
     left: 0px;
 
     opacity: 0;
-    background: #1f2024;  /*fallback*/
-    background-image: -moz-linear-gradient(top, #1f2024, #9fa0a4);
-    background-image: -webkit-linear-gradient(top, #1f2024, #9fa0a4);
-    box-shadow: 0.3em 0.3em 0.2em #444444;
+    background: #7F9FEA;
+    box-shadow: 0.2em 0.2em 0.2em #566DA0;
 
     border-radius: 0 0 5px 5px;
 
@@ -187,7 +186,7 @@ a:hover {
     margin: 0;
 
     border: none;
-    border-bottom: 1px solid #353539;
+    border-bottom: 1px solid #1B3D8A;
 }
 
 
@@ -209,20 +208,11 @@ a:hover {
     position: absolute;
     bottom: 0em;
     font-size: 0.7em;
-    border-top: 1px solid #4c4e5a;
-    background: #EEEEEE;
+    border-top: 1px solid #1B3D8A;
+    background: white;
+    padding-bottom: 0.5em;
 }
 
 .footer p {
     padding-top: 0.4em;
-}
-
-.footer a {
-    text-decoration: none;
-    color: #9499CB;
-    font-weight: bold;
-}
-
-.footer a:hover {
-    text-decoration: underline;
 }
