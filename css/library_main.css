@@ -6,7 +6,7 @@
     width: 18%;
     border: 1px solid #aaaaaa;
     text-align: center;
-    background: #fafafa;
+    background: #FAFAFA;
     min-height: 20em;
 }
 
@@ -18,7 +18,7 @@
 .sidebar h3 {
     padding-top: 1em;
     padding-bottom: 0.5em;
-    color: #606060;
+    color: #1B3D8A;
 }
 
 .items-wrapper {
@@ -29,7 +29,7 @@
     border: 1px solid black;
     border-radius: 0.5em;
     background: white;
-    box-shadow: 0.2em 0.2em 0.1em #444444;
+    box-shadow: 0.2em 0.2em 0.2em #808080;
 }
 
 .item + .item {
@@ -47,7 +47,7 @@
     padding-left: 1em;
     padding-right: 1em;
     border-bottom: 1px solid black;
-    background: #dddddd;
+    background: #9BB3EA;
     border-top-left-radius: 0.5em;
     border-top-right-radius: 0.5em;
 }
@@ -89,4 +89,5 @@
 .item .delete-button {
     position: relative;
     float: right;
+    padding-right: 1em;
 }
