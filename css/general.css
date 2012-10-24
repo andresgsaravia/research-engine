@@ -89,7 +89,7 @@ a:hover {
 .menu {
     height: 40px;
     background: white;
-    box-shadow: 0em 0.3em 0.2em #808080;
+    box-shadow: 0em 0.3em 0.5em #C0C0C0;
 }
 
 .menu li {
@@ -115,7 +115,7 @@ a:hover {
     border-right: 1px solid #808080;
 
     font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
+    font-weight: normal;
     font-size:13px;
 
     color: #444444;
@@ -146,7 +146,8 @@ a:hover {
 
     opacity: 0;
     background: white;
-    box-shadow: 0.2em 0.2em 0.2em #808080;
+    box-shadow: 0.3em 0.3em 0.5em #C0C0C0;
+
 
     border-radius: 0 0 5px 5px;
 

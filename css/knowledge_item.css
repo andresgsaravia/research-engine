@@ -17,7 +17,7 @@
 .kind {
     position: relative;
     float: right;
-    padding: 1em;
+    padding: 0.5em;
     background: #DDDDDD;
     bottom-left-radius: 0.5em;
     border-bottom: 1px solid #808080;
