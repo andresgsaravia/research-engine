@@ -1,18 +1,19 @@
 <div class="arXiv-item">
-  
-  <div class="item-title">
-    <p>{{item.title}}</p>
-  </div>
-  
-  <div class="item-published">
-    <a href="{{item.link}}"><em>arXiv, {{item.item_id}}</em></a>
-  </div>
 
+  <div class="kind">
+    <p>arXiv preprint</p>
+  </div>  
+
+  <div class="item-title">
+    <p><b>Title:</b> {{item.title}}</p>
+  </div>
+  
   <div class="item-date">
     <p><b>Published: </b> {{item.date.year}}-{{item.date.month}}-{{item.date.day}}</p>
   </div>
 
   <div class="authors-list">
+    <b>Authors:</b>
     <ul>
       {% for author in item.authors %}
         <li>{{author}}</li>

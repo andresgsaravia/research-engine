@@ -1,13 +1,13 @@
 <div class="article-item">
+
+  <div class="kind">
+    <p>Published Article</p>
+  </div>
   
   <div class="item-title">
-    <p>{{item.title}}</p>
+    <p><b>Title: </b>{{item.title}}</p>
   </div>
   
-  <div class="item-published">
-    <a href="{{item.link}}"><em>{{item.journal}}</em> <b>{{item.volume}}</b>, {{item.page}}</a>
-  </div>
-
   <div class="item-date">
     <p><b>Published:</b> {{item.year}}</p>
   </div>
@@ -24,6 +24,10 @@
 
   <div class="item-abstract">
     <p><b>Abstract: </b>{{item.abstract}}</p>
+  </div>
+
+  <div class="journal">
+    <p><b>Journal: </b><a href="{{item.link}}"><em>{{item.journal}}</em> <b>{{item.volume}}</b>, {{item.page}}</a></p>
   </div>
 
   <div class="identifier">

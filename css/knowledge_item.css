@@ -3,30 +3,34 @@
 .item {
     margin-top: 1em;
     border: 1px solid black;
-    border-radius: 0.5em;
     background: white;
-    box-shadow: 0.2em 0.2em 0.2em #808080;
+    box-shadow: 0.1em 0.1em 0.2em #808080;
 }
 
 .item .item-title {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    padding-top: 1em;
+    padding-bottom: 0em;
     padding-left: 1em;
     padding-right: 1em;
-    border-bottom: solid 1px black;
-    font-weight: bold;
-    background: #9BB3EA;
-    border-top-left-radius: 0.5em;
-    border-top-right-radius: 0.5em;
 }
 
-.item-published {
+.kind {
     position: relative;
     float: right;
-    padding-right: 0.5em;
-    padding-left: 0.5em;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
+    padding: 1em;
+    background: #DDDDDD;
+    bottom-left-radius: 0.5em;
+    border-bottom: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom-left-radius: 0.5em;
+}
+
+.arXiv-item .kind {
+    color: #630101;
+}
+
+.article-item .kind {
+    color: #435E57;
 }
 
 .item .item-date {
@@ -58,6 +62,10 @@
     font-weight: normal;
 }
 
+.item .journal {
+    padding: 1em;
+}
+
 .comments h3 {
     padding-top: 1.5em;
     font-size: 1.4em;
@@ -77,5 +85,5 @@
 }
 
 .edit_link a {
-    color: #A6771A;
+    color: #A67739;
 }
