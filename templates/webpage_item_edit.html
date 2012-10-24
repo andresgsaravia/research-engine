@@ -1,0 +1,48 @@
+<form method="post">
+  <table>
+
+    <tr>
+      <td class="label">
+	Link:
+      </td>
+      <td>
+	{{item.item_id | safe}}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Title:
+      </td>
+      <td>
+	<input type="text" name="title" value="{{item.title}}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Authors:
+	<br/><div class="comment">Separated by semicolons</div>
+      </td>
+      <td>
+	<input type="text" name="authors_string" value="{{authors_string}}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Summary:
+      </td>
+      <td>
+	<textarea name="summary">{{item.summary}}</textarea>
+      </td>
+    </tr>
+
+  </table>
+
+  <div class="update_button">
+    <form method="post" action="/library/item/edit/{{item.key()}}">
+      <input type="submit" value="Update" />
+    </form>
+  </div>
+</form>

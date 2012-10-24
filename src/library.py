@@ -92,11 +92,18 @@ class WebPage(db.Model):
     summary = db.TextProperty(required = False)
 
     def full_render(self):
-        pass
+        return render_str("webpage_item_full.html", item = self)
     def short_render(self):
-        pass
+        authors_string = self.authors[0]
+        if len(self.authors) > 1:
+            authors_string += "<em> et al.</em>"
+        return render_str("webpage_item_short.html", item = self, authors_string = authors_string)
     def edit_render(self):
-        pass
+        authors_string = ''
+        for author in self.authors:
+            authors_string += (author + "; ")
+        authors_string = authors_string[:-2]
+        return render_str("webpage_item_edit.html", item = self, authors_string = authors_string)
 
 
 # This is user-specific. Each of these items should have as parent the current user.
@@ -120,11 +127,13 @@ def nice_bs(string):
     "Replaces \n with whitespace and removes leading and trailing whitespace."
     return string.replace("\n", " ").lstrip().rstrip()
 
+
 def try_get_nodeValue(tree, node_name):
     try:
         return tree.getElementsByTagName(node_name)[0].childNodes[0].nodeValue
     except:
         return None
+
 
 def arXiv_metadata(arXiv_id):
     arXiv_id = arXiv_id.split('v')[0]     # For now we remove the version from the query.
@@ -165,6 +174,14 @@ def CrossRef_metadata(doi):
     return params
 
 
+def WebPage_metadata(link):
+    page = urllib2.urlopen(link).read().replace("\n", "")
+    params = {}
+    params["item_id"] = link
+    params["title"] = page[page.find("<title>") + 7 : page.find("</title>")].encode('us-ascii','xmlcharrefreplace')
+    return params
+
+
 # For the add_new_X functions, X should match the database's name. They must return the item just added.
 def add_new_arXiv(identifier):
     params = arXiv_metadata(identifier)
@@ -187,7 +204,11 @@ def add_new_Software(identifier):
 
 
 def add_new_WebPage(identifier):
-    pass
+    params = WebPage_metadata(identifier)
+    new = WebPage(**params)
+    logging.debug("DB WRITE: Adding a new WebPage with link :1", identifier)
+    new.put()
+    return new
 
 
 def get_add_knowledge_item(species, identifier):
@@ -301,13 +322,13 @@ class New(GenericPage):
         if have_error:
             self.render("new_knowledge.html", **params)
         else:
-            try:
+#            try:
                 item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
                 add_to_library(username, item)
                 self.redirect("/library/item/%s" % str(item.key()))
-            except:
-                params['error'] = "Could not retrieve " + species
-                self.render("new_knowledge.html", **params)
+#            except:
+#                params['error'] = "Could not retrieve " + species
+#                self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
@@ -418,8 +439,16 @@ class Edit(GenericPage):
                 pass
 
             elif kind == "WebPage":
-                pass
-
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get('authors_string')
+                params["summary"] = self.request.get('summary')
+                if params['title']: item.title = nice_bs(params['title'])
+                if params["authors_string"]: 
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(nice_bs(author))
+                    if authors: item.authors = authors
+                if params['summary']: item.summary = nice_bs(params['summary'])
             else:
                 logging.error("Wrong knowledge-item species: %s" % species)
                 assert False
