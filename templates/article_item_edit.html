@@ -3,7 +3,7 @@
 
     <tr>
       <td class="label">
-	arXiv ID:
+	DOI:
       </td>
       <td>
 	{{item.item_id}}
@@ -17,6 +17,9 @@
       <td>
 	<input type="text" name="title" value="{{item.title}}" />
       </td>
+      <td class="error">
+	{{title_error}}
+      </td>
     </tr>
 
     <tr>
@@ -27,15 +30,44 @@
       <td>
 	<input type="text" name="authors_string" value="{{authors_string}}" />
       </td>
+      <td class="error">
+	{{authors_error}}
+      </td>
     </tr>
 
     <tr>
       <td class="label">
-	Date:
-	<br/><div class="comment">YYYY-MM-DD</div>
+	Year:
       </td>
       <td>
-	<input type="text" name="date" value="{{date_string}}" />
+	<input type="text" name="year" value="{{item.year}}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Issue:
+      </td>
+      <td>
+	<input type="text" name="issue" value="{{item.issue}}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Volume:
+      </td>
+      <td>
+	<input type="text" name="volume" value="{{item.volume}}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+	Page:
+      </td>
+      <td>
+	<input type="text" name="page" value="{{item.page}}" />
       </td>
     </tr>
 

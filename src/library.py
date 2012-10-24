@@ -109,6 +109,10 @@ class Reviews(db.Model):
 
 ## Helper functions ##
 
+def nice_bs(string):
+    "Replaces \n with whitespace and removes leading and trailing whitespace."
+    return string.replace("\n", " ").lstrip().rstrip()
+
 def try_get_nodeValue(tree, node_name):
     try:
         return tree.getElementsByTagName(node_name)[0].childNodes[0].nodeValue
@@ -343,38 +347,72 @@ class Edit(GenericPage):
         else:
             kind = item.kind()
             have_error = False
+            params["error"] = ''
+
             if kind == "arXiv":
                 params["title"] = self.request.get('title')
                 params["authors_string"] = self.request.get("authors_string")
                 params["date"] = self.request.get("date")
                 params["abstract"]= self.request.get("abstract")
                 params["link"] = self.request.get("link")
-                params["error"] = ''
-                if params["title"]: item.title = params["title"].lstrip().rstrip()
+                if params["title"]: item.title = nice_bs(params["title"])
                 if params["authors_string"]:
                     authors = []
                     for author in params["authors_string"].split(";"):
-                        authors.append(author.rstrip().lstrip())
+                        authors.append(nice_bs(author))
                     if authors: item.authors = authors
                 if params["date"]:
                     try:
-                        item.date = datetime.datetime.strptime(params["date"].lstrip().rstrip(), "%Y-%m-%d")
+                        item.date = datetime.datetime.strptime(nice_bs(params["date"]), "%Y-%m-%d")
                     except ValueError:
                         have_error = True
                         params["error"] += "Please check the date is correct. "
-                if params["abstract"]: item.abstract = params["abstract"].lstrip().rstrip()
+                if params["abstract"]: item.abstract = nice_bs(params["abstract"])
                 if params["link"]: 
                     try:
-                        item.link = params["link"].lstrip().rstrip()
+                        item.link = nice_bs(params["link"])
                     except db.BadValueError:
                         have_error = True
                         params["error"] += "Please check the Link value is a valid URL. "
+
             elif kind == "PublishedArticles":
-                pass
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get("authors_string")
+                params["year"] = self.request.get("year")
+                params["issue"] = self.request.get("issue")
+                params["volume"] = self.request.get("volume")
+                params["page"] = self.request.get("page")
+                params["abstract"] = self.request.get("abstract")
+                params["link"] = self.request.get("link")
+                if params["title"]: item.title = nice_bs(params["title"])
+                if params["authors_string"]: 
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(nice_bs(author))
+                    if authors: item.authors = authors
+                if params["year"]: 
+                    try:
+                        item.year = int(nice_bs(params["year"]))
+                    except ValueError:
+                        have_error = True
+                        params["error"] += "Please write Year as a single positive integer."
+                if params["issue"]: item.issue = nice_bs(params["issue"])
+                if params["volume"]: item.volume = nice_bs(params["volume"])
+                if params["page"]: item.page = nice_bs(params["page"])
+                if params["abstract"]: item.abstract = nice_bs(params["abstract"])
+                if params["link"]: 
+                    try:
+                        item.link = nice_bs(params["link"])
+                    except db.BadValueError:
+                        have_error = True
+                        params["error"] += "Please check the link value is a valid URL. "
+
             elif kind == "Software":
                 pass
+
             elif kind == "WebPage":
                 pass
+
             else:
                 logging.error("Wrong knowledge-item species: %s" % species)
                 assert False
