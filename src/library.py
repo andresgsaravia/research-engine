@@ -52,7 +52,7 @@ class PublishedArticles(db.Model):
     page = db.StringProperty(required = False)
     # Article
     title = db.StringProperty(required = False)         # Some CrossRef records are mising titles... WTF!
-    authors = db.StringListProperty(required = True)
+    authors = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
     abstract = db.TextProperty(required = False)        # Crossref doesn't provide this. Maybe we can fetch it in some other way.
     link = db.LinkProperty(required = True)
 
@@ -73,6 +73,10 @@ class PublishedArticles(db.Model):
 
 class Software(db.Model):
     item_id = db.StringProperty(required = True)
+    authors = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
+    lic = db.StringProperty(required = False)           # License
+    description = db.TextProperty(required = False)
+    link = db.LinkProperty(required = False)
 
     def full_render(self):
         pass
@@ -82,7 +86,10 @@ class Software(db.Model):
         pass
 
 class WebPage(db.Model):
-    item_id = db.StringProperty(required = True)
+    item_id = db.StringProperty(required = True)        # Link to webpage
+    title = db.StringProperty(required = False)
+    authors = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
+    summary = db.TextProperty(required = False)
 
     def full_render(self):
         pass
