@@ -93,16 +93,21 @@ a:hover {
 }
 
 .menu li {
-    position: relative;
     list-style: none;
+}
+
+.menu > li {
+    position: relative;
     float: left;
     display: block;
     height: 40px;
+    border-right: 1px solid #808080;
 }
 
-.menu li:last-child {
+.menu > li:last-child {
     border-right: none;
     float: right;
+    border-left: 1px solid #808080;
 }
 
 .menu li a {
@@ -112,11 +117,9 @@ a:hover {
     line-height: 28px;
     text-decoration: none;
 
-    border-right: 1px solid #808080;
-
     font-family: Helvetica, Arial, sans-serif;
-    font-weight: normal;
-    font-size:13px;
+    font-weight: bold;
+    font-size: 0.8em;
 
     color: #444444;
 
@@ -130,13 +133,12 @@ a:hover {
     border-left: none;
 }
 
-.menu li:last-child a {
-    border-right: none;
-    border-left: 1px solid #808080;
+.menu li:hover {
+    background: #537AD5;
 }
 
 .menu li:hover > a {
-    color: #3A77A6;
+    color: white;
 }
 
 .menu ul {
