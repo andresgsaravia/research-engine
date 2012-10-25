@@ -77,6 +77,10 @@
     color: #630101;
 }
 
+.webpage-item .item-published a {
+    color: #636363;
+}
+
 .item .delete-button {
     position: relative;
     float: right;

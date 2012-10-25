@@ -152,7 +152,7 @@ def arXiv_metadata(arXiv_id):
     return params
 
 def CrossRef_metadata(doi):
-    tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", ""))
+    tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", " "))
     params = {}
     params["item_id"] = doi
     # metadata is sometimes missing so I use try-except to fetch it.
@@ -178,7 +178,7 @@ def WebPage_metadata(link):
     page = urllib2.urlopen(link).read().replace("\n", "")
     params = {}
     params["item_id"] = link
-    params["title"] = page[page.find("<title>") + 7 : page.find("</title>")].encode('us-ascii','xmlcharrefreplace')
+    params["title"] = page[page.find("<title>") + 7 : page.find("</title>")].decode('ascii','ignore')
     return params
 
 

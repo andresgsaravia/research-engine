@@ -34,6 +34,10 @@
     color: #435E57;
 }
 
+.webpage-item .kind {
+    color: #636363;
+}
+
 .item .item-date {
     padding: 1em;
 }
