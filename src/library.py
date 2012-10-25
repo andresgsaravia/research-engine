@@ -10,7 +10,6 @@ ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}(v[0-9]+)?$'
 CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=crossref%40andresgsaravia.com.mx&format=unixref&id="
 DOI_RE = r''
 
-SOFTWARE_RE = r''
 WEBPAGE_RE = r''
 
 
@@ -71,20 +70,6 @@ class PublishedArticles(db.Model):
         return render_str("article_item_edit.html", item = self, authors_string = authors_string)
 
 
-class Software(db.Model):
-    item_id = db.StringProperty(required = True)
-    authors = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
-    lic = db.StringProperty(required = False)           # License
-    description = db.TextProperty(required = False)
-    link = db.LinkProperty(required = False)
-
-    def full_render(self):
-        pass
-    def short_render(self):
-        pass
-    def edit_render(self):
-        pass
-
 class WebPage(db.Model):
     item_id = db.StringProperty(required = True)        # Link to webpage
     title = db.StringProperty(required = False)
@@ -113,7 +98,7 @@ class LibraryItems(db.Model):
     tags = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
 
 
-# Each review should have as parent one of arXiv, PublishesArticles, Software or WebPage
+# Each review should have as parent one of arXiv, PublishesArticles or WebPage
 class Reviews(db.Model):
     author = db.ReferenceProperty(required = True)
     review = db.TextProperty(required = True)
@@ -199,10 +184,6 @@ def add_new_PublishedArticles(identifier):
     return new
 
 
-def add_new_Software(identifier):
-    pass
-
-
 def add_new_WebPage(identifier):
     params = WebPage_metadata(identifier)
     new = WebPage(**params)
@@ -215,7 +196,6 @@ def get_add_knowledge_item(species, identifier):
     """Returns a knowledge-item of the given species and identifier. If it doesn't exist, create it."""
     if species == "arXiv": db_name = "arXiv"
     elif species == "article": db_name = "PublishedArticles"
-    elif species == "software": db_name = "Software"
     elif species == "webpage": db_name = "WebPage"
     else:
         logging.error("Wrong knowledge-item species: %s" % species)
@@ -280,11 +260,6 @@ class BlogPosts(GenericPage):
         self.write("Your blog posts in the knowledge database.")
 
 
-class Software(GenericPage):
-    def get(self):
-        self.write("Your software in the knowledge database.")
-
-
 class New(GenericPage):
     def get(self):
         username = self.get_username()
@@ -306,10 +281,6 @@ class New(GenericPage):
             if not re.match(DOI_RE, identifier):
                 params['error'] = "That's not a valid DOI."
                 have_error = True
-        elif species == "software":
-            if not re.match(SOFTWARE_RE, identifier):
-                params['error'] = "That's not a valid url."
-                have_error = True
         elif species == "webpage":
             if not re.match(WEBPAGE_RE, identifier):
                 params['error'] = "That's not a valid url."
@@ -322,13 +293,13 @@ class New(GenericPage):
         if have_error:
             self.render("new_knowledge.html", **params)
         else:
-#            try:
+            try:
                 item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
                 add_to_library(username, item)
                 self.redirect("/library/item/%s" % str(item.key()))
-#            except:
-#                params['error'] = "Could not retrieve " + species
-#                self.render("new_knowledge.html", **params)
+            except:
+                params['error'] = "Could not retrieve " + species
+                self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
@@ -434,9 +405,6 @@ class Edit(GenericPage):
                     except db.BadValueError:
                         have_error = True
                         params["error"] += "Please check the link value is a valid URL. "
-
-            elif kind == "Software":
-                pass
 
             elif kind == "WebPage":
                 params["title"] = self.request.get('title')
