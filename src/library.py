@@ -1,6 +1,7 @@
 # Your knowledge database
 
 from generic import *
+from google.appengine.ext.db.metadata import Kind
 import urllib2, datetime
 import xml.dom.minidom as minidom
 
@@ -231,6 +232,7 @@ class MainPage(GenericPage):
         else:
             logging.debug("DB READ: RegisteredUsers to get a user's library")
             user = RegisteredUsers.all().filter("username =", username).get()
+            assert user
             logging.debug("DB READ: Fetching a user's library items.")
             items = LibraryItems.all().ancestor(user.key()).order("-added")
             self.render("library_main.html", items = items)
@@ -249,15 +251,6 @@ class MainPage(GenericPage):
         else:
             add_to_library(username, item)
         self.redirect("/library")
-
-class Articles(GenericPage):
-    def get(self):
-        self.write("Your articles in the knowledge database.")
-
-
-class BlogPosts(GenericPage):
-    def get(self):
-        self.write("Your blog posts in the knowledge database.")
 
 
 class New(GenericPage):

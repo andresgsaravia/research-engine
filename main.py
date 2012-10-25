@@ -13,8 +13,6 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/settings', users.SettingsPage),
                                # Library module
                                ('/library', library.MainPage),
-                               ('/library/articles', library.Articles),
-                               ('/library/blog_posts', library.BlogPosts),
                                ('/library/new', library.New),
                                ('/library/item/edit/(.+)', library.Edit),
                                ('/library/item/(.+)', library.Item),
