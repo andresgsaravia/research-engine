@@ -16,9 +16,13 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/library/new', library.New),
                                ('/library/item/edit/(.+)', library.Edit),
                                ('/library/item/(.+)', library.Item),
+                               # Projects module
+                               ('/projects', projects.MainPage),
+                               ('/projects/new', projects.NewProjectPage),
+                               ('/projects/project/(.+)', projects.ProjectPage),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),
-                               ('/notebook', frontend.UnderConstructionPage),
+                               ('/notebooks', frontend.UnderConstructionPage),
                                ('/classroom', frontend.UnderConstructionPage),
                                ('/collaborations', frontend.UnderConstructionPage),
                                # Tests
