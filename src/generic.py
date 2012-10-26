@@ -60,16 +60,20 @@ class GenericPage(webapp2.RequestHandler):
             return val
         return None
 
-    def get_username(self):
+    def get_user(self):
         cookie = self.request.cookies.get("username")
-        if not cookie:
-            return None
+        if not cookie: return None
         cookie_username = cookie.split("|")[0]
-        logging.debug("DB READ: Checking if user exists and retriving its validated username.")
-        u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", cookie_username).get()
-        if not u:
-            return None
-        return get_secure_val(cookie, u.salt)
+        logging.debug("DB READ: Checking if users exists from GeneriPage's get_user method.")
+        u = RegisteredUsers.all().filter("username =", cookie_username).get()
+        if not u: return None
+        if not get_secure_val(cookie, u.salt): return None
+        return u
+
+    def get_username(self):
+        u = self.get_user()
+        if not u: return None
+        return u.username
 
     def set_cookie(self, name, value, salt, path = "/"):
         cookie = "%s=%s; Path=%s" % (name, make_secure_val(value, salt), path)
