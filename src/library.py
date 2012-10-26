@@ -13,8 +13,9 @@ DOI_RE = r''
 
 WEBPAGE_RE = r''
 
-
-## Data Models ##    
+###########################
+##   Datastore Objects   ##    
+###########################
 
 # Specific knowledge items.
 class arXiv(db.Model):
@@ -107,7 +108,9 @@ class Reviews(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 
-## Helper functions ##
+##########################
+##   Helper functions   ##
+##########################
 
 def nice_bs(string):
     "Replaces \n with whitespace and removes leading and trailing whitespace."
@@ -207,41 +210,36 @@ def get_add_knowledge_item(species, identifier):
     return eval('add_new_%s("%s")' % (db_name, identifier))
     
 
-def add_to_library(username, item):
-    logging.debug("DB READ: Looking for :1 to add an item to its library.", username)
-    user = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", username).get()
+def add_to_library(user, item):
     if not user:
-        logging.error("Attempted to fetch a non existing user with username :1 while adding an item to its library.", username)
+        logging.error("Attempted to fetch a non existing user while adding an item to its library.")
         return None
-    logging.debug("DB READ: Looking for an item in :1's library", username)
+    logging.debug("DB READ: Looking for an item in a user's library")
     library_item = LibraryItems.all().ancestor(user.key()).filter("item =", item.key()).get()
     if library_item: return None
     library_item = LibraryItems(item = item.key(), tags = [], parent = user)
-    logging.debug("DB WRITE: Adding an item to :1's library", username)
+    logging.debug("DB WRITE: Adding an item to a user's library")
     library_item.put()
     return None
     
 
-## Handlers ##
+#####################
+##  Web Handlers   ##
+#####################
 
 class MainPage(GenericPage):
     def get(self):
-        username = self.get_username()
-        if not username: 
+        user = self.get_user()
+        if not user: 
             self.redirect("/login")
         else:
-            logging.debug("DB READ: RegisteredUsers to get a user's library")
-            user = RegisteredUsers.all().filter("username =", username).get()
-            assert user
             logging.debug("DB READ: Fetching a user's library items.")
             items = LibraryItems.all().ancestor(user.key()).order("-added")
             self.render("library_main.html", items = items)
 
     def post(self):
-        username = self.get_username()
+        user = self.get_user()
         item_key = self.request.get("item_key")
-        logging.debug("DB READ: Getting user from username.")
-        user = RegisteredUsers.all().filter("username =", username).get()
         logging.debug("DB READ: Getting knowledge item from its key.")
         item = db.get(item_key)
         logging.debug("DB READ: Getting LibraryItem.")
@@ -259,8 +257,8 @@ class New(GenericPage):
         self.render("new_knowledge.html")
 
     def post(self):
-        username = self.get_username()
-        if not username: self.redirect("/login")
+        user = self.get_user()
+        if not user: self.redirect("/login")
         species = self.request.get('species')
         identifier = self.request.get('identifier')
         have_error = False
@@ -286,20 +284,18 @@ class New(GenericPage):
         if have_error:
             self.render("new_knowledge.html", **params)
         else:
-            try:
+#            try:
                 item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
-                add_to_library(username, item)
+                add_to_library(user, item)
                 self.redirect("/library/item/%s" % str(item.key()))
-            except:
-                params['error'] = "Could not retrieve " + species
-                self.render("new_knowledge.html", **params)
+#            except:
+#                params['error'] = "Could not retrieve " + species
+#                self.render("new_knowledge.html", **params)
 
 
 class Item(GenericPage):
     def get(self, item_key):
-        username = self.get_username()
-        logging.debug("DB READ: Getting user from username.")
-        user = RegisteredUsers.all().filter("username =", username).get()
+        user = self.get_user()
         params = {}
         params["item_key"] = item_key
         logging.debug("DB READ: Querying for item with key :1", item_key)
