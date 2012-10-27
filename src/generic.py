@@ -27,7 +27,7 @@ class RegisteredUsers(db.Model):
     email = db.EmailProperty(required = False)
     about_me = db.TextProperty(required = False)
     google_userid = db.StringProperty(required = False)
-
+    my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
 
 # Hashing
 
