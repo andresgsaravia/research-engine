@@ -1,4 +1,9 @@
-<div class="article-full">
+<div class="project-full">
+
+  <div class="dates">
+    <b>Last updated: </b>{{project.last_updated.year}}-{{project.last_updated.month}}-{{project.last_updated.day}}<br/>
+    <b>Started: </b>{{project.started.year}}-{{project.started.month}}-{{project.started.day}}
+  </div>
 
   <div class="name">
     {{project.name}}
@@ -14,11 +19,6 @@
         <li>{{author.username}}</li>
       {% endfor %}
     </ul>
-  </div>
-
-  <div class="dates">
-    <b>Last updated: </b>{{project.last_updated.year}}-{{project.last_updated.month}}-{{project.last_updated.day}}
-    <b>Started: </b>{{project.started.year}}-{{project.started.month}}-{{project.started.day}}
   </div>
 
 </div>

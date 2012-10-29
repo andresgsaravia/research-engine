@@ -2,22 +2,29 @@
 
 
 {% block head %}
-    <link href="/css/project.css" rel="stylesheet" type="text/css" />
+    <link href="/css/projects_main.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block content %}
 
-<div class="project">
-  {{project.full_render() | safe}}
-</div>
+{{project.full_render() | safe}}
 
 <div class="edit-link">
   <a href="/projects/project/edit/{{project_key}}">Edit information</a>
 </div>
 
+<div class="return-link">
+  <br/><a href="/projects">&larr; Return to your projects list.</a>
+</div>
+
 <div class="activity">
   <h3>Latest Activity</h3>
+</div>
+
+<div class="resources">
+  <h3>Resources</h3>
+  <a href="/projects/project/new_resource/{{project_key}}">New resource</a>
 </div>
 
 {% endblock %}

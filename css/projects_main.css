@@ -36,6 +36,67 @@
     list-style: none;
 }
 
+/* for a single project page */
+
+.project-full {
+    border: 1px solid black;
+    background: white;
+}
+
+.project-full .dates {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    color: #555555;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.project-full .name {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 1em;
+}
+
+.project-full .description {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.project-full .authors {
+    padding: 1em;
+}
+
+.project-full .authors li {
+    list-style: none;
+}
+
+.edit-link {
+    position: relative;
+    float: right;
+    padding-top: 0.8em;
+}
+
+.activity {
+    width: 48%;
+    position: relative;
+    float: right;
+    margin-top: 1.5em;
+    padding: 0.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 15em;
+}
+
+.resources {
+    width: 48%;
+    margin-top: 1.5em;
+    padding: 0.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 15em;
+}
+
 /* for the New Poject page */
 table {
     width: 30em;
