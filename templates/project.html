@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/project.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<div class="project">
+  {{project.full_render() | safe}}
+</div>
+
+<div class="edit-link">
+  <a href="/projects/project/edit/{{project_key}}">Edit information</a>
+</div>
+
+<div class="activity">
+  <h3>Latest Activity</h3>
+</div>
+
+{% endblock %}

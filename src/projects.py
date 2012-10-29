@@ -43,6 +43,9 @@ class Projects(db.Model):
     def short_render(self):
         return render_str("project_short.html", project = self)
 
+    def full_render(self):
+        return render_str("project_full.html", project = self)
+
 # Child of Projects
 class ProjectEntries(db.Model):
     title = db.StringProperty(required = True)
@@ -108,4 +111,11 @@ class NewProjectPage(GenericPage):
 
 class ProjectPage(GenericPage):
     def get(self, project_key):
-        self.write(project_key)
+        logging.debug("DB READ: Fetching a project from its key to render a full project page.")
+        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
+        self.render("project.html", project = project, project_key = project_key)
+
+
+class EditProjectPage(GenericPage):
+    def get(self, project_key):
+        self.render("under_construction.html")
