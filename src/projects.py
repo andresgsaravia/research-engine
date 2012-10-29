@@ -119,3 +119,8 @@ class ProjectPage(GenericPage):
 class EditProjectPage(GenericPage):
     def get(self, project_key):
         self.render("under_construction.html")
+
+
+class NewResourcePage(GenericPage):
+    def get(self, project_key):
+        self.render("under_construction.html")
