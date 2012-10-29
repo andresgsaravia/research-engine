@@ -1,5 +1,42 @@
 /* Related to the projects tab */
 
+.project {
+    border: 1px solid black;
+    background: white;
+}
+
+.project + .project {
+    margin-top: 1em;
+}
+
+.project .date {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    color: #777777;
+}
+
+.project .name {
+    padding: 0.5em;
+}
+
+.project .short-description {
+    padding: 0.5em;
+}
+
+.project .authors {
+    padding-left: 0.5em;
+    font-size: 0.9em;
+    color: #555555;
+}
+    
+.project li {
+    list-style: none;
+}
+
+/* for the New Poject page */
 table {
     width: 30em;
 }

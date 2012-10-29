@@ -1,13 +1,13 @@
+<div class="date">
+  Last updated: {{project.last_updated.year}}-{{project.last_updated.month}}-{{project.last_updated.day}}
+</div>
+
 <div class="name">
   <a href="/projects/project/{{project.key()}}">{{project.name}}</a>
 </div>
 
 <div class="short-description">
-  {{project.description[0:60]}}
-</div>
-
-<div class="date">
-  Last updated: {{project.last_updated.year}}-{{project.last_updated.month}}-{{project.last_updated.day}}
+  {{project.short_description()}}
 </div>
 
 <div class="authors">

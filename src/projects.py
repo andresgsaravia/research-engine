@@ -3,6 +3,7 @@
 
 from generic import *
 
+SHORT_DESCRIPTION_LENGTH = 150
 
 ##########################
 ##   Helper Functions   ##
@@ -32,6 +33,12 @@ class Projects(db.Model):
                 logging.warning("Project with key (%s) contains a broken reference to author (%s)" 
                                 % (self.key(), author_key))
         return authors_list
+
+    def short_description(self):
+        if len(self.description) < SHORT_DESCRIPTION_LENGTH:
+            return self.description
+        else:
+            return self.description[0:147] + "..."
 
     def short_render(self):
         return render_str("project_short.html", project = self)
@@ -96,7 +103,7 @@ class NewProjectPage(GenericPage):
             user.my_projects.append(project.key())
             logging.debug("DB WRITE: Appending a new project to my_projects of a RegisteredUsers entry.")
             user.put()
-            self.redirect("/projects/project/%s", project.key())
+            self.redirect("/projects/project/%s" % project.key())
         
 
 class ProjectPage(GenericPage):

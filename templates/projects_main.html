@@ -10,11 +10,12 @@
 
 <h2>Your Projects</h2>
 
+<div class="projects-wrapper">
 {% for project in projects %}
     <div class="project">
       {{project.short_render() | safe }}
     </div>
 
 {% endfor %}
-
+</div>
 {% endblock %}
