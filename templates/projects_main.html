@@ -10,4 +10,11 @@
 
 <h2>Your Projects</h2>
 
+{% for project in projects %}
+    <div class="project">
+      {{project.short_render() | safe }}
+    </div>
+
+{% endfor %}
+
 {% endblock %}

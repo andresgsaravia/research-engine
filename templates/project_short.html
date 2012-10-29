@@ -1,0 +1,19 @@
+<div class="name">
+  <a href="/projects/project/{{project.key()}}">{{project.name}}</a>
+</div>
+
+<div class="short-description">
+  {{project.description[0:60]}}
+</div>
+
+<div class="date">
+  Last updated: {{project.last_updated.year}}-{{project.last_updated.month}}-{{project.last_updated.day}}
+</div>
+
+<div class="authors">
+  <ul>
+    {% for author in project.list_of_authors() %}
+    <li> {{author.username}}</li>
+    {% endfor %}
+  </ul>
+</div>

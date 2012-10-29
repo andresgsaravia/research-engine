@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/projects_main.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>New Project</h2>
+
+<form method="post">
+  <table>
+    <tr>
+      <td>
+	Project name:
+      </td>
+      <td>
+	<input type="text" name="p_name" value="{{p_name}}"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	Description:
+      </td>
+      <td>
+	<textarea name="p_description">{{p_description}}</textarea>
+      </td>
+    </tr>
+  </table>
+
+  <div class="submit-button">
+    <input type="submit" value="Create new project"/>
+  </div>
+
+</form>
+
+<br/><div class="error">{{error}}</div>
+
+{% endblock %}
