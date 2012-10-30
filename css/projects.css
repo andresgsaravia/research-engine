@@ -133,3 +133,14 @@ textarea {
     padding-left: 10em;
     padding-top: 1.5em;
 }
+
+/* for the edit project page */
+
+
+.project-edit form {
+    margin-bottom: 2em;
+}
+
+.project-edit .error {
+    margin-top: 1em;
+}

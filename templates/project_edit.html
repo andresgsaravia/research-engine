@@ -7,7 +7,7 @@
 {% block content %}
 <div class="project-edit">
 
-  <h3>Edit project</h3>
+  <h2>Edit project</h2>
 
   <form method="post">
 
@@ -39,11 +39,12 @@
 
   </form>
 
+<a href="/projects/project/{{project.key()}}">&larr; Return without saving.</a>
+
 <div class="error">
   {{error}}
 </div>
 
-<a href="/projects/project/{{project.key()}}">&larr; Return without saving.</a>
 </div>
 
 {% endblock %}
