@@ -87,7 +87,7 @@ class NewProjectPage(GenericPage):
         if not user: 
             self.redirect("/login")
             return
-        self.render("new_project.html")
+        self.render("project_new.html")
 
     def post(self):
         user = self.get_user()
@@ -106,7 +106,7 @@ class NewProjectPage(GenericPage):
             have_error = True
             params["error"] += "Please provide a brief description of your new project. "
         if have_error:
-            self.render("new_project.html", **params)
+            self.render("project_new.html", **params)
         else:
             project = Projects(name = params["p_name"], description = params["p_description"], authors = [user.key()])
             logging.debug("DB WRITE: Adding a new project to Projects.")
