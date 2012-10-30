@@ -21,6 +21,9 @@ class Notebooks(db.Model):
     started = db.DateTimeProperty(auto_now_add = True)
     last_updated = db.DateTimeProperty(auto_now = True)
 
+    def full_render(self):
+        return self.key()
+
 
 # Each NotebookNote should have as parent one Notebook. Comments to notes are children.
 class NotebookNotes(db.Model):
@@ -71,10 +74,13 @@ class NewNotebookPage(GenericPage):
                 error += "You already have a notebook with that name, please choose another name."
                 self.render("notebooks_new.html", n_name = n_name, n_description = n_description, error = error)
             else:
-                new = Notebooks(owner = user.key(), name = n_name, description = n_description)
+                new_notebook = Notebooks(owner = user.key(), name = n_name, description = n_description)
                 logging.debug("DB WRITE: Creating a new notebook.")
-                new.put()
-                self.redirect("/notebooks/notebook/%s" % new.key())
+                new_notebook.put()
+                user.my_notebooks.append(new_notebook.key())
+                logging.debug("DB WRITE: Appending a notebook to a user's my_notebooks list.")
+                user.put()
+                self.redirect("/notebooks/notebook/%s" % new_notebook.key())
 
 
 
@@ -88,7 +94,9 @@ class NewEntryPage(GenericPage):
         self.render("under_construction.html")
 
 
+# Needs to handle the case in which notebook_key is invalid
 class NotebookPage(GenericPage):
     def get(self, notebook_key):
-        self.render("under_construction.html")
-
+        user = self.get_user_or_login()
+        notebook = self.get_item_from_key(notebook_key)
+        self.render("notebook.html", notebook = notebook, notes = [])

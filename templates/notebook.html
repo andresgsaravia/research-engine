@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/notebooks.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Notebook: {{notebook.name}}</h2>
+
+{{notebook.full_render()}}
+
+<div class="edit-link">
+  <a href="/notebooks/notebook/edit/{{notebook.key()}}">Edit notebook description</a>
+</div>
+
+<div class="new-entry-link">
+  <a href="/notebook/notebook/new_entry/{{notebook.key()}}">New note</a>
+</div>
+
+<div class="notes">
+  {% for note in notes %}
+    {{note.short_render()}}
+  {% endfor %}
+</div>
+
+{% endblock %}
