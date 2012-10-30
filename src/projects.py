@@ -77,6 +77,7 @@ class MainPage(GenericPage):
             logging.debug("DB READ: Fetching a project from a user's my_projects list.")
             project = db.Query().filter("__key__ =", project_key).get()
             if project: projects.append(project)
+        projects.sort(key=lambda p: p.last_updated, reverse=True)
         self.render("projects_main.html", user = user, projects = projects)
 
 
