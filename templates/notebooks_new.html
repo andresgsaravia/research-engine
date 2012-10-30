@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/new_something.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>New Notebook</h2>
+
+<form method="post">
+  <table>
+    <tr>
+      <td>
+	Notebook name:
+      </td>
+      <td>
+	<input type="text" name="n_name" value="{{n_name}}"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	Description:
+      </td>
+      <td>
+	<textarea name="n_description">{{n_description}}</textarea>
+      </td>
+    </tr>
+  </table>
+
+  <div class="submit-button">
+    <input type="submit" value="Create new notebook"/>
+  </div>
+
+</form>
+
+<br/><div class="error">{{error}}</div>
+
+<a href="/notebooks">&larr; Return to your notebooks page.</a>
+
+{% endblock %}

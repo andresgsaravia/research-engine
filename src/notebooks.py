@@ -47,7 +47,35 @@ class MainPage(GenericPage):
 
 class NewNotebookPage(GenericPage):
     def get(self):
-        self.render("under_construction.html")
+        user = self.get_user_or_login()
+        self.render("notebooks_new.html")
+
+    def post(self):
+        user = self.get_user_or_login()
+        n_name = self.request.get("n_name")
+        n_description = self.request.get("n_description")
+        have_error = False
+        error = ''
+        if not n_name:
+            have_error = True
+            error += "Please provide a name for your new notebook. "
+        if not n_description:
+            have_error = True
+            error += "Please provide a brief decription of your new notebook. "
+        if have_error:
+            self.render("notebooks_new.html", n_name = n_name, n_description = n_description, error = error)
+        else:
+            logging.debug("DB READ: Checking if user has a notebook with a given name to make a new one if not.")
+            nb = Notebooks.all().filter("owner =", user).filter("name =", n_name).get()
+            if nb:
+                error += "You already have a notebook with that name, please choose another name."
+                self.render("notebooks_new.html", n_name = n_name, n_description = n_description, error = error)
+            else:
+                new = Notebooks(owner = user.key(), name = n_name, description = n_description)
+                logging.debug("DB WRITE: Creating a new notebook.")
+                new.put()
+                self.redirect("/notebooks/notebook/%s" % new.key())
+
 
 
 class EditNotebookPage(GenericPage):
