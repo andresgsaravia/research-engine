@@ -76,6 +76,14 @@ class GenericPage(webapp2.RequestHandler):
         if not u: return None
         return u.username
 
+    def get_user_or_login(self):
+        u = self.get_user()
+        if u:
+            return u
+        else:
+            self.redirect("/login")
+            return None
+
     def set_cookie(self, name, value, salt, path = "/"):
         cookie = "%s=%s; Path=%s" % (name, make_secure_val(value, salt), path)
         self.response.headers.add_header('Set-Cookie', str(cookie))
