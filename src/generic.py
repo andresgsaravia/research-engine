@@ -13,22 +13,16 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 
 SALT_LENGTH = 16
 
+
+##########################
+##   Helper Functions   ##
+##########################
+
+
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
-
-# User related stuff.
-
-class RegisteredUsers(db.Model):
-    username = db.StringProperty(required = True)
-    password_hash = db.TextProperty(required = True)
-    salt = db.StringProperty(required = True)
-    email = db.EmailProperty(required = False)
-    about_me = db.TextProperty(required = False)
-    google_userid = db.StringProperty(required = False)
-    my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
-    my_notebooks = db.ListProperty(db.Key)                  # keys to Notebooks (defined in notebooks.py)
 
 # Hashing
 
@@ -49,7 +43,27 @@ def get_secure_val(h, salt):
     return None
 
 
-# Handlers.
+
+###########################
+##   Datastore Objects   ##
+###########################
+
+# User related stuff.
+
+class RegisteredUsers(db.Model):
+    username = db.StringProperty(required = True)
+    password_hash = db.TextProperty(required = True)
+    salt = db.StringProperty(required = True)
+    email = db.EmailProperty(required = False)
+    about_me = db.TextProperty(required = False)
+    google_userid = db.StringProperty(required = False)
+    my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
+    my_notebooks = db.ListProperty(db.Key)                  # keys to Notebooks (defined in notebooks.py)
+
+
+######################
+##   Web Handlers   ##
+######################
 
 class GenericPage(webapp2.RequestHandler):
 
@@ -83,6 +97,10 @@ class GenericPage(webapp2.RequestHandler):
         else:
             self.redirect("/login")
             return None
+
+    def get_item_from_key(self, item_key):
+        logging.debug("DB READ: Handler %s requests an item using its key." % self.__class__.__name__)
+        return db.Query().filter("__key__ =", db.Key(item_key)).get()
 
     def set_cookie(self, name, value, salt, path = "/"):
         cookie = "%s=%s; Path=%s" % (name, make_secure_val(value, salt), path)
