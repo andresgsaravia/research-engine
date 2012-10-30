@@ -116,17 +116,13 @@ class NewProjectPage(GenericPage):
             user.put()
             self.redirect("/projects/project/%s" % project.key())
         
-
+# Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
         logging.debug("DB READ: Fetching a project from its key to render a full project page.")
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
-        if project:
-            self.render("project.html", project = project, project_key = project_key)
-        else:
-            logging.debug("Attempting to fetch a non-existing project page with key %s" % project_key)
-            self.error(404)
-
+        self.render("project.html", project = project, project_key = project_key)
+        
 
 class EditProjectPage(GenericPage):
     def get(self, project_key):
