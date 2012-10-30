@@ -68,10 +68,7 @@ class ProjectEntries(db.Model):
 
 class MainPage(GenericPage):
     def get(self):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
+        user = self.get_user_or_login()
         projects = []
         for project_key in user.my_projects:
             logging.debug("DB READ: Fetching a project from a user's my_projects list.")
@@ -83,17 +80,11 @@ class MainPage(GenericPage):
 
 class NewProjectPage(GenericPage):
     def get(self):
-        user = self.get_user()
-        if not user: 
-            self.redirect("/login")
-            return
+        user = self.get_user_or_login()
         self.render("project_new.html")
 
     def post(self):
-        user = self.get_user()
-        if not user: 
-            self.redirect("/login")
-            return
+        user = self.get_user_or_login()
         have_error = False
         params = {}
         params["p_name"] = self.request.get("p_name")
@@ -126,10 +117,7 @@ class ProjectPage(GenericPage):
 
 class EditProjectPage(GenericPage):
     def get(self, project_key):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
+        user = self.get_user_or_login()
         logging.debug("DB READ: Fetching a project to edit its information.")
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
         if project:
@@ -142,10 +130,7 @@ class EditProjectPage(GenericPage):
             self.error(404)
 
     def post(self, project_key):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
+        user = self.get_user_or_login()
         logging.debug("DB READ: Fetching a project to edit its information from a submitted form.")
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
         have_error = False
