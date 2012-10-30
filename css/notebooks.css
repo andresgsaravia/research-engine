@@ -1,0 +1,42 @@
+/* Style for the notebooks related pages */
+
+/* For the rendering of a single notebook */
+
+.notebook-full .notebook-details{
+    position: relative;
+    float: right;
+    width: 70%;
+    border: 1px solid black;
+    background: white;
+    width: 70%;
+    margin-left: 2em;
+}
+
+.notebook-full h2 {
+    width: 30%;
+}
+
+.notebook-full h2 a {
+    font-size: 0.5em;
+}
+
+.notebook-full .dates {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    color: #55555;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.notebook-full .description {
+    margin: 0.5em;
+}
+
+.notes-wrapper {
+    padding-top: 2em;
+}
+
+.new-note-link {
+    font-size: 0.8em;
+}

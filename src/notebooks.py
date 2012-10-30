@@ -22,10 +22,16 @@ class Notebooks(db.Model):
     last_updated = db.DateTimeProperty(auto_now = True)
 
     def full_render(self):
-        return self.key()
+        params = {}
+        params["notebook"] = self
+        params["n_description"] = self.description.replace("\n", "<br/>")
+        params["last_note"] = self.last_updated.strftime("%d-%b-%Y")
+        params["started"] = self.started.strftime("%d-%b-%Y")
+        return render_str("notebook_full.html", **params)
 
 
 # Each NotebookNote should have as parent one Notebook. Comments to notes are children.
+# Adding a new comment should cause and update in the parent Notebook's last_updated property.
 class NotebookNotes(db.Model):
     title = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
@@ -89,7 +95,7 @@ class EditNotebookPage(GenericPage):
         self.render("under_construction.html")
 
 
-class NewEntryPage(GenericPage):
+class NewNotePage(GenericPage):
     def get(self, notebook_key):
         self.render("under_construction.html")
 

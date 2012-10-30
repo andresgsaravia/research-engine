@@ -26,7 +26,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/notebooks', notebooks.MainPage),
                                ('/notebooks/new', notebooks.NewNotebookPage),
                                ('/notebooks/notebook/edit/(.+)', notebooks.EditNotebookPage),
-                               ('/notebooks/notebook/new_entry/(.+)', notebooks.NewEntryPage),
+                               ('/notebooks/notebook/new_note/(.+)', notebooks.NewNotePage),
                                ('/notebooks/notebook/(.+)', notebooks.NotebookPage),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),

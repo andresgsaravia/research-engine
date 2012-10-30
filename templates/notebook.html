@@ -8,22 +8,20 @@
 
 {% block content %}
 
-<h2>Notebook: {{notebook.name}}</h2>
+{{notebook.full_render() | safe}}
 
-{{notebook.full_render()}}
+<div class="notes-wrapper">
+  <h3>Notes</h3>
 
-<div class="edit-link">
-  <a href="/notebooks/notebook/edit/{{notebook.key()}}">Edit notebook description</a>
-</div>
+  <div class="new-note-link">
+    <a href="/notebook/notebook/new_note/{{notebook.key()}}">New note</a>
+  </div>
 
-<div class="new-entry-link">
-  <a href="/notebook/notebook/new_entry/{{notebook.key()}}">New note</a>
-</div>
-
-<div class="notes">
-  {% for note in notes %}
-    {{note.short_render()}}
-  {% endfor %}
+  <div class="all-the-notes">
+    {% for note in notes %}
+      {{note.short_render()}}
+    {% endfor %}
+  </div>
 </div>
 
 {% endblock %}
