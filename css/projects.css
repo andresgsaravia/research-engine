@@ -97,6 +97,17 @@
     min-height: 15em;
 }
 
+.edit-link {
+    padding-top: 1em;
+    padding-right: 1em;
+    position: relative;
+    float: right;
+}
+
+.edit-link a {
+    color: #A67739;
+}
+
 /* for the New Poject page */
 table {
     width: 30em;

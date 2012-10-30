@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link href="/css/projects.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+<div class="project-edit">
+
+  <h3>Edit project</h3>
+
+  <form method="post">
+
+    <table>
+
+      <tr>
+	<td class="label">
+	  Project name:
+	</td>
+	<td>
+	  <input type="text" name="project_name" value="{{project.name}}" />
+	</td>
+      </tr>
+
+      <tr>
+	<td class="label">
+	  Description:
+	</td>
+	<td>
+	  <textarea name="description">{{project.description}}</textarea>
+	</td>
+      </tr>
+
+    </table>
+
+    <div class="submit-button">
+      <input type="submit" value="Update" />
+    </div>
+
+  </form>
+
+<div class="error">
+  {{error}}
+</div>
+
+<a href="/projects/project/{{project.key()}}">&larr; Return without saving.</a>
+</div>
+
+{% endblock %}

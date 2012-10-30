@@ -34,6 +34,12 @@ class Projects(db.Model):
                                 % (self.key(), author_key))
         return authors_list
 
+    def user_is_author(self, user):
+        result = False
+        for author_key in self.authors:
+            if user.key() == author_key: result = True
+        return result
+
     def short_description(self):
         if len(self.description) < SHORT_DESCRIPTION_LENGTH:
             return self.description
@@ -113,12 +119,57 @@ class ProjectPage(GenericPage):
     def get(self, project_key):
         logging.debug("DB READ: Fetching a project from its key to render a full project page.")
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
-        self.render("project.html", project = project, project_key = project_key)
+        if project:
+            self.render("project.html", project = project, project_key = project_key)
+        else:
+            logging.debug("Attempting to fetch a non-existing project page with key %s" % project_key)
+            self.error(404)
 
 
 class EditProjectPage(GenericPage):
     def get(self, project_key):
-        self.render("under_construction.html")
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        logging.debug("DB READ: Fetching a project to edit its information.")
+        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
+        if project:
+            if project.user_is_author(user):
+                self.render("project_edit.html", project = project)
+            else:
+                self.redirect("/projects/project/%s" % project_key)
+        else:
+            logging.debug("Attempting to fetch a non-existing edit-project page with key %s" % project_key)
+            self.error(404)
+
+    def post(self, project_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        logging.debug("DB READ: Fetching a project to edit its information from a submitted form.")
+        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
+        have_error = False
+        error = ''
+        if project:
+            if project.user_is_author(user):
+                project_name = self.request.get("project_name")
+                description = self.request.get("description")
+                if not project_name:
+                    have_error = True
+                    error += "You must provide a name for the project. "
+                if not description:
+                    have_error = True
+                    error += "You must provide a description for the project. "
+                if have_error:
+                    self.render("project_edit.html", project = project, error = error)
+                else:
+                    project.name = project_name
+                    project.description = description
+                    logging.debug("DB WRITE: Updating a project's information.")
+                    project.put()
+                    self.redirect("/projects/project/%s" % project.key())
 
 
 class NewResourcePage(GenericPage):
