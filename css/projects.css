@@ -59,8 +59,8 @@
 }
 
 .project-full .description {
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: 5em;
+    padding-right: 5em;
 }
 
 .project-full .authors {
@@ -95,6 +95,13 @@
     border: 1px solid black;
     background: white;
     min-height: 15em;
+}
+
+.resources .new-resource-link {
+    position: relative;
+    float: right;
+    padding-top: 0.2em;
+    padding-right: 0.5em;
 }
 
 .edit-link {
@@ -143,4 +150,12 @@ textarea {
 
 .project-edit .error {
     margin-top: 1em;
+}
+
+.project-edit table {
+    width: 100%;
+}
+
+.project-edit .label {
+    width: 7em;
 }

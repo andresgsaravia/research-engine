@@ -50,7 +50,8 @@ class Projects(db.Model):
         return render_str("project_short.html", project = self)
 
     def full_render(self):
-        return render_str("project_full.html", project = self)
+        p_description = self.description.replace("\n", "<br/>")
+        return render_str("project_full.html", p_description = p_description, project = self)
 
 # Child of Projects
 class ProjectEntries(db.Model):
