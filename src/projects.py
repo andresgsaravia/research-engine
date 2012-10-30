@@ -165,10 +165,11 @@ class EditProjectPage(GenericPage):
                 if have_error:
                     self.render("project_edit.html", project = project, error = error)
                 else:
-                    project.name = project_name
-                    project.description = description
-                    logging.debug("DB WRITE: Updating a project's information.")
-                    project.put()
+                    if (project.name != project_name) or (project.description != description):
+                        project.name = project_name
+                        project.description = description
+                        logging.debug("DB WRITE: Updating a project's information.")
+                        project.put()
                     self.redirect("/projects/project/%s" % project.key())
 
 
