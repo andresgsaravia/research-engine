@@ -150,7 +150,6 @@ a:hover {
     background: white;
     box-shadow: 0.3em 0.3em 0.5em #C0C0C0;
 
-
     border-radius: 0 0 5px 5px;
 
     -webkit-transition: opacity .25s ease .1s;
@@ -168,7 +167,7 @@ a:hover {
     height: 0;
     overflow: hidden;
     padding: 0;
-
+    border-radius: 0 0 5px 5px;
     -webkit-transition: height .25s ease .1s;
     -o-transition: height .25s ease .1s;
     -ms-transition: height .25s ease .1s;
@@ -182,7 +181,7 @@ a:hover {
 }
 
 .menu ul li a {
-    width: 100px;
+    width: 120px;
     padding: 4px 0 4px 40px;
     margin: 0;
 
