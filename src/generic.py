@@ -100,7 +100,7 @@ class GenericPage(webapp2.RequestHandler):
 
     def get_item_from_key(self, item_key):
         logging.debug("DB READ: Handler %s requests an item using its key." % self.__class__.__name__)
-        return db.Query().filter("__key__ =", db.Key(item_key)).get()
+        return db.Query().filter("__key__ =", item_key).get()
 
     def set_cookie(self, name, value, salt, path = "/"):
         cookie = "%s=%s; Path=%s" % (name, make_secure_val(value, salt), path)
