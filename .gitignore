@@ -31,3 +31,6 @@ index.yaml
 
 #Apple BS
 .DS_Store
+
+# Emacs autosaves
+.#*
