@@ -3,6 +3,7 @@
 
 from generic import *
 
+SHORT_DESCRIPTION_LENGTH = 150
 
 ##########################
 ##   Helper Functions   ##
@@ -29,6 +30,15 @@ class Notebooks(db.Model):
         params["started"] = self.started.strftime("%d-%b-%Y")
         return render_str("notebook_full.html", **params)
 
+    def short_render(self):
+        last_note_date = self.last_updated.strftime("%d-%b-%Y")
+        return render_str("notebook_short.html", notebook = self, last_note_date = last_note_date)
+
+    def short_description(self):
+        if len(self.description) < SHORT_DESCRIPTION_LENGTH:
+            return self.description
+        else:
+            return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
 
 # Each NotebookNote should have as parent one Notebook. Comments to notes are children.
 # Adding a new comment should cause and update in the parent Notebook's last_updated property.
@@ -51,7 +61,13 @@ class NoteComments(db.Model):
 
 class MainPage(GenericPage):
     def get(self):
-        self.render("under_construction.html")
+        user = self.get_user_or_login()
+        notebooks = []
+        for notebook_key in user.my_notebooks:
+            notebook = self.get_item_from_key(notebook_key)
+            if notebook: notebooks.append(notebook)
+        notebooks.sort(key=lambda n: n.last_updated, reverse = True)
+        self.render("notebooks_main.html", user = user, notebooks = notebooks)
 
 
 class NewNotebookPage(GenericPage):
@@ -104,5 +120,5 @@ class NewNotePage(GenericPage):
 class NotebookPage(GenericPage):
     def get(self, notebook_key):
         user = self.get_user_or_login()
-        notebook = self.get_item_from_key(notebook_key)
+        notebook = self.get_item_from_key(db.Key(notebook_key))
         self.render("notebook.html", notebook = notebook, notes = [])

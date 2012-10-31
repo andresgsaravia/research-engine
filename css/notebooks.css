@@ -1,5 +1,33 @@
 /* Style for the notebooks related pages */
 
+/* For the main notebooks page */
+
+.notebook {
+    border: 1px solid black;
+    background: white;
+}
+
+.notebook + .notebook {
+    margin-top: 1em;
+}
+
+.notebook .date {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    color: #777777;
+}
+
+.notebook .name {
+    padding: 0.5em;
+}
+
+.notebook .short-description {
+    padding: 0.5em;
+}
+
 /* For the rendering of a single notebook */
 
 .notebook-full .notebook-details{

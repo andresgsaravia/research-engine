@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+<link href="/css/notebooks.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Your notebooks</h2>
+
+<div class="notebooks-wrapper">
+  {% for notebook in notebooks %}
+    <div class="notebook">
+      {{notebook.short_render() | safe}}
+    </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}
