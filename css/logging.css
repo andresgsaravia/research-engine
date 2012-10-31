@@ -1,19 +1,30 @@
 table {
-    width: 30em;
+    width: 40em;
 }
 
+.label {
+    width: 10em;
+    text-align: right;
+    padding-right: 1em;
+}
+
+.user-input {
+    width: 15em;
+    padding: 0;
+}
 
 input[type=text] { 
-    width: 70%; 
+    width: 90%;
     font-size: 1em; 
     font-family: Helvetica, Arial, sans-serif;
 }
+
 input[type=password] { 
-    width: 70%;
+    width: 90%;
     font-size: 1em; 
     font-family: Helvetica, Arial, sans-serif;}
 
 .submit-button {
-    padding-left: 10em;
+    padding-left: 11em;
     padding-top: 0.5em;
 }

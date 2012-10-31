@@ -16,11 +16,11 @@
   <form method="post">
     <table>
       
-      <tr>
-	<td>
+      <tr class="row">
+	<td class="label">
 	  Username
 	</td>
-	<td>
+	<td class="user-input">
 	  <input type="text" name="usern" value="{{usern}}">
 	</td>
 	<td class="error">
@@ -28,11 +28,11 @@
 	</td>
       </tr>
 
-      <tr>
-	<td>
+      <tr class="row">
+	<td class="label">
 	  Password
 	</td>
-	<td>
+	<td class="user-input">
 	  <input type="password" name="password" value="">
 	</td>
 	<td class="error">
@@ -40,11 +40,11 @@
 	</td>
       </tr>
 
-      <tr>
-	<td>
+      <tr class="row">
+	<td class="label">
 	  Verify Password
 	</td>
-	<td>
+	<td class="user-input">
 	  <input type="password" name="verify" value="">
 	</td>
 	<td class="error">
@@ -52,11 +52,11 @@
 	</td>
       </tr>
 
-      <tr>
-	<td>
+      <tr class="row">
+	<td class="label">
 	  Email
 	</td>
-	<td>
+	<td class="user-input">
 	  <input type="text" name="email" value="{{email}}">
 	</td>
 	<td class="error">
@@ -71,5 +71,9 @@
   </form>
 
 {% endif %}
+
+<div class="error">
+  <br/>{{error_message}}
+</div>
 
 {% endblock %}
