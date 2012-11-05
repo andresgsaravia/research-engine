@@ -61,7 +61,10 @@ class NoteComments(db.Model):
 
 class MainPage(GenericPage):
     def get(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         notebooks = []
         for notebook_key in user.my_notebooks:
             notebook = self.get_item_from_key(notebook_key)
@@ -72,11 +75,17 @@ class MainPage(GenericPage):
 
 class NewNotebookPage(GenericPage):
     def get(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         self.render("notebooks_new.html")
 
     def post(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirec("/login")
+            return
         n_name = self.request.get("n_name")
         n_description = self.request.get("n_description")
         have_error = False
@@ -119,6 +128,9 @@ class NewNotePage(GenericPage):
 # Needs to handle the case in which notebook_key is invalid
 class NotebookPage(GenericPage):
     def get(self, notebook_key):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         notebook = self.get_item_from_key(db.Key(notebook_key))
         self.render("notebook.html", notebook = notebook, notes = [])

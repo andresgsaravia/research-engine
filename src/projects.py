@@ -71,7 +71,10 @@ class ProjectEntries(db.Model):
 
 class MainPage(GenericPage):
     def get(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         projects = []
         for project_key in user.my_projects:
             project = self.get_item_from_key(project_key)
@@ -82,11 +85,17 @@ class MainPage(GenericPage):
 
 class NewProjectPage(GenericPage):
     def get(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         self.render("project_new.html")
 
     def post(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         have_error = False
         params = {}
         params["p_name"] = self.request.get("p_name")
@@ -113,19 +122,21 @@ class NewProjectPage(GenericPage):
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
-        logging.debug("DB READ: Fetching a project from its key to render a full project page.")
-        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
+        project = self.get_item_from_key(db.Key(project_key))
         ref_list = []
         for ref_key in project.references:
             ref_list.append(self.get_item_from_key(ref_key))
-        self.render("project.html", project = project, project_key = project_key, ref_list = ref_list)
+        self.render("project.html", project = project, project_key = project_key, 
+                    ref_list = ref_list, len_ref_list = len(ref_list))
         
 
 class EditProjectPage(GenericPage):
     def get(self, project_key):
-        user = self.get_user_or_login()
-        logging.debug("DB READ: Fetching a project to edit its information.")
-        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key(db.Key(project_key))
         if project:
             if project.user_is_author(user):
                 self.render("project_edit.html", project = project)
@@ -136,7 +147,10 @@ class EditProjectPage(GenericPage):
             self.error(404)
 
     def post(self, project_key):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         logging.debug("DB READ: Fetching a project to edit its information from a submitted form.")
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
         have_error = False
@@ -164,11 +178,17 @@ class EditProjectPage(GenericPage):
 
 class NewReferencePage(GenericPage):
     def get(self, project_key):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         self.render("project_new_reference.html")
 
     def post(self, project_key):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         project = self.get_item_from_key(db.Key(project_key))
         kind_of_reference = self.request.get("kind_of_reference")
         identifier = self.request.get("identifier")

@@ -98,7 +98,10 @@ class LogoutPage(GenericPage):
 
 class SettingsPage(GenericPage):
     def get(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         params = {}
         params["usern"] = user.username
         if user.email: params["email"] = user.email
@@ -106,7 +109,10 @@ class SettingsPage(GenericPage):
         self.render("settings.html", **params)
 
     def post(self):
-        user = self.get_user_or_login()
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         params = {}
         params["usern"] = self.request.get("usern")
         params["email"] = self.request.get("email")
