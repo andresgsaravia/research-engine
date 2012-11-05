@@ -194,7 +194,7 @@ class NewReferencePage(GenericPage):
         identifier = self.request.get("identifier")
         try:
             reference = get_add_reference(kind_of_reference, identifier)
-            if not (reference in project.references):
+            if not (reference.key() in project.references):
                 project.references.append(reference.key())
                 logging.debug("DB WRITE: Adding a reference to a project.")
                 project.put()
