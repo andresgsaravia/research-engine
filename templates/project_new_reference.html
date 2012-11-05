@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link href="/css/new_something.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+
+{% block content %}
+
+<h2>Add new resource to project:</h2>
+<div class="subtitle">{{project_name}}</div>
+
+<form method="post">
+  <table>
+    <tr>
+      <td>
+	Add a new:
+      </td>
+      <td>
+	<input type="radio" name="kind_of_resource" value="article"> Published article</input><br/>
+	<input type="radio" name="kind_of_resource" value="arXiv"> arXiv preprint</input><br/>
+	<input type="radio" name="kind_of_resource" value="webpage"> Web page</input><br/>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	DOI / arXiv ID / URL 
+      </td>
+      <td>
+	<input type="text" name="identifier"/>
+      </td>
+    </tr>
+
+  </table>
+
+  <div class="submit-button">
+    <input type="submit" value="Add to project"/>
+  </div>
+
+  <div class="error">
+    <br/>
+    {{error}}
+  </div>
+
+</form>
+
+{% endblock %}

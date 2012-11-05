@@ -155,6 +155,10 @@ class EditProjectPage(GenericPage):
                     self.redirect("/projects/project/%s" % project.key())
 
 
-class NewResourcePage(GenericPage):
+class NewReferencePage(GenericPage):
+    def get(self, project_key):
+        self.render("project_new_reference.html")
+
+class NewNotebookPage(GenericPage):
     def get(self, project_key):
         self.render("under_construction.html")

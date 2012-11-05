@@ -11,36 +11,37 @@
   <body>
   <div class="wrapper">
 
+
+<!-- MENU  -->
     <div class="menu-wrapper">
     <ul class="menu">
+
       <li><a href="/news">News</a></li>
-      <li><a href="/notebooks">Notebooks</a>
-	<ul>
-	  <li><a href="/notebooks/new">New Notebook</a></li>
-	</ul>
-      </li>
+
       <li><a href="/projects">Projects</a>
 	<ul>
+	  {{recent_projects}}
 	  <li><a href="/projects/new">New project</a></li>
 	</ul>
       </li>
-      <li><a href="/library">Library</a>
-	<ul>
-	  <li><a href="/library/new">New item</a></li>
-	</ul>
-      </li>
+
       <li><a href="/classroom">Classroom</a></li>
+
       <li><a href="/collaborations">Collaborations</a></li>
+
       <li>{{login_message | safe}}</li>
     </ul>
     </div>
     
-    
+
+<!-- CONTENT -->    
     <div class="content">      
       {% block content %}
       {% endblock %}          
     </div>
 
+
+<!-- FOOTER -->
     <div class="footer">
       <img class="app-engine-image" 
 	   src="https://developers.google.com/appengine/images/appengine-noborder-120x30.gif"

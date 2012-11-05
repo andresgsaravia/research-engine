@@ -85,10 +85,10 @@
     padding: 0.5em;
     border: 1px solid black;
     background: white;
-    min-height: 15em;
+    min-height: 32.5em;
 }
 
-.resources {
+.references {
     width: 48%;
     margin-top: 1.5em;
     padding: 0.5em;
@@ -97,7 +97,23 @@
     min-height: 15em;
 }
 
-.resources .new-resource-link {
+.references .new-reference-link {
+    position: relative;
+    float: right;
+    padding-top: 0.2em;
+    padding-right: 0.5em;
+}
+
+.notebooks {
+    width: 48%;
+    margin-top: 1.5em;
+    padding: 0.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 15em;
+}
+
+.notebooks .new-notebook-link {
     position: relative;
     float: right;
     padding-top: 0.2em;

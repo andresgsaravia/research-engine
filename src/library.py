@@ -11,7 +11,6 @@ ARXIV_RE = r'^[0-9]{4}\.[0-9]{4}(v[0-9]+)?$'
 CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=crossref%40andresgsaravia.com.mx&format=unixref&id="
 DOI_RE = r''
 
-WEBPAGE_RE = r''
 
 ###########################
 ##   Datastore Objects   ##    
@@ -72,42 +71,6 @@ class PublishedArticles(db.Model):
         return render_str("article_item_edit.html", item = self, authors_string = authors_string)
 
 
-class WebPage(db.Model):
-    item_id = db.StringProperty(required = True)        # Link to webpage
-    title = db.StringProperty(required = False)
-    authors = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
-    summary = db.TextProperty(required = False)
-
-    def full_render(self):
-        return render_str("webpage_item_full.html", item = self)
-    def short_render(self):
-        authors_string = self.authors[0]
-        if len(self.authors) > 1:
-            authors_string += "<em> et al.</em>"
-        return render_str("webpage_item_short.html", item = self, authors_string = authors_string)
-    def edit_render(self):
-        authors_string = ''
-        for author in self.authors:
-            authors_string += (author + "; ")
-        authors_string = authors_string[:-2]
-        return render_str("webpage_item_edit.html", item = self, authors_string = authors_string)
-
-
-# This is user-specific. Each of these items should have as parent the current user.
-class LibraryItems(db.Model):
-    item = db.ReferenceProperty(required = True)
-    added = db.DateTimeProperty(auto_now_add = True)
-    tags = db.StringListProperty(required = True)    # Must be required=True, however it can default to an empty list.
-
-
-# Each review should have as parent one of arXiv, PublishesArticles or WebPage
-class Reviews(db.Model):
-    author = db.ReferenceProperty(required = True)
-    review = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
-
-
 ##########################
 ##   Helper functions   ##
 ##########################
@@ -163,14 +126,6 @@ def CrossRef_metadata(doi):
     return params
 
 
-def WebPage_metadata(link):
-    page = urllib2.urlopen(link).read().replace("\n", "")
-    params = {}
-    params["item_id"] = link
-    params["title"] = page[page.find("<title>") + 7 : page.find("</title>")].decode('ascii','ignore')
-    return params
-
-
 # For the add_new_X functions, X should match the database's name. They must return the item just added.
 def add_new_arXiv(identifier):
     params = arXiv_metadata(identifier)
@@ -188,19 +143,10 @@ def add_new_PublishedArticles(identifier):
     return new
 
 
-def add_new_WebPage(identifier):
-    params = WebPage_metadata(identifier)
-    new = WebPage(**params)
-    logging.debug("DB WRITE: Adding a new WebPage with link :1", identifier)
-    new.put()
-    return new
-
-
 def get_add_knowledge_item(species, identifier):
     """Returns a knowledge-item of the given species and identifier. If it doesn't exist, create it."""
     if species == "arXiv": db_name = "arXiv"
     elif species == "article": db_name = "PublishedArticles"
-    elif species == "webpage": db_name = "WebPage"
     else:
         logging.error("Wrong knowledge-item species: %s" % species)
         assert False
@@ -394,21 +340,6 @@ class Edit(GenericPage):
                     except db.BadValueError:
                         have_error = True
                         params["error"] += "Please check the link value is a valid URL. "
-
-            elif kind == "WebPage":
-                params["title"] = self.request.get('title')
-                params["authors_string"] = self.request.get('authors_string')
-                params["summary"] = self.request.get('summary')
-                if params['title']: item.title = nice_bs(params['title'])
-                if params["authors_string"]: 
-                    authors = []
-                    for author in params["authors_string"].split(";"):
-                        authors.append(nice_bs(author))
-                    if authors: item.authors = authors
-                if params['summary']: item.summary = nice_bs(params['summary'])
-            else:
-                logging.error("Wrong knowledge-item species: %s" % species)
-                assert False
 
             if have_error:
                 self.render("knowledge_item_edit.html", item = item, **params)
