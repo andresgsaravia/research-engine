@@ -1,5 +1,9 @@
 /* Related to the projects tab */
 
+h2 {
+    padding-bottom: 0;
+}
+
 .project {
     border: 1px solid black;
     background: white;
@@ -71,57 +75,28 @@
     list-style: none;
 }
 
-.edit-link {
-    position: relative;
-    float: right;
-    padding-top: 0.8em;
-}
-
 .activity {
-    width: 48%;
+    width: 49%;
     position: relative;
     float: right;
     margin-top: 1.5em;
-    padding: 0.5em;
     border: 1px solid black;
     background: white;
     min-height: 32.5em;
 }
 
-.references {
-    width: 48%;
-    margin-top: 1.5em;
-    padding: 0.5em;
-    border: 1px solid black;
-    background: white;
-    min-height: 15em;
+.return-link {
+    margin-top: 0.6em;
+    margin-bottom: 0.4em;
 }
 
-.references .new-reference-link {
-    position: relative;
-    float: right;
-    padding-top: 0.2em;
-    padding-right: 0.5em;
+.return-link a {
+    font-size: 0.9em;
 }
 
-.notebooks {
-    width: 48%;
-    margin-top: 1.5em;
-    padding: 0.5em;
-    border: 1px solid black;
-    background: white;
-    min-height: 15em;
-}
-
-.notebooks .new-notebook-link {
-    position: relative;
-    float: right;
-    padding-top: 0.2em;
-    padding-right: 0.5em;
-}
 
 .edit-link {
-    padding-top: 1em;
+    margin-top: 0.6em;
     padding-right: 1em;
     position: relative;
     float: right;
@@ -129,6 +104,73 @@
 
 .edit-link a {
     color: #A67739;
+    font-size: 0.9em;
+}
+
+
+/* Notebooks in the full project view */
+
+.notebooks {
+    width: 49%;
+    margin-top: 1.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 15em;
+}
+
+.notebooks h3 {
+    padding: 0.3em;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.notebooks .new-notebook-link {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+
+/* References in the full project view */
+
+.references {
+    width: 49%;
+    margin-top: 1.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 15em;
+}
+
+.references h3 {
+    padding: 0.3em;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.references .new-reference-link {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.references .reference {
+    font-size: 0.9em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    border-top: 1px solid #CED3E0;
+}
+
+.references .reference-title a {
+    color: black;
+}
+
+.references > * {
+    padding-left: 0.5em;
+}
+
+
+.reference:nth-of-type(even) {
+    background: #EBF1FF;
 }
 
 /* for the edit project page */

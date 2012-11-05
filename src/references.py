@@ -85,9 +85,12 @@ class WebPage(db.Model):
         return render_str("webpage_reference_full.html", reference = self)
 
     def short_render(self):
-        authors_string = self.authors[0]
-        if len(self.authors) > 1:
-            authors_string += "<em> et al.</em>"
+        if len(self.authors) > 0:
+            authors_string = self.authors[0]
+            if len(self.authors) > 1:
+                authors_string += "<em> et al.</em>"
+        else:
+            authors_string = 'Unknown author'
         return render_str("webpage_reference_short.html", reference = self, authors_string = authors_string)
 
     def edit_render(self):

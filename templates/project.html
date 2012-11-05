@@ -10,15 +10,15 @@
 
 <h2>Project</h2>
 
-{{project.full_render() | safe}}
-
 <div class="edit-link">
   <a href="/projects/project/edit/{{project_key}}">Edit information</a>
 </div>
 
 <div class="return-link">
-  <br/><a href="/projects">&larr; Return to your projects list.</a>
+  <a href="/projects">&larr; Return to your projects list.</a>
 </div>
+
+{{project.full_render() | safe}}
 
 <div class="activity">
   <h3>Latest Activity</h3>
@@ -41,7 +41,7 @@
   <h3>References</h3>
   {% for reference in ref_list %}
     <div class="reference">
-      {{reference.short_render()}}
+      {{reference.short_render() | safe}}
     </div>
   {% endfor %}
 </div>
