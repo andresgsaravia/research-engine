@@ -1,4 +1,4 @@
-<form method="post" action="/library/item/edit/{{item.key()}}">
+<form method="post" action="/reference/edit/{{reference.key()}}">
   <table>
 
     <tr>
@@ -6,7 +6,7 @@
 	DOI:
       </td>
       <td>
-	{{item.item_id}}
+	{{reference.item_id}}
       </td>
     </tr>
 
@@ -15,7 +15,7 @@
 	Title:
       </td>
       <td>
-	<input type="text" name="title" value="{{item.title}}" />
+	<input type="text" name="title" value="{{reference.title}}" />
       </td>
       <td class="error">
 	{{title_error}}
@@ -40,7 +40,7 @@
 	Year:
       </td>
       <td>
-	<input type="text" name="year" value="{{item.year}}" />
+	<input type="text" name="year" value="{{reference.year}}" />
       </td>
     </tr>
 
@@ -49,7 +49,7 @@
 	Issue:
       </td>
       <td>
-	<input type="text" name="issue" value="{{item.issue}}" />
+	<input type="text" name="issue" value="{{reference.issue}}" />
       </td>
     </tr>
 
@@ -58,7 +58,7 @@
 	Volume:
       </td>
       <td>
-	<input type="text" name="volume" value="{{item.volume}}" />
+	<input type="text" name="volume" value="{{reference.volume}}" />
       </td>
     </tr>
 
@@ -67,7 +67,7 @@
 	Page:
       </td>
       <td>
-	<input type="text" name="page" value="{{item.page}}" />
+	<input type="text" name="page" value="{{reference.page}}" />
       </td>
     </tr>
 
@@ -76,7 +76,7 @@
 	Abstract:
       </td>
       <td>
-	<textarea name="abstract">{{item.abstract}}</textarea>
+	<textarea name="abstract">{{reference.abstract}}</textarea>
       </td>
     </tr>
 
@@ -85,7 +85,7 @@
 	Link:
       </td>
       <td>
-	<input type="text" name="link" value="{{item.link}}" />
+	<input type="text" name="link" value="{{reference.link}}" />
       </td>
     </tr>
   </table>

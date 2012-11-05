@@ -2,6 +2,7 @@
 # For creating, managing and updating projects.
 
 from generic import *
+from references import get_add_reference
 
 SHORT_DESCRIPTION_LENGTH = 150
 
@@ -21,6 +22,8 @@ class Projects(db.Model):
     authors = db.ListProperty(db.Key)                        # There's no such thing as an "owner"
     started = db.DateTimeProperty(auto_now_add = True)
     last_updated = db.DateTimeProperty(auto_now = True)
+    references = db.ListProperty(db.Key)
+    notebooks = db.ListProperty(db.Key)
     
     def list_of_authors(self):
         authors_list = []
@@ -98,7 +101,8 @@ class NewProjectPage(GenericPage):
         if have_error:
             self.render("project_new.html", **params)
         else:
-            project = Projects(name = params["p_name"], description = params["p_description"], authors = [user.key()])
+            project = Projects(name = params["p_name"], description = params["p_description"], 
+                               authors = [user.key()], references = [], notebooks = [])
             logging.debug("DB WRITE: Adding a new project to Projects.")
             project.put()
             user.my_projects.append(project.key())
@@ -111,7 +115,10 @@ class ProjectPage(GenericPage):
     def get(self, project_key):
         logging.debug("DB READ: Fetching a project from its key to render a full project page.")
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
-        self.render("project.html", project = project, project_key = project_key)
+        ref_list = []
+        for ref_key in project.references:
+            ref_list.append(self.get_item_from_key(ref_key))
+        self.render("project.html", project = project, project_key = project_key, ref_list = ref_list)
         
 
 class EditProjectPage(GenericPage):
@@ -157,7 +164,24 @@ class EditProjectPage(GenericPage):
 
 class NewReferencePage(GenericPage):
     def get(self, project_key):
+        user = self.get_user_or_login()
         self.render("project_new_reference.html")
+
+    def post(self, project_key):
+        user = self.get_user_or_login()
+        project = self.get_item_from_key(db.Key(project_key))
+        kind_of_reference = self.request.get("kind_of_reference")
+        identifier = self.request.get("identifier")
+        try:
+            reference = get_add_reference(kind_of_reference, identifier)
+            if not (reference in project.references):
+                project.references.append(reference.key())
+                logging.debug("DB WRITE: Adding a reference to a project.")
+                project.put()
+            self.redirect("/reference/%s" % reference.key())
+        except:
+            self.render("project_new_reference.html", error = "Could not retrieve reference")
+        
 
 class NewNotebookPage(GenericPage):
     def get(self, project_key):

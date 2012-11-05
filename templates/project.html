@@ -39,6 +39,11 @@
     <a href="/projects/project/new_reference/{{project_key}}">New reference</a>
   </div>
   <h3>References</h3>
+  {% for reference in ref_list %}
+    <div class="reference">
+      {{reference.short_render()}}
+    </div>
+  {% endfor %}
 </div>
 
 {% endblock %}

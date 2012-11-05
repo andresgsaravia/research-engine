@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/reference_edit.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+<div class="item">
+  {{reference.edit_render() | safe}}
+</div>
+<br/><div class="error">{{error}}</div>
+
+<a href="/reference/{{reference.key()}}">&larr; Return without saving.</a>
+{% endblock %}

@@ -26,19 +26,21 @@ class arXiv(db.Model):
     link = db.LinkProperty(required = True)
 
     def full_render(self):
-        return render_str("arXiv_item_full.html", item = self)
+        return render_str("arXiv_reference_full.html", reference = self)
+
     def short_render(self):
         authors_string = self.authors[0]
         if len(self.authors) > 1:
             authors_string += "<em> et al.</em>"
-        return render_str("arXiv_item_short.html", item = self, authors_string = authors_string)
+        return render_str("arXiv_reference_short.html", reference = self, authors_string = authors_string)
+
     def edit_render(self):
-        params = {'item' : self, 'authors_string' : ''}
+        params = {'reference' : self, 'authors_string' : ''}
         for author in self.authors:
             params["authors_string"] += (author + "; ")
         params["authors_string"]  = params["authors_string"][:-2]
         params["date_string"] = datetime.datetime.strftime(self.date, "%Y-%m-%d")
-        return render_str("arXiv_item_edit.html", **params)
+        return render_str("arXiv_reference_edit.html", **params)
 
 
 class PublishedArticles(db.Model):
@@ -57,18 +59,43 @@ class PublishedArticles(db.Model):
     link = db.LinkProperty(required = True)
 
     def full_render(self):
-        return render_str("article_item_full.html", item = self)
+        return render_str("article_reference_full.html", reference = self)
+
     def short_render(self):
         authors_string = self.authors[0]
         if len(self.authors) > 1:
             authors_string += "<em> et al.</em>"
-        return render_str("article_item_short.html", item = self, authors_string = authors_string)
+        return render_str("article_reference_short.html", reference = self, authors_string = authors_string)
+
     def edit_render(self):
         authors_string = ''
         for author in self.authors:
             authors_string += (author + "; ")
         authors_string = authors_string[:-2]
-        return render_str("article_item_edit.html", item = self, authors_string = authors_string)
+        return render_str("article_reference_edit.html", reference = self, authors_string = authors_string)
+
+
+class WebPage(db.Model):
+    item_id = db.StringProperty(required = True) # Link to webpage
+    title = db.StringProperty(required = False)
+    authors = db.StringListProperty(required = True) # Must be required=True, however it can default to an empty list.
+    summary = db.TextProperty(required = False)
+
+    def full_render(self):
+        return render_str("webpage_reference_full.html", reference = self)
+
+    def short_render(self):
+        authors_string = self.authors[0]
+        if len(self.authors) > 1:
+            authors_string += "<em> et al.</em>"
+        return render_str("webpage_reference_short.html", reference = self, authors_string = authors_string)
+
+    def edit_render(self):
+        authors_string = ''
+        for author in self.authors:
+            authors_string += (author + "; ")
+        authors_string = authors_string[:-2]
+        return render_str("webpage_reference_edit.html", reference = self, authors_string = authors_string)
 
 
 ##########################
@@ -103,6 +130,7 @@ def arXiv_metadata(arXiv_id):
     params["link"] = tree.getElementsByTagName("entry")[0].getElementsByTagName("id")[0].childNodes[0].nodeValue
     return params
 
+
 def CrossRef_metadata(doi):
     tree = minidom.parseString(urllib2.urlopen(CROSSREF_QUERY_URL + doi).read().replace("\n", " "))
     params = {}
@@ -120,13 +148,20 @@ def CrossRef_metadata(doi):
     for author in tree.getElementsByTagName("person_name"):
         given_name = author.getElementsByTagName("given_name")[0].childNodes[0].nodeValue
         surname = author.getElementsByTagName("surname")[0].childNodes[0].nodeValue
-        params["authors"].append(given_name + " " + surname)   # To have consistency with arXiv items.
+        params["authors"].append(given_name + " " + surname)   # To have consistency with arXiv references.
     params["abstract"] = ""
     params["link"] = try_get_nodeValue(tree, "resource")
     return params
 
 
-# For the add_new_X functions, X should match the database's name. They must return the item just added.
+def WebPage_metadata(link):
+    page = urllib2.urlopen(link).read().replace("\n", "")
+    params = {}
+    params["item_id"] = link
+    params["title"] = page[page.find("<title>") + 7 : page.find("</title>")].decode('ascii','ignore')
+    return params
+
+# For the add_new_X functions, X should match the database's name. They must return the reference just added.
 def add_new_arXiv(identifier):
     params = arXiv_metadata(identifier)
     new = arXiv(**params)
@@ -143,143 +178,65 @@ def add_new_PublishedArticles(identifier):
     return new
 
 
-def get_add_knowledge_item(species, identifier):
-    """Returns a knowledge-item of the given species and identifier. If it doesn't exist, create it."""
+def add_new_WebPage(identifier):
+    params = WebPage_metadata(identifier)
+    new = WebPage(**params)
+    logging.debug("DB WRITE: Adding a new WebPage with link :1", identifier)
+    new.put()
+    return new
+
+
+def get_add_reference(species, identifier):
+    """Returns a reference of the given species and identifier. If it doesn't exist, create it."""
     if species == "arXiv": db_name = "arXiv"
     elif species == "article": db_name = "PublishedArticles"
+    elif species == "webpage": db_name = "WebPage"
     else:
-        logging.error("Wrong knowledge-item species: %s" % species)
+        logging.error("Wrong reference species: %s" % species)
         assert False
-    logging.debug("DB READ: Checking if %s item exists in database." % db_name)
+    logging.debug("DB READ: Checking if %s reference exists in database." % db_name)
     q = db.GqlQuery("SELECT * FROM %s WHERE item_id = '%s'" % (db_name, identifier)).get()
     if q: return q
     return eval('add_new_%s("%s")' % (db_name, identifier))
-    
 
-def add_to_library(user, item):
-    if not user:
-        logging.error("Attempted to fetch a non existing user while adding an item to its library.")
-        return None
-    logging.debug("DB READ: Looking for an item in a user's library")
-    library_item = LibraryItems.all().ancestor(user.key()).filter("item =", item.key()).get()
-    if library_item: return None
-    library_item = LibraryItems(item = item.key(), tags = [], parent = user)
-    logging.debug("DB WRITE: Adding an item to a user's library")
-    library_item.put()
-    return None
-    
+
 
 #####################
 ##  Web Handlers   ##
 #####################
 
-class MainPage(GenericPage):
-    def get(self):
-        user = self.get_user()
-        if not user: 
-            self.redirect("/login")
-        else:
-            logging.debug("DB READ: Fetching a user's library items.")
-            items = LibraryItems.all().ancestor(user.key()).order("-added")
-            self.render("library_main.html", items = items)
-
-    def post(self):
-        user = self.get_user()
-        item_key = self.request.get("item_key")
-        logging.debug("DB READ: Getting knowledge item from its key.")
-        item = db.get(item_key)
-        logging.debug("DB READ: Getting LibraryItem.")
-        library_item = LibraryItems.all().ancestor(user.key()).filter("item =", item).get()
-        if library_item:
-            library_item.delete()
-        else:
-            add_to_library(username, item)
-        self.redirect("/library")
-
-
-class New(GenericPage):
-    def get(self):
-        username = self.get_username()
-        self.render("new_knowledge.html")
-
-    def post(self):
-        user = self.get_user()
-        if not user: self.redirect("/login")
-        species = self.request.get('species')
-        identifier = self.request.get('identifier')
-        have_error = False
-        params = {}
-
-        if species == "arXiv":
-            if not re.match(ARXIV_RE, identifier):
-                params['error'] = "That's not a valid arXiv id."
-                have_error = True
-        elif species == "article":
-            if not re.match(DOI_RE, identifier):
-                params['error'] = "That's not a valid DOI."
-                have_error = True
-        elif species == "webpage":
-            if not re.match(WEBPAGE_RE, identifier):
-                params['error'] = "That's not a valid url."
-                have_error = True
-        else:
-            logging.error("Unknown species for new KnowledgeItem: %s" % species)
-            params['error'] = "There was an error processing your request."
-            have_error = True
-
-        if have_error:
-            self.render("new_knowledge.html", **params)
-        else:
-            try:
-                item = get_add_knowledge_item(species, identifier)  # Retrieves the item. If it's not present, adds it.
-                add_to_library(user, item)
-                self.redirect("/library/item/%s" % str(item.key()))
-            except:
-                params['error'] = "Could not retrieve " + species
-                self.render("new_knowledge.html", **params)
-
-
-class Item(GenericPage):
-    def get(self, item_key):
+class ReferencePage(GenericPage):
+    def get(self, reference_key):
         user = self.get_user()
         params = {}
-        params["item_key"] = item_key
-        logging.debug("DB READ: Querying for item with key :1", item_key)
-        params["item"] = db.Query().filter("__key__ =", db.Key(item_key)).get()
-        if not params["item"]:
-            logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
+        params["reference_key"] = reference_key
+        params["reference"] = self.get_item_from_key(db.Key(reference_key))
+        if not params["reference"]:
+            logging.warning("Attempted to fetch a non-existing reference's page; key :1", reference_key)
             self.error(404)
         else:
-            logging.debug("DB READ: Checking if an item is in a user's library.")
-            library_item = LibraryItems.all().ancestor(user.key()).filter("item =", db.get(item_key)).get()
-            if library_item:
-                params["button_text"] = "Delete from your library"
-            else:
-                params["button_text"] = "Add to your library"
-            self.render("knowledge_item.html", **params)
+            self.render("reference.html", **params)
 
 
-class Edit(GenericPage):
-    def get(self, item_key):
-        logging.debug("DB READ: Getting knowledge item from key")
-        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
-        if not item: 
-            logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
+class EditReferencePage(GenericPage):
+    def get(self, reference_key):
+        reference = self.get_item_from_key(db.Key(reference_key))
+        if not reference: 
+            logging.warning("Attempted to fetch a non-existing reference's page; key :1", reference_key)
             self.error(404)
         else:
-            self.render("knowledge_item_edit.html", item = item)
+            self.render("reference_edit.html", reference = reference)
 
-    def post(self, item_key):
+    def post(self, reference_key):
         username = self.get_username()
         if not username: self.redirect("/login")
         params = {}
-        logging.debug("DB READ: Getting knowledge item from key")
-        item = db.Query().filter("__key__ =", db.Key(item_key)).get()
-        if not item:
-            logging.warning("Attempted to fetch a non-existing item's page; key :1", item_key)
+        reference = self.get_item_from_key(db.Key(reference_key))
+        if not reference:
+            logging.warning("Attempted to fetch a non-existing reference's page; key :1", reference_key)
             self.error(404)
         else:
-            kind = item.kind()
+            kind = reference.kind()
             have_error = False
             params["error"] = ''
 
@@ -289,22 +246,22 @@ class Edit(GenericPage):
                 params["date"] = self.request.get("date")
                 params["abstract"]= self.request.get("abstract")
                 params["link"] = self.request.get("link")
-                if params["title"]: item.title = nice_bs(params["title"])
+                if params["title"]: reference.title = nice_bs(params["title"])
                 if params["authors_string"]:
                     authors = []
                     for author in params["authors_string"].split(";"):
                         authors.append(nice_bs(author))
-                    if authors: item.authors = authors
+                    if authors: reference.authors = authors
                 if params["date"]:
                     try:
-                        item.date = datetime.datetime.strptime(nice_bs(params["date"]), "%Y-%m-%d")
+                        reference.date = datetime.datetime.strptime(nice_bs(params["date"]), "%Y-%m-%d")
                     except ValueError:
                         have_error = True
                         params["error"] += "Please check the date is correct. "
-                if params["abstract"]: item.abstract = nice_bs(params["abstract"])
+                if params["abstract"]: reference.abstract = nice_bs(params["abstract"])
                 if params["link"]: 
                     try:
-                        item.link = nice_bs(params["link"])
+                        reference.link = nice_bs(params["link"])
                     except db.BadValueError:
                         have_error = True
                         params["error"] += "Please check the Link value is a valid URL. "
@@ -318,33 +275,48 @@ class Edit(GenericPage):
                 params["page"] = self.request.get("page")
                 params["abstract"] = self.request.get("abstract")
                 params["link"] = self.request.get("link")
-                if params["title"]: item.title = nice_bs(params["title"])
+                if params["title"]: reference.title = nice_bs(params["title"])
                 if params["authors_string"]: 
                     authors = []
                     for author in params["authors_string"].split(";"):
                         authors.append(nice_bs(author))
-                    if authors: item.authors = authors
+                    if authors: reference.authors = authors
                 if params["year"]: 
                     try:
-                        item.year = int(nice_bs(params["year"]))
+                        reference.year = int(nice_bs(params["year"]))
                     except ValueError:
                         have_error = True
                         params["error"] += "Please write Year as a single positive integer."
-                if params["issue"]: item.issue = nice_bs(params["issue"])
-                if params["volume"]: item.volume = nice_bs(params["volume"])
-                if params["page"]: item.page = nice_bs(params["page"])
-                if params["abstract"]: item.abstract = nice_bs(params["abstract"])
+                if params["issue"]: reference.issue = nice_bs(params["issue"])
+                if params["volume"]: reference.volume = nice_bs(params["volume"])
+                if params["page"]: reference.page = nice_bs(params["page"])
+                if params["abstract"]: reference.abstract = nice_bs(params["abstract"])
                 if params["link"]: 
                     try:
-                        item.link = nice_bs(params["link"])
+                        reference.link = nice_bs(params["link"])
                     except db.BadValueError:
                         have_error = True
                         params["error"] += "Please check the link value is a valid URL. "
 
-            if have_error:
-                self.render("knowledge_item_edit.html", item = item, **params)
+            elif kind == "WebPage":
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get('authors_string')
+                params["summary"] = self.request.get('summary')
+                if params['title']: reference.title = nice_bs(params['title'])
+                if params["authors_string"]:
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(nice_bs(author))
+                    if authors: reference.authors = authors
+                if params['summary']: reference.summary = nice_bs(params['summary'])
             else:
-                logging.debug("DB WRITE: Updating %s item metadata." % kind)
-                item.put()
-                self.redirect("/library/item/%s" % item.key())
+                logging.error("Wrong reference species: %s" % species)
+                assert False
+
+            if have_error:
+                self.render("reference_edit.html", reference = reference, **params)
+            else:
+                logging.debug("DB WRITE: Updating %s reference metadata." % kind)
+                reference.put()
+                self.redirect("/reference/%s" % reference.key())
 

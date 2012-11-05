@@ -11,6 +11,9 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/signup', users.SignupPage),
                                ('/new_user', users.NewUserPage),
                                ('/settings', users.SettingsPage),
+                               # References
+                               ('/reference/edit/(.+)', references.EditReferencePage),
+                               ('/reference/(.+)', references.ReferencePage),
                                # Projects
                                ('/projects', projects.MainPage),
                                ('/projects/new', projects.NewProjectPage),
@@ -19,6 +22,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/projects/project/new_notebook/(.+)', projects.NewNotebookPage),
                                ('/projects/project/(.+)', projects.ProjectPage),
                                # Empty placeholders
+                               ('/news', frontend.UnderConstructionPage),
                                ('/classroom', frontend.UnderConstructionPage),
                                ('/collaborations', frontend.UnderConstructionPage),
                                # Tests

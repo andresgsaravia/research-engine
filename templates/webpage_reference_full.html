@@ -1,0 +1,29 @@
+<div class="webpage-reference">
+
+  <div class="kind">
+    <p>Web page</p>
+  </div>  
+
+  <div class="reference-title">
+    <p><b>Title:</b> {{reference.title}}</p>
+  </div>
+  
+  <div class="authors-list">
+    <b>Authors:</b>
+    <ul>
+      {% for author in reference.authors %}
+        <li>{{author}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <br/>
+
+  <div class="reference-abstract">
+    <p><b>Summary: </b>{{reference.summary}}</p>
+  </div>
+
+  <div class="identifier">
+    <b>Link:</b> <a href="{{reference.item_id}}">{{reference.item_id}}</a>
+  </div>
+
+</div>

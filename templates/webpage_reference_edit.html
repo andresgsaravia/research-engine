@@ -1,4 +1,4 @@
-<form method="post" action="/library/item/edit/{{item.key()}}">
+<form method="post" action="/reference/edit/{{reference.key()}}">
   <table>
 
     <tr>
@@ -6,7 +6,7 @@
 	Link:
       </td>
       <td>
-	{{item.item_id | safe}}
+	{{reference.item_id | safe}}
       </td>
     </tr>
 
@@ -15,7 +15,7 @@
 	Title:
       </td>
       <td>
-	<input type="text" name="title" value="{{item.title}}" />
+	<input type="text" name="title" value="{{reference.title}}" />
       </td>
     </tr>
 
@@ -34,7 +34,7 @@
 	Summary:
       </td>
       <td>
-	<textarea name="summary">{{item.summary}}</textarea>
+	<textarea name="summary">{{reference.summary}}</textarea>
       </td>
     </tr>
 

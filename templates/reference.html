@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link href="/css/reference.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+<div class="reference">
+  {{reference.full_render() | safe}}
+</div>
+
+<div class="edit_link">
+  <a href="/reference/edit/{{reference_key}}">Edit information</a>
+</div>
+
+<div class="comments">
+  <h3>Comments</h3>
+  <p>Comments about this item will be here soon.</p>
+</div>
+{% endblock %}

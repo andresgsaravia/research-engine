@@ -1,0 +1,33 @@
+<div class="arXiv-reference">
+
+  <div class="kind">
+    <p>arXiv preprint</p>
+  </div>  
+
+  <div class="reference-title">
+    <p><b>Title:</b> {{reference.title}}</p>
+  </div>
+  
+  <div class="reference-date">
+    <p><b>Published: </b> {{reference.date.year}}-{{reference.date.month}}-{{reference.date.day}}</p>
+  </div>
+
+  <div class="authors-list">
+    <b>Authors:</b>
+    <ul>
+      {% for author in reference.authors %}
+        <li>{{author}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <br/>
+
+  <div class="reference-abstract">
+    <p><b>Abstract: </b>{{reference.abstract}}</p>
+  </div>
+
+  <div class="identifier">
+    <b>ID:</b> <a href="{{reference.link}}">{{reference.item_id}}</a>
+  </div>
+
+</div>
