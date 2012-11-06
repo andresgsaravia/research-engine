@@ -64,18 +64,17 @@ class Notebooks(db.Model):
     started = db.DateTimeProperty(auto_now_add = True)
     last_updated = db.DateTimeProperty(auto_now = True)
 
-    def full_render(self):
-        params = {}
-        params["notebook"] = self
+    def full_render(self, project_key):
+        params = {'project_key' : project_key, 'notebook' : self}
         params["n_description"] = self.description.replace("\n", "<br/>")
         params["last_note"] = self.last_updated.strftime("%d-%b-%Y")
         params["started"] = self.started.strftime("%d-%b-%Y")
         return render_str("notebook_full.html", **params)
 
-    def short_render(self):
+    def short_render(self, project_key):
         last_note_date = self.last_updated.strftime("%d-%b-%Y")
         owner_name = self.owner.username
-        return render_str("notebook_short.html", notebook = self, 
+        return render_str("notebook_short.html", notebook = self, project_key = project_key,
                           last_note_date = last_note_date, owner_name = owner_name)
 
     def short_description(self):
@@ -202,34 +201,6 @@ class EditProjectPage(GenericPage):
                     self.redirect("/projects/project/%s" % project.key())
 
 
-class NewReferencePage(GenericPage):
-    def get(self, project_key):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
-        self.render("project_new_reference.html")
-
-    def post(self, project_key):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
-        project = self.get_item_from_key(db.Key(project_key))
-        kind_of_reference = self.request.get("kind_of_reference")
-        identifier = self.request.get("identifier")
-        try:
-            reference = get_add_reference(kind_of_reference, identifier)
-            if not (reference.key() in project.references):
-                project.references.append(reference.key())
-                logging.debug("DB WRITE: Adding a reference to a project.")
-                project.put()
-                self.redirect("/projects/project/%s/ref/%s" % (project_key, reference.key()))
-
-        except:
-            self.render("project_new_reference.html", error = "Could not retrieve reference")
-        
-
 class NewNotebookPage(GenericPage):
     def get(self, project_key):
         user = self.get_user()
@@ -278,6 +249,39 @@ class NotebookPage(GenericPage):
             self.error(404)
             return
         self.render("notebook.html", notebook = notebook, notes =[], project_key = project_key)
+
+
+class EditNotebookPage(GenericPage):
+    def get(self, project_key, notebook_key):
+        self.render("under_construction.html")
+
+
+class NewReferencePage(GenericPage):
+    def get(self, project_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        self.render("project_new_reference.html")
+
+    def post(self, project_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key(db.Key(project_key))
+        kind_of_reference = self.request.get("kind_of_reference")
+        identifier = self.request.get("identifier")
+        try:
+            reference = get_add_reference(kind_of_reference, identifier)
+            if not (reference.key() in project.references):
+                project.references.append(reference.key())
+                logging.debug("DB WRITE: Adding a reference to a project.")
+                project.put()
+                self.redirect("/projects/project/%s/ref/%s" % (project_key, reference.key()))
+
+        except:
+            self.render("project_new_reference.html", error = "Could not retrieve reference")
 
 
 class ReferencePage(GenericPage):

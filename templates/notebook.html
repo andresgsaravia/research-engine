@@ -10,7 +10,7 @@
 
     <div class="go-back-link"><a href="/projects/project/{{project_key}}">&larr; Go back to your project's main page.</a></div>
 
-{{notebook.full_render() | safe}}
+{{notebook.full_render(project_key) | safe}}
 
 <div class="notes-wrapper">
   <h3>Notes</h3>

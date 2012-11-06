@@ -34,7 +34,7 @@
   <h3>Notebooks ({{len_nb_list}})</h3>
   {% for notebook in nb_list %}
     <div class="notebook">
-      {{notebook.short_render() | safe }}
+      {{notebook.short_render(project_key) | safe }}
     </div>
   {% endfor %}
 </div>
