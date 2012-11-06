@@ -211,6 +211,7 @@ def get_add_reference(species, identifier):
 class ReferencePage(GenericPage):
     def get(self, reference_key):
         user = self.get_user()
+        go_back_link = self.request.get("go_back_link")
         params = {}
         params["reference_key"] = reference_key
         params["reference"] = self.get_item_from_key(db.Key(reference_key))
@@ -218,6 +219,7 @@ class ReferencePage(GenericPage):
             logging.warning("Attempted to fetch a non-existing reference's page; key :1", reference_key)
             self.error(404)
         else:
+            if go_back_link: params["go_back_link"] = '<a href="%s">&larr; Go back.</a>' % go_back_link
             self.render("reference.html", **params)
 
 

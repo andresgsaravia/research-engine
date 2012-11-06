@@ -6,6 +6,12 @@
 
 {% block content %}
 
+<h3>Reference</h3>
+
+<div class="go-back-link">
+  {{go_back_link | safe}}
+</div>
+
 <div class="reference">
   {{reference.full_render() | safe}}
 </div>

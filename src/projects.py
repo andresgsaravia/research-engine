@@ -126,6 +126,7 @@ class ProjectPage(GenericPage):
         ref_list = []
         for ref_key in project.references:
             ref_list.append(self.get_item_from_key(ref_key))
+        ref_list.reverse()
         self.render("project.html", project = project, project_key = project_key, 
                     ref_list = ref_list, len_ref_list = len(ref_list))
         
@@ -198,7 +199,8 @@ class NewReferencePage(GenericPage):
                 project.references.append(reference.key())
                 logging.debug("DB WRITE: Adding a reference to a project.")
                 project.put()
-            self.redirect("/reference/%s" % reference.key())
+                self.redirect("/reference/%s?go_back_link=/projects/project/%s" % (reference.key(), project_key))
+
         except:
             self.render("project_new_reference.html", error = "Could not retrieve reference")
         
