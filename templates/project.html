@@ -38,7 +38,7 @@
   <div class="new-reference-link">
     <a href="/projects/project/new_reference/{{project_key}}">New reference</a>
   </div>
-  <h3>References</h3>
+  <h3>References ({{len_ref_list}})</h3>
   {% for reference in ref_list %}
     <div class="reference">
       {{reference.short_render() | safe}}

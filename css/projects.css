@@ -7,9 +7,6 @@ h2 {
 .project {
     border: 1px solid black;
     background: white;
-}
-
-.project + .project {
     margin-top: 1em;
 }
 
@@ -160,12 +157,25 @@ h2 {
     border-top: 1px solid #CED3E0;
 }
 
+.references .reference:hover {
+    background: #FFDF9F;
+}
+
 .references .reference-title a {
     color: black;
 }
 
+.references .reference-published a {
+    font-size: 0.9em;
+}
+
+.references .author_list {
+    width: 70%;
+}
+
 .references > * {
     padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 
