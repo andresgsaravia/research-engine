@@ -46,7 +46,7 @@
   <h3>References ({{len_ref_list}})</h3>
   {% for reference in ref_list %}
     <div class="reference">
-      {{reference.short_render() | safe}}
+      {{reference.short_render(project_key) | safe}}
     </div>
   {% endfor %}
 </div>

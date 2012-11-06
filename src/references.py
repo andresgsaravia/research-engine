@@ -28,11 +28,12 @@ class arXiv(db.Model):
     def full_render(self):
         return render_str("arXiv_reference_full.html", reference = self)
 
-    def short_render(self):
+    def short_render(self, project_key):
         authors_string = self.authors[0]
         if len(self.authors) > 1:
             authors_string += "<em> et al.</em>"
-        return render_str("arXiv_reference_short.html", reference = self, authors_string = authors_string)
+        return render_str("arXiv_reference_short.html", reference = self,
+                          authors_string = authors_string, project_key = project_key)
 
     def edit_render(self):
         params = {'reference' : self, 'authors_string' : ''}
@@ -61,11 +62,12 @@ class PublishedArticles(db.Model):
     def full_render(self):
         return render_str("article_reference_full.html", reference = self)
 
-    def short_render(self):
+    def short_render(self, project_key):
         authors_string = self.authors[0]
         if len(self.authors) > 1:
             authors_string += "<em> et al.</em>"
-        return render_str("article_reference_short.html", reference = self, authors_string = authors_string)
+        return render_str("article_reference_short.html", reference = self,
+                          authors_string = authors_string, project_key = project_key)
 
     def edit_render(self):
         authors_string = ''
@@ -84,14 +86,15 @@ class WebPage(db.Model):
     def full_render(self):
         return render_str("webpage_reference_full.html", reference = self)
 
-    def short_render(self):
+    def short_render(self, project_key):
         if len(self.authors) > 0:
             authors_string = self.authors[0]
             if len(self.authors) > 1:
                 authors_string += "<em> et al.</em>"
         else:
             authors_string = 'Unknown author'
-        return render_str("webpage_reference_short.html", reference = self, authors_string = authors_string)
+        return render_str("webpage_reference_short.html", reference = self, 
+                          authors_string = authors_string, project_key = project_key)
 
     def edit_render(self):
         authors_string = ''

@@ -2,7 +2,7 @@
 # For creating, managing and updating projects.
 
 from generic import *
-from references import get_add_reference
+import references
 
 SHORT_DESCRIPTION_LENGTH = 150
 
@@ -219,12 +219,12 @@ class NewReferencePage(GenericPage):
         kind_of_reference = self.request.get("kind_of_reference")
         identifier = self.request.get("identifier")
         try:
-            reference = get_add_reference(kind_of_reference, identifier)
+            reference = references.get_add_reference(kind_of_reference, identifier)
             if not (reference.key() in project.references):
                 project.references.append(reference.key())
                 logging.debug("DB WRITE: Adding a reference to a project.")
                 project.put()
-                self.redirect("/reference/%s?go_back_link=/projects/project/%s" % (reference.key(), project_key))
+                self.redirect("/projects/project/%s/ref/%s" % (project_key, reference.key()))
 
         except:
             self.render("project_new_reference.html", error = "Could not retrieve reference")
@@ -277,3 +277,8 @@ class NotebookPage(GenericPage):
             self.error(404)
             return
         self.render("notebook.html", notebook = notebook, notes =[], project_key = project_key)
+
+class ReferencePage(GenericPage):
+    def get(self, project_key, reference_key):
+        reference = self.get_item_from_key(db.Key(reference_key))
+        self.render("reference.html", reference = reference, project_key = project_key)
