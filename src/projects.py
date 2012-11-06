@@ -74,7 +74,9 @@ class Notebooks(db.Model):
 
     def short_render(self):
         last_note_date = self.last_updated.strftime("%d-%b-%Y")
-        return render_str("notebook_short.html", notebook = self, last_note_date = last_note_date)
+        owner_name = self.owner.username
+        return render_str("notebook_short.html", notebook = self, 
+                          last_note_date = last_note_date, owner_name = owner_name)
 
     def short_description(self):
         if len(self.description) < SHORT_DESCRIPTION_LENGTH:
@@ -145,8 +147,13 @@ class ProjectPage(GenericPage):
         for ref_key in project.references:
             ref_list.append(self.get_item_from_key(ref_key))
         ref_list.reverse()
+        notebooks = Notebooks.all().ancestor(project).order('last_updated')
+        nb_list = []
+        for nb in notebooks.run():
+            nb_list.append(nb)
         self.render("project.html", project = project, project_key = project_key, 
-                    ref_list = ref_list, len_ref_list = len(ref_list))
+                    ref_list = ref_list, len_ref_list = len(ref_list),
+                    nb_list = nb_list, len_nb_list = len(nb_list))
         
 
 class EditProjectPage(GenericPage):
@@ -234,7 +241,7 @@ class NewNotebookPage(GenericPage):
     def post(self, project_key):
         user = self.get_user()
         project = db.Query().filter("__key__ =", db.Key(project_key)).get()
-#        project = self.get_item_form_key(db.Key(project_key))
+#        project = self.get_item_form_key(db.Key(project_key)) # Why is this not working?
         if not user:
             self.redirect("/login")
             return

@@ -37,6 +37,122 @@ h2 {
     list-style: none;
 }
 
+/* Notebooks in the full project view */
+
+.notebooks {
+    width: 49%;
+    margin-top: 1.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 5em;
+}
+
+.notebooks > * {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.notebooks h3 {
+    padding: 0.3em;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.notebooks .new-notebook-link {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.notebooks .notebook {
+    border-top: 1px solid #C0B9D3;
+}
+
+.notebooks .notebook:hover {
+    background: #FFDF9F;
+}
+
+.notebook:nth-of-type(even) {
+    background: #E8E0FF;
+}
+
+.notebooks .notebook .date {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    color: #777777;
+    padding: 0.4em;
+}
+
+/* References in the full project view */
+
+.references {
+    width: 49%;
+    margin-top: 1.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 5em;
+}
+
+.references h3 {
+    padding: 0.3em;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.references .new-reference-link {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.references .reference {
+    font-size: 0.9em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    border-top: 1px solid #CED3E0;
+}
+
+.references .reference:hover {
+    background: #FFDF9F;
+}
+
+.references .reference-title a {
+    color: black;
+}
+
+.references .reference-published a {
+    font-size: 0.9em;
+}
+
+.references .author_list {
+    width: 70%;
+}
+
+.references > * {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+
+.reference:nth-of-type(even) {
+    background: #EBF1FF;
+}
+
+/* Recent activity in the full project view */
+
+.activity > * {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.activity h3 {
+    padding: 0.3em;
+    border-bottom: 1px solid #AAAAAA;
+}
+
 /* for a single project page */
 
 .project-full {
@@ -104,84 +220,6 @@ h2 {
     font-size: 0.9em;
 }
 
-
-/* Notebooks in the full project view */
-
-.notebooks {
-    width: 49%;
-    margin-top: 1.5em;
-    border: 1px solid black;
-    background: white;
-    min-height: 5em;
-}
-
-.notebooks h3 {
-    padding: 0.3em;
-    border-bottom: 1px solid #AAAAAA;
-}
-
-.notebooks .new-notebook-link {
-    position: relative;
-    float: right;
-    padding-top: 0.5em;
-    padding-right: 0.5em;
-}
-
-
-/* References in the full project view */
-
-.references {
-    width: 49%;
-    margin-top: 1.5em;
-    border: 1px solid black;
-    background: white;
-    min-height: 5em;
-}
-
-.references h3 {
-    padding: 0.3em;
-    border-bottom: 1px solid #AAAAAA;
-}
-
-.references .new-reference-link {
-    position: relative;
-    float: right;
-    padding-top: 0.5em;
-    padding-right: 0.5em;
-}
-
-.references .reference {
-    font-size: 0.9em;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
-    border-top: 1px solid #CED3E0;
-}
-
-.references .reference:hover {
-    background: #FFDF9F;
-}
-
-.references .reference-title a {
-    color: black;
-}
-
-.references .reference-published a {
-    font-size: 0.9em;
-}
-
-.references .author_list {
-    width: 70%;
-}
-
-.references > * {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-}
-
-
-.reference:nth-of-type(even) {
-    background: #EBF1FF;
-}
 
 /* for the edit project page */
 
