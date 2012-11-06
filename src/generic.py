@@ -90,14 +90,6 @@ class GenericPage(webapp2.RequestHandler):
         if not u: return None
         return u.username
 
-    def get_user_or_login(self):
-        u = self.get_user()
-        if u:
-            return u
-        else:
-            self.redirect("/login")
-            return None
-
     def get_item_from_key(self, item_key):
         logging.debug("DB READ: Handler %s requests an item using its key." % self.__class__.__name__)
         return db.Query().filter("__key__ =", item_key).get()
