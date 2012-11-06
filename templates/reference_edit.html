@@ -8,9 +8,9 @@
 
 {% block content %}
 <div class="item">
-  {{reference.edit_render() | safe}}
+  {{reference.edit_render(project_key) | safe}}
 </div>
 <br/><div class="error">{{error}}</div>
 
-<a href="/reference/{{reference.key()}}">&larr; Return without saving.</a>
+<a href="/projects/project/{{project_key}}/ref/{{reference.key()}}">&larr; Return without saving.</a>
 {% endblock %}
