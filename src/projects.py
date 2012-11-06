@@ -207,4 +207,8 @@ class NewReferencePage(GenericPage):
 
 class NewNotebookPage(GenericPage):
     def get(self, project_key):
-        self.render("under_construction.html")
+        user = self.get_user()
+        if not user: 
+            self.redirect("/login")
+            return
+        self.render("notebook_new.html", project_key = project_key)
