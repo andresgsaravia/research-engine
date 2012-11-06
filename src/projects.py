@@ -57,15 +57,6 @@ class Projects(db.Model):
         return render_str("project_full.html", p_description = p_description, project = self)
 
 
-# Child of Projects
-class ProjectEntries(db.Model):
-    title = db.StringProperty(required = True)
-    project_kind = db.StringProperty(required = True)
-    date = db.DateProperty(auto_now_add = True)
-    content = db.TextProperty(required = False)
-    author = db.ReferenceProperty(required = True)
-
-
 class Notebooks(db.Model):
     owner = db.ReferenceProperty(required = True)
     name = db.StringProperty(required = True)
