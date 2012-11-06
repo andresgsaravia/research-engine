@@ -8,6 +8,8 @@
 
 {% block content %}
 
+    <div class="go-back-link"><a href="/projects/project/{{project_key}}">&larr; Go back to your project's main page.</a></div>
+
 {{notebook.full_render() | safe}}
 
 <div class="notes-wrapper">

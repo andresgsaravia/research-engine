@@ -68,3 +68,13 @@
 .new-note-link {
     font-size: 0.8em;
 }
+
+.go-back-link {
+    margin-bottom: 0.5em;
+}
+
+.go-back-link a {
+    font-size: 0.8em;
+
+
+}

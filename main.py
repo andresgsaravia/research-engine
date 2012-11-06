@@ -20,6 +20,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/projects/project/edit/(.+)', projects.EditProjectPage),
                                ('/projects/project/new_reference/(.+)', projects.NewReferencePage),
                                ('/projects/project/new_notebook/(.+)', projects.NewNotebookPage),
+                               ('/projects/project/(.+)/nb/(.+)', projects.NotebookPage),
                                ('/projects/project/(.+)', projects.ProjectPage),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),

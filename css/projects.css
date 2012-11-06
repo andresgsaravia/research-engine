@@ -112,7 +112,7 @@ h2 {
     margin-top: 1.5em;
     border: 1px solid black;
     background: white;
-    min-height: 15em;
+    min-height: 5em;
 }
 
 .notebooks h3 {
@@ -135,7 +135,7 @@ h2 {
     margin-top: 1.5em;
     border: 1px solid black;
     background: white;
-    min-height: 15em;
+    min-height: 5em;
 }
 
 .references h3 {
