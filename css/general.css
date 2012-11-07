@@ -176,11 +176,14 @@ a:hover {
     height: 0;
     overflow: hidden;
     padding: 0;
-    border-radius: 0 0 5px 5px;
     -webkit-transition: height .25s ease .1s;
     -o-transition: height .25s ease .1s;
     -ms-transition: height .25s ease .1s;
     transition: height .25s ease .1s;
+}
+
+.menu ul li:last-child {
+    border-radius: 0 0 5px 5px;
 }
 
 .menu li:hover > ul li {
