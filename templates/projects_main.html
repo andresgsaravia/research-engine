@@ -11,12 +11,20 @@
 
 <h2>Your Projects</h2>
 
-<div class="projects-wrapper">
-{% for project in projects %}
-    <div class="project">
-      {{project.short_render() | safe }}
-    </div>
+{% if projects %}
 
-{% endfor %}
-</div>
+  <div class="projects-wrapper">
+  {% for project in projects %}
+      <div class="project">
+        {{project.short_render() | safe }}
+      </div>
+  {% endfor %}
+  </div>
+
+{% else %}
+
+  <p>You don't have any projects yet. You can add a new project <a href="/projects/new">here</a> or from the menu bar at the top.</p>
+
+{% endif %}
+
 {% endblock %}
