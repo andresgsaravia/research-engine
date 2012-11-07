@@ -10,6 +10,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/logout', users.LogoutPage),
                                ('/signup', users.SignupPage),
                                ('/settings', users.SettingsPage),
+                               ('/user/(.+)', users.UserPage),
                                # Projects
                                ('/projects', projects.MainPage),
                                ('/projects/new', projects.NewProjectPage),

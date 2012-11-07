@@ -59,7 +59,7 @@ class RegisteredUsers(db.Model):
     google_userid = db.StringProperty(required = False)
     my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
     my_notebooks = db.ListProperty(db.Key)                  # keys to Notebooks (defined in notebooks.py)
-
+    contacts = db.ListProperty(db.Key)
 
 ######################
 ##   Web Handlers   ##

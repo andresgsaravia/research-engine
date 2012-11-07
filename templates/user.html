@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Research Engine | User: {{page_user.username}}</title>
+    <link href="/css/user.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>User: {{page_user.username}}</h2>
+
+<div class="user-info">
+  {{page_user.about_me}}
+</div>
+
+<div class="is-contact">
+  {{is_contact_message}}
+</div>
+
+<form method="post">
+  <div class="submit-button">
+    <input type="submit" value="{{button_message}}" />
+  </div>
+</form>
+
+<div class="info">
+  {{info_message}}
+</div>
+{% endblock %}

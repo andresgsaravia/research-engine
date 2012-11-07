@@ -106,6 +106,9 @@ class SettingsPage(GenericPage):
         params["usern"] = user.username
         if user.email: params["email"] = user.email
         if user.about_me: params["about_me"] = user.about_me
+        params["contacts"] = []
+        for contact_key in user.contacts:
+            params["contacts"].append(self.get_item_from_key(contact_key))
         self.render("settings.html", **params)
 
     def post(self):
@@ -150,3 +153,49 @@ class SettingsPage(GenericPage):
             params["info"] = "Changes saved"
             self.set_cookie("username", user.username, user.salt)
             self.render("settings.html", **params)
+
+
+class UserPage(GenericPage):
+    def get(self, page_user_key):
+        logged_in_user = self.get_user()
+        page_user = self.get_item_from_key_str(page_user_key)
+        params = {"logged_in_user" : logged_in_user, "page_user" : page_user}
+        if not page_user:
+            self.error(404)
+            return
+        if logged_in_user.key() == page_user.key():
+            self.redirect("/settings")
+            return
+        if page_user.key() in logged_in_user.contacts:
+            params["is_contact_message"] = "%s is in your contacts list." % page_user.username
+            params["button_message"] = "Remove from contacts"
+        else:
+            params["is_contact_message"] = "%s is not in your contacts list." % page_user.username
+            params["button_message"] = "Add to contacts"
+        self.render("user.html", **params)
+            
+    def post(self, page_user_key):
+        logged_in_user = self.get_user()
+        if not logged_in_user:
+            self.redirect("/login")
+            return
+        page_user = self.get_item_from_key_str(page_user_key)
+        if not page_user:
+            self.error(404)
+            return
+        params ={"logged_in_user" : logged_in_user, "page_user" : page_user}
+        if page_user.key() in logged_in_user.contacts:
+            logged_in_user.contacts.remove(page_user.key())
+            logging.debug("DB WRITE: Handler UserPage is removing a contact from a user's contacts list.")
+            logged_in_user.put()
+            params["info_message"] = "Contact removed from your contacts list."
+            params["button_message"] = "Add to contacts"
+        else:
+            logged_in_user.contacts.append(page_user.key())
+            logging.debug("DB WRITE: Handler UserPage is adding a contact from a user's contacts list.")
+            logged_in_user.put()
+            params["info_message"] = "Contact added to your contacts list."
+            params["button_message"] = "Remove from contacts"
+        self.render("user.html", **params)
+            
+        
