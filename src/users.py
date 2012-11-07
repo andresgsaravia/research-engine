@@ -21,28 +21,33 @@ class SignupPage(GenericPage):
         params = {}
         params["usern"] = usern 
         params["email"] = email
-        params["error_message"] = ''
+        params["error"] = ''
         # Valid input
-        logging.debug("DB READ: Checking if username is available.")
+        logging.debug("DB READ: Checking if username is available for a new user.")
+        logging.debug("DB READ: Checking if email is available for a new user.")
         if not re.match(USERNAME_RE, usern):
             params['error_username'] = "*"
-            params['error_message'] += "That's not a valid username. "
+            params['error'] += "That's not a valid username. "
             have_error = True
         elif db.GqlQuery("select * from RegisteredUsers where username = '%s'" % usern).get():
             params['error_username'] = "*"
-            params['error_message'] += "That username is not available. "
+            params['error'] += 'That username is not available.'
+            have_error = True
+        elif db.GqlQuery("select * from RegisteredUsers where email = '%s'" % email).get():
+            params['error_email'] = "*"
+            params['error'] += 'That email is already in use by someone. Did you <a href="/recover_password">forget your password?. </a>'
             have_error = True
         if not re.match(PASSWORD_RE, password):
             params['error_password'] = "*"
-            params['error_message'] += "That's not a valid password. "
+            params['error'] += "That's not a valid password. "
             have_error = True
         elif password != verify:
             params['error_verify'] = "*"
-            params['error_message'] += "Your passwords didn't match. "
+            params['error'] += "Your passwords didn't match. "
             have_error = True
         if not re.match(EMAIL_RE, email):
             params['error_email'] = "*"
-            params['error_message'] += "That doesn't seem like a valid email. "
+            params['error'] += "That doesn't seem like a valid email. "
             have_error = True
         # Render
         if have_error:
@@ -50,8 +55,7 @@ class SignupPage(GenericPage):
         else:
             salt = make_salt()
             ph = hash_str(password + salt)
-            u = RegisteredUsers(username = usern, password_hash = ph, salt = salt)
-            if email: u.email = email
+            u = RegisteredUsers(username = usern, password_hash = ph, salt = salt, email = email)
             logging.debug("DB WRITE: New user registration.")
             u.put()
             self.set_cookie("username", usern, salt)
@@ -113,29 +117,36 @@ class SettingsPage(GenericPage):
         params["usern"] = self.request.get("usern")
         params["email"] = self.request.get("email")
         params["about_me"] = self.request.get("about_me")
-        params["bottom_message"] = ''
+        params["info"] = ''
+        params["error"] = ''
         have_error = False
-        u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", user.username).get()
         if user.username != params["usern"]:
-            # Check if available
+            # Check if new username is available
             logging.debug("DB READ: Checking availability to change a username.")
-            u2 = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", params["usern"]).get()
+            u2 = RegisteredUsers.all().filter("username =", params["usern"]).get()
             if u2 or (not re.match(USERNAME_RE, params["usern"])):
                 params["error_username"] = "*"
-                params['bottom_message'] += "Sorry, that username is not available. "
+                params['error'] += "Sorry, that username is not available. "
+                have_error = True
+        if user.email != params["email"]:
+            logging.debug("DB READ: Checking availability to change an email.")
+            u2 = RegisteredUsers.all().filter("email =", params["email"]).get()
+            if u2:
+                params["error_email"] = "*"
+                params["error"] += "That email is already in use by someone. "
                 have_error = True
         if not re.match(EMAIL_RE, params["email"]):
                 params["error_email"] = "*"
-                params["bottom_message"] += "That doesn't seem like a valid email. "
+                params["error"] += "That doesn't seem like a valid email. "
                 have_error = True
         if have_error:
-            params["bottom_message"] = '<div class="error">%s</div>' % params["bottom_message"]
             self.render("settings.html", **params)
         else:
-            u.username = params["usern"] 
-            u.email = params["email"]
-            u.about_me = params["about_me"]
+            user.username = params["usern"] 
+            user.email = params["email"]
+            user.about_me = params["about_me"]
             logging.debug("DB WRITE: Updating user's settings.")
-            u.put()
-            params["bottom_message"] = "Changes saved"
+            user.put()
+            params["info"] = "Changes saved"
+            self.set_cookie("username", user.username, user.salt)
             self.render("settings.html", **params)

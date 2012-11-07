@@ -75,6 +75,10 @@ a:hover {
     font-weight: bold;
 }
 
+.info {
+    color: #A6771A;
+}
+
 /* Menu */
 
 .menu-wrapper {
