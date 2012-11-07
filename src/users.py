@@ -55,11 +55,7 @@ class SignupPage(GenericPage):
             logging.debug("DB WRITE: New user registration.")
             u.put()
             self.set_cookie("username", usern, salt)
-            self.redirect('/new_user')
-
-class NewUserPage(GenericPage):
-    def get(self):
-        self.render("new_user.html")
+            self.redirect('/')
 
 class LoginPage(GenericPage):
     def get(self):
