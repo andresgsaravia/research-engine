@@ -1,1 +1,26 @@
 /* For the listing of your contacts */
+
+.contacts {
+    border: 1px solid black;
+    background: white;
+}
+
+.new-contact-link {
+    text-align: right;
+}
+
+.contacts .contact {
+    border-top: 1px solid #CED3E0;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 1em;
+}
+
+.contacts .contact:nth-of-type(even) {
+    background: #EBF1FF;
+}
+
+.contacts .contact:hover {
+    background: #FFDF9F;
+}

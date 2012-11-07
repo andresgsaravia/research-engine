@@ -15,9 +15,12 @@
 </div>
 <div class="contacts">
   {% for contact in contacts %}
-    <div class="contacts">
+    <div class="contact">
       <div class="name">
 	<a href="/user/{{contact.key()}}">{{contact.username}}</a>
+      </div>
+      <div class="collaborations">
+	<b>Projects in collaboration:</b> <br/>(Under construction)
       </div>
     </div>
   {% endfor %}
