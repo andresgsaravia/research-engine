@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link href="/css/welcome.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+<h1>Research Engine</h1>
+<h2>Welcome!</h2>
+
+{% if user %}
+<p>You are logged in as {{user.username}}. If you are not {{user.username}} you can <a href="/logout">logout here.</a></p>
+<p>You can also edit your settings <a href="/settings">here.</a></p>
+{% else %}
+<p>You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
+{% endif %}
+
+{% endblock %}

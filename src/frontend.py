@@ -4,7 +4,8 @@ from generic import *
 
 class MainPage(GenericPage):
     def get(self):
-        self.render("base.html")
+        user = self.get_user()
+        self.render("welcome.html", user = user)
 
 class UnderConstructionPage(GenericPage):
     def get(self):

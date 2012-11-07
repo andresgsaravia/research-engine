@@ -1,0 +1,5 @@
+/* For the welcome page (i.e. the root page) */
+
+h1, h2, p {
+    text-align: center;
+}
