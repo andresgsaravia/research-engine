@@ -1,1 +1,29 @@
 /* For the user page */
+
+.user-info {
+    background: white;
+    border: 1px solid black;
+    min-height: 4em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 2em;
+    padding-right: 2em;
+    font-style: italic;
+    margin-bottom: 2em;
+}
+
+.projects {
+    border: 1px solid black;
+    background: white;
+    min-height: 4em;
+    margin-top: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin-bottom: 2em;
+}
+
+.submit-button {
+    padding-top: 0.6em;
+}x

@@ -1,21 +1,27 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Research Engine | User: {{page_user.username}}</title>
+    <title>Research Engine | {{page_user.username}}</title>
     <link href="/css/user.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block content %}
 
-<h2>User: {{page_user.username}}</h2>
+<h2>{{page_user.username}}</h2>
 
 <div class="user-info">
   {{page_user.about_me}}
 </div>
 
+<h3>Public projects</h3>
+
+<div class="projects">
+  (Under construction)
+</div>
+
 <div class="is-contact">
-  {{is_contact_message}}
+  {{is_contact_message | safe}}
 </div>
 
 <form method="post">

@@ -167,10 +167,10 @@ class UserPage(GenericPage):
             self.redirect("/settings")
             return
         if page_user.key() in logged_in_user.contacts:
-            params["is_contact_message"] = "%s is in your contacts list." % page_user.username
+            params["is_contact_message"] = '%s is in <a href="/user/contacts">your contacts</a> list.' % page_user.username
             params["button_message"] = "Remove from contacts"
         else:
-            params["is_contact_message"] = "%s is not in your contacts list." % page_user.username
+            params["is_contact_message"] = '%s is not in <a href="/user/contacts">your contacts</a> list.' % page_user.username
             params["button_message"] = "Add to contacts"
         self.render("user.html", **params)
             
@@ -188,14 +188,14 @@ class UserPage(GenericPage):
             logged_in_user.contacts.remove(page_user.key())
             logging.debug("DB WRITE: Handler UserPage is removing a contact from a user's contacts list.")
             logged_in_user.put()
-            params["is_contact_message"] = "%s is not in your contacts list." % page_user.username
+            params["is_contact_message"] = '%s is not in <a href="/user/contacts">your contacts</a> list.' % page_user.username
             params["info_message"] = "Contact removed from your contacts list."
             params["button_message"] = "Add to contacts"
         else:
             logged_in_user.contacts.append(page_user.key())
             logging.debug("DB WRITE: Handler UserPage is adding a contact from a user's contacts list.")
             logged_in_user.put()
-            params["is_contact_message"] = "%s is in your contacts list." % page_user.username
+            params["is_contact_message"] = '%s is in <a href="/user/contacts">your contacts</a> list.' % page_user.username
             params["info_message"] = "Contact added to your contacts list."
             params["button_message"] = "Remove from contacts"
         self.render("user.html", **params)
@@ -212,9 +212,9 @@ class SearchForUserPage(GenericPage):
         if not search_username:
             have_error = True
             error += 'You must provide an username to search for.'
-        logging.debug("DB READ: Handler SearchForUserPage is searching for an user using its username.")
+        logging.debug("DB READ: Handler SearchForUserPage is searching for an user using its username. ")
         u = RegisteredUsers.all().filter("username =", search_username).get()
-        if not u:
+        if search_username and (not u):
             have_error = True
             error += "Sorry, we don't know any user with that username."
         if have_error:
