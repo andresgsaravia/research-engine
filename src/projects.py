@@ -395,3 +395,7 @@ class EditReferencePage(GenericPage):
                 logging.debug("DB WRITE: Updating %s reference metadata." % kind)
                 reference.put()
                 self.redirect("/projects/project/%s/ref/%s" % (project_key, reference_key))
+
+class RecentActivityPage(GenericPage):
+    def get(self):
+        self.render("under_construction.html")

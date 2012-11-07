@@ -188,14 +188,48 @@ class UserPage(GenericPage):
             logged_in_user.contacts.remove(page_user.key())
             logging.debug("DB WRITE: Handler UserPage is removing a contact from a user's contacts list.")
             logged_in_user.put()
+            params["is_contact_message"] = "%s is not in your contacts list." % page_user.username
             params["info_message"] = "Contact removed from your contacts list."
             params["button_message"] = "Add to contacts"
         else:
             logged_in_user.contacts.append(page_user.key())
             logging.debug("DB WRITE: Handler UserPage is adding a contact from a user's contacts list.")
             logged_in_user.put()
+            params["is_contact_message"] = "%s is in your contacts list." % page_user.username
             params["info_message"] = "Contact added to your contacts list."
             params["button_message"] = "Remove from contacts"
         self.render("user.html", **params)
-            
-        
+
+
+class SearchForUserPage(GenericPage):
+    def get(self):
+        self.render("search_for_user.html")
+
+    def post(self):
+        search_username = self.request.get("search_username")
+        have_error = False
+        error = ''
+        if not search_username:
+            have_error = True
+            error += 'You must provide an username to search for.'
+        logging.debug("DB READ: Handler SearchForUserPage is searching for an user using its username.")
+        u = RegisteredUsers.all().filter("username =", search_username).get()
+        if not u:
+            have_error = True
+            error += "Sorry, we don't know any user with that username."
+        if have_error:
+            self.render("search_for_user.html", error = error, search_username = search_username)
+        else:
+            self.redirect("/user/%s" % u.key())
+
+
+class ContactsPage(GenericPage):
+    def get(self):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        contacts = []
+        for contact_key in user.contacts:
+            contacts.append(self.get_item_from_key(contact_key))
+        self.render("contacts.html", contacts = contacts)

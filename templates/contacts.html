@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <title>Research Engine | Contacts</title>
+    <link href="/css/contacts.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Your contacts</h2>
+<div class="new-contact-link">
+  <a href="/user/search">Add a new contact</a>
+</div>
+<div class="contacts">
+  {% for contact in contacts %}
+    <div class="contacts">
+      <div class="name">
+	<a href="/user/{{contact.key()}}">{{contact.username}}</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

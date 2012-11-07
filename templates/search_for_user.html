@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Research Engine | Search for contacts</title>
+    <link href="/css/new_something.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Search for new contacts</h2>
+
+<p>Here you can look for people you know using their username</p>
+
+<form method="post">
+
+  <table>
+    <tr>
+      <td>Username:</td>
+      <td><input type="text" name="search_username" value="{{search_username}}" /></td>
+    </tr>
+  </table>
+
+  <div class="submit-button">
+    <input type="submit" value="Search" />
+  </div>
+
+</form>
+
+<div class="error">
+  {{error}}
+</div>
+
+{% endblock %}
