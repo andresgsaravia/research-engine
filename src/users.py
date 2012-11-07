@@ -63,26 +63,26 @@ class LoginPage(GenericPage):
         self.render("login.html", username = username)
 
     def post(self):
-        usern =self.request.get('usern')
+        email = self.request.get('email')
         password = self.request.get('password')
         have_error = False
-        params = dict(usern = usern, password = password)
-        if not usern:
-            params["error_username"] = "You must provide a valid username."
+        params = {'email' : email, 'password' : password, 'error' : ''}
+        if not email:
+            params["error"] += "You must provide a valid email. "
             have_error = True
         if not password:
-            params["error_password"] = "You must provide your password."
+            params["error"] += "You must provide your password. "
             have_error = True
         if not have_error:
             logging.debug("DB READ: Finding user to login.")
-            u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", usern).get()
+            u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE email = :1", email).get()
             if (not u) or (u.password_hash != hash_str(password + u.salt)):
-                params["error_password"] = "Invalid password"
+                params["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
                 have_error = True
         if have_error:
             self.render("login.html", **params)
         else:
-            self.set_cookie("username", usern, u.salt)
+            self.set_cookie("username", u.username, u.salt)
             self.redirect("/")            
 
 

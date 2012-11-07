@@ -21,13 +21,10 @@
     
     <tr>
       <td>
-	Username
+	Email
       </td>
       <td>
-	<input type="text" name="usern" value="{{usern}}">
-      </td>
-      <td class="error">
-	{{error_username}}
+	<input type="text" name="email" value="{{email}}">
       </td>
     </tr>
     
@@ -38,9 +35,6 @@
       <td>
 	<input type="password" name="password" value="">
 	</td>
-      <td class="error">
-	{{error_password}}
-      </td>
     </tr>
     
   </table>
@@ -48,6 +42,8 @@
     <input type="submit" value="login">
   </div>
 </form>
+<br/>
+<div class="error">{{error | safe}}</div>
 
 <br/>
 <p>If you don't have an account you can <a href="/signup">signup</a> for free.</p>

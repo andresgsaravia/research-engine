@@ -67,7 +67,12 @@ a:hover {
 }
 
 .error {
-    color:red;
+    color: red;
+}
+
+.error a {
+    color: red;
+    font-weight: bold;
 }
 
 /* Menu */
