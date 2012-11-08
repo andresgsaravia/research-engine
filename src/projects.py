@@ -102,6 +102,8 @@ class MainPage(GenericPage):
         self.render("projects_main.html", user = user, projects = projects)
 
 
+##   Projects   ##
+
 class NewProjectPage(GenericPage):
     def get(self):
         user = self.get_user()
@@ -150,6 +152,7 @@ class ProjectPage(GenericPage):
         nb_list = []
         for nb in notebooks.run():
             nb_list.append(nb)
+        nb_list.reverse()
         self.render("project.html", project = project, project_key = project_key, 
                     ref_list = ref_list, len_ref_list = len(ref_list),
                     nb_list = nb_list, len_nb_list = len(nb_list))
@@ -200,6 +203,8 @@ class EditProjectPage(GenericPage):
                         project.put()
                     self.redirect("/projects/project/%s" % project.key())
 
+
+##   Notebooks   ##
 
 class NewNotebookPage(GenericPage):
     def get(self, project_key):
