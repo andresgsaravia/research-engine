@@ -57,6 +57,7 @@ class Projects(db.Model):
         return render_str("project_full.html", p_description = p_description, project = self)
 
 
+# Notebooks have a Project as parent.
 class Notebooks(db.Model):
     owner = db.ReferenceProperty(required = True)
     name = db.StringProperty(required = True)
@@ -260,7 +261,11 @@ class NotebookPage(GenericPage):
         if not notebook:
             self.error(404)
             return
-        self.render("notebook.html", notebook = notebook, notes =[], project_key = project_key)
+        logging.debug("DB READ: Handler NotebookPage is getting all the notes for a notebook.")
+        notes = []
+        for note in NotebookNotes.all().ancestor(notebook).order("-date").run():
+            notes.append(note)
+        self.render("notebook.html", notebook = notebook, notes = notes, project_key = project_key)
 
 
 class EditNotebookPage(GenericPage):
@@ -337,6 +342,7 @@ class NewNotePage(GenericPage):
             self.render("notebook_new_note.html", notebook = notebook, error = error, 
                         title = title, content = content)
         else:
+            content = content.replace("\n", "<br/>")
             new_note = NotebookNotes(title = title, content = content, parent = notebook)
             logging.debug("DB WRITE: Handler NewNotePage is writing a new instance of NotebookNotes.")
             new_note.put()

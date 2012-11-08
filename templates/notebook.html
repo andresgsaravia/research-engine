@@ -22,7 +22,11 @@
 
   <div class="all-the-notes">
     {% for note in notes %}
-      {{note.short_render()}}
+      <div class="note">
+	<div class="date">{{note.date}}</div>
+	<div class="title">{{note.title}}</div>
+	<div class="content">{{note.content | safe}}</div>
+      </div>
     {% endfor %}
   </div>
 </div>
