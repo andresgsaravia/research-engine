@@ -47,7 +47,7 @@
       <div class="note">
 	<div class="date">{{note.date.strftime("%d-%b-%Y")}}</div>
 	<div class="title"><a href="/projects/project/{{project_key}}/nb/note/{{note.key()}}">{{note.title}}</a></div>
-	<div class="note-content">{{note.content | safe}}</div>
+	<div class="note-content">{{note.content.replace("\n", "<br/>") | safe}}</div>
       </div>
     {% endfor %}
   </div>

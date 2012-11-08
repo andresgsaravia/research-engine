@@ -336,7 +336,6 @@ class NewNotePage(GenericPage):
             self.render("notebook_new_note.html", notebook = notebook, error = error, 
                         title = title, content = content)
         else:
-            content = content.replace("\n", "<br/>")
             new_note = NotebookNotes(title = title, content = content, parent = notebook)
             logging.debug("DB WRITE: Handler NewNotePage is writing a new instance of NotebookNotes.")
             new_note.put()
