@@ -9,12 +9,34 @@
 
 {% block content %}
 
-    <div class="go-back-link"><a href="/projects/project/{{project_key}}">&larr; Go back to your project's main page.</a></div>
+<div class="go-back-link"><a href="/projects/project/{{project_key}}">&larr; Go back to your project's main page.</a></div>
 
-{{notebook.full_render(project_key) | safe}}
+<div class="notebook-full">
+  
+  <div class="notebook-details">
+
+    <div class="dates">
+      <b>Last note: </b> {{notebook.last_updated.strftime("%d-%b-%Y")}} <br/>
+      <b>Started: </b> {{notebook.started.strftime("%d-%b-%Y")}}
+    </div>
+
+    <div class="description">
+      <b>Description:</b><br/><br/>
+      {{notebook.description.replace("\n", "<br/>") | safe}}
+    </div>
+
+  </div>
+
+  <h2>Notebook: {{notebook.name}}<br/><a href="/projects/project/{{project_key}}/nb/edit/{{notebook.key()}}">Edit notebook description</a></h2>
+
+</div>
+
+<div class="navigation-menu">
+  <h3>Navigation menu</h3>
+  (Under construction)
+</div>
 
 <div class="notes-wrapper">
-  <h3>Notes</h3>
 
   <div class="new-note-link">
     <a href="/projects/project/{{project_key}}/nb/new_note/{{notebook.key()}}">New note</a>
@@ -23,9 +45,9 @@
   <div class="all-the-notes">
     {% for note in notes %}
       <div class="note">
-	<div class="date">{{note.date}}</div>
-	<div class="title">{{note.title}}</div>
-	<div class="content">{{note.content | safe}}</div>
+	<div class="date">{{note.date.strftime("%d-%b-%Y")}}</div>
+	<div class="title"><a href="/projects/project/{{project_key}}/nb/note/{{note.key()}}">{{note.title}}</a></div>
+	<div class="note-content">{{note.content | safe}}</div>
       </div>
     {% endfor %}
   </div>

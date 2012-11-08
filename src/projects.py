@@ -65,13 +65,6 @@ class Notebooks(db.Model):
     started = db.DateTimeProperty(auto_now_add = True)
     last_updated = db.DateTimeProperty(auto_now = True)
 
-    def full_render(self, project_key):
-        params = {'project_key' : project_key, 'notebook' : self}
-        params["n_description"] = self.description.replace("\n", "<br/>")
-        params["last_note"] = self.last_updated.strftime("%d-%b-%Y")
-        params["started"] = self.started.strftime("%d-%b-%Y")
-        return render_str("notebook_full.html", **params)
-
     def short_render(self, project_key):
         last_note_date = self.last_updated.strftime("%d-%b-%Y")
         owner_name = self.owner.username
@@ -261,11 +254,12 @@ class NotebookPage(GenericPage):
         if not notebook:
             self.error(404)
             return
+        params = {'project_key' : project_key, 'notebook' : notebook}
         logging.debug("DB READ: Handler NotebookPage is getting all the notes for a notebook.")
-        notes = []
+        params["notes"] = []
         for note in NotebookNotes.all().ancestor(notebook).order("-date").run():
-            notes.append(note)
-        self.render("notebook.html", notebook = notebook, notes = notes, project_key = project_key)
+            params["notes"].append(note)
+        self.render("notebook.html", **params)
 
 
 class EditNotebookPage(GenericPage):
