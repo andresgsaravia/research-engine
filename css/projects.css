@@ -27,7 +27,7 @@ h2 {
     padding: 0.5em;
 }
 
-.project .authors {
+.project .authors a {
     padding-left: 0.5em;
     font-size: 0.9em;
     color: #555555;
@@ -36,6 +36,12 @@ h2 {
 .project li {
     list-style: none;
 }
+
+.project-full .authors a {
+    color: black;
+    font-size: 0.9em;
+}
+
 
 /* Notebooks in the full project view */
 
