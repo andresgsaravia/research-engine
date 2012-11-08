@@ -84,6 +84,13 @@ class Notebooks(db.Model):
             return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
 
 
+# Each note should be a child of a Projects instance.
+class NotebookNotes(db.Model):
+    title = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    date = db.DateTimeProperty(auto_now_add = True)
+
+
 ######################
 ##   Web Handlers   ##
 ######################
@@ -297,11 +304,48 @@ class EditNotebookPage(GenericPage):
 class NewNotePage(GenericPage):
     def get(self, project_key, notebook_key):
         user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
         notebook = self.get_item_from_key_str(notebook_key)
         error = ''
-        if not notebook.owner == user.key():
-            error = "You are not the owner of this notebook, you can not add a new note to it."
+        if not notebook.owner.key() == user.key():
+            error = "You are not the owner of this notebook; you can not add a new note to it."
         self.render("notebook_new_note.html", notebook = notebook, error = error)
+
+    def post(self, project_key, notebook_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key_str(project_key)
+        notebook = self.get_item_from_key_str(notebook_key)
+        error = ""
+        title = self.request.get("title")
+        content = self.request.get("content")
+        have_error = False
+        if not notebook.owner.key() == user.key():
+            have_error = True
+            error = "You are not the owner of this notebook; you can not add a new note to it."
+        if not title:
+            have_error = True
+            error += "Please provide a title for your note. "
+        if not content:
+            have_error = True
+            error += "Please provide a content for your note. "
+        if have_error:
+            self.render("notebook_new_note.html", notebook = notebook, error = error, 
+                        title = title, content = content)
+        else:
+            new_note = NotebookNotes(title = title, content = content, parent = notebook)
+            logging.debug("DB WRITE: Handler NewNotePage is writing a new instance of NotebookNotes.")
+            new_note.put()
+            self.redirect("/projects/project/%s/nb/note/%s" % (project_key, new_note.key()))
+
+
+class NotePage(GenericPage):
+    def get(self, project_key, note_key):
+        self.render("under_construction.html")
 
 
 ##   References   ##
