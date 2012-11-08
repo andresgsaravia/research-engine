@@ -253,8 +253,43 @@ class NotebookPage(GenericPage):
 
 class EditNotebookPage(GenericPage):
     def get(self, project_key, notebook_key):
-        self.render("under_construction.html")
+        notebook = self.get_item_from_key_str(notebook_key)
+        self.render("notebook_edit.html", notebook = notebook, project_key = project_key, notebook_key = notebook_key)
 
+    def post(self, project_key, notebook_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        notebook = self.get_item_from_key_str(notebook_key)
+        if not notebook:
+            self.error(404)
+            return
+        nb_name = self.request.get("nb_name")
+        nb_description = self.request.get("nb_description")
+        params = {"project_key" : project_key, "notebook_key" : notebook_key, "notebook" : notebook,
+                  "nb_name" : nb_name, "nb_description" : nb_description, "error" : ""}
+        have_error = False
+        if not nb_name:
+            have_error = True
+            params["error"] += "Please provide a name for your notebook. "
+        if not nb_description:
+            have_error = True
+            params["error"] += "Please provide  a description for your notebook. "
+        if not notebook.owner == user.key():
+            have_error = True
+            params["error"] = "You are not the owner of this notebook. "
+        if have_error:
+            self.render("notebook_edit.html", **params)
+        else:
+            notebook.name = nb_name
+            notebook.description = nb_description
+            logging.debug("DB WRITE: Handler EditNotebookPage is editing a notebook's details.")
+            notebook.put()
+            self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook_key))
+
+
+##   References   ##
 
 class NewReferencePage(GenericPage):
     def get(self, project_key):

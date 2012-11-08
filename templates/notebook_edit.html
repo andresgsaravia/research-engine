@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+  <title>Research Engine | Edit notebook details</title>
+  <link href="/css/new_something.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Edit Notebook</h2>
+
+<form method="post">
+  <table>
+    <tr>
+      <td>
+	Notebook name:
+      </td>
+      <td>
+	<input type="text" name="nb_name" value="{{notebook.name}}"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	Description:
+      </td>
+      <td>
+	<textarea name="nb_description">{{notebook.description}}</textarea>
+      </td>
+    </tr>
+  </table>
+
+  <div class="submit-button">
+    <input type="submit" value="Save changes"/>
+  </div>
+
+</form>
+
+<br/><div class="error">{{error}}</div>
+
+<a href="/projects/project/{{project_key}}/nb/{{notebook_key}}">&larr; Return to your notebooks's page.</a>
+
+{% endblock %}
