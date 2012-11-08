@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+  <title>Research Engine | New note</title>
+  <link href="/css/new_note.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+<h2>{{notebook.name}}</h2>
+<h3>New note</h3>
+
+<form method="post">
+
+  <input type="text" name="title" value="{{title}}" placeholder="Enter title here">
+
+  <textarea name="content" placeholder="Your note's content.">{{content}}</textarea>
+
+  <div class="submit-button">
+    <input type="submit" value="Save note">
+  </div>
+
+</form>
+
+
+{% endblock %}

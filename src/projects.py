@@ -294,6 +294,16 @@ class EditNotebookPage(GenericPage):
             self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook_key))
 
 
+class NewNotePage(GenericPage):
+    def get(self, project_key, notebook_key):
+        user = self.get_user()
+        notebook = self.get_item_from_key_str(notebook_key)
+        error = ''
+        if not notebook.owner == user.key():
+            error = "You are not the owner of this notebook, you can not add a new note to it."
+        self.render("notebook_new_note.html", notebook = notebook, error = error)
+
+
 ##   References   ##
 
 class NewReferencePage(GenericPage):
