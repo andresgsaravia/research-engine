@@ -339,6 +339,8 @@ class NewNotePage(GenericPage):
             new_note = NotebookNotes(title = title, content = content, parent = notebook)
             logging.debug("DB WRITE: Handler NewNotePage is writing a new instance of NotebookNotes.")
             new_note.put()
+            logging.debug("DB WRITE: Handler NewNotePage is updating a Notebook's last_updated property.")
+            notebook.put()
             self.redirect("/projects/project/%s/nb/note/%s" % (project_key, new_note.key()))
 
 
