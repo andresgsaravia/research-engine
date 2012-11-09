@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>Research Engine | Note</title>
+  <link href="/css/note.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<h2>{{notebook.name}}</h2>
+
+<div class="note">
+
+  <div class="date">{{note.date.strftime("%d-%b-%Y")}}</div>
+  <div class="title">{{note.title}}</div>
+  <div class="note-content">{{note.content.replace("\n", "<br/>") | safe}}</div>
+
+</div>
+
+<div class="edit-link">
+  <a href="/projects/project/{{project_key}}/nb/edit_note/{{note.key()}}">Edit this note.</a>
+</div>
+
+<div class="return-link">
+  <a href="/projects/project/{{project_key}}/nb/{{notebook.key()}}">&larr; Return to your notebook's page.</a>
+</div>
+
+{% endblock %}

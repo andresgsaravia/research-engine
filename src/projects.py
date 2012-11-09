@@ -312,7 +312,7 @@ class NewNotePage(GenericPage):
         error = ''
         if not notebook.owner.key() == user.key():
             error = "You are not the owner of this notebook; you can not add a new note to it."
-        self.render("notebook_new_note.html", notebook = notebook, error = error)
+        self.render("notebook_new_note.html", notebook = notebook, error = error, project_key = project_key)
 
     def post(self, project_key, notebook_key):
         user = self.get_user()
@@ -350,8 +350,14 @@ class NewNotePage(GenericPage):
 
 class NotePage(GenericPage):
     def get(self, project_key, note_key):
-        self.render("under_construction.html")
+        note = self.get_item_from_key_str(note_key)
+        notebook = note.parent()
+        self.render("notebook_note.html", project_key = project_key, note = note, notebook = notebook)
 
+
+class EditNotePage(GenericPage):
+    def get(self, project_key, note_key):
+        self.render("under_construction.html")
 
 ##   References   ##
 
