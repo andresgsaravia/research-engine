@@ -144,7 +144,7 @@ class NewProjectPage(GenericPage):
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
-        project = self.get_item_from_key(db.Key(project_key))
+        project = self.get_item_from_key_str(project_key)
         ref_list = []
         for ref_key in project.references:
             ref_list.append(self.get_item_from_key(ref_key))
@@ -157,6 +157,28 @@ class ProjectPage(GenericPage):
         self.render("project.html", project = project, project_key = project_key, 
                     ref_list = ref_list, len_ref_list = len(ref_list),
                     nb_list = nb_list, len_nb_list = len(nb_list))
+
+    def post(self, project_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key_str(project_key)
+        if not project:
+            self.error(404)
+            return
+        if not (user.key() in project.authors):
+            self.write("You are not allowed to do that.")
+            return
+        action = self.request.get("action")
+        if action == "add_collaborator":
+            new_collaborator = self.get_item_from_key_str(self.request.get("new_collaborator_key"))
+            assert new_collaborator     # There souldn't be a way to make this request with a bad key.
+            assert not (new_collaborator.key() in project.authors)
+            project.authors.append(new_collaborator.key())
+            logging.debug("DB WRITE: Handler ProjectPage is adding a new collaborator to a project.")
+            project.put()
+            self.redirect("/projects/project/%s" % project_key)
         
 
 class EditProjectPage(GenericPage):

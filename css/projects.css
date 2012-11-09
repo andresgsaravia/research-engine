@@ -37,11 +37,25 @@ h2 {
     list-style: none;
 }
 
+.project-full {
+    overflow: auto;
+    padding-bottom: 1em;
+}
+
+.project-full .authors .label {
+    font-style: italic;
+}
+
 .project-full .authors a {
     color: black;
     font-size: 0.9em;
 }
 
+.project-full .authors li {
+    position: relative;
+    float: left;
+    padding-right: 1em;
+}
 
 /* Notebooks in the full project view */
 

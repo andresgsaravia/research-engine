@@ -12,7 +12,7 @@
     margin-bottom: 2em;
 }
 
-.projects {
+.public-projects {
     border: 1px solid black;
     background: white;
     min-height: 4em;
@@ -26,4 +26,75 @@
 
 .submit-button {
     padding-top: 0.6em;
-}x
+}
+
+.collaborations {
+    margin-top: 2em;
+}
+
+.collaborations .projects {
+    border: 1px solid black;
+    background: white;
+    margin-top: 1em;
+}
+
+.collaborations .projects .project {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-right: 1em;
+    padding-left: 1em;
+    border-bottom: 1px solid black;
+}
+
+.collaborations .projects .project:last-child {
+    border: none;
+}
+
+.collaborations .projects .project:nth-of-type(even) {
+    background: #EBF1FF;
+}
+
+.collaborations .projects .project:hover {
+    background: #FFDF9F;
+}
+
+.collaborations .projects .project .invite-button {
+    margin-top: 0.5em;
+}
+
+.project .date {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    color: #777777;
+}
+
+.project {
+    overflow: auto;
+}
+
+.project .name {
+    padding: 0.5em;
+}
+
+.project .short-description {
+    padding: 0.5em;
+}
+
+.project .authors a {
+    padding-left: 0.5em;
+    font-size: 0.9em;
+    color: #555555;
+}
+    
+.project li {
+    position: relative;
+    float: left;
+    list-style: none;
+}
+
+.not-collaborating {
+    margin-top: 1em;
+}

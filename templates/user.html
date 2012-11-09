@@ -16,7 +16,7 @@
 
 <h3>Public projects</h3>
 
-<div class="projects">
+<div class="public-projects">
   (Under construction)
 </div>
 
@@ -33,4 +33,55 @@
 <div class="info">
   {{info_message}}
 </div>
+
+<div class="collaborations">
+{% if is_contact %}
+
+  {% if projects_collaborating %}
+  <div class="collaborating">
+    <h3>Projects in collaboration</h3>
+    <div class="projects">
+      {% for project in projects_collaborating %}
+        <div class="project">
+          {{project.short_render() | safe}}
+	</div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if projects_not_collaborating %}
+  <div class="not-collaborating">
+    <h3>Invite to collaborate in a project</h3>
+    <div class="projects">
+      {% for project in projects_not_collaborating %}
+      <div class="project">
+       
+	<div class="project-name">
+	  <a href="/projects/project/{{project.key()}}">{{project.name}}</a>
+	</div>
+	  
+	<form method="post" action="/projects/project/{{project.key()}}">
+	  <div class="invite-button">
+	    <input type="hidden" name="action" value="add_collaborator" />
+	    <input type="hidden" name="new_collaborator_key" value="{{page_user.key()}}" />
+ 	    <input type="submit" value="Invite to this project" />
+          </div>
+	</form>
+	
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+  {% endif %}
+
+{% endif %}
+
+</div>
+
+
+
 {% endblock %}
+
+

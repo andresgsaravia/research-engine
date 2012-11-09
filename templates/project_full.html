@@ -14,6 +14,7 @@
   </div>
 
   <div class="authors">
+    <div class="label">Authors:</div>
     <ul>
       {% for author in project.list_of_authors() %}
         <li><a href="/user/{{author.key()}}">{{author.username}}</a></li>

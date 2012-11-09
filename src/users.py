@@ -167,9 +167,19 @@ class UserPage(GenericPage):
             self.redirect("/settings")
             return
         if page_user.key() in logged_in_user.contacts:
+            params["is_contact"] = True
             params["is_contact_message"] = '%s is in <a href="/user/contacts">your contacts</a> list.' % page_user.username
             params["button_message"] = "Remove from contacts"
+            params["projects_not_collaborating"] = []
+            params["projects_collaborating"] = []
+            for project_key in logged_in_user.my_projects:
+                project = self.get_item_from_key(project_key)
+                if page_user.key() in project.authors:
+                    params["projects_collaborating"].append(project)
+                else:
+                    params["projects_not_collaborating"].append(project)
         else:
+            params["is_contact"] = False
             params["is_contact_message"] = '%s is not in <a href="/user/contacts">your contacts</a> list.' % page_user.username
             params["button_message"] = "Add to contacts"
         self.render("user.html", **params)
@@ -183,22 +193,15 @@ class UserPage(GenericPage):
         if not page_user:
             self.error(404)
             return
-        params ={"logged_in_user" : logged_in_user, "page_user" : page_user}
         if page_user.key() in logged_in_user.contacts:
             logged_in_user.contacts.remove(page_user.key())
             logging.debug("DB WRITE: Handler UserPage is removing a contact from a user's contacts list.")
             logged_in_user.put()
-            params["is_contact_message"] = '%s is not in <a href="/user/contacts">your contacts</a> list.' % page_user.username
-            params["info_message"] = "Contact removed from your contacts list."
-            params["button_message"] = "Add to contacts"
         else:
             logged_in_user.contacts.append(page_user.key())
             logging.debug("DB WRITE: Handler UserPage is adding a contact from a user's contacts list.")
             logged_in_user.put()
-            params["is_contact_message"] = '%s is in <a href="/user/contacts">your contacts</a> list.' % page_user.username
-            params["info_message"] = "Contact added to your contacts list."
-            params["button_message"] = "Remove from contacts"
-        self.render("user.html", **params)
+        self.redirect("/user/%s" % page_user_key)
 
 
 class SearchForUserPage(GenericPage):
