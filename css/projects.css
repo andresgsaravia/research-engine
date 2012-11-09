@@ -149,6 +149,16 @@ h2 {
 
 /* Recent activity in the full project view */
 
+.activity {
+    width: 49%;
+    position: relative;
+    float: right;
+    margin-top: 1.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 32.5em;
+}
+
 .activity > * {
     padding-left: 0.5em;
     padding-right: 0.5em;
@@ -182,8 +192,10 @@ h2 {
 }
 
 .project-full .description {
+    height: 10em;
     padding-left: 5em;
     padding-right: 5em;
+    overflow: auto;
 }
 
 .project-full .authors {
@@ -194,15 +206,6 @@ h2 {
     list-style: none;
 }
 
-.activity {
-    width: 49%;
-    position: relative;
-    float: right;
-    margin-top: 1.5em;
-    border: 1px solid black;
-    background: white;
-    min-height: 32.5em;
-}
 
 .return-link {
     margin-top: 0.6em;

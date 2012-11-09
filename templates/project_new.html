@@ -12,26 +12,11 @@
 <h2>New Project</h2>
 
 <form method="post">
-  <table>
-    <tr>
-      <td>
-	Project name:
-      </td>
-      <td>
-	<input type="text" name="p_name" value="{{p_name}}"/>
-      </td>
-    </tr>
 
-    <tr>
-      <td>
-	Description:
-      </td>
-      <td>
-	<textarea name="p_description">{{p_description}}</textarea>
-      </td>
-    </tr>
-  </table>
-
+  <input type="text" name="p_name" value="{{p_name}}" placeholder="Name of the project" />
+  
+  <textarea name="p_description" placeholder="Description of the project">{{p_description}}</textarea>
+  
   <div class="submit-button">
     <input type="submit" value="Create new project"/>
   </div>

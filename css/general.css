@@ -51,6 +51,7 @@ a:hover {
     padding-bottom: 3em;
     text-align: justify;
     padding-top: 1.5em;
+    overflow: auto;
 }
 
 .site-title {

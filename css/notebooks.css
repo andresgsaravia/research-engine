@@ -31,7 +31,7 @@
 /* For the rendering of a single notebook */
 
 .notebook-full {
-    overflow: auto
+    overflow: auto;
 }
 
 .notebook-full .notebook-details{
