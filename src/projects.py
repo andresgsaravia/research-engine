@@ -178,6 +178,9 @@ class ProjectPage(GenericPage):
             project.authors.append(new_collaborator.key())
             logging.debug("DB WRITE: Handler ProjectPage is adding a new collaborator to a project.")
             project.put()
+            logging.debug("DB WRITE: Handler ProjectPage is updting a RegisteredUser's my_projects property.")
+            new_collaborator.my_projects.append(project.key())
+            new_collaborator.put()
             self.redirect("/projects/project/%s" % project_key)
         
 
