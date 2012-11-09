@@ -12,25 +12,10 @@
 <h2>Edit Notebook</h2>
 
 <form method="post">
-  <table>
-    <tr>
-      <td>
-	Notebook name:
-      </td>
-      <td>
-	<input type="text" name="nb_name" value="{{notebook.name}}"/>
-      </td>
-    </tr>
 
-    <tr>
-      <td>
-	Description:
-      </td>
-      <td>
-	<textarea name="nb_description">{{notebook.description}}</textarea>
-      </td>
-    </tr>
-  </table>
+  <input type="text" name="nb_name" value="{{notebook.name}}" placeholder="Notebook name." />
+
+  <textarea name="nb_description" placeholder="Notebook description.">{{notebook.description}}</textarea>
 
   <div class="submit-button">
     <input type="submit" value="Save changes"/>

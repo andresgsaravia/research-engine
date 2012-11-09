@@ -40,8 +40,8 @@
     width: 70%;
     border: 1px solid black;
     background: white;
-    width: 70%;
     margin-left: 2em;
+    overflow: auto;
 }
 
 .notebook-full h2 {
@@ -63,6 +63,7 @@
 
 .notebook-full .description {
     margin: 0.5em;
+    height: 12em;
 }
 
 .go-back-link {
