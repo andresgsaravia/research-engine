@@ -240,11 +240,13 @@ class NewNotebookPage(GenericPage):
         else:
             new_notebook = Notebooks(owner = user.key(), name = n_name, description = n_description, 
                                      parent  = db.Key(project_key))
-            logging.debug("DB WRITE: Creating a new instance of Notebooks.")
+            logging.debug("DB WRITE: Handler NewNotebookPage is creating a new instance of Notebooks.")
             new_notebook.put()
             user.my_notebooks.append(new_notebook.key())
-            logging.debug("DB WRITE: Appending a new notebook to a RegiteredUser's my_noteoboks list.")
+            logging.debug("DB WRITE: Handler NewNotebookPage is appending a new notebook to a RegiteredUser's my_notebooks list.")
             user.put()
+            logging.debug("DB WRITE: Handler NewNotebookPage is updating a project's last_updated property.")
+            project.put()
             self.redirect("/projects/project/%s/nb/%s" % (project_key, new_notebook.key()))
 
 
@@ -341,6 +343,8 @@ class NewNotePage(GenericPage):
             new_note.put()
             logging.debug("DB WRITE: Handler NewNotePage is updating a Notebook's last_updated property.")
             notebook.put()
+            logging.debug("DB WRITE: Handler NewNotePage is updating a Project's last_updated property.")
+            project.put()
             self.redirect("/projects/project/%s/nb/note/%s" % (project_key, new_note.key()))
 
 
@@ -371,9 +375,10 @@ class NewReferencePage(GenericPage):
             reference = get_add_reference(kind_of_reference, identifier)
             if not (reference.key() in project.references):
                 project.references.append(reference.key())
-                logging.debug("DB WRITE: Adding a reference to a project.")
+                logging.debug("DB WRITE: Handler NewReferencePage is adding a reference to a project.")
                 project.put()
-                self.redirect("/projects/project/%s/ref/%s" % (project_key, reference.key()))
+            self.redirect("/projects/project/%s/ref/%s" % (project_key, reference.key()))
+            
 
         except:
             self.render("project_new_reference.html", error = "Could not retrieve reference")
