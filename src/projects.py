@@ -357,7 +357,65 @@ class NotePage(GenericPage):
 
 class EditNotePage(GenericPage):
     def get(self, project_key, note_key):
-        self.render("under_construction.html")
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        note = self.get_item_from_key_str(note_key)
+        if not note:
+            self.error(404)
+            return
+        project = self.get_item_from_key_str(project_key)
+        if not project:
+            self.error(404)
+            return
+        logging.debug("DB READ: Handler EditNotePage is requesting a Notebook from a Note's parent.")
+        notebook = note.parent()
+        assert notebook  # We shouldn't have Notes without Notebooks.
+        error = ''
+        if not notebook.owner.key() == user.key():
+            error = "You are not the owner of this notebook; you will be unable to make changes."
+        self.render("note_edit.html", note = note, notebook = notebook, error = error, project_key = project_key)
+
+    def post(self, project_key, note_key):
+        user = self.get_user()
+        if not user:
+            self.redirec("/login")
+            return
+        note = self.get_item_from_key_str(note_key)
+        params = {"note" : note}
+        if not note:
+            self.error(404)
+            return
+        params["project"] = self.get_item_from_key_str(project_key)
+        if not params["project"]:
+            self.error(404)
+            return
+        logging.debug("DB READ: Handler EditNotePage is requesting a Notebook from a Note's parent.")
+        notebook = note.parent()
+        assert notebook  # We shouldn't have Notes without Notebooks.
+        params["error"] = ''
+        have_error = False
+        params["title"] = self.request.get("title")
+        params["content"] = self.request.get("content")
+        if not params["title"]:
+            have_error = True
+            params["error"] += "Please provide a title for the note. "
+        if not params["content"]:
+            have_error = True
+            params["content"] += "Please provide a content for the note. "
+        if not notebook.owner.key() == user.key():
+            have_error = True
+            params["error"] = "You are not the owner of this notebook; you are unable to make changes. "
+        if have_error:
+            self.render("note_edit.html", **params)
+        else:
+            note.title = params["title"]
+            note.content = params["content"]
+            logging.debug("DB WRITE: Handler EditNotePage is updating a Note.")
+            note.put()
+            self.redirect("/projects/project/%s/nb/note/%s" % (project_key, note_key))
+
 
 ##   References   ##
 

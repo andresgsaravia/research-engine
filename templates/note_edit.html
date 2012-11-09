@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>Research Engine | Edit note</title>
+  <link href="/css/new_note.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+<form method="post">
+  <input type="text" name="title" value="{{note.title}}" placeholder="Enter title here">
+  <textarea name="content" placeholder="Your note's content.">{{note.content}}</textarea>
+  <div class="submit-button">
+    <input type="submit" value="Save note">
+  </div>
+</form>
+
+<br/><div class="error">{{error}}</div>
+
+<a href="/projects/project/{{project_key}}/nb/note/{{note.key()}}">&larr; Return without saving.</a>
+
+{% endblock %}
