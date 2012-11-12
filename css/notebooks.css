@@ -87,8 +87,11 @@
     border: 1px solid black;
     margin-top: 1em;
     border-radius: 0.5em;
-    padding: 0.5em;
     background: white;
+}
+
+.note > * {
+    padding: 0.5em;
 }
 
 .note .date {
@@ -97,6 +100,14 @@
     color: #777777;
     font-size: 0.9em;
 }
+
+.note .title {
+    border-bottom: 1px solid black;
+    background: #EBF1FF;
+    border-top-right-radius: 0.5em;
+    border-top-left-radius: 0.5em;
+}
+    
 
 .note .title a {
     font-weight: bold;
@@ -109,7 +120,14 @@
     padding-bottom: 1em;
     padding-left: 3em;
     padding-right: 3em;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
 }
+
+.note .note-content p {
+    line-height: 200%;
+}
+
 
 .navigation-menu {
     border: 1px solid black;

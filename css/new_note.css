@@ -8,6 +8,7 @@
 
 input[type=text] {
     margin-top: 1em;
+    margin-bottom: 1em;
     height: 2em;
     padding-left: 0.5em;
     padding-right: 0.5em;
@@ -19,13 +20,10 @@ input[type=text] {
 }
 
 textarea {
-    margin-top: 0.5em;
     padding: 0.5em;
     min-width: 35em;
     width: 90%;
     height: 30em;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 1em;
 }
 
 input[type=submit] {

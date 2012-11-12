@@ -34,6 +34,12 @@
     padding-bottom: 1em;
     padding-left: 3em;
     padding-right: 3em;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
+}
+
+.note .note-content p {
+    line-height: 200%;
 }
 
 .return-link {
@@ -49,4 +55,8 @@
 
 .edit-link a {
     color: #A67739;
+}
+
+.comments {
+    margin-top: 2em;
 }

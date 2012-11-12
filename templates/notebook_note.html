@@ -14,7 +14,7 @@
 
   <div class="date">{{note.date.strftime("%d-%b-%Y")}}</div>
   <div class="title">{{note.title}}</div>
-  <div class="note-content">{{note.content.replace("\n", "<br/>") | safe}}</div>
+  <div class="note-content">{{note.content | safe}}</div>
 
 </div>
 
@@ -24,6 +24,12 @@
 
 <div class="return-link">
   <a href="/projects/project/{{project_key}}/nb/{{notebook.key()}}">&larr; Return to your notebook's page.</a>
+</div>
+
+<div class="comments">
+  <h3>Comments</h3>
+
+  <p>(Under construction)</p>
 </div>
 
 {% endblock %}
