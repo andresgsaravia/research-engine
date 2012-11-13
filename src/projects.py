@@ -407,6 +407,8 @@ class EditNotePage(GenericPage):
         if not user:
             self.redirec("/login")
             return
+        action = self.request.get("action")
+        assert action
         note = self.get_item_from_key_str(note_key)
         params = {"note" : note}
         if not note:
@@ -421,25 +423,30 @@ class EditNotePage(GenericPage):
         assert notebook  # We shouldn't have Notes without Notebooks.
         params["error"] = ''
         have_error = False
-        params["title"] = self.request.get("title")
-        params["content"] = self.request.get("content")
-        if not params["title"]:
-            have_error = True
-            params["error"] += "Please provide a title for the note. "
-        if not params["content"]:
-            have_error = True
-            params["content"] += "Please provide a content for the note. "
-        if not notebook.owner.key() == user.key():
-            have_error = True
-            params["error"] = "You are not the owner of this notebook; you are unable to make changes. "
-        if have_error:
-            self.render("note_edit.html", **params)
-        else:
-            note.title = params["title"]
-            note.content = params["content"]
-            logging.debug("DB WRITE: Handler EditNotePage is updating a Note.")
-            note.put()
-            self.redirect("/projects/project/%s/nb/note/%s" % (project_key, note_key))
+        if action == "edit":
+            params["title"] = self.request.get("title")
+            params["content"] = self.request.get("content")
+            if not params["title"]:
+                have_error = True
+                params["error"] += "Please provide a title for the note. "
+            if not params["content"]:
+                have_error = True
+                params["content"] += "Please provide a content for the note. "
+            if not notebook.owner.key() == user.key():
+                have_error = True
+                params["error"] = "You are not the owner of this notebook; you are unable to make changes. "
+            if have_error:
+                self.render("note_edit.html", **params)
+            else:
+                note.title = params["title"]
+                note.content = params["content"]
+                logging.debug("DB WRITE: Handler EditNotePage is updating a Note.")
+                note.put()
+                self.redirect("/projects/project/%s/nb/note/%s" % (project_key, note_key))
+        elif action == "delete":
+            logging.debug("DB WRITE: Handler EditNotePage is deleting a Note.")
+            note.delete()
+            self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook.key()))
 
 
 ##   References   ##

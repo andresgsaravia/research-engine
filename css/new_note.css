@@ -26,8 +26,11 @@ textarea {
     height: 30em;
 }
 
-input[type=submit] {
+.bottom-buttons {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
     font-size: 1.2em;
+    position: relative;
+    float: left;
+    margin-right: 0.5em;
 }

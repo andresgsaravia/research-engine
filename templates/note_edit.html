@@ -21,20 +21,31 @@
     });
   </script>
 
+<script language="javascript">
+  function are_you_sure(){return confirm("Are you sure you want to delete this note?"); }
+</script>
+
 {% endblock %}
 
 {% block content %}
 
 <form method="post">
+  <input type="hidden" name="action" value="edit">
   <input type="text" name="title" value="{{note.title}}" placeholder="Enter title here">
   <textarea name="content">{{note.content}}</textarea>
-  <div class="submit-button">
-    <input type="submit" value="Save note">
-  </div>
+  <input type="submit" class="bottom-buttons" value="Save note">
+  <input type="reset" class="bottom-buttons" value="Reset changes" />
 </form>
 
-<br/><div class="error">{{error}}</div>
+<form method="post" onSubmit="return are_you_sure()">
+  <input type="hidden" name="action" value="delete" />
+  <input type="button" class="bottom-buttons" value="Cancel" 
+	 onClick="window.location = '/projects/project/{{project_key}}/nb/note/{{note.key()}}'"/>
+  <input type="submit" class="bottom-buttons" value="Delete note" />
+</form>
 
-<a href="/projects/project/{{project_key}}/nb/note/{{note.key()}}">&larr; Return without saving.</a>
+
+
+<br/><div class="error">{{error}}</div>
 
 {% endblock %}
