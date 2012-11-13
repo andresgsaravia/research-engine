@@ -40,6 +40,18 @@
   {% endfor %}
 </div>
 
+<div class="writings">
+  <div class="new-writing-link">
+    <a href="/projects/project/new_writing/{{project_key}}">New writing</a>
+  </div>
+  <h3>Collaborative writings ({{len_wrt_list}})</h3>
+  {% for writing in writings %}
+    <div class="writing">
+      {{writings.short_render(project_key) | safe}}
+    </div>
+  {% endfor %}
+</div>
+
 <div class="references">
   <div class="new-reference-link">
     <a href="/projects/project/new_reference/{{project_key}}">New reference</a>

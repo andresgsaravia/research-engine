@@ -106,6 +106,55 @@ h2 {
     padding: 0.4em;
 }
 
+/* Collaborative writings in the full project view */
+
+.writings {
+    width: 49%;
+    margin-top: 1.5em;
+    border: 1px solid black;
+    background: white;
+    min-height: 5em;
+}
+
+.writings > * {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.writings h3 {
+    padding: 0.3em;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.writings .new-writing-link {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.writings .writing {
+    border-top: 1px solid #C0B9D3;
+}
+
+.writings .writing:hover {
+    background: #FFDF9F;
+}
+
+.writing:nth-of-type(even) {
+    background: #E8E0FF;
+}
+
+.writings .writing .date {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    color: #777777;
+    padding: 0.4em;
+}
+
 /* References in the full project view */
 
 .references {
