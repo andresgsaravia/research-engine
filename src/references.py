@@ -206,4 +206,145 @@ def get_add_reference(species, identifier):
     return eval('add_new_%s("%s")' % (db_name, identifier))
 
 
+######################
+##   Web Handlers   ##
+######################
 
+class NewReferencePage(GenericPage):
+    def get(self, project_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        self.render("project_new_reference.html")
+
+    def post(self, project_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key(db.Key(project_key))
+        kind_of_reference = self.request.get("kind_of_reference")
+        identifier = self.request.get("identifier")
+        try:
+            reference = get_add_reference(kind_of_reference, identifier)
+            if not (reference.key() in project.references):
+                project.references.append(reference.key())
+                logging.debug("DB WRITE: Handler NewReferencePage is adding a reference to a project.")
+                project.put()
+            self.redirect("/projects/project/%s/ref/%s" % (project_key, reference.key()))            
+        except:
+            self.render("project_new_reference.html", error = "Could not retrieve reference")
+
+
+class ReferencePage(GenericPage):
+    def get(self, project_key, reference_key):
+        reference = self.get_item_from_key(db.Key(reference_key))
+        self.render("reference.html", reference = reference,
+                    project_key = project_key, reference_key = reference_key)
+
+
+class EditReferencePage(GenericPage):
+    def get(self, project_key, reference_key):
+        reference = self.get_item_from_key(db.Key(reference_key))
+        if not reference: 
+            logging.warning("Attempted to fetch a non-existing reference's page; key :1", reference_key)
+            self.error(404)
+        else:
+            self.render("reference_edit.html", reference = reference, reference_key = reference_key,
+                        project_key = project_key)
+
+    def post(self, project_key, reference_key):
+        username = self.get_username()
+        if not username: self.redirect("/login")
+        params = {}
+        params["project_key"] = project_key
+        params["reference_key"] = reference_key
+        reference = self.get_item_from_key(db.Key(reference_key))
+        if not reference:
+            logging.warning("Attempted to fetch a non-existing reference's page; key :1", reference_key)
+            self.error(404)
+        else:
+            kind = reference.kind()
+            have_error = False
+            params["error"] = ''
+
+            if kind == "arXiv":
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get("authors_string")
+                params["date"] = self.request.get("date")
+                params["abstract"]= self.request.get("abstract")
+                params["link"] = self.request.get("link")
+                if params["title"]: reference.title = nice_bs(params["title"])
+                if params["authors_string"]:
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(nice_bs(author))
+                    if authors: reference.authors = authors
+                if params["date"]:
+                    try:
+                        reference.date = datetime.datetime.strptime(nice_bs(params["date"]), "%Y-%m-%d")
+                    except ValueError:
+                        have_error = True
+                        params["error"] += "Please check the date is correct. "
+                if params["abstract"]: reference.abstract = nice_bs(params["abstract"])
+                if params["link"]: 
+                    try:
+                        reference.link = nice_bs(params["link"])
+                    except db.BadValueError:
+                        have_error = True
+                        params["error"] += "Please check the Link value is a valid URL. "
+
+            elif kind == "PublishedArticles":
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get("authors_string")
+                params["year"] = self.request.get("year")
+                params["issue"] = self.request.get("issue")
+                params["volume"] = self.request.get("volume")
+                params["page"] = self.request.get("page")
+                params["abstract"] = self.request.get("abstract")
+                params["link"] = self.request.get("link")
+                if params["title"]: reference.title = nice_bs(params["title"])
+                if params["authors_string"]: 
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(nice_bs(author))
+                    if authors: reference.authors = authors
+                if params["year"]: 
+                    try:
+                        reference.year = int(nice_bs(params["year"]))
+                    except ValueError:
+                        have_error = True
+                        params["error"] += "Please write Year as a single positive integer."
+                if params["issue"]: reference.issue = nice_bs(params["issue"])
+                if params["volume"]: reference.volume = nice_bs(params["volume"])
+                if params["page"]: reference.page = nice_bs(params["page"])
+                if params["abstract"]: reference.abstract = nice_bs(params["abstract"])
+                if params["link"]: 
+                    try:
+                        reference.link = nice_bs(params["link"])
+                    except db.BadValueError:
+                        have_error = True
+                        params["error"] += "Please check the link value is a valid URL. "
+
+            elif kind == "WebPage":
+                params["title"] = self.request.get('title')
+                params["authors_string"] = self.request.get('authors_string')
+                params["summary"] = self.request.get('summary')
+                if params['title']: reference.title = nice_bs(params['title'])
+                if params["authors_string"]:
+                    authors = []
+                    for author in params["authors_string"].split(";"):
+                        authors.append(nice_bs(author))
+                    if authors: reference.authors = authors
+                if params['summary']: reference.summary = nice_bs(params['summary'])
+            else:
+                logging.error("Wrong reference species: %s" % species)
+                assert False
+
+            if have_error:
+                self.render("reference_edit.html", reference = reference, **params)
+            else:
+                logging.debug("DB WRITE: Updating %s reference metadata." % kind)
+                reference.put()
+                self.redirect("/projects/project/%s/ref/%s" % (project_key, reference_key))
