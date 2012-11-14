@@ -51,8 +51,7 @@ class NewNotebookPage(GenericPage):
 
     def post(self, project_key):
         user = self.get_user()
-        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
-#        project = self.get_item_from_key_str(project_key)
+        project = self.get_item_from_key_str(project_key)
         if not user:
             self.redirect("/login")
             return

@@ -32,17 +32,13 @@
 <form method="post">
 
   <input type="text" name="title" value="{{title}}" placeholder="Enter title here">
-
   <textarea name="content">{{content}}</textarea>
-
-  <div class="submit-button">
-    <input type="submit" value="Save note">
-  </div>
+  <input type="submit" value="Save note" class="bottom-buttons" >
+  <input type="button" value="Cancel" class="bottom-buttons"  
+	 onClick="window.location = '/projects/project/{{project_key}}/nb/{{notebook.key()}}'"/>
 
 </form>
 
 <br/><div class="error">{{error}}</div>
-
-<a href="/projects/project/{{project_key}}/nb/{{notebook.key()}}">&larr; Return to your notebook's page.</a>
 
 {% endblock %}
