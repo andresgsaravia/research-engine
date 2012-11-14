@@ -9,8 +9,14 @@ from generic import *
 
 # Should have a Project as parent
 class CollaborativeWritings(db.Model):
-    title = ndb.StringProperty(required = True)
-    description = ndb.TextProperty(required = True)
+    title = db.StringProperty(required = True)
+    description = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_updated = db.DateTimeProperty(auto_now = True)
+    status = db.StringProperty(required = False)
+
+    def short_render(self, project_key):
+        return render_str("writing_short.html", writing = self, project_key = project_key)
 
 ######################
 ##   Web Handlers   ##

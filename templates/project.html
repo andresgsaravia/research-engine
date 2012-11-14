@@ -45,9 +45,9 @@
     <a href="/projects/project/new_writing/{{project_key}}">New writing</a>
   </div>
   <h3>Collaborative writings ({{len_wrt_list}})</h3>
-  {% for writing in writings %}
+  {% for writing in wrt_list %}
     <div class="writing">
-      {{writings.short_render(project_key) | safe}}
+      {{writing.short_render(project_key) | safe}}
     </div>
   {% endfor %}
 </div>

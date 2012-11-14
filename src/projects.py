@@ -4,6 +4,7 @@
 from generic import *
 from references import *
 from notebooks import *
+from collab_writing import *
 
 SHORT_DESCRIPTION_LENGTH = 150
 
@@ -111,19 +112,28 @@ class NewProjectPage(GenericPage):
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
+        params = {"project_key" : project_key}
         project = self.get_item_from_key_str(project_key)
-        ref_list = []
+        params["project"] = project
+        # References
+        params["ref_list"] = []
         for ref_key in project.references:
-            ref_list.append(self.get_item_from_key(ref_key))
-        ref_list.reverse()
-        notebooks = Notebooks.all().ancestor(project).order('last_updated')
-        nb_list = []
+            params["ref_list"].append(self.get_item_from_key(ref_key))
+        params["ref_list"].reverse()
+        params["len_ref_list"] = len(params["ref_list"])
+        # Notebooks
+        notebooks = Notebooks.all().ancestor(project).order('-last_updated')
+        params["nb_list"] = []
         for nb in notebooks.run():
-            nb_list.append(nb)
-        nb_list.reverse()
-        self.render("project.html", project = project, project_key = project_key, 
-                    ref_list = ref_list, len_ref_list = len(ref_list),
-                    nb_list = nb_list, len_nb_list = len(nb_list))
+            params["nb_list"].append(nb)
+        params["len_nb_list"] = len(params["nb_list"])
+        # Collaborative Writings
+        params["wrt_list"] = []
+        writings = CollaborativeWritings.all().ancestor(project).order("last_updated")
+        for wr in writings.run():
+            params["wrt_list"].append(wr)
+        params["len_wrt_list"] = len(params["wrt_list"])
+        self.render("project.html", **params)
 
     def post(self, project_key):
         user = self.get_user()
