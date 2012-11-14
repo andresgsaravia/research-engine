@@ -20,7 +20,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/projects/project/edit/(.+)', projects.EditProjectPage),
                                ('/projects/project/new_reference/(.+)', references.NewReferencePage),
                                ('/projects/project/new_notebook/(.+)', notebooks.NewNotebookPage),
-                               ('/projects/project/new_writing/(.+)', projects.NewWritingPage),
+                               ('/projects/project/new_writing/(.+)', collab_writing.NewWritingPage),
 
                                ('/projects/project/(.+)/nb/edit/(.+)', notebooks.EditNotebookPage),
                                ('/projects/project/(.+)/nb/note/(.+)', notebooks.NotePage),
@@ -30,6 +30,9 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 
                                ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),
                                ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),
+
+                               ('/projects/project/(.+)/cwriting/(.+)', collab_writing.WritingPage),
+
                                ('/projects/project/(.+)', projects.ProjectPage),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),

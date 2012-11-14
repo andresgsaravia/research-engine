@@ -202,6 +202,4 @@ class RecentActivityPage(GenericPage):
         self.render("under_construction.html")
 
 
-class NewWritingPage(GenericPage):
-    def get(self, project_key):
-        self.render("under_construction.html")
+
