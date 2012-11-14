@@ -52,7 +52,7 @@
 
   {% if projects_not_collaborating %}
   <div class="not-collaborating">
-    <h3>Invite to collaborate in a project</h3>
+    <h3>Invite {{page_user.username}} to collaborate in a project</h3>
     <div class="projects">
       {% for project in projects_not_collaborating %}
       <div class="project">

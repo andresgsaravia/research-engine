@@ -106,9 +106,6 @@ class SettingsPage(GenericPage):
         params["usern"] = user.username
         if user.email: params["email"] = user.email
         if user.about_me: params["about_me"] = user.about_me
-        params["contacts"] = []
-        for contact_key in user.contacts:
-            params["contacts"].append(self.get_item_from_key(contact_key))
         self.render("settings.html", **params)
 
     def post(self):

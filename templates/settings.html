@@ -60,19 +60,4 @@
 
 </form>
 
-<h2>Your contacts</h2>
-<div class="new-contact-link">
-  <a href="/user/search">Add a new contact</a>
-</div>
-
-<div class="contacts">
-  {% for contact in contacts %}
-    <div class="contact">
-      <div class="name">
-	<a href="/user/{{contact.key()}}">{{contact.username}}</a>
-      </div>
-    </div>
-  {% endfor %}
-</div>
-
 {% endblock %}
