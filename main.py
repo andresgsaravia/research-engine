@@ -31,7 +31,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),
                                ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),
 
-                               ('/projects/project/(.+)/cwriting/view(.+)', collab_writing.ViewWritingPage),
+                               ('/projects/project/(.+)/cwriting/view/(.+)', collab_writing.ViewRevisionPage),
                                ('/projects/project/(.+)/cwriting/(.+)', collab_writing.WritingPage),
 
                                ('/projects/project/(.+)', projects.ProjectPage),

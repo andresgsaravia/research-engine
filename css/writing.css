@@ -56,8 +56,15 @@
 
 textarea {
     padding: 0.5em;
-    width: 98%;
+    width: 95%;
     height: 30em;
+}
+
+input[type=text] {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.3em;
+    width: 95%;
 }
 
 .bottom-buttons {

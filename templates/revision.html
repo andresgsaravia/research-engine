@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>Research Engine | Collaborative writing</title>
+  <link href="/css/revision.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<div class="revision-details">
+  <div class="date">Date: {{revision.date.strftime("%d-%b-%Y")}}</div>
+  <div class="author">Author: <a href="/user/{{revision.author.key()}}">{{revision.author.username}}</a></div>
+  <div class="summary">Summary of changes: {{revision.summary}}</div>
+</div>
+
+<div class="revision-content">
+  {{revision.content | safe}}
+</div>
+
+<div class="return-link">
+  <a href="/projects/project/{{project_key}}/cwriting/{{writing.key()}}">
+    &larr; Return to the collaborative writing page.
+  </a>
+</div>
+{% endblock %}
