@@ -143,18 +143,18 @@ class WritingPage(GenericPage):
         if have_error:
             self.render("writing.html", **params)
         else:
-            new_revision = Revisions(author = user.key(), content = content, parent = writing)
+            new_revision = Revisions(author = user.key(), content = content, 
+                                     parent = writing, summary = params["summary"])
             logging.debug("DB WRITE: Handler WritingPage is creating a new Revision.")
             new_revision.put()
-            self.redirect("/projects/project/%s/cwriting/view/%s" % (project_key, writing_key))
+            self.redirect("/projects/project/%s/cwriting/view/%s" % (project_key, new_revision.key()))
 
 
 class ViewRevisionPage(GenericPage):
     def get(self, project_key, revision_key):
         revision = self.get_item_from_key_str(revision_key)
         if not revision:
-            self.write("Not found: " + revision_key)
-#            self.error(404)
+            self.error(404)
             return
         writing = revision.parent()
         assert writing           # We shouldn't have Revisions without a CollaborativeWriting parent

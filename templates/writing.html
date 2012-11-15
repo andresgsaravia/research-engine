@@ -52,8 +52,10 @@
     <input type="text" name="summary" value="{{summary}}" placeholder="Summary of changes (optional)" />
     <input type="submit" class="bottom-buttons" value="Save changes" {{save_disabled}}/>
     <input type="reset"  class="bottom-buttons" value="Reset changes" />
+    {% if revisions %}
     <input type="button" class="bottom-buttons" value="View"
-	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/projects/project/{{project_key}}/cwriting/view/{{writing_key}}'};" />
+	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/projects/project/{{project_key}}/cwriting/view/{{revisions[0].key()}}'};" />
+    {% endif %}
     <input type="button" class="bottom-buttons" value="Export (under construction)" disabled />
   </form>
 </div>
@@ -68,10 +70,12 @@
     {% for revision in revisions %}
       <div class="revision">
 	<div class="date">{{revision.date.strftime("%d-%b-%Y")}}</div>
-	<div class="author">{{revision.author.username}}</div>
-	<div class="summary">{% if revision.summary %}{{revision.summary}}{% endif %}</div>
+	<div class="summary">Summary: <em>{{revision.summary}}</em></div>
 	<div class="revision-link">
 	  <a href="/projects/project/{{project_key}}/cwriting/view/{{revision.key()}}">View</a>
+	</div>
+	<div class="author">Changes made by: 
+	  <a href="/user/{{revision.author.key()}}">{{revision.author.username}}</a>
 	</div>
       </div>
     {% endfor %}

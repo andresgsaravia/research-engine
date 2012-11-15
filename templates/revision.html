@@ -9,18 +9,21 @@
 {% block content %}
 
 <div class="revision-details">
-  <div class="date">Date: {{revision.date.strftime("%d-%b-%Y")}}</div>
-  <div class="author">Author: <a href="/user/{{revision.author.key()}}">{{revision.author.username}}</a></div>
-  <div class="summary">Summary of changes: {{revision.summary}}</div>
+  <h3>Revision information</h3>
+  <div class="date"><b>Date:</b> {{revision.date.strftime("%d-%b-%Y")}}</div>
+  <div class="author"><b>Author:</b> <a href="/user/{{revision.author.key()}}">{{revision.author.username}}</a></div>
+  <div class="summary"><b>Summary of changes:</b> <em>{{revision.summary}}</em></div>
 </div>
 
-<div class="revision-content">
-  {{revision.content | safe}}
-</div>
 
 <div class="return-link">
   <a href="/projects/project/{{project_key}}/cwriting/{{writing.key()}}">
     &larr; Return to the collaborative writing page.
   </a>
 </div>
+
+<div class="revision-content">
+  {{revision.content | safe}}
+</div>
+
 {% endblock %}

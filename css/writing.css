@@ -75,3 +75,37 @@ input[type=text] {
     float: left;
     margin-right: 0.5em;
 }
+
+.revisions {
+    background: white;
+    border: 1px solid black;
+}
+
+.revisions .revision {
+    border-bottom: 1px solid black;
+    padding: 0.5em;
+}
+
+.revisions .revision .date {
+    position: relative;
+    float: right;
+    color: #777777;
+    font-size: 0.9em;
+}
+
+.revisions .revision:last-child {
+    border-bottom: none;
+}
+
+.revisions .revision:nth-of-type(even) {
+    background: #EBF1FF;
+}
+
+.revisions .revision:hover {
+    background: #FFDF9F;
+}
+
+.revisions .revision .revision-link {
+    position: relative;
+    float: right;
+}
