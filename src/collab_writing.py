@@ -76,4 +76,20 @@ class NewWritingPage(GenericPage):
 
 class WritingPage(GenericPage):
     def get(self, project_key, writing_key):
-        self.write("<html><body>" + project_key + "<br/>" + writing_key + "</body></html>")
+        user = self.get_user()
+        params = {"project_key" : project_key, "writing_key" : writing_key}
+        params["project"] = self.get_item_from_key_str(project_key)
+        if not params["project"]:
+            self.error(404)
+            return
+        params["writing"] = self.get_item_from_key_str(writing_key)
+        if not params["writing"]:
+            self.error(404)
+            return
+        params["latest_revision"] = None
+        self.render("writing.html", **params)
+
+
+class ViewWritingPage(GenericPage):
+    def get(self, project_key, writing_key):
+        self.render("under_construction.html")

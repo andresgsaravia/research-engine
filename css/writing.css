@@ -1,0 +1,70 @@
+/* For the collaborative writing page */
+
+.writing-details {
+    background: white;
+    border: 1px solid black;
+}
+
+.writing-details .dates {
+    position: relative;
+    float: right;
+    font-size: 0.8em;
+    color: #777777;
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+
+.writing-details .writing-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    border-bottom: 1px solid #555555;
+    padding: 0.5em;
+}
+
+.writing-details .writing-description pre {
+    padding-top: 0.5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    padding-bottom: 0.5em;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.writing-details .writing-description {
+    line-height: 150%;
+}
+
+.edit-link {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 1em;
+}
+
+.edit-link a {
+    color: #A67739;
+}
+
+.return-link {
+    padding-top: 0.5em;
+}
+
+.writing {
+    padding-top: 2em;
+    padding-left: 1em;
+    overflow: auto;
+}
+
+textarea {
+    padding: 0.5em;
+    width: 98%;
+    height: 30em;
+}
+
+.bottom-buttons {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-size: 1.2em;
+    position: relative;
+    float: left;
+    margin-right: 0.5em;
+}
