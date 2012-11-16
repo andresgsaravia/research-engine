@@ -42,7 +42,7 @@
 <form method="post" onSubmit="return are_you_sure()">
   <input type="hidden" name="action" value="delete" />
   <input type="button" class="bottom-buttons" value="Cancel" 
-	 onClick="window.location = '/projects/project/{{project_key}}/nb/note/{{note.key()}}'"/>
+	 onClick="if(confirm('Are you sure you want to discard all unsaved changes?')){window.location = '/projects/project/{{project_key}}/nb/note/{{note.key()}}'};"/>
   <input type="submit" class="bottom-buttons" value="Delete note" />
 </form>
 

@@ -53,7 +53,8 @@
     <textarea name="content">{% if revisions %}{{revisions[0].content}}{% endif %}</textarea>
     <input type="text" name="summary" value="{{summary}}" placeholder="Summary of changes (optional)" />
     <input type="submit" class="bottom-buttons" value="Save changes" {{save_disabled}}/>
-    <input type="reset"  class="bottom-buttons" value="Reset changes" />
+    <input type="reset"  class="bottom-buttons" value="Reset changes"
+	   onClick="return confirm('Are you sure you want to reset all unsaved changes?')"/>
     {% if revisions %}
     <input type="button" class="bottom-buttons" value="View"
 	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/projects/project/{{project_key}}/cwriting/view/{{revisions[0].key()}}'};" />
