@@ -255,3 +255,8 @@ class EditNotePage(GenericPage):
             logging.debug("DB WRITE: Handler EditNotePage is deleting a Note.")
             note.delete()
             self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook.key()))
+
+
+class AllNotebooksPage(GenericPage):
+    def get(self):
+        self.render("under_construction.html")

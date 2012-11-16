@@ -36,6 +36,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/projects/project/(.+)/cwriting/(.+)', collab_writing.WritingPage),
 
                                ('/projects/project/(.+)', projects.ProjectPage),
+                               # Other
+                               ('/notebooks', notebooks.AllNotebooksPage),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),
                                ('/classroom', frontend.UnderConstructionPage),
