@@ -42,6 +42,8 @@ class NewWritingPage(GenericPage):
             params["error"] = ''
             params["project_key"] = project_key
             params["submit_button_text"] = "Create new writing"
+            params["page_title"] = "New collaborative writing"
+            params["cancel_url"] = "/projects/project/%s" % project_key
             if not project.user_is_author(user):
                 params["error"] = "You are not an author for this project."
             self.render("writing_description.html", **params)
@@ -60,9 +62,10 @@ class NewWritingPage(GenericPage):
             self.error(404)
             return
         params = {"project" : project, "project_key" : project_key, "error" : "", 
-                  "submit_button_text" : "Create new writing"}
+                  "submit_button_text" : "Create new writing", page_title : "New collaborative writing"}
         params["title"] = self.request.get("title")
         params["description"] = self.request.get("description")
+        params["cancel_url"] = "/projects/project/%s" % project_key
         have_error = False
         if not project.user_is_author(user):
             have_error = True
@@ -81,6 +84,78 @@ class NewWritingPage(GenericPage):
             logging.debug("DB WRITE: Handler NewWritingPage is creating a new CollaborativeWriting")
             new_writing.put()
             self.redirect("/projects/project/%s/cwriting/%s" % (project_key, new_writing.key()))
+
+
+class EditWritingPage(GenericPage):
+    def get(self, project_key, writing_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key_str(project_key)
+        if not project:
+            self.error(404)
+            return
+        writing = self.get_item_from_key_str(writing_key)
+        if not writing:
+            self.error(404)
+            return
+        params = {"project_key" : project_key, "writing_key" : writing_key, "error" : "",
+                  "project" : project, "writing" : writing, "submit_button_text" : "Save changes",
+                  "page_title" : "Edit writing information"}
+        if not project.user_is_author(user):
+            params["error"] = "You are not an author of this project."
+        params["title"] = writing.title
+        params["description"] = writing.description
+        params["cancel_url"] = "/projects/project/%s/cwriting/%s" % (project_key, writing_key)
+        self.render("writing_description.html", **params)
+
+    def post(self, project_key, writing_key):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        project = self.get_item_from_key_str(project_key)
+        if not project:
+            self.error(404)
+            return
+        writing = self.get_item_from_key_str(writing_key)
+        if not writing:
+            self.error(404)
+            return
+        title = self.request.get("title")
+        description = self.request.get("description")
+        have_error = False
+        error = ""
+        if not title:
+            have_error = True
+            error += "Please provide a title. "
+        if not description:
+            have_error = True
+            error += "Please provide a description. "
+        if (title == writing.title) and (description == writing.description):
+            have_error = True
+            error += "There aren't any changes to save. "
+        if not project.user_is_author(user):
+            have_error = True
+            error = "You are not an author of this project. "
+        if have_error:
+            t_params = {"error" : "", 
+                        "page_title" : "Edit writing information",
+                        "cancel_url" : "/projects/project/%s/cwriting/%s" % (project_key, writing_key),
+                        "submit_button_text" : "Save changes",
+                        "title" : title, 
+                        "description" : description,
+                        "error" : error}
+            self.render("writing_description.html", **t_params)
+        else:
+            writing.title = title
+            writing.description = description
+            logging.debug("DB WRITE: Handler EditWritingPage is updating a CollaborativeWriting.")
+            writing.put()
+            self.redirect("/projects/project/%s/cwriting/%s" % (project_key, writing_key))
+                          
+
 
 class WritingPage(GenericPage):
     def get(self, project_key, writing_key):
