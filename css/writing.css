@@ -21,15 +21,12 @@
     padding: 0.5em;
 }
 
-.writing-details .writing-description pre {
+.writing-details .writing-description {
     padding-top: 0.5em;
     padding-left: 1.5em;
     padding-right: 1.5em;
     padding-bottom: 0.5em;
     font-family: Helvetica, Arial, sans-serif;
-}
-
-.writing-details .writing-description {
     line-height: 150%;
 }
 
