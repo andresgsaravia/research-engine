@@ -28,6 +28,8 @@
     padding-bottom: 0.5em;
     font-family: Helvetica, Arial, sans-serif;
     line-height: 150%;
+    height: 10em;
+    overflow: auto;
 }
 
 .edit-link {
@@ -54,7 +56,7 @@
 textarea {
     padding: 0.5em;
     width: 95%;
-    height: 30em;
+    height: 50em;
 }
 
 input[type=text] {

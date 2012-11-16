@@ -10,6 +10,8 @@
     mode : "textareas",
     plugins : "equation,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
     mode : "textareas",
+    relative_urls : "false",
+    document_base_url : "https://research-engine.appspot.com/",
     theme : "advanced",
     theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
     theme_advanced_buttons2 : "equation,cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
@@ -34,7 +36,7 @@
   </div>
 
   <div class="writing-title">{{writing.title}}</div>
-  <div class="writing-description">{{writing.description}}</div>
+  <div class="writing-description">{{writing.description.replace("\n", "<br/>") | safe}}</div>
 
 </div>
 
