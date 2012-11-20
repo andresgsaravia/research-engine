@@ -62,7 +62,7 @@ class NewWritingPage(GenericPage):
             self.error(404)
             return
         params = {"project" : project, "project_key" : project_key, "error" : "", 
-                  "submit_button_text" : "Create new writing", page_title : "New collaborative writing"}
+                  "submit_button_text" : "Create new writing", "page_title" : "New collaborative writing"}
         params["title"] = self.request.get("title")
         params["description"] = self.request.get("description")
         params["cancel_url"] = "/projects/project/%s" % project_key
