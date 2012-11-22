@@ -16,7 +16,25 @@
   <div class="projects-wrapper">
   {% for project in projects %}
       <div class="project">
-        {{project.short_render() | safe }}
+	<div class="date">
+	  Last updated: {{project.last_updated.strftime("%d-%b-%Y")}}
+	</div>
+
+	<div class="name">
+	  <a href="/projects/project/{{project.key()}}">{{project.name}}</a>
+	</div>
+
+	<div class="short-description">
+	  {{project.short_description()}}
+	</div>
+
+	<div class="authors">
+	  <ul>
+	    {% for author in project.list_of_authors(handler) %}
+	      <li><a href="/user/{{author.key()}}">{{author.username}}</a></li>
+	    {% endfor %}
+	  </ul>
+	</div>
       </div>
   {% endfor %}
   </div>

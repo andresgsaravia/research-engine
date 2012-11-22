@@ -55,31 +55,28 @@ class NewNotebookPage(GenericPage):
         if not user:
             self.redirect("/login")
             return
-        n_name = self.request.get("n_name")
-        n_description = self.request.get("n_description")
+        kw = {"n_name" : self.request.get("n_name"),
+              "n_description" : self.request.get("n_description"),
+              "error" : ''}
         have_error = False
-        error = ''
-        if not n_name:
+        if not kw["n_name"]:
             have_error = True
-            error += 'You must provide a name for your new notebook. '
-        if not n_description:
+            kw["error"] += 'You must provide a name for your new notebook. '
+        if not kw["n_description"]:
             have_error = True
-            error += 'Please provide a brief description of your new notebook. '
+            kw["error"] += 'Please provide a brief description of your new notebook. '
         if not (user.key() in project.authors):
             have_error = True
-            error += "You can't add a notebook to this project since you are not one of its authors. "
+            kw["error"] += "You can't add a notebook to this project since you are not one of its authors. "
         if have_error:
-            self.render("notebook_new.html", n_name = n_name, n_description = n_description, error = error)
+            self.render("notebook_new.html", **kw)
         else:
-            new_notebook = Notebooks(owner = user.key(), name = n_name, description = n_description, 
+            new_notebook = Notebooks(owner = user.key(), name = kw["n_name"], description = kw["n_description"], 
                                      parent  = db.Key(project_key))
-            logging.debug("DB WRITE: Handler NewNotebookPage is creating a new instance of Notebooks.")
-            new_notebook.put()
+            self.log_and_put(new_notebook)
             user.my_notebooks.append(new_notebook.key())
-            logging.debug("DB WRITE: Handler NewNotebookPage is appending a new notebook to a RegiteredUser's my_notebooks list.")
-            user.put()
-            logging.debug("DB WRITE: Handler NewNotebookPage is updating a project's last_updated property.")
-            project.put()
+            self.log_and_put(user, "Updating my_notebooks property. ")
+            self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/projects/project/%s/nb/%s" % (project_key, new_notebook.key()))
 
 
@@ -89,12 +86,11 @@ class NotebookPage(GenericPage):
         if not notebook:
             self.error(404)
             return
-        params = {'project_key' : project_key, 'notebook' : notebook}
-        logging.debug("DB READ: Handler NotebookPage is getting all the notes for a notebook.")
-        params["notes"] = []
+        kw = {'project_key' : project_key, 'notebook' : notebook, "notes" : []}
         for note in NotebookNotes.all().ancestor(notebook).order("-date").run():
-            params["notes"].append(note)
-        self.render("notebook.html", **params)
+            self.log_read(NotebookNotes)
+            kw["notes"].append(note)
+        self.render("notebook.html", **kw)
 
 
 class EditNotebookPage(GenericPage):
@@ -111,27 +107,28 @@ class EditNotebookPage(GenericPage):
         if not notebook:
             self.error(404)
             return
-        nb_name = self.request.get("nb_name")
-        nb_description = self.request.get("nb_description")
-        params = {"project_key" : project_key, "notebook_key" : notebook_key, "notebook" : notebook,
-                  "nb_name" : nb_name, "nb_description" : nb_description, "error" : ""}
+        kw = {"project_key"    : project_key, 
+              "notebook_key"   : notebook_key, 
+              "notebook"       : notebook,
+              "nb_name"        : self.request.get("nb_name"),
+              "nb_description" : self.request.get("nb_description"),
+              "error"          : ""}
         have_error = False
-        if not nb_name:
+        if not kw["nb_name"]:
             have_error = True
-            params["error"] += "Please provide a name for your notebook. "
-        if not nb_description:
+            kw["error"] += "Please provide a name for your notebook. "
+        if not kw["nb_description"]:
             have_error = True
-            params["error"] += "Please provide  a description for your notebook. "
-        if not notebook.owner == user.key():
+            kw["error"] += "Please provide  a description for your notebook. "
+        if not notebook.owner.key() == user.key():
             have_error = True
-            params["error"] = "You are not the owner of this notebook. "
+            kw["error"] = "You are not the owner of this notebook. "
         if have_error:
-            self.render("notebook_edit.html", **params)
+            self.render("notebook_edit.html", **kw)
         else:
-            notebook.name = nb_name
-            notebook.description = nb_description
-            logging.debug("DB WRITE: Handler EditNotebookPage is editing a notebook's details.")
-            notebook.put()
+            notebook.name = kw["nb_name"]
+            notebook.description = kw["nb_description"]
+            self.log_and_put(notebook)
             self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook_key))
 
 
@@ -144,7 +141,7 @@ class NewNotePage(GenericPage):
         notebook = self.get_item_from_key_str(notebook_key)
         error = ''
         if not notebook.owner.key() == user.key():
-            error = "You are not the owner of this notebook; you can not add a new note to it."
+            error = "You are not the owner of this notebook; you cannot add a new note to it."
         self.render("notebook_new_note.html", notebook = notebook, error = error, project_key = project_key)
 
     def post(self, project_key, notebook_key):
@@ -172,18 +169,16 @@ class NewNotePage(GenericPage):
                         title = title, content = content)
         else:
             new_note = NotebookNotes(title = title, content = content, parent = notebook)
-            logging.debug("DB WRITE: Handler NewNotePage is writing a new instance of NotebookNotes.")
-            new_note.put()
-            logging.debug("DB WRITE: Handler NewNotePage is updating a Notebook's last_updated property.")
-            notebook.put()
-            logging.debug("DB WRITE: Handler NewNotePage is updating a Project's last_updated property.")
-            project.put()
+            self.log_and_put(new_note)
+            self.log_and_put(notebook, "Updating last_updated property. ")
+            self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/projects/project/%s/nb/note/%s" % (project_key, new_note.key()))
 
 
 class NotePage(GenericPage):
     def get(self, project_key, note_key):
         note = self.get_item_from_key_str(note_key)
+        self.log_read(Notebooks)
         notebook = note.parent()
         self.render("notebook_note.html", project_key = project_key, note = note, notebook = notebook)
 
@@ -202,7 +197,7 @@ class EditNotePage(GenericPage):
         if not project:
             self.error(404)
             return
-        logging.debug("DB READ: Handler EditNotePage is requesting a Notebook from a Note's parent.")
+        self.log_read(Notebooks)
         notebook = note.parent()
         assert notebook  # We shouldn't have Notes without Notebooks.
         error = ''
@@ -218,42 +213,40 @@ class EditNotePage(GenericPage):
         action = self.request.get("action")
         assert action
         note = self.get_item_from_key_str(note_key)
-        params = {"note" : note}
+        kw = {"note" : note}
         if not note:
             self.error(404)
             return
-        params["project"] = self.get_item_from_key_str(project_key)
-        if not params["project"]:
+        kw["project"] = self.get_item_from_key_str(project_key)
+        if not kw["project"]:
             self.error(404)
             return
-        logging.debug("DB READ: Handler EditNotePage is requesting a Notebook from a Note's parent.")
+        self.log_read(Notebooks)
         notebook = note.parent()
         assert notebook  # We shouldn't have Notes without Notebooks.
-        params["error"] = ''
+        kw["error"] = ''
         have_error = False
         if action == "edit":
-            params["title"] = self.request.get("title")
-            params["content"] = self.request.get("content")
-            if not params["title"]:
+            kw["title"] = self.request.get("title")
+            kw["content"] = self.request.get("content")
+            if not kw["title"]:
                 have_error = True
-                params["error"] += "Please provide a title for the note. "
-            if not params["content"]:
+                kw["error"] += "Please provide a title for the note. "
+            if not kw["content"]:
                 have_error = True
-                params["content"] += "Please provide a content for the note. "
+                kw["content"] += "Please provide a content for the note. "
             if not notebook.owner.key() == user.key():
                 have_error = True
-                params["error"] = "You are not the owner of this notebook; you are unable to make changes. "
+                kw["error"] = "You are not the owner of this notebook; you are unable to make changes. "
             if have_error:
-                self.render("note_edit.html", **params)
+                self.render("note_edit.html", **kw)
             else:
-                note.title = params["title"]
-                note.content = params["content"]
-                logging.debug("DB WRITE: Handler EditNotePage is updating a Note.")
-                note.put()
+                note.title = kw["title"]
+                note.content = kw["content"]
+                self.log_and_put(note)
                 self.redirect("/projects/project/%s/nb/note/%s" % (project_key, note_key))
         elif action == "delete":
-            logging.debug("DB WRITE: Handler EditNotePage is deleting a Note.")
-            note.delete()
+            self.log_and_delete(note)
             self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook.key()))
 
 

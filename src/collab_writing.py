@@ -38,15 +38,14 @@ class NewWritingPage(GenericPage):
             return
         project = self.get_item_from_key_str(project_key)
         if project:
-            params = {}
-            params["error"] = ''
-            params["project_key"] = project_key
-            params["submit_button_text"] = "Create new writing"
-            params["page_title"] = "New collaborative writing"
-            params["cancel_url"] = "/projects/project/%s" % project_key
+            kw = {"error"              : '',
+                  "project_key"        : project_key,
+                  "submit_button_text" : "Create new writing",
+                  "page_title"         : "New collaborative writing",
+                  "cancel_url"         : "/projects/project/%s" % project_key}
             if not project.user_is_author(user):
-                params["error"] = "You are not an author for this project."
-            self.render("writing_description.html", **params)
+                kw["error"] = "You are not an author for this project."
+            self.render("writing_description.html", **kw)
         else:
             logging.debug("Handler NewWritingPage tryed to fetch a non-existing project")
             self.error(404)
@@ -61,28 +60,30 @@ class NewWritingPage(GenericPage):
             logging.debug("Handler NewWritingPage tryed to fetch a non-existing project")
             self.error(404)
             return
-        params = {"project" : project, "project_key" : project_key, "error" : "", 
-                  "submit_button_text" : "Create new writing", "page_title" : "New collaborative writing"}
-        params["title"] = self.request.get("title")
-        params["description"] = self.request.get("description")
-        params["cancel_url"] = "/projects/project/%s" % project_key
+        kw = {"project"            : project, 
+              "project_key"        : project_key, 
+              "error"              : '', 
+              "submit_button_text" : "Create new writing", 
+              "page_title"         : "New collaborative writing",
+              "title"              : self.request.get("title"),
+              "description"        : self.request.get("description"),
+              "cancel_url"         : "/projects/project/%s" % project_key}
         have_error = False
         if not project.user_is_author(user):
             have_error = True
-            params["error"] = "You are not an author for this project. "
-        if not params["title"]:
+            kw["error"] = "You are not an author for this project. "
+        if not kw["title"]:
             have_error = True
-            params["error"] += "Please provide a title. "
-        if not params["description"]:
+            kw["error"] += "Please provide a title. "
+        if not kw["description"]:
             have_error = True
-            params["error"] += "Please provide a brief description of the purpose of this new writing. "
+            kw["error"] += "Please provide a brief description of the purpose of this new writing. "
         if have_error:
-            self.render("writing_description.html", **params)
+            self.render("writing_description.html", **kw)
         else:
-            new_writing = CollaborativeWritings(title = params["title"], description = params["description"],
+            new_writing = CollaborativeWritings(title = kw["title"], description = kw["description"],
                                                parent = project)
-            logging.debug("DB WRITE: Handler NewWritingPage is creating a new CollaborativeWriting")
-            new_writing.put()
+            self.log_and_put(new_writing)
             self.redirect("/projects/project/%s/cwriting/%s" % (project_key, new_writing.key()))
 
 
@@ -100,15 +101,15 @@ class EditWritingPage(GenericPage):
         if not writing:
             self.error(404)
             return
-        params = {"project_key" : project_key, "writing_key" : writing_key, "error" : "",
-                  "project" : project, "writing" : writing, "submit_button_text" : "Save changes",
-                  "page_title" : "Edit writing information"}
+        kw = {"error"              : "",
+              "submit_button_text" : "Save changes",
+              "page_title"         : "Edit writing information",
+              "title"              : writing.title,
+              "description"        : writing.description,
+              "cancel_url"         : "/projects/project/%s/cwriting/%s" % (project_key, writing_key)}
         if not project.user_is_author(user):
-            params["error"] = "You are not an author of this project."
-        params["title"] = writing.title
-        params["description"] = writing.description
-        params["cancel_url"] = "/projects/project/%s/cwriting/%s" % (project_key, writing_key)
-        self.render("writing_description.html", **params)
+            kw["error"] = "You are not an author of this project."
+        self.render("writing_description.html", **kw)
 
     def post(self, project_key, writing_key):
         user = self.get_user()
@@ -140,19 +141,17 @@ class EditWritingPage(GenericPage):
             have_error = True
             error = "You are not an author of this project. "
         if have_error:
-            t_params = {"error" : "", 
-                        "page_title" : "Edit writing information",
-                        "cancel_url" : "/projects/project/%s/cwriting/%s" % (project_key, writing_key),
-                        "submit_button_text" : "Save changes",
-                        "title" : title, 
-                        "description" : description,
-                        "error" : error}
-            self.render("writing_description.html", **t_params)
+            kw = {"page_title"         : "Edit writing information",
+                  "cancel_url"         : "/projects/project/%s/cwriting/%s" % (project_key, writing_key),
+                  "submit_button_text" : "Save changes",
+                  "title"              : title, 
+                  "description"        : description,
+                  "error"              : error}
+            self.render("writing_description.html", **kw)
         else:
             writing.title = title
             writing.description = description
-            logging.debug("DB WRITE: Handler EditWritingPage is updating a CollaborativeWriting.")
-            writing.put()
+            self.log_and_put(writing)
             self.redirect("/projects/project/%s/cwriting/%s" % (project_key, writing_key))
                           
 
@@ -160,8 +159,6 @@ class EditWritingPage(GenericPage):
 class WritingPage(GenericPage):
     def get(self, project_key, writing_key):
         user = self.get_user()
-        params = {"project_key" : project_key, "writing_key" : writing_key,
-                  "info" : self.request.get("info")}
         project = self.get_item_from_key_str(project_key)
         if not project:
             self.error(404)
@@ -170,17 +167,20 @@ class WritingPage(GenericPage):
         if not writing:
             self.error(404)
             return
-        params = {"project" : project, "writing" : writing, "error" : "", 
-                  "project_key" : project_key, "writing_key" : writing_key}
+        kw = {"project"     : project, 
+              "writing"     : writing, 
+              "error"       : "", 
+              "project_key" : project_key, 
+              "writing_key" : writing_key,
+              "revisions"   : []}
         if not project.user_is_author(user):
-            params["error"] = "You are not an author of this project, you can't save your changes."
-            params["save_disabled"] = "disabled"
-        params["revisions"] = []
+            kw["error"] = "You are not an author of this project, you can't save your changes."
+            kw["save_disabled"] = "disabled"
         revisions_query = Revisions.all().ancestor(writing).order("-date")
         for rev in revisions_query.run():
-            logging.debug("DB READ: Handler WritingPage is fetching a Revision.")
-            params["revisions"].append(rev)
-        self.render("writing.html", **params)
+            self.log_read(Revisions)
+            kw["revisions"].append(rev)
+        self.render("writing.html", **kw)
 
     def post(self, project_key, writing_key):
         user = self.get_user()
@@ -196,32 +196,35 @@ class WritingPage(GenericPage):
             self.error(404)
             return
         content = self.request.get("content")
-        params = {"project" : project, "writing" : writing, "error" : "", 
-                  "project_key" : project_key, "writing_key" : writing_key,
-                  "content" : content, "summary" : self.request.get("summary")}
+        kw = {"project"     : project, 
+              "writing"     : writing, 
+              "error"       : "", 
+              "project_key" : project_key, 
+              "writing_key" : writing_key,
+              "content"     : content, 
+              "summary"     : self.request.get("summary")}
         have_error = False
         if not project.user_is_author(user):
             have_error = True
-            params["error"] = "You are not an author of this project, you can't save your changes."
-            params["save_disabled"] = "disabled"
+            kw["error"] = "You are not an author of this project, you can't save your changes."
+            kw["save_disabled"] = "disabled"
         if not content:
             have_error = True
-            params["error"] = "You must provide some content"
-        params["revisions"] = []
+            kw["error"] = "You must provide some content"
+        kw["revisions"] = []
         revisions_query = Revisions.all().ancestor(writing).order("-date")
         for rev in revisions_query.run():
             logging.debug("DB READ: Handler WritingPage is fetching a Revision.")
-            params["revisions"].append(rev)
-        if params["revisions"] and params["revisions"][0].content == content: 
+            kw["revisions"].append(rev)
+        if kw["revisions"] and kw["revisions"][0].content == content: 
             have_error = True
-            params["error"] = "There aren't any changes to save."
+            kw["error"] = "There aren't any changes to save."
         if have_error:
-            self.render("writing.html", **params)
+            self.render("writing.html", **kw)
         else:
             new_revision = Revisions(author = user.key(), content = content, 
-                                     parent = writing, summary = params["summary"])
-            logging.debug("DB WRITE: Handler WritingPage is creating a new Revision.")
-            new_revision.put()
+                                     parent = writing, summary = kw["summary"])
+            self.log_and_put(new_revision)
             self.redirect("/projects/project/%s/cwriting/view/%s" % (project_key, new_revision.key()))
 
 

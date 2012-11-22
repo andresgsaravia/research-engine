@@ -6,7 +6,6 @@ import webapp2
 import jinja2
 import os, re, string, hashlib, logging
 from google.appengine.ext import db
-from google.appengine.api import users
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
@@ -18,14 +17,11 @@ SALT_LENGTH = 16
 ##   Helper Functions   ##
 ##########################
 
-
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
-
 # Hashing
-
 def make_salt(length = SALT_LENGTH):
     assert length > 0
     return ''.join(string.lowercase[ord(os.urandom(1)) % 26] for x in range(length))
@@ -67,6 +63,37 @@ class RegisteredUsers(db.Model):
 
 class GenericPage(webapp2.RequestHandler):
 
+    # Querying the Datastore
+    def log_read(self, dbmodel, message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of %s. %s"
+                      % (self.__class__.__name__, dbmodel.__name__, message))
+        return
+
+    def get_item_from_key(self, instance_key, message = ''):
+        item = db.Query().filter("__key__ =", instance_key).get()
+        self.log_read(item.__class__, "From key. " + message)
+        return item
+
+    def get_item_from_key_str(self, key_str, message = ''):
+        try:
+            item = self.get_item_from_key(db.Key(key_str), message)
+        except db.BadKeyError:
+            item = None
+        return item
+    
+    # Writing the Datastore
+    def log_and_put(self, instance, message = ''):
+        logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
+                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        instance.put()
+        return
+
+    def log_and_delete(self, instance, message = ''):
+        logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
+                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        instance.delete()
+        return
+
     # Cookies
     def get_cookie_val(self, cookie_name, salt):
         cookie = self.request.cookies.get(cookie_name)
@@ -74,32 +101,6 @@ class GenericPage(webapp2.RequestHandler):
             val = get_secure_val(cookie, salt)
             return val
         return None
-
-    def get_user(self):
-        cookie = self.request.cookies.get("username")
-        if not cookie: return None
-        cookie_username = cookie.split("|")[0]
-        logging.debug("DB READ: Checking if users exists from GeneriPage's get_user method.")
-        u = RegisteredUsers.all().filter("username =", cookie_username).get()
-        if not u: return None
-        if not get_secure_val(cookie, u.salt): return None
-        return u
-
-    def get_username(self):
-        u = self.get_user()
-        if not u: return None
-        return u.username
-
-    def get_item_from_key(self, item_key):
-        logging.debug("DB READ: Handler %s requests an item using its key." % self.__class__.__name__)
-        return db.Query().filter("__key__ =", item_key).get()
-
-    def get_item_from_key_str(self, key_str):
-        try:
-            item = self.get_item_from_key(db.Key(key_str))
-        except db.BadKeyError:
-            item = None
-        return item
 
     def set_cookie(self, name, value, salt, path = "/"):
         cookie = "%s=%s; Path=%s" % (name, make_secure_val(value, salt), path)
@@ -113,8 +114,24 @@ class GenericPage(webapp2.RequestHandler):
             self.response.headers.add_header('Set-Cookie', str(del_cookie))
             return True
         return False
-    
-    # Rendering related stuff.    
+
+    # Users
+    def get_user(self):
+        cookie = self.request.cookies.get("username")
+        if not cookie: return None
+        cookie_username = cookie.split("|")[0]
+        self.log_read(RegisteredUsers, "Getting logged in user. ")
+        u = RegisteredUsers.all().filter("username =", cookie_username).get()
+        if not u: return None
+        if not get_secure_val(cookie, u.salt): return None
+        return u
+
+    def get_username(self):
+        u = self.get_user()
+        if not u: return None
+        return u.username
+
+    # Rendering
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 

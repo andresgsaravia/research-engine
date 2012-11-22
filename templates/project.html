@@ -19,7 +19,30 @@
   <a href="/projects">&larr; Return to your projects list.</a>
 </div>
 
-{{project.full_render() | safe}}
+<div class="project-full">
+  
+  <div class="dates">
+    <b>Last updated: </b>{{project.last_updated.year}}-{{project.last_updated.month}}-{{project.last_updated.day}}<br/>
+    <b>Started: </b>{{project.started.year}}-{{project.started.month}}-{{project.started.day}}
+  </div>
+  
+  <div class="name">
+    {{project.name}}
+  </div>
+  
+  <div class="description">
+    {{project.description.replace("\n", "<br/>") | safe}}
+  </div>
+  
+  <div class="authors">
+    <div class="label">Authors:</div>
+    <ul>
+      {% for author in authors %}
+        <li><a href="/user/{{author.key()}}">{{author.username}}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 
 <div class="activity">
   <h3>Latest Activity</h3>

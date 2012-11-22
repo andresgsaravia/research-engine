@@ -23,10 +23,10 @@ class Projects(db.Model):
     references = db.ListProperty(db.Key)
     notebooks = db.ListProperty(db.Key)
     
-    def list_of_authors(self):
+    def list_of_authors(self, requesting_handler):
         authors_list = []
         for author_key in self.authors:
-            logging.debug("DB READ: Getting an author from a project's list of authors.")
+            requesting_handler.log_read(RegisteredUsers, "Getting an author from a Project's list of authors. ")
             author = db.Query().filter("__key__ =", author_key).get()
             if author: 
                 authors_list.append(author)
@@ -45,14 +45,7 @@ class Projects(db.Model):
         if len(self.description) < SHORT_DESCRIPTION_LENGTH:
             return self.description
         else:
-            return self.description[0:147] + "..."
-
-    def short_render(self):
-        return render_str("project_short.html", project = self)
-
-    def full_render(self):
-        p_description = self.description.replace("\n", "<br/>")
-        return render_str("project_full.html", p_description = p_description, project = self)
+            return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
 
 
 ######################
@@ -70,7 +63,7 @@ class ProjectsPage(GenericPage):
             project = self.get_item_from_key(project_key)
             if project: projects.append(project)
         projects.sort(key=lambda p: p.last_updated, reverse=True)
-        self.render("projects_main.html", user = user, projects = projects)
+        self.render("projects.html", user = user, projects = projects, handler = self)
 
 
 class NewProjectPage(GenericPage):
@@ -87,53 +80,52 @@ class NewProjectPage(GenericPage):
             self.redirect("/login")
             return
         have_error = False
-        params = {}
-        params["p_name"] = self.request.get("p_name")
-        params["p_description"] = self.request.get("p_description")
-        params["error"] = ''
-        if not params["p_name"]:
+        kw = {"p_name"        : self.request.get("p_name"),
+              "p_description" : self.request.get("p_description"),
+              "error"         : ''}
+        if not kw["p_name"]:
             have_error = True
-            params["error"] += "Please provide a name for your new project. "
-        if not params["p_description"]:
+            kw["error"] += "Please provide a name for your new project. "
+        if not kw["p_description"]:
             have_error = True
-            params["error"] += "Please provide a brief description of your new project. "
+            kw["error"] += "Please provide a brief description of your new project. "
         if have_error:
-            self.render("project_new.html", **params)
+            self.render("project_new.html", **kw)
         else:
-            project = Projects(name = params["p_name"], description = params["p_description"], 
+            project = Projects(name = kw["p_name"], description = kw["p_description"], 
                                authors = [user.key()], references = [], notebooks = [])
-            logging.debug("DB WRITE: Adding a new project to Projects.")
-            project.put()
+            self.log_and_put(project, "Creating a new Project. ")
             user.my_projects.append(project.key())
-            logging.debug("DB WRITE: Appending a new project to my_projects of a RegisteredUsers entry.")
-            user.put()
+            self.log_and_put(user, "Appending a new project to my_projects of a RegisteredUser. ")
             self.redirect("/projects/project/%s" % project.key())
         
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
-        params = {"project_key" : project_key}
         project = self.get_item_from_key_str(project_key)
-        params["project"] = project
-        # References
-        params["ref_list"] = []
+        kw = {"project_key" : project_key, 
+              "project"     : project, 
+              "ref_list"    : []}
         for ref_key in project.references:
-            params["ref_list"].append(self.get_item_from_key(ref_key))
-        params["ref_list"].reverse()
-        params["len_ref_list"] = len(params["ref_list"])
+            kw["ref_list"].append(self.get_item_from_key(ref_key))
+        kw["ref_list"].reverse()
+        kw["len_ref_list"] = len(kw["ref_list"])
         # Notebooks
         notebooks = Notebooks.all().ancestor(project).order('-last_updated')
-        params["nb_list"] = []
+        kw["nb_list"] = []
         for nb in notebooks.run():
-            params["nb_list"].append(nb)
-        params["len_nb_list"] = len(params["nb_list"])
+            self.log_read(Notebooks)
+            kw["nb_list"].append(nb)
+        kw["len_nb_list"] = len(kw["nb_list"])
         # Collaborative Writings
-        params["wrt_list"] = []
+        kw["wrt_list"] = []
         writings = CollaborativeWritings.all().ancestor(project).order("last_updated")
         for wr in writings.run():
-            params["wrt_list"].append(wr)
-        params["len_wrt_list"] = len(params["wrt_list"])
-        self.render("project.html", **params)
+            self.log_read(CollaborativeWritings)
+            kw["wrt_list"].append(wr)
+        kw["len_wrt_list"] = len(kw["wrt_list"])
+        kw["authors"] = project.list_of_authors(self)
+        self.render("project.html", **kw)
 
     def post(self, project_key):
         user = self.get_user()
@@ -153,11 +145,9 @@ class ProjectPage(GenericPage):
             assert new_collaborator     # There souldn't be a way to make this request with a bad key.
             assert not (new_collaborator.key() in project.authors)
             project.authors.append(new_collaborator.key())
-            logging.debug("DB WRITE: Handler ProjectPage is adding a new collaborator to a project.")
-            project.put()
-            logging.debug("DB WRITE: Handler ProjectPage is updting a RegisteredUser's my_projects property.")
+            self.log_and_put(project, "New collaborator in a Project. ")
             new_collaborator.my_projects.append(project.key())
-            new_collaborator.put()
+            self.log_and_put(new_collaborator, "Updating my_projects property. ")
             self.redirect("/projects/project/%s" % project_key)
         
 
@@ -167,7 +157,7 @@ class EditProjectPage(GenericPage):
         if not user:
             self.redirect("/login")
             return
-        project = self.get_item_from_key(db.Key(project_key))
+        project = self.get_item_from_key_str(project_key)
         if project:
             if project.user_is_author(user):
                 self.render("project_edit.html", project = project)
@@ -182,8 +172,7 @@ class EditProjectPage(GenericPage):
         if not user:
             self.redirect("/login")
             return
-        logging.debug("DB READ: Fetching a project to edit its information from a submitted form.")
-        project = db.Query().filter("__key__ =", db.Key(project_key)).get()
+        project = self.get_item_from_key_str(project_key)
         have_error = False
         error = ''
         if project:
@@ -202,8 +191,7 @@ class EditProjectPage(GenericPage):
                     if (project.name != project_name) or (project.description != description):
                         project.name = project_name
                         project.description = description
-                        logging.debug("DB WRITE: Updating a project's information.")
-                        project.put()
+                        self.log_and_put(project, "Updating information. ")
                     self.redirect("/projects/project/%s" % project.key())
 
 

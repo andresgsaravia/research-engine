@@ -7,12 +7,15 @@ threadsafe: true
 handlers:
 - url: /css
   static_dir: css
+  secure: always
 
 - url: /images
   static_dir: images
+  secure: always
 
 - url: /js
   static_dir: js
+  secure: always
 
 - url: /.*
   script: main.app
