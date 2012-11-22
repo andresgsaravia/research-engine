@@ -63,19 +63,23 @@ class LoginPage(GenericPage):
         self.render("login.html", username = username)
 
     def post(self):
-        email = self.request.get('email')
+        email_or_username = self.request.get('email_or_username')
         password = self.request.get('password')
         have_error = False
-        kw = {'email' : email, 'password' : password, 'error' : ''}
-        if not email:
-            kw["error"] += "You must provide a valid email. "
+        kw = {'email_or_username' : email_or_username, 'password' : password, 'error' : ''}
+        if not email_or_username:
+            kw["error"] += "You must provide a valid email or username. "
             have_error = True
         if not password:
             kw["error"] += "You must provide your password. "
             have_error = True
         if not have_error:
-            self.log_read(RegisteredUsers, "Checking user's login information.")
-            u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE email = :1", email).get()
+            if re.match(EMAIL_RE, email_or_username):
+                self.log_read(RegisteredUsers, "Checking user's login information. ")
+                u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE email = :1", email_or_username).get()
+            else:
+                self.log_read(RegisteredUsers, "Checking user's login information. ")
+                u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", email_or_username).get() 
             if (not u) or (u.password_hash != hash_str(password + u.salt)):
                 kw["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
                 have_error = True
