@@ -20,42 +20,57 @@ class SignupPage(GenericPage):
         have_error = False
         kw = {"usern" : usern, "email" : email, "error" : ''}
         # Valid input
-        logging.debug("DB READ: Checking if username is available for a new user.")
-        logging.debug("DB READ: Checking if email is available for a new user.")
         if not re.match(USERNAME_RE, usern):
             kw['error_username'] = "*"
-            kw['error'] += "That's not a valid username. "
-            have_error = True
-        elif db.GqlQuery("select * from RegisteredUsers where username = '%s'" % usern).get():
-            kw['error_username'] = "*"
-            kw['error'] += 'That username is not available.'
-            have_error = True
-        elif db.GqlQuery("select * from RegisteredUsers where email = '%s'" % email).get():
-            kw['error_email'] = "*"
-            kw['error'] += 'That email is already in use by someone. Did you <a href="/recover_password">forget your password?. </a>'
-            have_error = True
-        if not re.match(PASSWORD_RE, password):
-            kw['error_password'] = "*"
-            kw['error'] += "That's not a valid password. "
-            have_error = True
-        elif password != verify:
-            kw['error_verify'] = "*"
-            kw['error'] += "Your passwords didn't match. "
+            kw['error'] += "That's not a valid username, it must be from 3 to 20 characters long and contain only letters, numbers, dashes and underscores. "
             have_error = True
         if not re.match(EMAIL_RE, email):
             kw['error_email'] = "*"
             kw['error'] += "That doesn't seem like a valid email. "
             have_error = True
+        if not re.match(PASSWORD_RE, password):
+            kw['error_password'] = "*"
+            kw['error'] += "That's not a valid password, it must be between 3 and 20 characters long. "
+            have_error = True
+        elif password != verify:
+            kw['error_verify'] = "*"
+            kw['error'] += "Your passwords didn't match. "
+            have_error = True
+        if not have_error:
+            # Available username
+            self.log_read(RegisteredUsers, "Checking if username is available. ")
+            another_user = RegisteredUsers.all().filter("username =", usern).get() 
+            if not another_user:
+                self.log_read(UnverifiedUsers, "Checking if username is available. ")
+                another_user = UnverifiedUsers.all().filter("username =", usern).get()
+            if another_user:
+                have_error = True
+                kw['error_username'] = "*"
+                kw['error'] += 'That username is not available. '
+            # Available email
+            self.log_read(RegisteredUsers, "Checking if email is available. ")
+            another_email = RegisteredUsers.all().filter("email =", email).get()
+            if another_email:
+                have_error = True
+                kw['error_email'] = "*"
+                kw['error'] += 'That email is already in use by someone. Did you <a href="/recover_password?email=%s">forget your password?. </a>' % email
+            else:
+                self.log_read(UnverifiedUsers, "Checking if email is available. ")
+                another_email = UnverifiedUsers.all().filter("email =", email).get()
+                if another_email:
+                    have_error = True
+                    kw['error_email'] = '*'
+                    kw['error'] += 'This email is already registered but it still needs to be verified, click <a href="/verify_email?email=%s">here</a> to send the verification email again.' % email
         # Render
         if have_error:
             self.render('signup.html', **kw)
         else:
             salt = make_salt()
             ph = hash_str(password + salt)
-            u = RegisteredUsers(username = usern, password_hash = ph, salt = salt, email = email)
+            u = UnverifiedUsers(username = usern, password_hash = ph, salt = salt, email = email)
             self.log_and_put(u, "New user registration")
-            self.set_cookie("username", usern, salt)
-            self.redirect('/')
+            u.send_verify_email()
+            self.render("please_verify_email.html")
 
 class LoginPage(GenericPage):
     def get(self):
@@ -230,3 +245,33 @@ class ContactsPage(GenericPage):
         for contact_key in user.contacts:
             contacts.append(self.get_item_from_key(contact_key))
         self.render("contacts.html", contacts = contacts)
+
+
+class RecoverPasswordPage(GenericPage):
+    def get(self):
+        self.render("under_construction.html")
+
+
+class VerifyEmailPage(GenericPage):
+    def get(self):
+        email = self.request.get("email")
+        h = self.request.get("h")
+        self.log_read(UnverifiedUsers)
+        u = UnverifiedUsers.all().filter("email =", email).get()
+        if not u:
+            logging.warning("Handler VerifyEmailPage attempted to verify an email not in Datastore.")
+            self.error(404)
+            return 
+        if hash_str(email + u.salt) == h:
+            new_user = RegisteredUsers(username = u.username,
+                                       email = u.email,
+                                       salt = u.salt,
+                                       password_hash = u.password_hash)
+            self.log_and_put(new_user)
+            self.log_and_delete(u)
+            self.set_cookie("username", new_user.username, new_user.salt)
+            self.render("email_verified.html")
+        else:
+            logging.warning("Handler VerifyEmailPage attempted to verify an email with the wrong hash.")
+            self.error(404)
+            return

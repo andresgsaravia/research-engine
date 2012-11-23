@@ -7,6 +7,8 @@ import jinja2
 import os, re, string, hashlib, logging
 from google.appengine.ext import db
 
+import email_messages
+
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
@@ -45,6 +47,21 @@ def get_secure_val(h, salt):
 ###########################
 
 # User related stuff.
+
+class UnverifiedUsers(db.Model):
+    username = db.StringProperty(required = True)
+    email = db.EmailProperty(required = True)
+    salt = db.StringProperty(required = True)
+    password_hash = db.TextProperty(required = True)
+
+    def send_verify_email(self):
+        link = "http://research-engine.appspot.com/verify_email?email=%s&h=%s" % (self.email, hash_str(self.email + self.salt))
+        message = email_messages.verify_email_message(link)
+        message.to = self.email
+        logging.debug("EMAIL: Sending an email verification request.")
+        message.send()
+        return
+
 
 class RegisteredUsers(db.Model):
     username = db.StringProperty(required = True)
