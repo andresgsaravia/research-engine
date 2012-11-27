@@ -170,7 +170,7 @@ class UserPage(GenericPage):
     def get(self, page_user_key):
         logged_in_user = self.get_user()
         page_user = self.get_item_from_key_str(page_user_key, "Getting user instance of this page.")
-        kw = {"logged_in_user" : logged_in_user, "page_user" : page_user}
+        kw = {"logged_in_user" : logged_in_user, "page_user" : page_user, "handler" : self}
         if not page_user:
             self.error(404)
             return
