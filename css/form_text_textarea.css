@@ -1,6 +1,7 @@
 /* Stylesheet for the form_text_textarea.html template */
 
 input[type=text] {
+    margin-top: 1em;
     width: 90%;
     min-width: 30em;
     padding: 0.2em;

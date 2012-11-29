@@ -31,6 +31,15 @@ class Revisions(db.Model):
 ######################
 
 class NewWritingPage(GenericPage):
+    kw = {"fancy_textarea_p" : False,
+          "page_title" : "New collaborative writing",
+          "title" : "New collaborative writing",
+          "text_name" : "title",
+          "text_placeholder" : "Title for the writing",
+          "textarea_name" : "description", 
+          "textarea_placeholder" : "Enter a brief description of the purpose of the writing here.",
+          "submit_value" : "Create new writing"}
+
     def get(self, project_key):
         user = self.get_user()
         if not user:
@@ -38,14 +47,12 @@ class NewWritingPage(GenericPage):
             return
         project = self.get_item_from_key_str(project_key)
         if project:
-            kw = {"error"              : '',
-                  "project_key"        : project_key,
-                  "submit_button_text" : "Create new writing",
-                  "page_title"         : "New collaborative writing",
-                  "cancel_url"         : "/projects/project/%s" % project_key}
+            t_kw = self.kw
+            t_kw["subtitle"] = project.name
+            t_kw["cancel_url"] = "/projects/project/%s" % project_key
             if not project.user_is_author(user):
-                kw["error"] = "You are not an author for this project."
-            self.render("writing_description.html", **kw)
+                t_kw["error"] = "You are not an author for this project."
+            self.render("form_text_textarea.html", **t_kw)
         else:
             logging.debug("Handler NewWritingPage tryed to fetch a non-existing project")
             self.error(404)
@@ -60,28 +67,28 @@ class NewWritingPage(GenericPage):
             logging.debug("Handler NewWritingPage tryed to fetch a non-existing project")
             self.error(404)
             return
-        kw = {"project"            : project, 
-              "project_key"        : project_key, 
-              "error"              : '', 
-              "submit_button_text" : "Create new writing", 
-              "page_title"         : "New collaborative writing",
-              "title"              : self.request.get("title"),
-              "description"        : self.request.get("description"),
-              "cancel_url"         : "/projects/project/%s" % project_key}
+        title =self.request.get("title")
+        description = self.request.get("description")
         have_error = False
+        error = ''
         if not project.user_is_author(user):
             have_error = True
             kw["error"] = "You are not an author for this project. "
-        if not kw["title"]:
+        if not title:
             have_error = True
-            kw["error"] += "Please provide a title. "
-        if not kw["description"]:
+            error += "Please provide a title. "
+        if not description:
             have_error = True
-            kw["error"] += "Please provide a brief description of the purpose of this new writing. "
+            error += "Please provide a brief description of the purpose of this new writing. "
         if have_error:
-            self.render("writing_description.html", **kw)
+            t_kw = self.kw
+            t_kw["subtitle"] = project.name
+            t_kw["cancel_url"] = "/projects/project/%s" % project_key
+            t_kw["text_value"] = title
+            t_kw["textarea_value"] = description
+            self.render("form_text_textarea.html", error = error, **t_kw)
         else:
-            new_writing = CollaborativeWritings(title = kw["title"], description = kw["description"],
+            new_writing = CollaborativeWritings(title = title, description = description,
                                                parent = project)
             self.log_and_put(new_writing)
             self.redirect("/projects/project/%s/cwriting/%s" % (project_key, new_writing.key()))
