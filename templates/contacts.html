@@ -13,6 +13,8 @@
 <div class="new-contact-link">
   <a href="/user/search">Add a new contact</a>
 </div>
+
+{% if contacts %}
 <div class="contacts">
   {% for contact in contacts %}
     <div class="contact">
@@ -25,5 +27,8 @@
     </div>
   {% endfor %}
 </div>
+{% else %}
+<p>You don't have any contacts yet.</p>
+{% endif %}
 
 {% endblock %}

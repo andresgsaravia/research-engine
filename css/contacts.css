@@ -1,5 +1,9 @@
 /* For the listing of your contacts */
 
+h2 {
+    padding-bottom: 0;
+}
+
 .contacts {
     border: 1px solid black;
     background: white;
@@ -7,6 +11,8 @@
 
 .new-contact-link {
     text-align: right;
+    border-bottom: 2px solid black;
+    margin-bottom: 0.5em;
 }
 
 .contacts .contact {

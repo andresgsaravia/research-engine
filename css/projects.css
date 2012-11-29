@@ -4,6 +4,12 @@ h2 {
     padding-bottom: 0;
 }
 
+.new-project-link {
+    text-align: right;
+    border-bottom: 2px solid black;
+    margin-bottom: 0.5em;
+}
+
 .project {
     border: 1px solid black;
     background: white;
