@@ -67,12 +67,25 @@ class ProjectsPage(GenericPage):
 
 
 class NewProjectPage(GenericPage):
+    # Template variables (form_text_textarea.html)
+    kw = {"fancy_textarea_p" : False,
+          "page_title" : "New Project",
+          "title" : "New Project",
+          "subtitle" : '',
+          "action" : "/projects/new",
+          "text_name" : "p_name",
+          "text_placeholder" : "Name of the project",
+          "textarea_name" : "p_description",
+          "textarea_placeholder" : "Description of the project",
+          "submit_value" : "Create new project",
+          "cancel_url" : "/projects"}
+
     def get(self):
         user = self.get_user()
         if not user:
             self.redirect("/login")
-            return
-        self.render("project_new.html")
+            return              
+        self.render("form_text_textarea.html", **self.kw)
 
     def post(self):
         user = self.get_user()
@@ -80,19 +93,20 @@ class NewProjectPage(GenericPage):
             self.redirect("/login")
             return
         have_error = False
-        kw = {"p_name"        : self.request.get("p_name"),
-              "p_description" : self.request.get("p_description"),
-              "error"         : ''}
-        if not kw["p_name"]:
+        p_name = self.request.get("p_name")
+        p_description = self.request.get("p_description")
+        error = ''
+        if not p_name:
             have_error = True
-            kw["error"] += "Please provide a name for your new project. "
-        if not kw["p_description"]:
+            error += "Please provide a name for your new project. "
+        if not p_description:
             have_error = True
-            kw["error"] += "Please provide a brief description of your new project. "
+            error += "Please provide a brief description of your new project. "
         if have_error:
-            self.render("project_new.html", **kw)
+            self.render("form_text_textarea.html", 
+                        error = error, text_value = p_name, textarea_value = p_description, **self.kw)
         else:
-            project = Projects(name = kw["p_name"], description = kw["p_description"], 
+            project = Projects(name = p_name, description = p_description, 
                                authors = [user.key()], references = [], notebooks = [])
             self.log_and_put(project, "Creating a new Project. ")
             user.my_projects.append(project.key())
@@ -152,6 +166,17 @@ class ProjectPage(GenericPage):
         
 
 class EditProjectPage(GenericPage):
+    # Template variables (form_text_textarea.html)
+    kw = {"fancy_textarea_p" : False,
+          "page_title" : "Edit Project",
+          "title" : "Edit Project",
+          "subtitle" : '',
+          "text_name" : "p_name",
+          "text_placeholder" : "Name of the project",
+          "textarea_name" : "p_description",
+          "textarea_placeholder" : "Description of the project",
+          "submit_value" : "Save changes"}
+
     def get(self, project_key):
         user = self.get_user()
         if not user:
@@ -160,7 +185,12 @@ class EditProjectPage(GenericPage):
         project = self.get_item_from_key_str(project_key)
         if project:
             if project.user_is_author(user):
-                self.render("project_edit.html", project = project)
+                t_kw = self.kw
+                t_kw["action"] = "/projects/project/edit/%s" % project_key
+                t_kw["text_value"] = project.name
+                t_kw["textarea_value"] = project.description
+                t_kw["cancel_url"] = "/projects/project/%s" % project_key
+                self.render("form_text_textarea.html", **t_kw)
             else:
                 self.redirect("/projects/project/%s" % project_key)
         else:
@@ -177,8 +207,8 @@ class EditProjectPage(GenericPage):
         error = ''
         if project:
             if project.user_is_author(user):
-                project_name = self.request.get("project_name")
-                description = self.request.get("description")
+                project_name = self.request.get("p_name")
+                description = self.request.get("p_description")
                 if not project_name:
                     have_error = True
                     error += "You must provide a name for the project. "
@@ -186,13 +216,23 @@ class EditProjectPage(GenericPage):
                     have_error = True
                     error += "You must provide a description for the project. "
                 if have_error:
-                    self.render("project_edit.html", project = project, error = error)
+                    t_kw = self.kw
+                    t_kw["action"] = "/projects/project/edit/%s" % project_key
+                    t_kw["text_value"] = project_name
+                    t_kw["textarea_value"] = description
+                    t_kw["cancel_url"] = "/projects/project/%s" % project_key
+                    self.render("form_text_textarea.html", error = error, **t_kw)
                 else:
                     if (project.name != project_name) or (project.description != description):
                         project.name = project_name
                         project.description = description
                         self.log_and_put(project, "Updating information. ")
                     self.redirect("/projects/project/%s" % project.key())
+            else:
+                self.redirect("/projects/project/%s" % project_key)
+        else:
+            logging.debug("Attempting to fetch a non-existing edit-project page with key %s" % project_key)
+            self.error(404)
 
 
 class RecentActivityPage(GenericPage):
