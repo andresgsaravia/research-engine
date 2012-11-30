@@ -167,9 +167,10 @@ class SettingsPage(GenericPage):
 
 
 class UserPage(GenericPage):
-    def get(self, page_user_key):
+    def get(self, page_username):
         logged_in_user = self.get_user()
-        page_user = self.get_item_from_key_str(page_user_key, "Getting user instance of this page.")
+        self.log_read(RegisteredUsers, "Getting user instance of this page.")
+        page_user = RegisteredUsers.all().filter("username =", page_username).get()
         kw = {"logged_in_user" : logged_in_user, "page_user" : page_user, "handler" : self}
         if not page_user:
             self.error(404)
@@ -179,7 +180,7 @@ class UserPage(GenericPage):
             return
         if page_user.key() in logged_in_user.contacts:
             kw["is_contact"] = True
-            kw["is_contact_message"] = '%s is in <a href="/user/contacts">your contacts</a> list.' % page_user.username
+            kw["is_contact_message"] = '%s is in <a href="/contacts">your contacts</a> list.' % page_user.username
             kw["button_message"] = "Remove from contacts"
             kw["projects_not_collaborating"] = []
             kw["projects_collaborating"] = []
@@ -191,16 +192,17 @@ class UserPage(GenericPage):
                     kw["projects_not_collaborating"].append(project)
         else:
             kw["is_contact"] = False
-            kw["is_contact_message"] = '%s is not in <a href="/user/contacts">your contacts</a> list.' % page_user.username
+            kw["is_contact_message"] = '%s is not in <a href="/contacts">your contacts</a> list.' % page_user.username
             kw["button_message"] = "Add to contacts"
         self.render("user.html", **kw)
             
-    def post(self, page_user_key):
+    def post(self, page_username):
         logged_in_user = self.get_user()
         if not logged_in_user:
             self.redirect("/login")
             return
-        page_user = self.get_item_from_key_str(page_user_key, "Getting user instance of this page. ")
+        self.log_read(RegisteredUsers, "Getting user instance of this page.")
+        page_user = RegisteredUsers.all().filter("username =", page_username).get()
         if not page_user:
             self.error(404)
             return
@@ -210,7 +212,7 @@ class UserPage(GenericPage):
         else:
             logged_in_user.contacts.append(page_user.key())
             self.log_and_put(logged_in_user, "Adding a contact.")
-        self.redirect("/user/%s" % page_user_key)
+        self.redirect("/%s" % page_username)
 
 
 class SearchForUserPage(GenericPage):

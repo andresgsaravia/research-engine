@@ -11,8 +11,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/signup', users.SignupPage),
                                ('/settings', users.SettingsPage),
                                ('/user/search', users.SearchForUserPage),
-                               ('/user/contacts', users.ContactsPage),
-                               ('/user/(.+)', users.UserPage),
+                               ('/contacts', users.ContactsPage),
                                ('/recover_password', users.RecoverPasswordPage),
                                ('/verify_email', users.VerifyEmailPage),
                                # Projects
@@ -42,5 +41,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/notebooks', notebooks.AllNotebooksPage),
                                # Empty placeholders
                                ('/news', frontend.UnderConstructionPage),
-                               ('/classroom', frontend.UnderConstructionPage)],
+                               ('/classroom', frontend.UnderConstructionPage),
+
+                               ('/(.+)', users.UserPage),],
                               debug = True)
