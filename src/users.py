@@ -257,15 +257,15 @@ class RecoverPasswordPage(GenericPage):
 
 class VerifyEmailPage(GenericPage):
     def get(self):
-        email = self.request.get("email")
+        username = self.request.get("username")
         h = self.request.get("h")
         self.log_read(UnverifiedUsers)
-        u = UnverifiedUsers.all().filter("email =", email).get()
+        u = UnverifiedUsers.all().filter("username =", username).get()
         if not u:
             logging.warning("Handler VerifyEmailPage attempted to verify an email not in Datastore.")
             self.error(404)
             return 
-        if hash_str(email + u.salt) == h:
+        if hash_str(username + u.salt) == h:
             new_user = RegisteredUsers(username = u.username,
                                        email = u.email,
                                        salt = u.salt,

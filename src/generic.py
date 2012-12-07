@@ -55,7 +55,7 @@ class UnverifiedUsers(db.Model):
     password_hash = db.TextProperty(required = True)
 
     def send_verify_email(self):
-        link = "http://research-engine.appspot.com/verify_email?email=%s&h=%s" % (self.email, hash_str(self.email + self.salt))
+        link = "http://research-engine.appspot.com/verify_email?username=%s&h=%s" % (self.username, hash_str(self.username + self.salt))
         message = email_messages.verify_email_message(link)
         message.to = self.email
         logging.debug("EMAIL: Sending an email verification request.")
