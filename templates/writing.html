@@ -28,22 +28,6 @@
 
 <h2>Collaborative writing</h2>
 
-<div class="writing-details">
-
-  <div class="dates">
-    <div class="last-updated">Last updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
-    <div class="created">Created: {{writing.created.strftime("%d-%b-%Y")}}</div>
-  </div>
-
-  <div class="writing-title">{{writing.title}}</div>
-  <div class="writing-description">{{writing.description.replace("\n", "<br/>") | safe}}</div>
-
-</div>
-
-<div class="edit-link">
-  <a href="/projects/project/{{project_key}}/cwriting/edit/{{writing_key}}">Edit</a>
-</div>
-
 <div class="return-link">
   <a href="/projects/project/{{project_key}}">&larr; Return to your project's main page</a>
 </div>
@@ -65,6 +49,24 @@
 
 <div class="error">{{error}}</div>
 <div class="info">{{info}}</div>
+
+
+<div class="edit-link">
+  <a href="/projects/project/{{project_key}}/cwriting/edit/{{writing_key}}">Edit</a>
+</div>
+<br/><h2>Information</h2>
+
+<div class="writing-details">
+
+  <div class="dates">
+    <div class="last-updated">Last updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
+    <div class="created">Created: {{writing.created.strftime("%d-%b-%Y")}}</div>
+  </div>
+
+  <div class="writing-title">{{writing.title}}</div>
+  <div class="writing-description">{{writing.description.replace("\n", "<br/>") | safe}}</div>
+
+</div>
 
 <br/><h2>Revisions</h2>
 
