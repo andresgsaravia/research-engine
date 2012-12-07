@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Research Engine | {{page_user.username}}</title>
+    <title>Research Engine | {{page_user.username.capitalize()}}</title>
     <link href="/css/user.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block content %}
 
-<h2>{{page_user.username}}</h2>
+<h2>{{page_user.username.capitalize()}}</h2>
 
 <div class="user-info">
   {{page_user.about_me}}
@@ -59,7 +59,7 @@
 	    <div class="authors">
 	      <ul>
 		{% for author in project.list_of_authors(handler) %}
-		  <li><a href="/{{author.username}}">{{author.username}}</a></li>
+		  <li><a href="/{{author.username}}">{{author.username.capitalize()}}</a></li>
 		{% endfor %}
 	      </ul>
 	    </div>
@@ -72,7 +72,7 @@
 
   {% if projects_not_collaborating %}
   <div class="not-collaborating">
-    <h3>Invite {{page_user.username}} to collaborate in a project</h3>
+    <h3>Invite {{page_user.username.capitalize()}} to collaborate in a project</h3>
     <div class="projects">
       {% for project in projects_not_collaborating %}
       <div class="project">

@@ -160,5 +160,5 @@ class GenericPage(webapp2.RequestHandler):
         if kw['username'] is None:
             kw['login_message'] = ('<a href="/login">Login</a><ul><li><a href="/signup">Signup</a></li></ul>')
         else:
-            kw['login_message'] = ('<a title="Click here to edit your settings." href="/settings">%s</a><ul> <li><a href="/logout">Logout</a></li></ul>' % kw['username'])            
+            kw['login_message'] = ('<a title="Click here to edit your settings." href="/settings">%s</a><ul> <li><a href="/logout">Logout</a></li></ul>' % kw['username'].capitalize())            
         self.write(self.render_str(template, **kw))

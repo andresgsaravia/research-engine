@@ -37,6 +37,7 @@ class SignupPage(GenericPage):
             kw['error'] += "Your passwords didn't match. "
             have_error = True
         if not have_error:
+            usern = usern.lower()
             # Available username
             self.log_read(RegisteredUsers, "Checking if username is available. ")
             another_user = RegisteredUsers.all().filter("username =", usern).get() 
@@ -94,7 +95,7 @@ class LoginPage(GenericPage):
                 u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE email = :1", email_or_username).get()
             else:
                 self.log_read(RegisteredUsers, "Checking user's login information. ")
-                u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", email_or_username).get() 
+                u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", email_or_username.lower()).get() 
             if (not u) or (u.password_hash != hash_str(password + u.salt)):
                 kw["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
                 have_error = True
@@ -136,6 +137,7 @@ class SettingsPage(GenericPage):
               "info"     : '',
               "error"    : ''}
         have_error = False
+        if kw["usern"]: kw["usern"] = kw["usern"].lower()
         if user.username != kw["usern"]:
             self.log_read(RegisteredUsers, "Checking if new username is available. ")
             u2 = RegisteredUsers.all().filter("username =", kw["usern"]).get()
@@ -168,6 +170,7 @@ class SettingsPage(GenericPage):
 
 class UserPage(GenericPage):
     def get(self, page_username):
+        page_username = page_username.lower()
         logged_in_user = self.get_user()
         self.log_read(RegisteredUsers, "Getting user instance of this page.")
         page_user = RegisteredUsers.all().filter("username =", page_username).get()
@@ -181,7 +184,7 @@ class UserPage(GenericPage):
             return
         if page_user.key() in logged_in_user.contacts:
             kw["is_contact"] = True
-            kw["is_contact_message"] = '%s is in <a href="/contacts">your contacts</a> list.' % page_user.username
+            kw["is_contact_message"] = '%s is in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
             kw["button_message"] = "Remove from contacts"
             kw["projects_not_collaborating"] = []
             kw["projects_collaborating"] = []
@@ -193,7 +196,7 @@ class UserPage(GenericPage):
                     kw["projects_not_collaborating"].append(project)
         else:
             kw["is_contact"] = False
-            kw["is_contact_message"] = '%s is not in <a href="/contacts">your contacts</a> list.' % page_user.username
+            kw["is_contact_message"] = '%s is not in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
             kw["button_message"] = "Add to contacts"
         self.render("user.html", **kw)
             
@@ -228,14 +231,14 @@ class SearchForUserPage(GenericPage):
             have_error = True
             error += 'You must provide an username to search for.'
         logging.debug("DB READ: Handler SearchForUserPage is searching for an user using its username. ")
-        u = RegisteredUsers.all().filter("username =", search_username).get()
+        u = RegisteredUsers.all().filter("username =", search_username.lower()).get()
         if search_username and (not u):
             have_error = True
             error += "Sorry, we don't know any user with that username."
         if have_error:
             self.render("search_for_user.html", error = error, search_username = search_username)
         else:
-            self.redirect("/user/%s" % u.key())
+            self.redirect("/%s" % u.username)
 
 
 class ContactsPage(GenericPage):

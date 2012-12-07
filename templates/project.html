@@ -38,7 +38,7 @@
     <div class="label">Authors:</div>
     <ul>
       {% for author in authors %}
-        <li><a href="/{{author.username}}">{{author.username}}</a></li>
+        <li><a href="/{{author.username}}">{{author.username.capitalize()}}</a></li>
       {% endfor %}
     </ul>
   </div>
