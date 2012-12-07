@@ -42,12 +42,27 @@ class NotebookNotes(db.Model):
 ######################
 
 class NewNotebookPage(GenericPage):
+    kw = {"fancy_textarea_p" : False,
+          "page_title" : "New notebook",
+          "title" : "New notebook",
+          "text_name" : "n_name",
+          "text_placeholder" : "Name of the new notebook",
+          "textarea_name" : "n_description",
+          "textarea_placeholder" : "Description of the notebook ",
+          "submit_value" : "Create new notebook"}
+
     def get(self, project_key):
         user = self.get_user()
         if not user: 
             self.redirect("/login")
             return
-        self.render("notebook_new.html", project_key = project_key)
+        project = self.get_item_from_key_str(project_key)
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        self.render("form_text_textarea.html", subtitle = project.name, 
+                    cancel_url = "/projects/project/%s" % project_key, **self.kw)
 
     def post(self, project_key):
         user = self.get_user()
@@ -55,23 +70,25 @@ class NewNotebookPage(GenericPage):
         if not user:
             self.redirect("/login")
             return
-        kw = {"n_name" : self.request.get("n_name"),
-              "n_description" : self.request.get("n_description"),
-              "error" : ''}
+        kw = self.kw
+        kw["text_value"] = self.request.get("n_name")
+        kw["textarea_value"] = self.request.get("n_description")
+        kw["error"] = ''
         have_error = False
-        if not kw["n_name"]:
+        if not kw["text_value"]:
             have_error = True
             kw["error"] += 'You must provide a name for your new notebook. '
-        if not kw["n_description"]:
+        if not kw["textarea_value"]:
             have_error = True
             kw["error"] += 'Please provide a brief description of your new notebook. '
         if not (user.key() in project.authors):
             have_error = True
             kw["error"] += "You can't add a notebook to this project since you are not one of its authors. "
         if have_error:
-            self.render("notebook_new.html", **kw)
+            self.render("form_text_textarea.html", subtitle = project.name, 
+                        cancel_url ="/projects/project/%s" % project_key, **kw)
         else:
-            new_notebook = Notebooks(owner = user.key(), name = kw["n_name"], description = kw["n_description"], 
+            new_notebook = Notebooks(owner = user.key(), name = kw["text_value"], description = kw["textarea_value"], 
                                      parent  = db.Key(project_key))
             self.log_and_put(new_notebook)
             user.my_notebooks.append(new_notebook.key())
@@ -80,25 +97,23 @@ class NewNotebookPage(GenericPage):
             self.redirect("/projects/project/%s/nb/%s" % (project_key, new_notebook.key()))
 
 
-class NotebookPage(GenericPage):
+class EditNotebookPage(NewNotebookPage):
     def get(self, project_key, notebook_key):
-        notebook = self.get_item_from_key(db.Key(notebook_key))
-        if not notebook:
-            self.error(404)
-            return
-        kw = {'project_key' : project_key, 'notebook' : notebook, "notes" : []}
-        for note in NotebookNotes.all().ancestor(notebook).order("-date").run():
-            self.log_read(NotebookNotes)
-            kw["notes"].append(note)
-        self.render("notebook.html", **kw)
-
-
-class EditNotebookPage(GenericPage):
-    def get(self, project_key, notebook_key):
+        self.kw["submit_value"] = "Update notebook"
         notebook = self.get_item_from_key_str(notebook_key)
-        self.render("notebook_edit.html", notebook = notebook, project_key = project_key, notebook_key = notebook_key)
+        project = self.get_item_from_key_str(project_key)
+        if (not notebook) or (not project):
+            self.error(404)
+            self.render("404.html")
+            return
+        self.render("form_text_textarea.html",
+                    subtitle = project.name,
+                    cancel_url = "/projects/project/%s/nb/%s"  % (project_key, notebook_key),
+                    text_value = notebook.name, textarea_value = notebook.description,
+                    **self.kw)
 
     def post(self, project_key, notebook_key):
+        self.kw["submit_value"] = "Update notebook"
         user = self.get_user()
         if not user:
             self.redirect("/login")
@@ -130,6 +145,19 @@ class EditNotebookPage(GenericPage):
             notebook.description = kw["nb_description"]
             self.log_and_put(notebook)
             self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook_key))
+
+
+class NotebookPage(GenericPage):
+    def get(self, project_key, notebook_key):
+        notebook = self.get_item_from_key(db.Key(notebook_key))
+        if not notebook:
+            self.error(404)
+            return
+        kw = {'project_key' : project_key, 'notebook' : notebook, "notes" : []}
+        for note in NotebookNotes.all().ancestor(notebook).order("-date").run():
+            self.log_read(NotebookNotes)
+            kw["notes"].append(note)
+        self.render("notebook.html", **kw)
 
 
 class NewNotePage(GenericPage):
