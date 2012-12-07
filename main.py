@@ -43,5 +43,5 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/news', frontend.UnderConstructionPage),
                                ('/classroom', frontend.UnderConstructionPage),
 
-                               ('/(.+)', users.UserPage),],
+                               ('/(.+)', users.UserPage)],
                               debug = True)

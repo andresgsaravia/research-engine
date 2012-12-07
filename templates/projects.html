@@ -33,7 +33,7 @@
 	<div class="authors">
 	  <ul>
 	    {% for author in project.list_of_authors(handler) %}
-	      <li><a href="/user/{{author.key()}}">{{author.username}}</a></li>
+	      <li><a href="/{{author.username}}">{{author.username}}</a></li>
 	    {% endfor %}
 	  </ul>
 	</div>
