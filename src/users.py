@@ -174,6 +174,7 @@ class UserPage(GenericPage):
         kw = {"logged_in_user" : logged_in_user, "page_user" : page_user, "handler" : self}
         if not page_user:
             self.error(404)
+            self.render("404.html")
             return
         if logged_in_user.key() == page_user.key():
             self.redirect("/settings")
