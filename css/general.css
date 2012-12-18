@@ -47,10 +47,10 @@ a:hover {
 
 .content {
     margin: 0 auto;
-    width: 75%;
+    width: 85%;
     padding-bottom: 3em;
     text-align: justify;
-    padding-top: 1.5em;
+    padding-top: 0.5em;
     overflow: auto;
 }
 
@@ -104,6 +104,7 @@ a:hover {
 
 .menu li {
     list-style: none;
+    z-index: 100;
 }
 
 .menu > li {

@@ -1,4 +1,53 @@
-/* Related to the projects tab */
+/* For the basic projects template */
+
+.p-menu-wrapper {
+    width: 100%;
+    z-index: -1;
+}
+
+.p-menu {
+    height: 2em;
+    margin-top: 1em;
+}
+
+.p-menu li {
+    list-style: none;
+    width: 10.7%;
+    height: 100%;
+    font-size: 0.7em;
+    background: #FDFDFD;
+}
+
+.p-menu li:hover {
+    background: #F1F6F8;
+}
+
+.p-menu a {
+    text-align: center;
+    margin-top: 0.8em;
+}
+
+.p-menu > li {
+    position: relative;
+    float: left;
+    border-top: 2px solid #DFDFDF;
+    border-bottom: 2px solid #C0C0C0;
+    border-left: 1px solid white;
+    border-right: 1px solid #C0C0C0;
+    
+}
+
+.p-menu li a {
+    display: block;
+    color: #555555;
+}
+
+.p-menu li a:hover {
+    text-decoration: none;
+    color: #648A9E;
+}
+
+/* All the following should be removed soon */
 
 h2 {
     padding-bottom: 0;

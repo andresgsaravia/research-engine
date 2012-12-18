@@ -116,6 +116,7 @@ class NewProjectPage(GenericPage):
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
+        user = self.get_user()
         project = self.get_item_from_key_str(project_key)
         kw = {"project_key" : project_key, 
               "project"     : project, 
@@ -139,6 +140,10 @@ class ProjectPage(GenericPage):
             kw["wrt_list"].append(wr)
         kw["len_wrt_list"] = len(kw["wrt_list"])
         kw["authors"] = project.list_of_authors(self)
+        if project.user_is_author(user): 
+            kw["p_author"] = user
+        else:
+            kw["p_author"] = kw["authors"][0]
         self.render("project.html", **kw)
 
     def post(self, project_key):
