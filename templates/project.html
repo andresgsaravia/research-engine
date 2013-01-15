@@ -2,29 +2,38 @@
 
 
 {% block head %}
-    <link href="/css/projects.css" rel="stylesheet" type="text/css" />
+    <link href="/css/projects-menu.css" rel="stylesheet" type="text/css" />
     <title>Research Engine | Project</title>
 {% endblock %}
 
 
 {% block content %}
 
-<h3><a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / <a href="/projects">Projects</a> / <a href="/projects/project/{{project_key}}">{{project.name}}</a></h3>
-
 <div class="p-menu-wrapper">
   <ul class="p-menu">
-    <li><a href="">News</a></li>
-    <li><a href="">Notebooks</a></li>
-    <li><a href="">Writings</a></li>
-    <li><a href="">References</a></li>
-    <li><a href="">Code</a></li>
-    <li><a href="">Data</a></li>
-    <li><a href="">Wiki</a></li>
-    <li><a href="">Forum</a></li>
-    <li><a href="">Admin</a></li>
+    <ul>
+      <li class="news-link"><a href="">News</a></li>
+      <li><a href="">Wiki</a></li>
+      <li><a href="">Forum</a></li>
+    </ul>
+    <ul>
+      <li><a href="">Notebooks</a></li>
+      <li><a href="">Writings</a></li>
+      <li><a href="">References</a></li>
+      <li><a href="">Code</a></li>
+      <li><a href="">Datasets</a></li>
+    </ul>
+    <ul>
+      <li><a href="">Admin</a></li>
+    </ul>
   </ul>
 </div>
 
+<div class="p-title">
+  <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / <a href="/projects">Projects</a> / <a href="/projects/project/{{project_key}}">{{project.name}}</a>
+</div>
+
+<div class="p-content">
 
 <div class="activity">
   <h3>Latest Activity</h3>
@@ -67,6 +76,8 @@
       {{reference.short_render(project_key) | safe}}
     </div>
   {% endfor %}
+</div>
+
 </div>
 
 {% endblock %}

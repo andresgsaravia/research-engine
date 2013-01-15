@@ -22,10 +22,6 @@ body {
     width: 100%;
 }
 
-h2 {
-    padding-bottom: 1em;
-}
-
 a {
     text-decoration: none;
     font-weight: bold;
@@ -35,6 +31,7 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
 .wrapper {
     position: relative;
     background-color: white;
@@ -42,29 +39,7 @@ a:hover {
     min-height: 100%;
     min-width: 750px;
     width: 100%;
-    background: #F8F8F8;
-}
-
-.content {
-    margin: 0 auto;
-    width: 85%;
-    padding-bottom: 3em;
-    text-align: justify;
-    padding-top: 0.5em;
-    overflow: auto;
-}
-
-.site-title {
-    text-align: right;
-    padding-top: 3px;
-    padding-right: 5px;
-}
-
-.site-title a {
-    text-align: center;
-    text-decoration: none;
-    color: black;
-    font-size: 0.5em;
+    background: #F5F5F5;
 }
 
 .error {
@@ -80,11 +55,11 @@ a:hover {
     color: #A6771A;
 }
 
-/* Menu */
-
-.menu-wrapper {
+.content {
     padding-bottom: 1em;
 }
+
+/* Menu */
 
 .menu,
 .menu ul,
@@ -97,9 +72,9 @@ a:hover {
 }
 
 .menu {
-    height: 40px;
+    height: 2.5em;
     background: white;
-    box-shadow: 0em 0.3em 0.5em #C0C0C0;
+    box-shadow: 0em 0.1em 0.2em #C0C0C0;
 }
 
 .menu li {
@@ -111,7 +86,7 @@ a:hover {
     position: relative;
     float: left;
     display: block;
-    height: 40px;
+    height: 2.5em; 
     border-right: 1px solid #808080;
 }
 
@@ -123,25 +98,17 @@ a:hover {
 
 .menu li a {
     display: block;
-    padding: 0 14px;
-    margin: 6px 0;
-    line-height: 28px;
+    padding: 0 1em;
+    margin: 1em 0;
     text-decoration: none;
-
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 0.8em;
-
     color: #444444;
-
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 0.8em;
     -webkit-transition: color .2s ease-in-out;
     -o-transition: color.2s ease-in-out;
     -ms-transition: color .2s ease-in-out;
     transition: color .2s ease-in-out;
-}
-
-.menu li:first-child a {
-    border-left: none;
 }
 
 .menu li:hover {
@@ -154,7 +121,7 @@ a:hover {
 
 .menu ul {
     position: absolute;
-    top: 40px;
+    top: 2.5em;
     left: 0px;
 
     opacity: 0;
@@ -189,16 +156,15 @@ a:hover {
 }
 
 .menu li:hover > ul li {
-    height: 36px;
+    height: 2.5em;
     overflow: visible;
     padding: 0;
 }
 
 .menu ul li a {
     width: 120px;
-    padding: 4px 0 4px 40px;
+    padding: 1em 0 1em 2.5em;
     margin: 0;
-
     border: none;
     border-bottom: 1px solid #808080;
 }
@@ -212,6 +178,8 @@ a:hover {
     right: 0px;
     left: -100px;
 }
+
+
 
 /* Footer */
 
