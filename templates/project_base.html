@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <link href="/css/project_base.css" rel="stylesheet" type="text/css" />
+    <title>Research Engine | Project</title>
+    {% block p_head %}
+    {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="p-menu-wrapper">
+  <ul class="p-menu">
+    <ul>
+      <li><div class="overview-tab"><a href="">Overview</a></div></li>
+      <li><div class="wiki-tab"><a href="">Wiki</a></div></li>
+      <li><div class="forum-tab"><a href="">Forum</a></div></li>
+    </ul>
+    <ul>
+      <li><div class="notebooks-tab"><a href="">Notebooks</a></div></li>
+      <li><div class="writings-tab"><a href="">Writings</a></div></li>
+      <li><div class="references-tab"><a href="">References</a></div></li>
+      <li><div class="code-tab"><a href="">Code</a></div></li>
+      <li><div class="datasets-tab"><a href="">Datasets</a></div></li>
+    </ul>
+    <ul>
+      <li><div class="admin-tab"><a href="">Admin</a></div></li>
+    </ul>
+  </ul>
+</div>
+
+<div class="p-title">
+  <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / <a href="/projects">Projects</a> / <a href="/projects/project/{{project_key}}">{{project.name.capitalize()}}</a>
+</div>
+
+<div class="p-content">
+
+{% block p_content %}
+{% endblock %}
+
+
+{% endblock %}

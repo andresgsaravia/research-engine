@@ -1,4 +1,6 @@
-/* Projects menu */
+/* General layout for each project */
+
+/* menu */
 
 .p-menu-wrapper {
     position: absolute;
@@ -35,6 +37,7 @@
 }
 
 .p-menu li a {
+    height: 2em;
     padding-top: 0.5em;
     display: block;
     text-align: center;
@@ -45,6 +48,8 @@
     text-decoration: none;
     color: #648A9E;
 }
+
+/* Other */
 
 .p-content {
     margin-left: 10em;

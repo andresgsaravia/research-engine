@@ -52,6 +52,34 @@ class Projects(db.Model):
 ##   Web Handlers   ##
 ######################
 
+class OverviewPage(GenericPage):
+    def get(self, username, project_name):
+        user = self.get_user()
+        if not user:
+            self.redirect('/login')
+            return
+        p_user = RegisteredUsers.all().filter("username =", username).get()
+        if not p_user:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in Projects.all().filter("name =", project_name.lower()).run():
+            if p.user_is_author(p_user):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        self.render("project_overview.html", p_user = p_user, project = project, p_author = p_user)
+
+
+###########################################################
+#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
+###########################################################
+
+
 class ProjectsPage(GenericPage):
     def get(self):
         user = self.get_user()
@@ -144,7 +172,7 @@ class ProjectPage(GenericPage):
             kw["p_author"] = user
         else:
             kw["p_author"] = kw["authors"][0]
-        self.render("project.html", **kw)
+        self.render("project_overview.html", **kw)
 
     def post(self, project_key):
         user = self.get_user()
