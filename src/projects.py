@@ -72,7 +72,7 @@ class OverviewPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        self.render("project_overview.html", p_user = p_user, project = project, p_author = p_user)
+        self.render("project_overview.html", p_user = p_user, project = project, p_author = p_user, authors = project.list_of_authors(self))
 
 
 ###########################################################

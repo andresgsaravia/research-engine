@@ -3,3 +3,45 @@
 .overview-tab {
     background: white;
 }
+
+h3 {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.p-description {
+    text-align: justify;
+    margin-top: 1em;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.p-authors {
+    margin-top: 1em;
+}
+
+.p-authors .authors-list {
+    margin-top: 0.5em;
+}
+
+.p-authors .p-author a {
+    margin-left: 2em;
+    font-weight: normal;
+}
+
+.p-latest-activity {
+    margin-top: 1em;
+}
+
+.p-latest-activity .p-updated {
+    font-size: 0.8em;
+    color: #888888;
+    margin-left: 3em;
+}
+
+.p-latest-activity .p-updates {
+    margin-top: 1em;
+    margin-left: 2em;
+}

@@ -6,6 +6,23 @@
 
 {% block p_content %}
 
-<p> project overview here</p>
+<h3>{{project.name.capitalize()}}</h3>
+<div class="p-description">{{project.description}}</div>
+
+<div class="p-authors">
+  <h3>Authors:</h3>
+  <div class="authors-list">
+  {% for a in authors %}
+    <div class="p-author"><a href="/{{a.username}}">{{a.username.capitalize()}}</a></div>
+  {% endfor %}
+
+</div>
+
+<div class="p-latest-activity">
+  <h3>Latest activity</h3>
+  <div class="p-updated">Last updated: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
+  <div class="p-updates"><em>(More Coming soon)</em></div>
+</div>
+
 
 {% endblock %}
