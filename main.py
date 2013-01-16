@@ -16,7 +16,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/verify_email', users.VerifyEmailPage),           # Needs review
 
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
-                               ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),   # Arguments are username and project_name
+                               ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects', projects.ProjectsPage),           # Needs review
                                # ('/projects/new', projects.NewProjectPage),           # Needs review
@@ -60,8 +60,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # done     /(username)/(project_name)            News and overview
 # TODO     /(username)/(project_name)/wiki
 # TODO     /(username)/(project_name)/forum
-# TODO     /(username)/(project_name)/notebooks
-# TODO     /(username)/(project_name)/notebooks/new
+# done     /(username)/(project_name)/notebooks
+# done     /(username)/(project_name)/notebooks/new
 # TODO     /(username)/(project_name)/notebooks/(notebook_name)
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new

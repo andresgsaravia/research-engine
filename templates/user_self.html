@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+  <link href="/css/user_self.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block content %}
+
+<div class="u-info">
+  <div class="u-name">{{user.username.capitalize()}}</div>
+  <div class="u-email"><a href="mailto:{{user.email}}">{{user.email}}</a></div>
+  <div class="u-about">{% if user.about_me %}{{user.about_me.replace("\n", "<br/>") | safe}}{% endif %}</div>
+</div>
+
+<div class="u-pwrapper">
+  <div class="new-project-button"><a href="/{{user.username}}/new_project">Create new project</a></div>
+  <h2>Your projects</h2>
+  {% for p in projects %} 
+    <div class="u-project">
+      <div class="u-pname"><a href="/{{user.username}}/{{p.name}}">{{p.name.capitalize().replace("_", " ")}}</a></div>
+      <div class="u-pdescription">{{p.short_description()}}</div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

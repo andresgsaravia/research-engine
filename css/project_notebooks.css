@@ -23,6 +23,7 @@
     padding-right: 1em;
     background-color: rgb(221, 232, 235);
     background-image: linear-gradient(rgb(248, 251, 252), rgb(221, 232, 235));
+    background-image: -webkit-linear-gradient(rgb(248, 251, 252), rgb(221, 232, 235));
     background-repeat: repeat-x;
 }
 

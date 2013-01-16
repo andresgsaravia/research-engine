@@ -7,6 +7,76 @@ EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z0-9_-]{3,20}$'
 PASSWORD_RE = r'^.{3,20}$'
 
+
+class UserPage(GenericPage):
+    def get(self, username):
+        page_user = RegisteredUsers.all().filter("username =", username.lower()).get()
+        if not page_user:
+            self.error(404)
+            self.render("404.html")
+            return
+        user = self.get_user()
+        if user and user.key() == page_user.key():
+            projects = user.list_of_projects()
+            self.render("user_self.html", user = user, projects = projects)
+        else:
+            self.render("user.html", page_user = page_user)
+
+###########################################################
+#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
+###########################################################
+
+# class UserPage(GenericPage):
+#     def get(self, page_username):
+#         page_username = page_username.lower()
+#         logged_in_user = self.get_user()
+#         self.log_read(RegisteredUsers, "Getting user instance of this page.")
+#         page_user = RegisteredUsers.all().filter("username =", page_username).get()
+#         kw = {"logged_in_user" : logged_in_user, "page_user" : page_user, "handler" : self}
+#         if not page_user:
+#             self.error(404)
+#             self.render("404.html")
+#             return
+#         if logged_in_user.key() == page_user.key():
+#             self.redirect("/settings")
+#             return
+#         if page_user.key() in logged_in_user.contacts:
+#             kw["is_contact"] = True
+#             kw["is_contact_message"] = '%s is in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
+#             kw["button_message"] = "Remove from contacts"
+#             kw["projects_not_collaborating"] = []
+#             kw["projects_collaborating"] = []
+#             for project_key in logged_in_user.my_projects:
+#                 project = self.get_item_from_key(project_key, "Logged in user's projects. ")
+#                 if page_user.key() in project.authors:
+#                     kw["projects_collaborating"].append(project)
+#                 else:
+#                     kw["projects_not_collaborating"].append(project)
+#         else:
+#             kw["is_contact"] = False
+#             kw["is_contact_message"] = '%s is not in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
+#             kw["button_message"] = "Add to contacts"
+#         self.render("user.html", **kw)
+            
+    def post(self, page_username):
+        logged_in_user = self.get_user()
+        if not logged_in_user:
+            self.redirect("/login")
+            return
+        self.log_read(RegisteredUsers, "Getting user instance of this page.")
+        page_user = RegisteredUsers.all().filter("username =", page_username).get()
+        if not page_user:
+            self.error(404)
+            return
+        if page_user.key() in logged_in_user.contacts:
+            logged_in_user.contacts.remove(page_user.key())
+            self.log_and_put(logged_in_user, "Removing a contact.")
+        else:
+            logged_in_user.contacts.append(page_user.key())
+            self.log_and_put(logged_in_user, "Adding a contact.")
+        self.redirect("/%s" % page_username)
+
+
 class SignupPage(GenericPage):
     def get(self):
         username = self.get_username()
@@ -166,57 +236,6 @@ class SettingsPage(GenericPage):
             kw["info"] = "Changes saved"
             self.set_cookie("username", user.username, user.salt)
             self.render("settings.html", **kw)
-
-
-class UserPage(GenericPage):
-    def get(self, page_username):
-        page_username = page_username.lower()
-        logged_in_user = self.get_user()
-        self.log_read(RegisteredUsers, "Getting user instance of this page.")
-        page_user = RegisteredUsers.all().filter("username =", page_username).get()
-        kw = {"logged_in_user" : logged_in_user, "page_user" : page_user, "handler" : self}
-        if not page_user:
-            self.error(404)
-            self.render("404.html")
-            return
-        if logged_in_user.key() == page_user.key():
-            self.redirect("/settings")
-            return
-        if page_user.key() in logged_in_user.contacts:
-            kw["is_contact"] = True
-            kw["is_contact_message"] = '%s is in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
-            kw["button_message"] = "Remove from contacts"
-            kw["projects_not_collaborating"] = []
-            kw["projects_collaborating"] = []
-            for project_key in logged_in_user.my_projects:
-                project = self.get_item_from_key(project_key, "Logged in user's projects. ")
-                if page_user.key() in project.authors:
-                    kw["projects_collaborating"].append(project)
-                else:
-                    kw["projects_not_collaborating"].append(project)
-        else:
-            kw["is_contact"] = False
-            kw["is_contact_message"] = '%s is not in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
-            kw["button_message"] = "Add to contacts"
-        self.render("user.html", **kw)
-            
-    def post(self, page_username):
-        logged_in_user = self.get_user()
-        if not logged_in_user:
-            self.redirect("/login")
-            return
-        self.log_read(RegisteredUsers, "Getting user instance of this page.")
-        page_user = RegisteredUsers.all().filter("username =", page_username).get()
-        if not page_user:
-            self.error(404)
-            return
-        if page_user.key() in logged_in_user.contacts:
-            logged_in_user.contacts.remove(page_user.key())
-            self.log_and_put(logged_in_user, "Removing a contact.")
-        else:
-            logged_in_user.contacts.append(page_user.key())
-            self.log_and_put(logged_in_user, "Adding a contact.")
-        self.redirect("/%s" % page_username)
 
 
 class SearchForUserPage(GenericPage):

@@ -74,6 +74,17 @@ class RegisteredUsers(db.Model):
     my_notebooks = db.ListProperty(db.Key)                  # keys to Notebooks (defined in notebooks.py)
     contacts = db.ListProperty(db.Key)
 
+    def list_of_projects(self):
+        projects_list = []
+        for p_key in self.my_projects:
+            project = db.Query().filter("__key__ =", p_key).get()
+            if project: 
+                projects_list.append(project)
+            else:
+                logging.warning("RegisteredUser with key (%s) contains a broken reference to project %s" 
+                                % (self.key(), p_key))
+        return projects_list
+
 ######################
 ##   Web Handlers   ##
 ######################
