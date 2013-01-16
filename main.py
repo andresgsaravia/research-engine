@@ -62,7 +62,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /(username)/(project_name)/forum
 # TODO     /(username)/(project_name)/notebooks
 # TODO     /(username)/(project_name)/notebooks/new
-# TODO     /(username)/(project_name)/notebooks/(notebook_id)
+# TODO     /(username)/(project_name)/notebooks/(notebook_name)
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new
 # TODO     /(username)/(project_name)/writings/(writing_id)

@@ -5,6 +5,7 @@ from generic import *
 import projects
 
 SHORT_DESCRIPTION_LENGTH = 150
+NOTEBOOK_NAME_REGEXP = r'^[a-zA-Z0-9\s-]+$'
 
 ###########################
 ##   Datastore Objects   ##
@@ -97,42 +98,72 @@ class NewNotebookPage(GenericPage):
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-
-###########################################################
-#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
-###########################################################
-
-    def post(self, project_key):
+    def post(self, username, project_name):
         user = self.get_user()
-        project = self.get_item_from_key_str(project_key)
         if not user:
             self.redirect("/login")
             return
-        kw = self.kw
-        kw["text_value"] = self.request.get("n_name")
-        kw["textarea_value"] = self.request.get("n_description")
-        kw["error"] = ''
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
         have_error = False
-        if not kw["text_value"]:
+        error_message = ''
+        if not project.user_is_author(user):
             have_error = True
-            kw["error"] += 'You must provide a name for your new notebook. '
-        if not kw["textarea_value"]:
+            error_message = "You are not an author of this project. "
+        n_name = self.request.get("name")
+        n_description = self.request.get("content")
+        if not n_name:
             have_error = True
-            kw["error"] += 'Please provide a brief description of your new notebook. '
-        if not (user.key() in project.authors):
+            error_message = "You must provide a name for your new notebook. "
+        if not n_description:
             have_error = True
-            kw["error"] += "You can't add a notebook to this project since you are not one of its authors. "
+            error_message += "Please provide a description of this notebook. "
+        if not re.match(NOTEBOOK_NAME_REGEXP, n_name):
+            have_error = True
+            error_message = "Invalid notebook name. Please use only letters, numbers, spaces and dashes. "
+        # Check for duplicate notebook names.
+        duplicate_p = Notebooks.all().ancestor(project).filter("name =", n_name.lower().replace(" ", "_")).get()
+        if duplicate_p:
+            have_error = True
+            error_message = "There is a notebook with the same name in this project, please choose a different name."
         if have_error:
-            self.render("form_text_textarea.html", subtitle = project.name, 
-                        cancel_url ="/projects/project/%s" % project_key, **kw)
+            kw = {"title" : "New notebook",
+                  "name_placeholder" : "Title of the new notebook",
+                  "content_placeholder" : "Description of the new notebook",
+                  "submit_button_text" : "Create notebook",
+                  "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.name),
+                  "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "name_value" : n_name,
+                  "content_value" : n_description,
+                  "error_message" : error_message}
+            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_notebook = Notebooks(owner = user.key(), name = kw["text_value"], description = kw["textarea_value"], 
-                                     parent  = db.Key(project_key))
+            new_notebook = Notebooks(owner = user.key(), 
+                                     name = n_name.lower().replace(" ", "_"), 
+                                     description = n_description, 
+                                     parent  = project.key())
             self.log_and_put(new_notebook)
             user.my_notebooks.append(new_notebook.key())
             self.log_and_put(user, "Updating my_notebooks property. ")
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/projects/project/%s/nb/%s" % (project_key, new_notebook.key()))
+            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, new_notebook.name))
+
+
+###########################################################
+#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
+###########################################################
 
 
 
