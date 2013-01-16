@@ -64,7 +64,7 @@ class NotebooksListPage(GenericPage):
             self.render("404.html")
             return
         notebooks = []
-        for n in Notebooks.all().ancestor(project).order("last_updated").run():
+        for n in Notebooks.all().ancestor(project).order("-last_updated").run():
             notebooks.append(n)
         self.render("project_notebooks.html", p_author = p_user, project = project, notebooks = notebooks, n_len = len(notebooks))
 

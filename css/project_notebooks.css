@@ -3,3 +3,52 @@
 .notebooks-tab {
     background: white;
 }
+
+.new-notebook-button {
+    text-align: right;
+}
+
+.n-wrapper {
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-top: 1em;
+    padding-bottom: 0.5em;
+    box-shadow: 0em 0.1em 0.3em #C0C0C0;
+}
+
+.n-name {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    background-color: rgb(221, 232, 235);
+    background-image: linear-gradient(rgb(248, 251, 252), rgb(221, 232, 235));
+    background-repeat: repeat-x;
+}
+
+.n-last-updated {
+    position: relative;
+    float: right;
+    margin-top: 0.2em;
+    margin-right: 0.2em;
+    margin-left: 0.5em;
+    font-size: 0.8em;
+    color: #888888;
+    height: 3em;
+}
+
+.n-description {
+    text-align: justify;
+    padding-left: 1em;
+    margin-top: 0.5em;
+}
+
+.n-owner {
+    margin-left: 1em;
+    margin-top: 0.5em;
+    font-size: 0.9em;
+}
+
+.n-owner a {
+    color: black;
+}
