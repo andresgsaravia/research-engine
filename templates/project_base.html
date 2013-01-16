@@ -15,24 +15,24 @@
   <ul class="p-menu">
     <ul>
       <li><div class="overview-tab"><a href="">Overview</a></div></li>
-      <li><div class="wiki-tab"><a href="">Wiki</a></div></li>
-      <li><div class="forum-tab"><a href="">Forum</a></div></li>
+      <li><div class="wiki-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/wiki">Wiki</a></div></li>
+      <li><div class="forum-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/forum">Forum</a></div></li>
     </ul>
     <ul>
-      <li><div class="notebooks-tab"><a href="">Notebooks</a></div></li>
-      <li><div class="writings-tab"><a href="">Writings</a></div></li>
-      <li><div class="references-tab"><a href="">References</a></div></li>
-      <li><div class="code-tab"><a href="">Code</a></div></li>
-      <li><div class="datasets-tab"><a href="">Datasets</a></div></li>
+      <li><div class="notebooks-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/notebooks">Notebooks</a></div></li>
+      <li><div class="writings-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/writings">Writings</a></div></li>
+      <li><div class="references-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/references">References</a></div></li>
+      <li><div class="code-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/code">Code</a></div></li>
+      <li><div class="datasets-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/datasets">Datasets</a></div></li>
     </ul>
     <ul>
-      <li><div class="admin-tab"><a href="">Admin</a></div></li>
+      <li><div class="admin-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/admin">Admin</a></div></li>
     </ul>
   </ul>
 </div>
 
 <div class="p-title-bar">
-  <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / <a href="/projects">Projects</a> / <a href="/projects/project/{{project_key}}">{{project.name.capitalize()}}</a>
+  <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / <a href="/{{p_author.username}}/{{project.name.lower()}}">{{project.name.capitalize()}}</a>
 </div>
 
 <div class="p-content">

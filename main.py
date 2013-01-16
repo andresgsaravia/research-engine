@@ -55,7 +55,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /(username)                           View profile and list projects
 # TODO     /(username)/contacts                  List of contacts
 # TODO     /(username)/new_project
-# TODO     /(username)/(project_name)            News and overview
+# done     /(username)/(project_name)            News and overview
 # TODO     /(username)/(project_name)/wiki
 # TODO     /(username)/(project_name)/forum
 # TODO     /(username)/(project_name)/notebooks
