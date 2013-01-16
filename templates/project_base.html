@@ -3,7 +3,7 @@
 
 {% block head %}
     <link href="/css/project_base.css" rel="stylesheet" type="text/css" />
-    <title>Research Engine | Project</title>
+    <title>{{p_author.username.capitalize() }} / {{project.name.capitalize()}}</title>
     {% block p_head %}
     {% endblock %}
 {% endblock %}
@@ -14,7 +14,7 @@
 <div class="p-menu-wrapper">
   <ul class="p-menu">
     <ul>
-      <li><div class="overview-tab"><a href="">Overview</a></div></li>
+      <li><div class="overview-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}">Overview</a></div></li>
       <li><div class="wiki-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/wiki">Wiki</a></div></li>
       <li><div class="forum-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/forum">Forum</a></div></li>
     </ul>
@@ -39,6 +39,6 @@
 
 {% block p_content %}
 {% endblock %}
-
+</div>
 
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/project_form_2.css" rel="stylesheet" type="text/css" />
+  {{more_head | safe}}
+{% endblock %}
+
+{% block p_content %}
+
+  <h2>{{title}}</h2>
+  <h3>{{subtitle}}</h3>
+
+  <form method="post">
+    <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" />
+    <textarea name="content" placeholder="{{content_placeholder}}">{{content_value}}</textarea>
+    <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" />
+    <input type="button" value="Cancel" class="bottom-buttons" onClick="window.location = '{{cancel_url}}'" />
+  </form>
+
+  <br/><div class="error">{{error_message}}</div>
+
+{% endblock %}

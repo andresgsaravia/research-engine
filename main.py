@@ -15,7 +15,9 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/recover_password', users.RecoverPasswordPage),           # Needs review
                                ('/verify_email', users.VerifyEmailPage),           # Needs review
 
-                               ('/(.+)/(.+)', projects.OverviewPage),       # Arguments are username and project_name
+                               ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
+                               ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),   # Arguments are username and project_name
+                               ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects', projects.ProjectsPage),           # Needs review
                                # ('/projects/new', projects.NewProjectPage),           # Needs review
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review

@@ -2,6 +2,7 @@
 # All related to Notebooks and Notes inside a project.
 
 from generic import *
+import projects
 
 SHORT_DESCRIPTION_LENGTH = 150
 
@@ -41,28 +42,65 @@ class NotebookNotes(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class NewNotebookPage(GenericPage):
-    kw = {"fancy_textarea_p" : False,
-          "page_title" : "New notebook",
-          "title" : "New notebook",
-          "text_name" : "n_name",
-          "text_placeholder" : "Name of the new notebook",
-          "textarea_name" : "n_description",
-          "textarea_placeholder" : "Description of the notebook ",
-          "submit_value" : "Create new notebook"}
-
-    def get(self, project_key):
+class NotebooksListPage(GenericPage):
+    def get(self, username, project_name):
         user = self.get_user()
-        if not user: 
-            self.redirect("/login")
+        if not user:
+            self.redirec('/login')
             return
-        project = self.get_item_from_key_str(project_key)
-        if not project:
+        p_user = RegisteredUsers.all().filter("username =", username).get()
+        if not p_user:
             self.error(404)
             self.render("404.html")
             return
-        self.render("form_text_textarea.html", subtitle = project.name, 
-                    cancel_url = "/projects/project/%s" % project_key, **self.kw)
+        project = False
+        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+            if p.user_is_author(p_user):
+                project = p
+                break
+        if not project: 
+            self.error(404)
+            self.render("404.html")
+            return
+        notebooks = []
+        for n in Notebooks.all().ancestor(project).order("last_updated").run():
+            notebooks.append(n)
+        self.render("project_notebooks.html", p_author = p_user, project = project, notebooks = notebooks, n_len = len(notebooks))
+
+
+
+class NewNotebookPage(GenericPage):
+    def get(self, username, project_name):
+        user = self.get_user()
+        if not user:
+            self.redirec('/login')
+            return
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project: 
+            self.error(404)
+            self.render("404.html")
+            return
+        kw = {"title" : "New notebook",
+              "name_placeholder" : "Title of the new notebook",
+              "content_placeholder" : "Description of the new notebook",
+              "submit_button_text" : "Create notebook",
+              "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.name),
+              "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
+        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+
+
+###########################################################
+#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
+###########################################################
 
     def post(self, project_key):
         user = self.get_user()
@@ -95,6 +133,7 @@ class NewNotebookPage(GenericPage):
             self.log_and_put(user, "Updating my_notebooks property. ")
             self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/projects/project/%s/nb/%s" % (project_key, new_notebook.key()))
+
 
 
 class EditNotebookPage(NewNotebookPage):

@@ -1,0 +1,11 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/project_notebooks.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block p_content %}
+  
+<p>  Here all the notebooks will be listed. We currently have {{n_len}} notebooks.</p>
+<div class="new-notebook-button"><a href="/{{p_author.username}}/{{project.name.lower()}}/notebooks/new">New notebook</a></div>
+{% endblock %}
