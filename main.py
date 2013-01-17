@@ -19,6 +19,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage), # Last argument is the notebook name
+                               ('/(.+)/(.+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
                                ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    # Last argument is the note's numeric id
                                ('/(.+)/(.+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
@@ -55,15 +56,16 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /settings                             Edit user's settings
  
 # TODO     /(username)                           View profile and list projects
-# TODO     /(username)/contacts                  List of contacts
+# TODO     /(username)/following                 
 # TODO     /(username)/new_project
 # ----     /(username)/(project_name)            News and overview
 # TODO     /(username)/(project_name)/wiki
 # TODO     /(username)/(project_name)/forum
 # ----     /(username)/(project_name)/notebooks
 # ----     /(username)/(project_name)/notebooks/new
-# TODO     /(username)/(project_name)/notebooks/(notebook_name)
+# ----     /(username)/(project_name)/notebooks/(notebook_name)
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/new_note
+# ----     /(username)/(project_name)/notebooks/(notebook_name)/edit
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new

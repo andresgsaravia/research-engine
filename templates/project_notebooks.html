@@ -1,8 +1,15 @@
 {% extends "project_base.html" %}
 
+
 {% block p_head %}
   <link href="/css/project_notebooks.css" rel="stylesheet" type="text/css" />
 {% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{p_author.username}}/{{project.name}}/notebooks">Notebooks</a>
+{% endblock %}
+
 
 {% block p_content %}
   

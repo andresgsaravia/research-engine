@@ -12,9 +12,11 @@
 {% endblock %}
 
 {% block p_content %}
-  <div class="button1"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/{{note.key().id()}}/edit">Edit</a></div>
-  <div class="note-title">{{note.title}}</div>
-  <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
+  <div class="note-head">
+    <div class="button1"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/{{note.key().id()}}/edit">Edit</a></div>
+    <div class="note-title">{{note.title}}</div>
+    <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
+  </div>
   <div class="note-content">{{note.content | safe}}</div>
 
 <div class="comments-wrapper">

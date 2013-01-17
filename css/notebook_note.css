@@ -4,6 +4,25 @@
     background: white;
 }
 
+.p-content {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0em;
+}
+
+.note-head {
+    color: black;
+    display: block;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-image: linear-gradient(#F8FBFC, #DDDDDD);
+    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
+    background-repeat: repeat-x;
+    border-radius: 1em 1em 0 0;
+}
+
 .note-title {
     font-size: 1.2em;
     font-weight: bold;
@@ -20,13 +39,18 @@
 
 .note-content {
     text-align: justify;
-    margin-top: 1em;
-    margin-left: 1.5em;
-    margin-right: 1.5em;
+    min-height: 15em;
+    padding-top: 1em;
+    padding-left: 1em;
+    margin-left: 1em;
+    padding-right: 1em;
+    margin-right: 1em;
+    padding-bottom: 2em;
+    box-shadow: 0em 0.1em 0.5em #C0C0C0;
+    border-radius: 0 0 1em 1em;
 }
 
 .comments-wrapper {
-    border-top: 1px solid black;
     margin-top: 1.5em;
     padding-top: 1.5em;
     margin-left: 1em;

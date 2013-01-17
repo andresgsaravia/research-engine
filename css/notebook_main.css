@@ -32,7 +32,9 @@ h2 {
     border-radius: 1em;
 }
 
-.note-head {
+.note-head a {
+    color: black;
+    display: block;
     padding-left: 1em;
     padding-right: 1em;
     padding-top: 0.5em;
@@ -43,8 +45,16 @@ h2 {
     border-radius: 1em 1em 0 0;
 }
 
+.note-head a:hover {
+    text-decoration: none;
+    background-color: DDE8EB;
+    background-image: linear-gradient(#FCFCF8, #F1EEB9);
+    background-image: -webkit-linear-gradient(#FCFCF8, #F1EEB9);
+    background-repeat: repeat-x;
+}
+
 .note-title {
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
 }
 
