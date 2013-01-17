@@ -17,14 +17,23 @@ h2 {
     box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.n-name {
+.n-name a {
+    display: block;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     padding-left: 1em;
     padding-right: 1em;
-    background-color: rgb(221, 232, 235);
-    background-image: linear-gradient(rgb(248, 251, 252), rgb(221, 232, 235));
-    background-image: -webkit-linear-gradient(rgb(248, 251, 252), rgb(221, 232, 235));
+    background-color: #DDE8EB;
+    background-image: linear-gradient(#F8FBFC, #CFDEE2);
+    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
+    background-repeat: repeat-x;
+}
+
+.n-name a:hover {
+    text-decoration: none;
+    background-color: DDE8EB;
+    background-image: linear-gradient(#FCFCF8, #F1EEB9);
+    background-image: -webkit-linear-gradient(#FCFCF8, #F1EEB9);
     background-repeat: repeat-x;
 }
 

@@ -1,0 +1,10 @@
+/* Stylesheet for the notebook_main.html template */
+
+.notebooks-tab {
+    background: white;
+}
+
+h2 {
+    margin-left: 1em;
+    margin-top: 0.2em;
+}

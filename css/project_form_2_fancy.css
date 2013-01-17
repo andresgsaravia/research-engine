@@ -1,0 +1,40 @@
+/* Stylesheet for the project_form_2.html template */
+
+h2 {
+    padding-left: 1em;
+    padding-top: 0.3em;
+}
+
+form {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+input[type=text] {
+    width: 100%;
+    height: 1.5em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-left: 0.5em;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1em;
+}
+
+textarea {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    width: 100%;
+    padding: 0.5em;
+    height: 30em;
+}
+
+.bottom-buttons {
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+    font-size: 1.2em;
+}
+
+.error {
+    margin-left: 2em;
+}

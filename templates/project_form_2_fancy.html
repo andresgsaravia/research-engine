@@ -1,9 +1,8 @@
-{% extends "base.html" %}
+{% extends "project_base.html" %}
 
 
-{% block head %}
-  <title>Research Engine | New note</title>
-  <link href="/css/new_note.css" rel="stylesheet" type="text/css" />
+{% block p_head %}
+  <link href="/css/project_form_2_fancy.css" rel="stylesheet" type="text/css" />
 
   <script type="text/javascript" src="/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
   <script type="text/javascript">
@@ -24,23 +23,21 @@
     });
   </script>
 
+  {{more_head | safe}}
 {% endblock %}
 
-{% block content %}
+{% block p_content %}
 
-<h2>{{notebook.name}}</h2>
-<h3>New note</h3>
+<h2>{{title}}</h2>
+<h3>{{subtitle}}</h3>
 
 <form method="post">
-
-  <input type="text" name="title" value="{{title}}" placeholder="Enter title here">
-  <textarea name="content">{{content}}</textarea>
-  <input type="submit" value="Save note" class="bottom-buttons" >
-  <input type="button" value="Cancel" class="bottom-buttons"  
-	 onClick="window.location = '/projects/project/{{project_key}}/nb/{{notebook.key()}}'"/>
-
+  <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}">
+  <textarea name="content" placeholder="{{content_placeholder}}">{{content_value}}</textarea>
+  <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" >
+  <input type="button" value="Cancel" class="bottom-buttons" onClick="window.location = '{{cancel_url}}'"/>
 </form>
 
-<br/><div class="error">{{error}}</div>
+<br/><div class="error">{{error_message}}</div>
 
 {% endblock %}

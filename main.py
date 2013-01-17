@@ -18,6 +18,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/new_project', projects.NewProjectPage),          # Argument is username
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
+                               ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage), # Last argument is the notebook name
+                               ('/(.+)/(.+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
                                # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
@@ -28,7 +30,6 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # ('/projects/project/(.+)/nb/note/(.+)', notebooks.NotePage),           # Needs review
                                # ('/projects/project/(.+)/nb/new_note/(.+)', notebooks.NewNotePage),           # Needs review
                                # ('/projects/project/(.+)/nb/edit_note/(.+)', notebooks.EditNotePage),           # Needs review
-                               # ('/projects/project/(.+)/nb/(.+)', notebooks.NotebookPage),           # Needs review
                                # ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),           # Needs review
                                # ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/view/(.+)', collab_writing.ViewRevisionPage),           # Needs review
@@ -61,6 +62,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # ----     /(username)/(project_name)/notebooks
 # ----     /(username)/(project_name)/notebooks/new
 # TODO     /(username)/(project_name)/notebooks/(notebook_name)
+# TODO     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new
 # TODO     /(username)/(project_name)/writings/(writing_id)

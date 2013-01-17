@@ -1,0 +1,14 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/notebook_main.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block p_content %}
+
+<div class="button1"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/new_note">New note</a></div>
+<div class="button1"><a href="">View details</a></div>
+<h2>{{notebook.name.replace("_"," ").capitalize()}}</h2>
+
+{% endblock %}
