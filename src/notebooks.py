@@ -182,7 +182,10 @@ class NotebookMainPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        self.render("notebook_main.html", p_author = p_author, project = project, notebook = notebook)
+        notes = []
+        for n in NotebookNotes.all().ancestor(notebook).order("-date").run():
+            notes.append(n)
+        self.render("notebook_main.html", p_author = p_author, project = project, notebook = notebook, notes = notes)
 
 
 class NewNotePage(GenericPage):

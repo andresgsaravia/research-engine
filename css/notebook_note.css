@@ -1,5 +1,9 @@
 /* Stylesheet for the notebook_note.css template */
 
+.notebooks-tab {
+    background: white;
+}
+
 .note-title {
     font-size: 1.2em;
     font-weight: bold;
