@@ -15,6 +15,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/recover_password', users.RecoverPasswordPage),           # Needs review
                                ('/verify_email', users.VerifyEmailPage),           # Needs review
 
+                               ('/(.+)/new_project', projects.NewProjectPage),          # Argument is username
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
@@ -35,10 +36,9 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # ('/projects/project/(.+)/cwriting/view/(.+)', collab_writing.ViewRevisionPage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/edit/(.+)', collab_writing.EditWritingPage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/(.+)', collab_writing.WritingPage),           # Needs review
-                               # ('/projects/project/(.+)', projects.ProjectPage),           # Needs review
                                # ('/notebooks', notebooks.AllNotebooksPage),           # Needs review
                                # ('/news', frontend.UnderConstructionPage),           # Needs review
-                               # ('/classroom', frontend.UnderConstructionPage),           # Needs review
+                               # ('/classroom', frontend.UnderConstructionPage),           # Needs review                               
 
                                ('/(.+)', users.UserPage)],           # Needs review
                               debug = True)

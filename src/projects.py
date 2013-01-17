@@ -7,7 +7,7 @@ from notebooks import *
 from collab_writing import *
 
 SHORT_DESCRIPTION_LENGTH = 150
-
+PROJECT_NAME_REGEXP = r'^[a-zA-Z0-9\s-]+$'
 
 ###########################
 ##   Datastore Objects   ##
@@ -75,71 +75,65 @@ class OverviewPage(GenericPage):
         self.render("project_overview.html", p_user = p_user, project = project, p_author = p_user, authors = project.list_of_authors(self))
 
 
+class NewProjectPage(GenericPage):
+    def get(self, username):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        if not username.lower() == user.username:
+            self.redirect("/%s/new_project" % user.username)
+            return
+        self.render("project_new.html", user = user)
+
+    def post(self, username):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        if not username.lower() == user.username:
+            self.redirect("/%s/new_project" % user.username)
+        have_error = False
+        error_message = ''
+        p_name = self.request.get('p_name')
+        p_description = self.request.get('p_description')
+        if not p_name:
+            have_error = True
+            error_message = 'Please provide a name for your project. '
+        if not p_description:
+            have_error = True
+            error_message = 'Please provide a description of the project. '
+        if p_name and (not re.match(PROJECT_NAME_REGEXP, p_name)):
+            have_error = True
+            error_message = 'Invalid project name. Please user only letters, numbers, spaces and dashes. '
+        # Check for duplicate project names.
+        duplicate_p = False
+        for p in user.my_projects:
+            if p.name == p_name.lower().replace(" ", "_"):
+                duplicate_p = True
+                break
+        if duplicate_p:
+            have_error = True
+            error_message = "There is already a project with the same name. Please choose a different one. "
+        if have_error:
+            self.render("project_new.html", user = user, p_name = p_name, p_description = p_description,
+                        error_message = error_message)
+        else:
+            new_project = Projects(name = p_name.lower().replace(" ","_"),
+                                   description = p_description,
+                                   authors = [user.key()],
+                                   references = [], notebooks = [])
+            self.log_and_put(new_project, "Creating a new project. ")
+            user.my_projects.append(new_project.key())
+            self.log_and_put(user, "Appending a project to a RegisteredUser's my_projects list ")
+            self.redirect("/%s/%s" % (user.username, new_project.name))
+
+
+
 ###########################################################
 #### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
 ###########################################################
 
-
-class ProjectsPage(GenericPage):
-    def get(self):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
-        projects = []
-        for project_key in user.my_projects:
-            project = self.get_item_from_key(project_key)
-            if project: projects.append(project)
-        projects.sort(key=lambda p: p.last_updated, reverse=True)
-        self.render("projects.html", user = user, projects = projects, handler = self)
-
-
-class NewProjectPage(GenericPage):
-    # Template variables (form_text_textarea.html)
-    kw = {"fancy_textarea_p" : False,
-          "page_title" : "New Project",
-          "title" : "New Project",
-          "subtitle" : '',
-          "action" : "/projects/new",
-          "text_name" : "p_name",
-          "text_placeholder" : "Name of the project",
-          "textarea_name" : "p_description",
-          "textarea_placeholder" : "Description of the project",
-          "submit_value" : "Create new project",
-          "cancel_url" : "/projects"}
-
-    def get(self):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return              
-        self.render("form_text_textarea.html", **self.kw)
-
-    def post(self):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
-        have_error = False
-        p_name = self.request.get("p_name")
-        p_description = self.request.get("p_description")
-        error = ''
-        if not p_name:
-            have_error = True
-            error += "Please provide a name for your new project. "
-        if not p_description:
-            have_error = True
-            error += "Please provide a brief description of your new project. "
-        if have_error:
-            self.render("form_text_textarea.html", 
-                        error = error, text_value = p_name, textarea_value = p_description, **self.kw)
-        else:
-            project = Projects(name = p_name, description = p_description, 
-                               authors = [user.key()], references = [], notebooks = [])
-            self.log_and_put(project, "Creating a new Project. ")
-            user.my_projects.append(project.key())
-            self.log_and_put(user, "Appending a new project to my_projects of a RegisteredUser. ")
-            self.redirect("/projects/project/%s" % project.key())
         
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):

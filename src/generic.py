@@ -72,7 +72,7 @@ class RegisteredUsers(db.Model):
     google_userid = db.StringProperty(required = False)
     my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
     my_notebooks = db.ListProperty(db.Key)                  # keys to Notebooks (defined in notebooks.py)
-    contacts = db.ListProperty(db.Key)
+    following = db.ListProperty(db.Key)
 
     def list_of_projects(self):
         projects_list = []
@@ -169,7 +169,7 @@ class GenericPage(webapp2.RequestHandler):
     def render(self, template, **kw):
         kw['username'] = self.get_username()
         if kw['username'] is None:
-            kw['login_message'] = ('<a href="/login">Login</a><ul><li><a href="/signup">Signup</a></li></ul>')
+            kw['login_message'] = ('<a href="/login">Login</a> <ul><li><a href="/signup">Signup</a></li></ul>')
         else:
-            kw['login_message'] = ('<a title="Click here to edit your settings." href="/settings">%s</a><ul> <li><a href="/logout">Logout</a></li></ul>' % kw['username'].capitalize())            
+            kw['login_message'] = ('<a href="/%s">%s</a> <ul><li><a href="/logout">Logout</a></li></ul>' % (kw['username'], kw['username'].capitalize()))            
         self.write(self.render_str(template, **kw))

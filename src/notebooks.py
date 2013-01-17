@@ -130,7 +130,7 @@ class NewNotebookPage(GenericPage):
         if not n_description:
             have_error = True
             error_message += "Please provide a description of this notebook. "
-        if not re.match(NOTEBOOK_NAME_REGEXP, n_name):
+        if n_name and (not re.match(NOTEBOOK_NAME_REGEXP, n_name)):
             have_error = True
             error_message = "Invalid notebook name. Please use only letters, numbers, spaces and dashes. "
         # Check for duplicate notebook names.

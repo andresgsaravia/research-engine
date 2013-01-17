@@ -30,55 +30,43 @@ class UserPage(GenericPage):
 #### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
 ###########################################################
 
-# class UserPage(GenericPage):
-#     def get(self, page_username):
-#         page_username = page_username.lower()
-#         logged_in_user = self.get_user()
-#         self.log_read(RegisteredUsers, "Getting user instance of this page.")
-#         page_user = RegisteredUsers.all().filter("username =", page_username).get()
-#         kw = {"logged_in_user" : logged_in_user, "page_user" : page_user, "handler" : self}
-#         if not page_user:
-#             self.error(404)
-#             self.render("404.html")
-#             return
-#         if logged_in_user.key() == page_user.key():
-#             self.redirect("/settings")
-#             return
-#         if page_user.key() in logged_in_user.contacts:
-#             kw["is_contact"] = True
-#             kw["is_contact_message"] = '%s is in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
-#             kw["button_message"] = "Remove from contacts"
-#             kw["projects_not_collaborating"] = []
-#             kw["projects_collaborating"] = []
-#             for project_key in logged_in_user.my_projects:
-#                 project = self.get_item_from_key(project_key, "Logged in user's projects. ")
-#                 if page_user.key() in project.authors:
-#                     kw["projects_collaborating"].append(project)
-#                 else:
-#                     kw["projects_not_collaborating"].append(project)
-#         else:
-#             kw["is_contact"] = False
-#             kw["is_contact_message"] = '%s is not in <a href="/contacts">your contacts</a> list.' % page_user.username.capitalize()
-#             kw["button_message"] = "Add to contacts"
-#         self.render("user.html", **kw)
-            
-    def post(self, page_username):
-        logged_in_user = self.get_user()
-        if not logged_in_user:
-            self.redirect("/login")
-            return
-        self.log_read(RegisteredUsers, "Getting user instance of this page.")
-        page_user = RegisteredUsers.all().filter("username =", page_username).get()
+    def post(self, username):
+        page_user = RegisteredUsers.all().filter("username =", username.lower()).get()
         if not page_user:
             self.error(404)
+            self.render("404.html")
             return
-        if page_user.key() in logged_in_user.contacts:
-            logged_in_user.contacts.remove(page_user.key())
-            self.log_and_put(logged_in_user, "Removing a contact.")
-        else:
-            logged_in_user.contacts.append(page_user.key())
-            self.log_and_put(logged_in_user, "Adding a contact.")
-        self.redirect("/%s" % page_username)
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        action = self.request.get("action")
+        if not action:
+            logging.error("Handler UserPage recieved a POST request without a post action. ")
+            self.error(400)
+            self.write("There was an error processing your request. ")
+            return
+        if action == "follow":
+            pass
+                          
+
+    # def post(self, page_username):
+    #     logged_in_user = self.get_user()
+    #     if not logged_in_user:
+    #         self.redirect("/login")
+    #         return
+    #     self.log_read(RegisteredUsers, "Getting user instance of this page.")
+    #     page_user = RegisteredUsers.all().filter("username =", page_username).get()
+    #     if not page_user:
+    #         self.error(404)
+    #         return
+    #     if page_user.key() in logged_in_user.contacts:
+    #         logged_in_user.contacts.remove(page_user.key())
+    #         self.log_and_put(logged_in_user, "Removing a contact.")
+    #     else:
+    #         logged_in_user.contacts.append(page_user.key())
+    #         self.log_and_put(logged_in_user, "Adding a contact.")
+    #     self.redirect("/%s" % page_username)
 
 
 class SignupPage(GenericPage):
@@ -293,9 +281,13 @@ class VerifyEmailPage(GenericPage):
             return 
         if hash_str(username + u.salt) == h:
             new_user = RegisteredUsers(username = u.username,
-                                       email = u.email,
+                                       password_hash = u.password_hash,
                                        salt = u.salt,
-                                       password_hash = u.password_hash)
+                                       email = u.email,
+                                       about_me = '', google_userid = '',
+                                       my_projects = [],
+                                       my_notebooks = [],
+                                       following = [])
             self.log_and_put(new_user)
             self.log_and_delete(u)
             self.set_cookie("username", new_user.username, new_user.salt)
