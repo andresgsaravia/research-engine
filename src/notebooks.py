@@ -268,6 +268,35 @@ class NewNotePage(GenericPage):
             self.redirect("/%s/%s/notebooks/%s/%s" % (user.username, project.name, notebook.name, new_note.key().id()))
 
 
+class NotePage(GenericPage):
+    def get(self, username, projectname, nbname, note_id):
+        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        notebook = Notebooks.all().ancestor(project).filter("name =", nbname).get()
+        if not notebook:
+            self.error(404)
+            self.render("404.html")
+            return
+        note = NotebookNotes.get_by_id(int(note_id), parent = notebook)
+        if not note:
+            self.error(404)
+            self.render("404.html")
+            return
+        self.render("notebook_note.html", p_author = p_author, project = project, notebook = notebook, note = note)
+
+
 ###########################################################
 #### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
 ###########################################################
@@ -321,14 +350,6 @@ class EditNotebookPage(NewNotebookPage):
             notebook.description = kw["nb_description"]
             self.log_and_put(notebook)
             self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook_key))
-
-
-class NotePage(GenericPage):
-    def get(self, project_key, note_key):
-        note = self.get_item_from_key_str(note_key)
-        self.log_read(Notebooks)
-        notebook = note.parent()
-        self.render("notebook_note.html", project_key = project_key, note = note, notebook = notebook)
 
 
 class EditNotePage(GenericPage):

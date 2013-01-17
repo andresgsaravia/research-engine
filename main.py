@@ -19,6 +19,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage), # Last argument is the notebook name
+                               ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    # Last argument is the note's numeric id
                                ('/(.+)/(.+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
@@ -62,7 +63,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # ----     /(username)/(project_name)/notebooks
 # ----     /(username)/(project_name)/notebooks/new
 # TODO     /(username)/(project_name)/notebooks/(notebook_name)
-# TODO     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
+# ----     /(username)/(project_name)/notebooks/(notebook_name)/new_note
+# ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new
 # TODO     /(username)/(project_name)/writings/(writing_id)

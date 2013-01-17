@@ -1,0 +1,30 @@
+/* Stylesheet for the notebook_note.css template */
+
+.note-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 0.5em;
+    margin-left: 1em;
+    margin-right: 4em;
+}
+
+.note-date {
+    font-size: 0.8em;
+    color: #888888;
+    margin-left: 2em;
+}
+
+.note-content {
+    text-align: justify;
+    margin-top: 1em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}
+
+.comments-wrapper {
+    border-top: 1px solid black;
+    margin-top: 1.5em;
+    padding-top: 1.5em;
+    margin-left: 1em;
+    margin-right: 1em;
+}

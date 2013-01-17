@@ -4,6 +4,9 @@
   <link href="/css/notebook_main.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
+{% block title_bar_extra %}
+/  <a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}">{{notebook.name.replace("_"," ").capitalize()}}</a>
+{% endblock %}
 
 {% block p_content %}
 

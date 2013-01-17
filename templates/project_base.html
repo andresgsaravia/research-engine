@@ -34,6 +34,7 @@
 <div class="p-title-bar">
   <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / 
   <a href="/{{p_author.username}}/{{project.name.lower()}}">{{project.name.replace("_", " ").capitalize()}}</a>
+  {% block title_bar_extra %} {% endblock %}
 </div>
 
 <div class="p-content">
