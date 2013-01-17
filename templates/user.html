@@ -8,99 +8,25 @@
 
 {% block content %}
 
-<h2>{{page_user.username.capitalize()}}</h2>
-
-<div class="user-info">
-  {{page_user.about_me}}
+<div class="u-info">
+  <div class="u-name">{{page_user.username.capitalize()}}</div>
+  <div class="u-about">{% if page_user.about_me %}{{page_user.about_me.replace("\n", "<br/>") | safe}}{% endif %}</div>
 </div>
 
-<h3>Public projects</h3>
-
-<div class="public-projects">
-  (Under construction)
+<div class="u-pwrapper">
+  <div class="follow-button"><a href="#" onClick="document.followForm.submit(); return false">{{follow_button_text}}</a></div>
+  <h2>Public projects</h2>
+  {% for p in projects %} 
+    <div class="u-project">
+      <div class="u-pname"><a href="/{{page_user.username}}/{{p.name}}">{{p.name.capitalize().replace("_", " ")}}</a></div>
+      <div class="u-pdescription">{{p.short_description()}}</div>
+    </div>
+  {% endfor %}
 </div>
 
-<div class="is-contact">
-  {{is_contact_message | safe}}
-</div>
-
-<form method="post">
-  <div class="submit-button">
-    <input type="submit" value="{{button_message}}" />
-  </div>
+<form method="post" name="followForm">
+  <input type="hidden" name="action" value="follow" />
 </form>
-
-<div class="info">
-  {{info_message}}
-</div>
-
-<div class="collaborations">
-{% if is_contact %}
-
-  {% if projects_collaborating %}
-  <div class="collaborating">
-    <h3>Projects in collaboration</h3>
-    <div class="projects">
-      {% for project in projects_collaborating %}
-        <div class="project">
-	  <div class="project">
-	    <div class="date">
-	      Last updated: {{project.last_updated.strftime("%d-%b-%Y")}}
-	    </div>
-
-	    <div class="name">
-	      <a href="/projects/project/{{project.key()}}">{{project.name}}</a>
-	    </div>
-
-	    <div class="short-description">
-	      {{project.short_description()}}
-	    </div>
-
-	    <div class="authors">
-	      <ul>
-		{% for author in project.list_of_authors(handler) %}
-		  <li><a href="/{{author.username}}">{{author.username.capitalize()}}</a></li>
-		{% endfor %}
-	      </ul>
-	    </div>
-	  </div>
-	</div>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
-
-  {% if projects_not_collaborating %}
-  <div class="not-collaborating">
-    <h3>Invite {{page_user.username.capitalize()}} to collaborate in a project</h3>
-    <div class="projects">
-      {% for project in projects_not_collaborating %}
-      <div class="project">
-       
-	<div class="project-name">
-	  <a href="/projects/project/{{project.key()}}">{{project.name}}</a>
-	</div>
-	  
-	<form method="post" action="/projects/project/{{project.key()}}">
-	  <div class="invite-button">
-	    <input type="hidden" name="action" value="add_collaborator" />
-	    <input type="hidden" name="new_collaborator_key" value="{{page_user.key()}}" />
- 	    <input type="submit" value="Invite to this project" />
-          </div>
-	</form>
-	
-      </div>
-      {% endfor %}
-
-    </div>
-  </div>
-  {% endif %}
-
-{% endif %}
-
-</div>
-
-
 
 {% endblock %}
 

@@ -16,11 +16,15 @@ class UserPage(GenericPage):
             self.render("404.html")
             return
         user = self.get_user()
+        projects = page_user.list_of_projects()
         if user and user.key() == page_user.key():
-            projects = user.list_of_projects()
             self.render("user_self.html", user = user, projects = projects)
         else:
-            self.render("user.html", page_user = page_user)
+#            if page_user.key() in user.following:
+#                b_text = "Unfollow"
+#            else:
+            b_text = "Follow (coming soon)"
+            self.render("user.html", page_user = page_user, projects = projects, follow_button_text = b_text)
 
 ###########################################################
 #### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
