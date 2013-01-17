@@ -6,7 +6,8 @@
 
 {% block p_content %}
   
-<div class="new-notebook-button"><a href="/{{p_author.username}}/{{project.name.lower()}}/notebooks/new">New notebook</a></div>
+<div class="button1"><a href="/{{p_author.username}}/{{project.name.lower()}}/notebooks/new">New notebook</a></div>
+<h2>Notebooks</h2>
 
 {% for n in notebooks %}
 <div class="n-wrapper">

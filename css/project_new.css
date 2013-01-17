@@ -1,13 +1,14 @@
 /* Stylesheet for the project_new.html template */
 
 .p-title-bar {
-    margin-top: 1em;
+    margin: 0 auto;
     font-size: 1.1em;
 }
 
 .content {
     width: 90%;
-    margin-left: 5%;
+    padding-top: 2em;
+    margin: 0 auto;
 }
 
 .form-wrapper {
@@ -15,6 +16,8 @@
     box-shadow: 0em 0.1em 0.2em #C0C0C0;
     padding: 1em;
     margin-top: 1em;
+    max-width: 60em;
+    margin: 0 auto;
 }
 
 

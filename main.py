@@ -19,8 +19,6 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
-                               # ('/projects', projects.ProjectsPage),           # Needs review
-                               # ('/projects/new', projects.NewProjectPage),           # Needs review
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
                                # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
                                # ('/projects/project/new_reference/(.+)', references.NewReferencePage),           # Needs review
@@ -45,7 +43,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 
 
 # I want this structure:
-# 
+ 
 # TODO     /                                     Main site page
 # TODO     /login
 # TODO     /logout
@@ -53,15 +51,15 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /recover_password
 # TODO     /verify_email
 # TODO     /settings                             Edit user's settings
-# 
+ 
 # TODO     /(username)                           View profile and list projects
 # TODO     /(username)/contacts                  List of contacts
 # TODO     /(username)/new_project
-# done     /(username)/(project_name)            News and overview
+# ----     /(username)/(project_name)            News and overview
 # TODO     /(username)/(project_name)/wiki
 # TODO     /(username)/(project_name)/forum
-# done     /(username)/(project_name)/notebooks
-# done     /(username)/(project_name)/notebooks/new
+# ----     /(username)/(project_name)/notebooks
+# ----     /(username)/(project_name)/notebooks/new
 # TODO     /(username)/(project_name)/notebooks/(notebook_name)
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new
@@ -71,7 +69,5 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /(username)/(project_name)/references/(reference_id)
 # TODO     /(username)/(project_name)/code
 # TODO     /(username)/(project_name)/datasets
-# TODO     /(username)/(project_name)/admin
+# TODO     /(username)/(project_name)/admin   # Perhaps from here I should add a collaborator.
 # TODO     /(username)/classroom       I still need to figure out this part
-# 
-# 
