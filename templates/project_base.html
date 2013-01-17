@@ -32,7 +32,8 @@
 </div>
 
 <div class="p-title-bar">
-  <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / <a href="/{{p_author.username}}/{{project.name.lower()}}">{{project.name.capitalize()}}</a>
+  <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / 
+  <a href="/{{p_author.username}}/{{project.name.lower()}}">{{project.name.replace("_", " ").capitalize()}}</a>
 </div>
 
 <div class="p-content">
