@@ -395,74 +395,96 @@ class EditNotebookPage(GenericPage):
             self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, notebook.name))
 
 
-
-###########################################################
-#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
-###########################################################
-
-
 class EditNotePage(GenericPage):
-    def get(self, project_key, note_key):
+    def get(self, username, projectname, nbname, note_id):
+        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        notebook = Notebooks.all().ancestor(project).filter("name =", nbname).get()
+        if not notebook:
+            self.error(404)
+            self.render("404.html")
+            return
+        note = NotebookNotes.get_by_id(int(note_id), parent = notebook)
+        if not note:
+            self.error(404)
+            self.render("404.html")
+            return
+        kw = {"title" : "Edit note",
+              "name_placeholder" : "Title of the note",
+              "content_placeholder" : "Content of the note",
+              "submit_button_text" : "Save changes",
+              "cancel_url" : "/%s/%s/notebooks/%s/%s" % (p_author.username, project.name, notebook.name, note_id),
+              "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "name_value" : note.title, "content_value" : note.content}
+        self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+
+    def post(self, username, projectname, nbname, note_id):
         user = self.get_user()
         if not user:
             self.redirect("/login")
             return
-        note = self.get_item_from_key_str(note_key)
-        if not note:
+        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        if not p_author:
             self.error(404)
+            self.render("404.html")
             return
-        project = self.get_item_from_key_str(project_key)
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
         if not project:
             self.error(404)
+            self.render("404.html")
             return
-        self.log_read(Notebooks)
-        notebook = note.parent()
-        assert notebook  # We shouldn't have Notes without Notebooks.
-        error = ''
-        if not notebook.owner.key() == user.key():
-            error = "You are not the owner of this notebook; you will be unable to make changes."
-        self.render("note_edit.html", note = note, notebook = notebook, error = error, project_key = project_key)
-
-    def post(self, project_key, note_key):
-        user = self.get_user()
-        if not user:
-            self.redirec("/login")
+        notebook = Notebooks.all().ancestor(project).filter("name =", nbname).get()
+        if not notebook:
+            self.error(404)
+            self.render("404.html")
             return
-        action = self.request.get("action")
-        assert action
-        note = self.get_item_from_key_str(note_key)
-        kw = {"note" : note}
+        note = NotebookNotes.get_by_id(int(note_id), parent = notebook)
         if not note:
             self.error(404)
+            self.render("404.html")
             return
-        kw["project"] = self.get_item_from_key_str(project_key)
-        if not kw["project"]:
-            self.error(404)
-            return
-        self.log_read(Notebooks)
-        notebook = note.parent()
-        assert notebook  # We shouldn't have Notes without Notebooks.
-        kw["error"] = ''
         have_error = False
-        if action == "edit":
-            kw["title"] = self.request.get("title")
-            kw["content"] = self.request.get("content")
-            if not kw["title"]:
-                have_error = True
-                kw["error"] += "Please provide a title for the note. "
-            if not kw["content"]:
-                have_error = True
-                kw["content"] += "Please provide a content for the note. "
-            if not notebook.owner.key() == user.key():
-                have_error = True
-                kw["error"] = "You are not the owner of this notebook; you are unable to make changes. "
-            if have_error:
-                self.render("note_edit.html", **kw)
-            else:
-                note.title = kw["title"]
-                note.content = kw["content"]
+        error_message = ''
+        n_title = self.request.get("name")
+        n_content = self.request.get("content")
+        if not n_title:
+            have_error = True
+            error_message = "Please provide a title for this note. "
+        if not n_content:
+            have_error = True
+            error_message += "You need to write some content before saving this note. "
+        if not notebook.owner.key() == user.key():
+            have_error = True
+            error_message = "You are not the owner of this notebook. "
+        if have_error:
+            kw = {"title" : "New note",
+                  "name_placeholder" : "Title of the new note",
+                  "content_placeholder" : "Content of the note",
+                  "submit_button_text" : "Create note",
+                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+                  "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "name_value": n_title, "content_value": n_content, "error_message" : error_message}
+            self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+        else:
+            if (note.title != n_title) or (note.content != n_content):
+                note.title = n_title
+                note.content = n_content
                 self.log_and_put(note)
-                self.redirect("/projects/project/%s/nb/note/%s" % (project_key, note_key))
-        elif action == "delete":
-            self.log_and_delete(note)
-            self.redirect("/projects/project/%s/nb/%s" % (project_key, notebook.key()))
+            self.redirect("/%s/%s/notebooks/%s/%s" % (user.username, project.name, notebook.name, note.key().id()))
+

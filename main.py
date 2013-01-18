@@ -6,42 +6,38 @@ from src import *
 
 app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # Users
-                               ('/login', users.LoginPage),           # Needs review
-                               ('/logout', users.LogoutPage),           # Needs review
-                               ('/signup', users.SignupPage),           # Needs review
-                               ('/settings', users.SettingsPage),           # Needs review
-                               ('/user/search', users.SearchForUserPage),           # Needs review
-                               ('/contacts', users.ContactsPage),           # Needs review
-                               ('/recover_password', users.RecoverPasswordPage),           # Needs review
-                               ('/verify_email', users.VerifyEmailPage),           # Needs review
+                               ('/login', users.LoginPage),                                            # Needs review
+                               ('/logout', users.LogoutPage),                                          # Needs review
+                               ('/signup', users.SignupPage),                                          # Needs review
+                               ('/settings', users.SettingsPage),                                      # Needs review
+                               ('/user/search', users.SearchForUserPage),                              # Needs review
+                               ('/contacts', users.ContactsPage),                                      # Needs review
+                               ('/recover_password', users.RecoverPasswordPage),                       # Needs review
+                               ('/verify_email', users.VerifyEmailPage),                               # Needs review
 
-                               ('/(.+)/new_project', projects.NewProjectPage),          # Argument is username
-                               ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),   # Arguments are username and project_name
+                               ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
+                               ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
-                               ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage), # Last argument is the notebook name
+                               ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's numeric id
+                               ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
+                               ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook name
                                ('/(.+)/(.+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
-                               ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    # Last argument is the note's numeric id
+
                                ('/(.+)/(.+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
                                # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
                                # ('/projects/project/new_reference/(.+)', references.NewReferencePage),           # Needs review
-                               # ('/projects/project/new_notebook/(.+)', notebooks.NewNotebookPage),           # Needs review
                                # ('/projects/project/new_writing/(.+)', collab_writing.NewWritingPage),           # Needs review
-                               # ('/projects/project/(.+)/nb/edit/(.+)', notebooks.EditNotebookPage),           # Needs review
-                               # ('/projects/project/(.+)/nb/note/(.+)', notebooks.NotePage),           # Needs review
-                               # ('/projects/project/(.+)/nb/new_note/(.+)', notebooks.NewNotePage),           # Needs review
-                               # ('/projects/project/(.+)/nb/edit_note/(.+)', notebooks.EditNotePage),           # Needs review
                                # ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),           # Needs review
                                # ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/view/(.+)', collab_writing.ViewRevisionPage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/edit/(.+)', collab_writing.EditWritingPage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/(.+)', collab_writing.WritingPage),           # Needs review
-                               # ('/notebooks', notebooks.AllNotebooksPage),           # Needs review
                                # ('/news', frontend.UnderConstructionPage),           # Needs review
                                # ('/classroom', frontend.UnderConstructionPage),           # Needs review                               
 
-                               ('/(.+)', users.UserPage)],           # Needs review
+                               ('/(.+)', users.UserPage)],                                             # Needs review
                               debug = True)
 
 
@@ -67,6 +63,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/new_note
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/edit
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
+# ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)/edit
 # TODO     /(username)/(project_name)/writings
 # TODO     /(username)/(project_name)/writings/new
 # TODO     /(username)/(project_name)/writings/(writing_id)
