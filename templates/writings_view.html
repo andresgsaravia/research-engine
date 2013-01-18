@@ -1,0 +1,39 @@
+{% extends "project_base.html" %}
+
+
+{% block p_head %}
+  <link href="/css/writings_view.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block title_bar_extra %}
+  / <a href="/{{p_author.username}}/{{project.name}}/writings">Collaborative writings</a>
+  / <a href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">{{writing.key().id()}}</a>
+{% endblock %}
+
+
+{% block p_content %}
+  <div class="w-head">
+    <div class="w-title">{{writing.title}}</div>
+    <div class="w-date">Last Updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
+  </div>
+  
+  <div class="w-navbar">
+    <a class="active"   href="">Current revision</a>
+    <a class="inactive" href="">Edit</a>
+    <a class="inactive" href="">History</a>
+    <a class="inactive" href="">Discussion</a>
+    <a class="inactive" href="">Info</a>
+  </div>
+    
+ <div class="w-content">
+   {% if last_revision %}
+     {{last_revision.content | safe}}
+   {% else %}
+     <p>This writing hasn't been started yet. Click <a href="">here</a> or the <em>Edit</em> tab to make the first draft.</p>
+   {% endif %}
+</div>
+
+
+
+{% endblock %}
