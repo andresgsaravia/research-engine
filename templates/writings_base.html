@@ -1,0 +1,36 @@
+{% extends "project_base.html" %}
+
+
+{% block p_head %}
+  <link href="/css/writings_base.css" rel="stylesheet" type="text/css" />
+  {% block w_head %}
+  {% endblock %}
+{% endblock %}
+
+
+{% block title_bar_extra %}
+  / <a href="/{{p_author.username}}/{{project.name}}/writings">Collaborative writings</a>
+  / <a href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">{{writing.key().id()}}</a>
+{% endblock %}
+
+
+{% block p_content %}
+  <div class="w-head">
+    <div class="w-title">{{writing.title}}</div>
+    <div class="w-date">Last Updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
+  </div>
+  
+  <div class="w-navbar">
+    <a class="w-current-revision-tab"   href="">Current revision</a>
+    <a class="w-edit-tab" href="">Edit</a>
+    <a class="w-history-tab" href="">History</a>
+    <a class="w-discussion-tab" href="">Discussion</a>
+    <a class="w-info-tab" href="">Info</a>
+  </div>
+    
+  {% block w_content %}
+  {% endblock %}
+
+
+
+{% endblock %}
