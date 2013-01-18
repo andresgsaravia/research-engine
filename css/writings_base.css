@@ -13,6 +13,7 @@
 .w-head {
     color: black;
     display: block;
+    height: 2.5em;
     padding-left: 1em;
     padding-right: 1em;
     padding-top: 0.5em;
@@ -20,7 +21,6 @@
     background-image: linear-gradient(#F0F8F0, #C6E0C7);
     background-image: -webkit-linear-gradient(#F0F8F0, #C6E0C7);
     background-repeat: repeat-x;
-    border-radius: 1em 1em 0 0;
 }
 
 .w-title {
@@ -31,10 +31,21 @@
     margin-right: 4em;
 }
 
+.w-meta {
+    position: relative;
+    float: right;
+    padding-top: 0.2em;
+}
+
 .w-date {
     font-size: 0.8em;
     color: #888888;
-    margin-left: 2em;
+}
+
+.w-status {
+    font-size: 0.9em;
+    color: #555555;
+    margin-top: 0.2em;
 }
 
 .w-content {
@@ -71,8 +82,7 @@
     font-size: 0.9em;
 }
 
-/* .w-navbar .active { */
-/*     background-image: linear-gradient(#C6E0C7, #BCCFBD); */
-/*     background-image: -webkit-linear-gradient(#C6E0C7, #BCCFBD); */
-/*     background-repeat: repeat-x; */
-/* } */
+.w-navbar a:hover {
+    text-decoration: none;
+    background: #E0ECB9;
+}

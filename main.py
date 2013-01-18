@@ -27,6 +27,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # Collaborative writings
                                ('/(.+)/(.+)/writings', collab_writing.WritingsListPage),
                                ('/(.+)/(.+)/writings/new', collab_writing.NewWritingPage),
+                               ('/(.+)/(.+)/writings/([0-9]+)/edit', collab_writing.EditWritingPage),
                                ('/(.+)/(.+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
@@ -34,9 +35,6 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # ('/projects/project/new_reference/(.+)', references.NewReferencePage),           # Needs review
                                # ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),           # Needs review
                                # ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),           # Needs review
-                               # ('/projects/project/(.+)/cwriting/view/(.+)', collab_writing.ViewRevisionPage),           # Needs review
-                               # ('/projects/project/(.+)/cwriting/edit/(.+)', collab_writing.EditWritingPage),           # Needs review
-                               # ('/projects/project/(.+)/cwriting/(.+)', collab_writing.WritingPage),           # Needs review
                                # ('/news', frontend.UnderConstructionPage),           # Needs review
                                # ('/classroom', frontend.UnderConstructionPage),           # Needs review                               
 
@@ -70,7 +68,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # ----     /(username)/(project_name)/writings
 # ----     /(username)/(project_name)/writings/new
 # ----     /(username)/(project_name)/writings/(writing_id)
-# TODO     /(username)/(project_name)/writings/(writing_id)/edit
+# ----     /(username)/(project_name)/writings/(writing_id)/edit
 # TODO     /(username)/(project_name)/writings/(writing_id)/history
 # TODO     /(username)/(project_name)/writings/(writing_id)/discussion
 # TODO     /(username)/(project_name)/writings/(writing_id)/info

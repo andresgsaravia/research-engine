@@ -16,16 +16,19 @@
 
 {% block p_content %}
   <div class="w-head">
+    <div class="w-meta">
+      <div class="w-date">Last Updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
+      <div class="w-status">Status: <b>{{writing.status}}</b></div>
+    </div>
     <div class="w-title">{{writing.title}}</div>
-    <div class="w-date">Last Updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
   </div>
   
   <div class="w-navbar">
-    <a class="w-current-revision-tab"   href="">Current revision</a>
-    <a class="w-edit-tab" href="">Edit</a>
-    <a class="w-history-tab" href="">History</a>
-    <a class="w-discussion-tab" href="">Discussion</a>
-    <a class="w-info-tab" href="">Info</a>
+    <a class="w-current-revision-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">Current revision</a>
+    <a class="w-edit-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/edit">Edit</a>
+    <a class="w-history-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/history">History</a>
+    <a class="w-discussion-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/discussion">Discussion</a>
+    <a class="w-info-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/info">Info</a>
   </div>
     
   {% block w_content %}

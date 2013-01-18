@@ -5,3 +5,8 @@
     background-image: -webkit-linear-gradient(#C6E0C7, #BCCFBD);
     background-repeat: repeat-x;
 }
+
+.w-content {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
