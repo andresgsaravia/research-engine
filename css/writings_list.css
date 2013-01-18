@@ -1,15 +1,15 @@
-/* Overview of proejcts inside the projects tab */
+/* Stylesheet for the writings_list.html template */
+
+.writings-tab {
+    background: white;
+}
 
 h2 {
     padding-left: 1.5em;
     padding-top: 0.3em;
 }
 
-.notebooks-tab {
-    background: white;
-}
-
-.n-wrapper {
+.w-wrapper {
     margin-left: 2em;
     margin-right: 2em;
     margin-top: 1em;
@@ -17,19 +17,19 @@ h2 {
     box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.n-name a {
+.w-title a {
     display: block;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     padding-left: 1em;
     padding-right: 1em;
     background-color: #DDE8EB;
-    background-image: linear-gradient(#F8FBFC, #CFDEE2);
-    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
+    background-image: linear-gradient(#F0F8F0, #C6E0C7);
+    background-image: -webkit-linear-gradient(#F0F8F0, #C6E0C7);
     background-repeat: repeat-x;
 }
 
-.n-name a:hover {
+.w-title a:hover {
     text-decoration: none;
     background-color: DDE8EB;
     background-image: linear-gradient(#FCFCF8, #F1EEB9);
@@ -37,30 +37,27 @@ h2 {
     background-repeat: repeat-x;
 }
 
-.n-last-updated {
+.w-last-updated {
     position: relative;
     float: right;
-    margin-top: 0.2em;
+    margin-top: 0.8em;
     margin-right: 0.2em;
     margin-left: 0.5em;
     font-size: 0.8em;
-    color: #888888;
-    height: 3em;
+    color: #666666;
+    height: 1em;
 }
 
-.n-description {
+.w-description {
     text-align: justify;
     padding-left: 1em;
     padding-right: 1em;
     margin-top: 1em;
 }
 
-.n-owner {
-    margin-left: 1em;
-    margin-top: 0.5em;
+.w-status {
+    margin-left: 2em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
     font-size: 0.9em;
-}
-
-.n-owner a {
-    color: black;
 }

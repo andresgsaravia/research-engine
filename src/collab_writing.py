@@ -1,7 +1,7 @@
 # collaborative_writing.py
 
 from generic import *
-
+import projects
 
 ###########################
 ##   Datastore Objects   ##
@@ -15,9 +15,6 @@ class CollaborativeWritings(db.Model):
     last_updated = db.DateTimeProperty(auto_now = True)
     status = db.StringProperty(required = False)
 
-    def short_render(self, project_key):
-        return render_str("writing_short.html", writing = self, project_key = project_key)
-
 
 # Should have as parent a CollaborativeWriting
 class Revisions(db.Model):
@@ -30,68 +27,113 @@ class Revisions(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class NewWritingPage(GenericPage):
-    kw = {"fancy_textarea_p" : False,
-          "page_title" : "New collaborative writing",
-          "title" : "New collaborative writing",
-          "text_name" : "title",
-          "text_placeholder" : "Title for the writing",
-          "textarea_name" : "description", 
-          "textarea_placeholder" : "Enter a brief description of the purpose of the writing here.",
-          "submit_value" : "Create new writing"}
-
-    def get(self, project_key):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
-        project = self.get_item_from_key_str(project_key)
-        if project:
-            t_kw = self.kw
-            t_kw["subtitle"] = project.name
-            t_kw["cancel_url"] = "/projects/project/%s" % project_key
-            if not project.user_is_author(user):
-                t_kw["error"] = "You are not an author for this project."
-            self.render("form_text_textarea.html", **t_kw)
-        else:
-            logging.debug("Handler NewWritingPage tryed to fetch a non-existing project")
+class WritingsListPage(GenericPage):
+    def get(self, username, projectname):
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
             self.error(404)
-
-    def post(self, project_key):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
+            self.render("404.html")
             return
-        project = self.get_item_from_key_str(project_key)
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
         if not project:
-            logging.debug("Handler NewWritingPage tryed to fetch a non-existing project")
             self.error(404)
+            self.render("404.html")
             return
-        title =self.request.get("title")
-        description = self.request.get("description")
+        writings = []
+        for w in CollaborativeWritings.all().ancestor(project).order("-last_updated").run():
+            writings.append(w)
+        self.render("writings_list.html", p_author = p_author, project = project, writings = writings)
+
+
+class NewWritingPage(GenericPage):
+    def get(self, username, projectname):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return        
+        kw = {"title" : "New collaborative writing",
+              "name_placeholder" : "Title of the new writing",
+              "content_placeholder" : "Description of the new writing",
+              "submit_button_text" : "Create writing",
+              "cancel_url" : "/%s/%s/writings" % (p_author.username, project.name),
+              "more_head" : "<style>.writings-tab {background: white;}</style>"}
+        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+
+    def post(self, username, project_name):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
         have_error = False
-        error = ''
+        error_message = ''
         if not project.user_is_author(user):
             have_error = True
-            kw["error"] = "You are not an author for this project. "
-        if not title:
+            error_message = "You are not an author of this project. "
+        w_name = self.request.get("name")
+        w_description = self.request.get("content")
+        if not w_name:
             have_error = True
-            error += "Please provide a title. "
-        if not description:
+            error_message = "You must provide a name for your new writing. "
+        if not w_description:
             have_error = True
-            error += "Please provide a brief description of the purpose of this new writing. "
+            error_message += "Please provide a description of this writing. "
         if have_error:
-            t_kw = self.kw
-            t_kw["subtitle"] = project.name
-            t_kw["cancel_url"] = "/projects/project/%s" % project_key
-            t_kw["text_value"] = title
-            t_kw["textarea_value"] = description
-            self.render("form_text_textarea.html", error = error, **t_kw)
+            kw = {"title" : "New collaborative writing",
+                  "name_placeholder" : "Title of the new writing",
+                  "content_placeholder" : "Description of the new writing",
+                  "submit_button_text" : "Create writing",
+                  "cancel_url" : "/%s/%s/writings" % (p_author.username, project.name),
+                  "more_head" : "<style>.writings-tab {background: white;}</style>",
+                  "name_value" : w_name,
+                  "content_value" : w_description,
+                  "error_message" : error_message}
+            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_writing = CollaborativeWritings(title = title, description = description,
-                                               parent = project)
+            new_writing = CollaborativeWritings(title = w_name,
+                                                description = w_description,
+                                                status = "In progress",
+                                                parent = project.key())
             self.log_and_put(new_writing)
-            self.redirect("/projects/project/%s/cwriting/%s" % (project_key, new_writing.key()))
+            self.log_and_put(project, "Updating last_updated property. ")
+            self.redirect("/%s/%s/writings/%s" % (user.username, project.name, new_writing.key().id()))
+
+
+
+###########################################################
+#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
+###########################################################
 
 
 class EditWritingPage(GenericPage):

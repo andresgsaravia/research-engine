@@ -1,0 +1,28 @@
+{% extends "project_base.html" %}
+
+
+{% block p_head %}
+  <link href ="/css/writings_list.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{p_author.username}}/{{project.name}}/writings">Collaborative Writings</a>
+{% endblock %}
+
+
+{% block p_content %}
+
+<div class="button1"><a href="/{{p_author.username}}/{{project.name}}/writings/new">New collaborative writing</a></div>
+<h2>Collaborative Writings</h2>
+
+{% for w in writings %}
+<div class="w-wrapper">
+  <div class="w-last-updated">Last updated: {{w.last_updated.strftime("%d-%b-%Y")}}</div>
+  <div class="w-title"><a href="/{{p_author.username}}/{{project.name}}/writing/{{w.key().id()}}">{{w.title}}</a></div>
+  <div class="w-description">{{w.description.replace("\n", "<br/>") | safe}}</div>
+  <div class="w-status">Status: <em>{{w.status}}</em></div>
+</div>
+{% endfor %}
+
+{% endblock %}

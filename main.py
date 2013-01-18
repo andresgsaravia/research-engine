@@ -16,19 +16,22 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/verify_email', users.VerifyEmailPage),                               # Needs review
 
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
+                               # Notebooks
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and project_name
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's numeric id
                                ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
                                ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook name
                                ('/(.+)/(.+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
-
                                ('/(.+)/(.+)/notebooks/(.+)', notebooks.NotebookMainPage),
+                               # Collaborative writings
+                               ('/(.+)/(.+)/writings', collab_writing.WritingsListPage),
+                               ('/(.+)/(.+)/writings/new', collab_writing.NewWritingPage),
+
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
                                # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
                                # ('/projects/project/new_reference/(.+)', references.NewReferencePage),           # Needs review
-                               # ('/projects/project/new_writing/(.+)', collab_writing.NewWritingPage),           # Needs review
                                # ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),           # Needs review
                                # ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),           # Needs review
                                # ('/projects/project/(.+)/cwriting/view/(.+)', collab_writing.ViewRevisionPage),           # Needs review
@@ -64,8 +67,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/edit
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
 # ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)/edit
-# TODO     /(username)/(project_name)/writings
-# TODO     /(username)/(project_name)/writings/new
+# ----     /(username)/(project_name)/writings
+# ----     /(username)/(project_name)/writings/new
 # TODO     /(username)/(project_name)/writings/(writing_id)
 # TODO     /(username)/(project_name)/references
 # TODO     /(username)/(project_name)/references/new
