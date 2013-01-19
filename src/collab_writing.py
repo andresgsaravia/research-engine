@@ -151,7 +151,7 @@ class ViewWritingPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        last_revision = Revisions.all().ancestor(writing).order("date").get()
+        last_revision = Revisions.all().ancestor(writing).order("-date").get()
         self.render("writings_view.html", p_author = p_author, project = project, writing = writing, last_revision = last_revision)
 
 
@@ -260,3 +260,33 @@ class HistoryWritingPage(GenericPage):
             revisions.append(r)
         self.render("writings_history.html", p_author = p_author, project = project, 
                     writing = writing, revisions = revisions)
+
+
+class ViewRevisionPage(GenericPage):
+    def get(self, username, projectname, writing_id, rev_id):
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        if not writing:
+            self.error(404)
+            self.render("404.html")
+            return
+        revision = Revisions.get_by_id(int(rev_id), parent = writing)
+        if not revision:
+            self.error(404)
+            self.render("404.html")
+            return
+        self.render("writings_revision.html", p_author = p_author, project = project,
+                    writing = writing, revision = revision)

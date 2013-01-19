@@ -29,7 +29,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/writings/new', collab_writing.NewWritingPage),
                                ('/(.+)/(.+)/writings/([0-9]+)/edit', collab_writing.EditWritingPage),
                                ('/(.+)/(.+)/writings/([0-9]+)/history', collab_writing.HistoryWritingPage),
-#                               ('/(.+)/(.+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
+                               ('/(.+)/(.+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
                                ('/(.+)/(.+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
@@ -72,7 +72,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # ----     /(username)/(project_name)/writings/(writing_id)
 # ----     /(username)/(project_name)/writings/(writing_id)/edit
 # ----     /(username)/(project_name)/writings/(writing_id)/history
-# TODO     /(username)/(project_name)/writings/(writing_id)/rev/(revision_id)
+# ----     /(username)/(project_name)/writings/(writing_id)/rev/(revision_id)
 # TODO     /(username)/(project_name)/writings/(writing_id)/discussion
 # TODO     /(username)/(project_name)/writings/(writing_id)/info
 # TODO     /(username)/(project_name)/references

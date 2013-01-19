@@ -1,0 +1,17 @@
+{% extends "writings_base.html" %}
+
+
+{% block w_head %}
+  <link href="/css/writings_revision.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block w_content %}
+
+ <div class="w-content">
+     {{revision.content | safe}}
+</div>
+
+
+
+{% endblock %}

@@ -1,6 +1,6 @@
 /* Stylesheet for the writings_view.html template */
 
-.w-navbar .w-current-revision-tab {
+.w-navbar .w-history-tab {
     background-image: linear-gradient(#C6E0C7, #BCCFBD);
     background-image: -webkit-linear-gradient(#C6E0C7, #BCCFBD);
     background-repeat: repeat-x;
