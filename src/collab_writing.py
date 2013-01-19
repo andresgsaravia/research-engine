@@ -176,7 +176,7 @@ class EditWritingPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        last_revision = Revisions.all().ancestor(writing).order("date").get()
+        last_revision = Revisions.all().ancestor(writing).order("-date").get()
         if last_revision:
             content = last_revision.content
         else:
