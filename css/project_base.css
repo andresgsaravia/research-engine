@@ -10,6 +10,11 @@
     display: block
 }
 
+.p-menu-wrapper * {
+    margin: 0px;
+    padding: 0px;
+}
+
 .p-menu {
     padding-top: 4em;
 }
@@ -66,3 +71,14 @@
     margin-left: 10em;
     font-size: 1.1em;
 }
+
+* + .p-content p,
+* + .p-content h1,
+* + .p-content h2,
+* + .p-content h3,
+* + .p-content h4,
+* + .p-content h5,
+* + .p-content ul {
+    margin-bottom: 0.5em;
+}
+
