@@ -83,6 +83,8 @@ class RegisteredUsers(db.Model):
             else:
                 logging.warning("RegisteredUser with key (%s) contains a broken reference to project %s" 
                                 % (self.key(), p_key))
+        if len(projects_list) > 0:
+            projects_list.sort(key=lambda p: p.last_updated, reverse=True)
         return projects_list
 
 ######################

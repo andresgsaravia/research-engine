@@ -8,6 +8,7 @@
     background: white;
     box-shadow: 0 0.1em 0.3em #C0C0C0;
     padding: 1em;
+    overflow: auto;
 }
 
 .u-info {
@@ -19,16 +20,6 @@
 .u-name {
     text-align: center;
     font-size: 2.5em;
-}
-
-.u-email {
-    text-align: center;
-}
-
-.u-email a{
-    font-style: italic;
-    font-weight: normal;
-    color: #666666;
 }
 
 .u-pwrapper {
@@ -69,8 +60,17 @@
 }
 
 .u-pdescription {
-    text-align: justify;
     padding-left: 1em;
     padding-right: 1em;
     margin-top: 0.5em;
+    text-align: justify;
+    height: 7em;
+    overflow: auto;
+}
+
+.u-pupdated {
+    margin-left: 1em;
+    margin-top: 0.5em;
+    font-size: 0.9em;
+    color: #888888
 }

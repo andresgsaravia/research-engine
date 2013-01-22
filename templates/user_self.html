@@ -20,7 +20,8 @@
   {% for p in projects %} 
     <div class="u-project">
       <div class="u-pname"><a href="/{{user.username}}/{{p.name}}">{{p.name.capitalize().replace("_", " ")}}</a></div>
-      <div class="u-pdescription">{{p.short_description()}}</div>
+      <div class="u-pdescription">{{p.description.replace("\n", "<br/>") | safe}}</div>
+      <div class="u-pupdated">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</div>
     </div>
   {% endfor %}
 </div>

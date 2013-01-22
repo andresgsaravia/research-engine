@@ -330,7 +330,7 @@ class DiscussionPage(GenericPage):
     def post(self, username, projectname, writing_id):
         user = self.get_user()
         if not user:
-            self.redirect("/login.html")
+            self.redirect("/login")
             return
         p_author = RegisteredUsers.all().filter("username =", username).get()
         if not p_author:

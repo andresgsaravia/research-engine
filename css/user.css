@@ -8,6 +8,7 @@
     background: white;
     box-shadow: 0 0.1em 0.3em #C0C0C0;
     padding: 1em;
+    overflow: auto;
 }
 
 .u-info {
@@ -25,7 +26,7 @@
     text-align: center;
 }
 
-.u-email a{
+.u-email a {
     font-style: italic;
     font-weight: normal;
     color: #666666;
@@ -45,26 +46,41 @@
     box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.u-pname {
+.u-pname a {
+    display: block;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     padding-left: 1em;
     padding-right: 1em;
-    background-color: rgb(221, 232, 235);
-    background-image: linear-gradient(rgb(248, 251, 252), rgb(155, 162, 164));
-    background-image: -webkit-linear-gradient(rgb(248, 251, 252), rgb(155, 162, 164));
+    background-color: #DDE8EB;
+    background-image: linear-gradient(#F8FBFC, #B5BCBE);
+    background-image: -webkit-linear-gradient(#F8FBFC, #B5BCBE);
     background-repeat: repeat-x;
-}
-
-.u-pname a {
     color: black;
     font-size: 1em;
     font-family: Helvetica, Arial, sans-serif;
 }
 
+.u-pname a:hover {
+    text-decoration: none;
+    background-color: #DDE8EB;
+    background-image: linear-gradient(#F8FBFC, #C1D1D6);
+    background-image: -webkit-linear-gradient(#F8FBFC, #C1D1D6);
+    background-repeat: repeat-x;
+}
+
 .u-pdescription {
-    text-align: justify;
     padding-left: 1em;
     padding-right: 1em;
     margin-top: 0.5em;
+    text-align: justify;
+    height: 7em;
+    overflow: auto;
+}
+
+.u-pupdated {
+    margin-left: 1em;
+    margin-top: 0.5em;
+    font-size: 0.9em;
+    color: #888888
 }

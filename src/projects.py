@@ -54,10 +54,6 @@ class Projects(db.Model):
 
 class OverviewPage(GenericPage):
     def get(self, username, project_name):
-        user = self.get_user()
-        if not user:
-            self.redirect('/login')
-            return
         p_user = RegisteredUsers.all().filter("username =", username).get()
         if not p_user:
             self.error(404)
