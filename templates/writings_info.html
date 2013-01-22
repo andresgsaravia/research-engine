@@ -1,0 +1,21 @@
+{% extends "writings_base.html" %}
+
+
+{% block w_head %}
+  <link href="/css/writings_info.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block w_content %}
+
+  <form method="post">
+    <input type="text" name="title" value="{{title_value}}" placeholder="Title of the writing." />
+    <textarea name="description" placeholder="Description of the writing.">{{description_value}}</textarea>
+    <input type="submit" value="Save changes" />
+  </form>
+
+  <div class="error">{{error_message}}</div>
+  <div class="info">{{info_message}}</div>
+
+
+{% endblock %}

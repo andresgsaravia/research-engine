@@ -370,3 +370,75 @@ class DiscussionPage(GenericPage):
         self.render("writings_discussion.html", p_author = p_author, project = project,
                     writing = writing, comments = comments, comment = comment,
                     error_message = error_message)
+
+
+class InfoPage(GenericPage):
+    def get(self, username, projectname, writing_id):
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        if not writing:
+            self.error(404)
+            self.render("404.html")
+            return
+        self.render("writings_info.html", p_author = p_author, project = project, writing = writing,
+                    title_value = writing.title, description_value = writing.description)
+
+    def post(self, username, projectname, writing_id):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        if not writing:
+            self.error(404)
+            self.render("404.html")
+            return
+        have_error = False
+        error_message = ''
+        info_message = '' 
+        title = self.request.get("title")
+        description = self.request.get("description")
+        if not project.user_is_author(user):
+            have_error = True
+            error_message = "You are not an author of this project. "
+        if not title:
+            have_error = True
+            error_message = "Please provide a title for this writing before saving. "
+        if not description:
+            have_error = True
+            error_message += "Please provide a description for this writing before saving. "
+        if (not have_error) and (title != writing.title or description != writing.description):
+            writing.title = title
+            writing.description = description
+            self.log_and_put(writing)
+            info_message = 'Changes saved'
+        self.render("writings_info.html", p_author = p_author, project = project, writing = writing,
+                    title_value = title, description_value = description, 
+                    error_message = error_message, info_message = info_message)
