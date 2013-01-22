@@ -33,6 +33,10 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/writings/([0-9]+)/info', collab_writing.InfoPage),
                                ('/(.+)/(.+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
                                ('/(.+)/(.+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
+                               # Forum
+                               ('/(.+)/(.+)/forum', forum.MainPage),
+                               ('/(.+)/(.+)/forum/new_thread', forum.NewThreadPage),
+                               ('/(.+)/(.+)/forum/([0-9]+)', forum.ThreadPage),
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
                                # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
@@ -61,7 +65,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /(username)/new_project
 # ----     /(username)/(project_name)            News and overview
 # TODO     /(username)/(project_name)/wiki
-# TODO     /(username)/(project_name)/forum
+# ----     /(username)/(project_name)/forum
 # ----     /(username)/(project_name)/notebooks
 # ----     /(username)/(project_name)/notebooks/new
 # ----     /(username)/(project_name)/notebooks/(notebook_name)

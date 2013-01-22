@@ -1,3 +1,3 @@
-# __init.py
+# __init__.py
 
-__all__ = ["frontend", "users", "projects", "references", "notebooks", "collab_writing", "email_messages"]
+__all__ = ["collab_writing", "email_messages", "forum", "frontend", "notebooks", "projects",  "references", "users"]

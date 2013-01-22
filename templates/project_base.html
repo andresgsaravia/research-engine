@@ -14,26 +14,28 @@
 <div class="p-menu-wrapper">
   <ul class="p-menu">
     <ul>
-      <li><div class="overview-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}">Overview</a></div></li>
-      <li><div class="wiki-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/wiki">Wiki</a></div></li>
-      <li><div class="forum-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/forum">Forum</a></div></li>
+      <li><div class="overview-tab"><a href="/{{p_author.username}}/{{project.name}}">Overview</a></div></li>
     </ul>
     <ul>
-      <li><div class="notebooks-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/notebooks">Notebooks</a></div></li>
-      <li><div class="writings-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/writings">Writings</a></div></li>
-      <li><div class="references-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/references">References</a></div></li>
-      <li><div class="code-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/code">Code</a></div></li>
-      <li><div class="datasets-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/datasets">Datasets</a></div></li>
+      <li><div class="wiki-tab"><a href="/{{p_author.username}}/{{project.name}}/wiki">Wiki</a></div></li>
+      <li><div class="notebooks-tab"><a href="/{{p_author.username}}/{{project.name}}/notebooks">Notebooks</a></div></li>
+      <li><div class="writings-tab"><a href="/{{p_author.username}}/{{project.name}}/writings">Writings</a></div></li>
+      <li><div class="code-tab"><a href="/{{p_author.username}}/{{project.name}}/code">Code</a></div></li>
+      <li><div class="datasets-tab"><a href="/{{p_author.username}}/{{project.name}}/datasets">Datasets</a></div></li>
     </ul>
     <ul>
-      <li><div class="admin-tab"><a href="/{{p_author.username}}/{{project.name.lower()}}/admin">Admin</a></div></li>
+      <li><div class="forum-tab"><a href="/{{p_author.username}}/{{project.name}}/forum">Forum</a></div></li>
+      <li><div class="references-tab"><a href="/{{p_author.username}}/{{project.name}}/references">References</a></div></li>
+    </ul>
+    <ul>
+      <li><div class="admin-tab"><a href="/{{p_author.username}}/{{project.name}}/admin">Admin</a></div></li>
     </ul>
   </ul>
 </div>
 
 <div class="p-title-bar">
   <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / 
-  <a href="/{{p_author.username}}/{{project.name.lower()}}">{{project.name.replace("_", " ").capitalize()}}</a>
+  <a href="/{{p_author.username}}/{{project.name}}">{{project.name.replace("_", " ").capitalize()}}</a>
   {% block title_bar_extra %} {% endblock %}
 </div>
 

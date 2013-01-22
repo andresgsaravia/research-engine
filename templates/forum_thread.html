@@ -2,7 +2,7 @@
 
 
 {% block p_head %}
-  <link href="/css/project_form_2_fancy.css" rel="stylesheet" type="text/css" />
+  <link href="/css/forum_thread.css" rel="stylesheet" type="text/css" />
 
   <script type="text/javascript" src="/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
   <script type="text/javascript">
@@ -23,25 +23,43 @@
     });
   </script>
 
-  {{more_head | safe}}
 {% endblock %}
 
 
-{% block title_bar_extra %}{{title_bar_extra | safe}}{% endblock %}
+{% block title_bar_extra %}
+/  <a href="/{{p_author.username}}/{{project.name}}/forum">Forum</a>
+/  <a href="/{{p_author.username}}/{{project.name}}/forum/{{thread.key().id()}}">{{thread.title[0:30]}}...</a>
+{% endblock %}
 
 
 {% block p_content %}
+ 
+<div class="thread">
+  <div class="t-head">
+    <div class="t-title">{{thread.title}}</div>
+    <div class="t-date">{{thread.date.strftime("%d-%b-%Y")}}</div>
+    <div class="t-author">by <a href="/{{thread.author.username}}">{{thread.author.username.capitalize()}}</a></div>
+  </div>
+  <div class="t-content">{{thread.content | safe}}</div>
+</div>
 
-<h2>{{title}}</h2>
-<h3>{{subtitle}}</h3>
 
-<form method="post">
-  <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}">
-  <textarea name="content" placeholder="{{content_placeholder}}">{{content_value}}</textarea>
-  <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" >
-  <input type="button" value="Cancel" class="bottom-buttons" onClick="window.location = '{{cancel_url}}'"/>
-</form>
+{% for c in comments %}
+<div class="t-comment">
+  <div class="c-head">
+    <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
+    <div class="c-author"><a href="/{{c.author.username}}">{{c.author.username.capitalize()}}</a></div>
+  </div>
+  <div class="c-comment">{{c.comment | safe}}</div>
+</div>
+{% endfor %}
 
-<br/><div class="error">{{error_message}}</div>
+<div class="comment-form">
+  <form method="post">
+    <textarea name="comment">{{comment_value}}</textarea>
+    <input type="submit" value="Comment" />
+  </form>
+</div>
 
+<div class="error">{{error_message}}</div>
 {% endblock %}

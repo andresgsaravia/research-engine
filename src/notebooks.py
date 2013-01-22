@@ -44,15 +44,15 @@ class NotebookNotes(db.Model):
 ######################
 
 class NotebooksListPage(GenericPage):
-    def get(self, username, project_name):
-        p_user = RegisteredUsers.all().filter("username =", username).get()
-        if not p_user:
+    def get(self, username, projectname):
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
             self.error(404)
             self.render("404.html")
             return
         project = False
-        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
-            if p.user_is_author(p_user):
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
                 project = p
                 break
         if not project: 
@@ -62,7 +62,7 @@ class NotebooksListPage(GenericPage):
         notebooks = []
         for n in Notebooks.all().ancestor(project).order("-last_updated").run():
             notebooks.append(n)
-        self.render("project_notebooks.html", p_author = p_user, project = project, notebooks = notebooks, n_len = len(notebooks))
+        self.render("project_notebooks.html", p_author = p_author, project = project, notebooks = notebooks, n_len = len(notebooks))
 
 
 
