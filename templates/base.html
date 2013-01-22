@@ -15,16 +15,14 @@
     <div class="menu-wrapper">
     <ul class="menu">
 
-      <li><a href="/news">News</a></li>
+      <li><a href="/">Notifications</a></li>
 
-      <li><a href="/projects">Projects</a>
+      <li><a href="/{{username}}">Projects</a>
 	<ul>
-	  <li><a href="/projects">All your projects</a></li>
-	  <li><a href="/projects/recent_activity">Recent activity</a></li>
-	  <li><a href="/notebooks">Notebooks</a></li>
+	  <li><a href="/{{username}}/new_project">New Project</a></li>
 	</ul>
       </li>
-      <li><a href="/contacts">Contacts</a></li>
+      <li><a href="/following">Following</a></li>
       <li><a href="/classroom">Classroom</a></li>
 
       <li>{{login_message | safe}}</li>

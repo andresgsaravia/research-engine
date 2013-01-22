@@ -10,7 +10,7 @@
 
 {% block title_bar_extra %}
   / <a href="/{{p_author.username}}/{{project.name}}/writings">Collaborative writings</a>
-  / <a href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">{{writing.key().id()}}</a>
+  / <a href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">{{writing.title}}</a>
 {% endblock %}
 
 
