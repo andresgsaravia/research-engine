@@ -23,6 +23,14 @@ class Revisions(db.Model):
     content = db.TextProperty(required = True)
     summary = db.TextProperty(required = False)
 
+
+# Should have as parent a CollaborativeWriting
+class WritingComments(db.Model):
+    author = db.ReferenceProperty(required = True)
+    comment = db.TextProperty(required = True)
+    date = db.DateTimeProperty(auto_now_add = True)
+
+
 ######################
 ##   Web Handlers   ##
 ######################
@@ -290,3 +298,75 @@ class ViewRevisionPage(GenericPage):
             return
         self.render("writings_revision.html", p_author = p_author, project = project,
                     writing = writing, revision = revision)
+
+
+class DiscussionPage(GenericPage):
+    def get(self, username, projectname, writing_id):
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        if not writing:
+            self.error(404)
+            self.render("404.html")
+            return
+        comments = []
+        for c in WritingComments.all().ancestor(writing).order("-date").run():
+            comments.append(c)
+        self.render("writings_discussion.html", p_author = p_author, project = project,
+                    writing = writing, comments = comments)
+
+    def post(self, username, projectname, writing_id):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login.html")
+            return
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        if not writing:
+            self.error(404)
+            self.render("404.html")
+            return
+        have_error = False
+        error_message = ""
+        comment = self.request.get("comment")
+        if not project.user_is_author(user):
+            have_error = True
+            error_message = "You are not an author of this project. "
+        if not comment:
+            have_error = True
+            error_message = "You can't submit an empty comment. "
+        if not have_error:
+            new_comment = WritingComments(author = user.key(), comment = comment, parent = writing)
+            self.log_and_put(new_comment, "New comment. ")
+            comment = ''
+        comments = []
+        for c in WritingComments.all().ancestor(writing).order("-date").run():
+            comments.append(c)
+        self.render("writings_discussion.html", p_author = p_author, project = project,
+                    writing = writing, comments = comments, comment = comment,
+                    error_message = error_message)

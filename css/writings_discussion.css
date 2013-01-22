@@ -1,0 +1,66 @@
+/* Stylesheet for the writings_discussion.html template */
+
+.w-navbar .w-discussion-tab {
+    background-image: linear-gradient(#C6E0C7, #BCCFBD);
+    background-image: -webkit-linear-gradient(#C6E0C7, #BCCFBD);
+    background-repeat: repeat-x;
+}
+
+textarea {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1em;
+    padding: 0.5em;
+    height: 7em;
+}
+
+input[type=submit] {
+    margin-left: 5%;
+    margin-top: 0.5em;
+    font-size: 1.1em;
+}
+
+.comments-wrapper {
+    margin-top: 2em;
+}
+
+.comment {
+    margin-top: 1em;
+    min-height: 4em;
+    margin-left: 5%;
+    margin-right: 5%;
+    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+}
+
+.comment:nth-of-type(even) {
+    background: #F0F8F6;
+}
+
+.comment:nth-of-type(odd) {
+    background: #F0F8F0;
+}
+
+.c-meta {
+    position: relative;
+    float: right;
+    padding-top: 1em;
+    padding-right: 1em;
+    text-align: right;
+    width: 10em;
+}
+
+.c-date {
+    font-size: 0.9em;
+    color: #555555;
+}
+
+.c-content {
+    margin-right: 12em;
+    text-align: justify;
+    padding: 1em;
+}
+
+.error {
+    padding-left: 5%;
+    margin-top: 1em;
+}

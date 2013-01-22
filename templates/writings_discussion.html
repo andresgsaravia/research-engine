@@ -1,0 +1,30 @@
+{% extends "writings_base.html" %}
+
+{% block w_head %}
+  <link href="/css/writings_discussion.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block w_content %}
+
+<form method="post">
+  <textarea name="comment" placeholder="Write a new comment here.">{{comment}}</textarea>
+  <input type="submit" value="Comment" />
+</form>
+
+<div class="error">{{error_message}}</div>
+
+<div class="comments-wrapper">
+  {% for c in comments %}
+  <div class="comment">
+    <div class="c-meta">
+      <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
+      <div class="c-author">{{c.author.username.capitalize()}}</div>
+    </div>
+    <div class="c-content">{{c.comment}}</div>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}
