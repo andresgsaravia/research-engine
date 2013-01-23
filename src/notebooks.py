@@ -39,6 +39,13 @@ class NotebookNotes(db.Model):
     date = db.DateTimeProperty(auto_now_add = True)
 
 
+# Each comment should be a child of a NotebookNote
+class NoteComments(db.Model):
+    author = db.ReferenceProperty(required = True)
+    date = db.DateTimeProperty(auto_now_add = True)
+    comment = db.TextProperty(required = True)
+
+
 ######################
 ##   Web Handlers   ##
 ######################
@@ -293,7 +300,62 @@ class NotePage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        self.render("notebook_note.html", p_author = p_author, project = project, notebook = notebook, note = note)
+        comments = []
+        for c in NoteComments.all().ancestor(note).order("date").run():
+            comments.append(c)
+        self.render("notebook_note.html", p_author = p_author, project = project, 
+                    notebook = notebook, note = note, comments = comments)
+
+    def post(self, username, projectname, nbname, note_id):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project:
+            self.error(404)
+            self.render("404.html")
+            return
+        notebook = Notebooks.all().ancestor(project).filter("name =", nbname).get()
+        if not notebook:
+            self.error(404)
+            self.render("404.html")
+            return
+        note = NotebookNotes.get_by_id(int(note_id), parent = notebook)
+        if not note:
+            self.error(404)
+            self.render("404.html")
+            return
+        have_error = False
+        error_message = ''
+        comment = self.request.get("comment")
+        if not project.user_is_author(user):
+            have_error = True
+            error_message = "You are not an author in this project. "
+        if not comment:
+            have_error = True
+            error_message = "You can't submit an empty comment. "
+        if not have_error:
+            new_comment = NoteComments(author = user.key(), comment = comment, parent = note)
+            self.log_and_put(new_comment)
+            self.log_and_put(notebook, "Updating its last_updated property. ")
+            self.log_and_put(project, "Updating its last_updated property. ")
+            comment = ''
+        comments = []
+        for c in NoteComments.all().ancestor(note).order("date").run():
+            comments.append(c)
+        self.render("notebook_note.html", p_author = p_author, project = project, 
+                    notebook = notebook, note = note, comments = comments, 
+                    comment = comment, error_message = error_message)
 
 
 class EditNotebookPage(GenericPage):
