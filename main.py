@@ -17,7 +17,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks
-                               ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and project_name
+                               ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projectname
                                ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
                                ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's numeric id
                                ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
@@ -37,6 +37,12 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/forum', forum.MainPage),
                                ('/(.+)/(.+)/forum/new_thread', forum.NewThreadPage),
                                ('/(.+)/(.+)/forum/([0-9]+)', forum.ThreadPage),
+                               # Wiki
+                               ('/(.+)/(.+)/wiki/page/(.+)', wiki.ViewWikiPage),
+                               ('/(.+)/(.+)/wiki/edit/(.+)', wiki.EditWikiPage),
+                               ('/(.+)/(.+)/wiki/history/(.+)/rev/([0-9]+)', wiki.RevisionWikiPage),
+                               ('/(.+)/(.+)/wiki/history/(.+)', wiki.HistoryWikiPage),
+
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
                                # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
@@ -64,7 +70,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
 # TODO     /(username)/following                 
 # TODO     /(username)/new_project
 # ----     /(username)/(project_name)            News and overview
-# TODO     /(username)/(project_name)/wiki
+# ----     /(username)/(project_name)/wiki
 # ----     /(username)/(project_name)/forum
 # ----     /(username)/(project_name)/notebooks
 # ----     /(username)/(project_name)/notebooks/new

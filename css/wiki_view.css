@@ -1,0 +1,20 @@
+/* Stylesheet for the wiki_view.html template */
+
+.w-navbar .w-view-tab {
+    background: white;
+    border-bottom: none;
+}
+
+
+.w-title {
+    margin-left: 1em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.w-content {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+}

@@ -1,0 +1,25 @@
+{% extends "wiki_base.html" %}
+
+
+{% block w_head %}
+  <link href="/css/wiki_view.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block w_content %}
+
+<div class="wikitext">
+
+  <div class="w-title">{{wikiurl.replace("_", " ").capitalize()}}</div>
+
+  <div class="w-content">
+    {% if wikipage %}
+      {{wikipage.content}}
+    {% else %}
+      <em>This page doesn't exist yet. Click <a href="/{{p_author.username}}/{{project.name}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
+      {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

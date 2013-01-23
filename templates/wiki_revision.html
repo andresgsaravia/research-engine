@@ -1,0 +1,20 @@
+{% extends "wiki_base.html" %}
+
+
+{% block w_head %}
+  <link href="/css/wiki_revision.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block w_content %}
+
+<div class="wikitext">
+
+  <div class="w-title">{{wikiurl.replace("_", " ").capitalize()}}</div>
+  <div class="rev-meta">Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.username}}">{{revision.author.username.capitalize()}}</a></div>
+
+  <div class="w-content">{{revision.content}}</div>
+
+</div>
+
+{% endblock %}

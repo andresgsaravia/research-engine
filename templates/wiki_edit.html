@@ -1,0 +1,23 @@
+{% extends "wiki_base.html" %}
+
+
+{% block w_head %}
+  <link href="/css/wiki_edit.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block w_content %}
+
+  <div class="w-title">Editing {{wikiurl.replace("_"," ").capitalize()}}</div>
+
+  <form method="post">
+    <textarea name="content" placeholder="Write the content of this page here." autofocus>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
+    <input type="text" name="summary" placeholder="Summary of changes (optional)" maxlength="160" />
+    <input type="submit" class="bottom-buttons" value="Save" />
+    <input type="button" class="bottom-buttons" value="Cancel" 
+	   onClick="window.location = '/{{p_author.username}}/{{project.name}}/wiki/page/{{wikiurl}}'" />
+  </form>
+
+  <div class="error">{{error_message}}</div>
+
+{% endblock %}

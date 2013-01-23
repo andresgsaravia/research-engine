@@ -2,9 +2,7 @@
 # For creating, managing and updating projects.
 
 from generic import *
-from references import *
-from notebooks import *
-from collab_writing import *
+from notebooks import Notebooks
 
 SHORT_DESCRIPTION_LENGTH = 150
 PROJECT_NAME_REGEXP = r'^[a-zA-Z0-9\s-]+$'
