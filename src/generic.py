@@ -8,11 +8,14 @@ import os, re, string, hashlib, logging
 from google.appengine.ext import db
 
 import email_messages
+from filters.gfm_markdown import gfm_markdown
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 SALT_LENGTH = 16
+
+jinja_env.filters['gfm_markdown'] = gfm_markdown
 
 
 ##########################

@@ -13,7 +13,7 @@
   <div class="w-title">{{wikiurl.replace("_", " ").capitalize()}}</div>
   <div class="rev-meta">Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.username}}">{{revision.author.username.capitalize()}}</a></div>
 
-  <div class="w-content">{{revision.content}}</div>
+  <div class="w-content">{{revision.content | gfm_markdown | safe}}</div>
 
 </div>
 

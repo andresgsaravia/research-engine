@@ -1,6 +1,5 @@
 {% extends "wiki_base.html" %}
 
-
 {% block w_head %}
   <link href="/css/wiki_view.css" rel="stylesheet" type="text/css" />
 {% endblock %}
@@ -14,7 +13,7 @@
 
   <div class="w-content">
     {% if wikipage %}
-      {{wikipage.content}}
+      {{wikipage.content | gfm_markdown | safe}}
     {% else %}
       <em>This page doesn't exist yet. Click <a href="/{{p_author.username}}/{{project.name}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
       {% endif %}

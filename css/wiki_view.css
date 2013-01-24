@@ -7,9 +7,12 @@
 
 
 .w-title {
-    margin-left: 1em;
-    font-size: 1.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding-bottom: 0.3em;
+    font-size: 2em;
     font-weight: bold;
+    border-bottom: 1px solid #AAAAAA;
 }
 
 .w-content {
@@ -17,4 +20,5 @@
     margin-bottom: 1em;
     margin-left: 1em;
     margin-right: 1em;
+    padding-bottom: 1em;
 }
