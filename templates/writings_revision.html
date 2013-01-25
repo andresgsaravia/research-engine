@@ -3,13 +3,14 @@
 
 {% block w_head %}
   <link href="/css/writings_revision.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 {% endblock %}
 
     
 {% block w_content %}
 
  <div class="w-content">
-     {{revision.content | safe}}
+     {{revision.content | gfm_markdown | safe}}
 </div>
 
 

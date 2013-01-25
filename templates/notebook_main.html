@@ -2,6 +2,7 @@
 
 {% block p_head %}
   <link href="/css/notebook_main.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 {% endblock %}
 
 {% block title_bar_extra %}
@@ -23,7 +24,7 @@
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
     <div class="note-title"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/{{note.key().id()}}">{{note.title}}</a></div>
   </div>
-  <div class="note-content">{{note.content | safe}}</div>
+  <div class="note-content">{{note.content | gfm_markdown | safe}}</div>
 </div>
 {% endfor %}
 

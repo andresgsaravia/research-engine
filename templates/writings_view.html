@@ -3,6 +3,7 @@
 
 {% block w_head %}
   <link href="/css/writings_view.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 {% endblock %}
 
     
@@ -10,7 +11,7 @@
 
  <div class="w-content">
    {% if last_revision %}
-     {{last_revision.content | safe}}
+     {{last_revision.content | gfm_markdown | safe}}
    {% else %}
      <p>This writing hasn't been started yet. Click <a href="">here</a> or the <em>Edit</em> tab to make the first draft.</p>
    {% endif %}

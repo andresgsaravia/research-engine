@@ -218,7 +218,7 @@ class NewNotePage(GenericPage):
               "submit_button_text" : "Create note",
               "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
-        self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname, nbname):
         user = self.get_user()
@@ -265,7 +265,7 @@ class NewNotePage(GenericPage):
                   "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
-            self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook)
             self.log_and_put(new_note)
@@ -479,14 +479,19 @@ class EditNotePage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
+        nbs_url = "/%s/%s/notebooks" % (p_author.username, project.name)
+        nb_url = nbs_url + "/" + notebook.name
+        note_url = nb_url + "/" + note_id
         kw = {"title" : "Edit note",
               "name_placeholder" : "Title of the note",
               "content_placeholder" : "Content of the note",
               "submit_button_text" : "Save changes",
-              "cancel_url" : "/%s/%s/notebooks/%s/%s" % (p_author.username, project.name, notebook.name, note_id),
+              "cancel_url" : note_url,
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s<a/> / <a href="%s">%s<a/>' 
+              % (nbs_url, nb_url, notebook.name.replace("_", " ").capitalize(), note_url, note.title),
               "name_value" : note.title, "content_value" : note.content}
-        self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname, nbname, note_id):
         user = self.get_user()
@@ -538,7 +543,7 @@ class EditNotePage(GenericPage):
                   "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
-            self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
             if (note.title != n_title) or (note.content != n_content):
                 note.title = n_title
