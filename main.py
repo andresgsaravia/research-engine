@@ -11,7 +11,6 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/signup', users.SignupPage),                                          # Needs review
                                ('/settings', users.SettingsPage),                                      # Needs review
                                ('/user/search', users.SearchForUserPage),                              # Needs review
-                               ('/contacts', users.ContactsPage),                                      # Needs review
                                ('/recover_password', users.RecoverPasswordPage),                       # Needs review
                                ('/verify_email', users.VerifyEmailPage),                               # Needs review
 
@@ -68,7 +67,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
  
 # TODO     /(username)                           View profile and list projects
 # TODO     /(username)/following                 
-# TODO     /(username)/new_project
+# ----     /(username)/new_project
 # ----     /(username)/(project_name)            News and overview
 # ----     /(username)/(project_name)/wiki
 # ----     /(username)/(project_name)/forum

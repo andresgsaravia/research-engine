@@ -252,18 +252,6 @@ class SearchForUserPage(GenericPage):
             self.redirect("/%s" % u.username)
 
 
-class ContactsPage(GenericPage):
-    def get(self):
-        user = self.get_user()
-        if not user:
-            self.redirect("/login")
-            return
-        contacts = []
-        for contact_key in user.contacts:
-            contacts.append(self.get_item_from_key(contact_key))
-        self.render("contacts.html", contacts = contacts)
-
-
 class RecoverPasswordPage(GenericPage):
     def get(self):
         self.render("under_construction.html")

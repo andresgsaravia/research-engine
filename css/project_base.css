@@ -72,13 +72,8 @@
     font-size: 1.1em;
 }
 
-* + .p-content p,
-* + .p-content h1,
-* + .p-content h2,
-* + .p-content h3,
-* + .p-content h4,
-* + .p-content h5,
-* + .p-content ul {
-    margin-bottom: 0.5em;
+.help {
+    font-size: 0.9em;
+    margin-left: 1.1em;
+    margin-top: 1em;
 }
-
