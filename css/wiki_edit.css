@@ -38,3 +38,8 @@ input[type=text] {
     margin-left: 1%;
     margin-top: 0.5em;
 }
+
+.help {
+    font-size: 0.9em;
+    margin-left: 0.5em;
+}

@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Research Engine | Edit help</title>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="/css/general.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      html { background: #F5F5F5;}
+      h3 { border-top: 1px solid #CCCCCC; padding-top: 0.5em; padding-left: 0.3em;}
+      .content {
+          background: white;
+          margin-left: 2em;
+          margin-right: 2em;
+          margin-top: 1em;
+          margin-bottom: 1em;
+          padding: 1em;
+          box-shadow: 0em 0.1em 0.2em #C0C0C0;
+          text-align: justify;
+      }
+      .md-example {
+          margin-left: 1em;
+          margin-right: 1em;
+          padding-left: 0.5em;
+          padding-right: 0.5em;
+          background: #F0F0F0;
+          border: 1px solid #DDDDDD;
+          border-radius: 0.3em;
+          overflow: auto;
+      }
+      .md-result {
+          margin-left: 1em;
+          margin-right: 1em;
+          padding: 0.5em;
+          border: 1px solid #DDDDDD;
+          border-radius: 0.3em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="content">
+	<h2>Editing help</h2>
+	<p>In <a href="http://research-engine.appspot.com">Research Engine</a> some areas are formatted according to the <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> with a bit of <a href="http://github.github.com/github-flavored-markdown/">GitHub flavor</a> and the addition of <a href="http://www.mathjax.org/">Mathjax</a> for math rendering. Below you can find a quick guide to some of the most common edditing tasks. For a complete reference please follow the previous links.</p>
+
+	<ul>
+	  <li><a href="#paragraphs">Paragraphs and linebreaks</a></li>
+	  <li><a href="#headers">Headers</a></li>
+	  <li><a href="#text">Bold and Italics</a></li>
+	  <li><a href="#lists">Lists</a></li>
+	  <li><a href="#code">Code and quotes</a></li>
+	  <li><a href="#links">Links</a></li>
+	  <li><a href="#images">Images</a></li>
+	  <li><a href="#escaping">Escaping special characters</a></li>
+	  <li><a href="#math">Mathematics</a></li>
+	  <li><a href="#generalhtml">General HTML</a></li>
+	</ul>
+
+<h3 id="paragraphs">Paragraphs and linebreaks and headers</h3>
+
+<p>Paragraphs are just lines of text separated with whitespace. You can safely use linebreaks inside a paragraph and they will be rendered as expected. For example:</p>
+
+<div class="md-example"><pre>Disasters in the sun; and the moist star,
+Upon whose influence Neptune's empire stands,
+Was sick almost to doomsday with eclipse.</pre></div>
+
+<p>becomes</p>
+
+<div class="md-result"><p>Disasters in the sun; and the moist star,<br />
+Upon whose influence Neptune's empire stands,<br />
+Was sick almost to doomsday with eclipse.</p></div>
+
+
+<h3 id="headers">Headers</h3>
+
+<p>There are two styles of headers. For first-level and second level headers you can use a line of equal signs and dashes respectively.</p>
+
+<div class="md-example"><pre>This is a first-level header
+============================
+
+
+This is a second-level header
+-----------------------------</pre></div>
+
+<p>Another option is to start the line with a hash character indicating the level of the header</p>
+
+<div class="md-example"><pre># This is a first-level header
+## This is a second-level header
+### This is a third-level header
+...</pre></div>
+
+<p>and so on to level 6. You may optionally &#8220;close&#8221; the headers with any number of hash characters. This is purely cosmetic in case you think it looks better.</p>
+
+<div class="md-example"><pre># This is a first-level header #
+## This is a second-level header ##
+### This is a third-level header ###################</pre></div>
+
+
+<h3 id="text">Bold and Italics</h3>
+
+<p>Asterisk (*) and underscores (_) are used interchangeably as indicators of <em>italics</em> (or emphasis). If you use double asterisks (**) or underscores (__) you will get bold font. For example
+
+<div class="md-example"><pre>*Italic*
+**Bold**
+This is an *inline italic* with multiple words. Same with **bold words**.
+
+You can still use * safely if you surround it with whitespace</pre></div>
+
+<p>is rendered as</p>
+
+<div class="md-result"><em>Italic</em><br/>
+<strong>Bold</strong><br/>
+This is an <em>inline italic</em> with multiple words. Same with <strong>bold words</strong>.<br/><br/>
+You can still use * safely if you surround it with whitespace</div>
+
+
+<h3 id="lists">Lists</h3>
+
+<p>Unordered lists use asterisks (*) pluses (+) and hyphens (-) interchangeably as list markers. For example</p>
+
+<div class="md-example"><pre>* Red
+* Green
+* Blue</pre></div>
+
+<p> is equivalent to</p>
+
+<div class="md-example"><pre>+ Red
++ Green
++ Blue</pre></div>
+
+<p>and to</p>
+
+<div class="md-example"><pre>- Red
+- Green
+- Blue</pre></div>
+
+<p>All three get rendered as</p>
+
+<div class="md-result"><ul><li>Red</li><li>Green</li><li>Blue</li></ul></div>
+
+<p>Orered lists use numbers followed by periods. For example</p>
+
+<div class="md-example"><pre>1. Mexico
+2. Tegucigalpa
+3. Buenos Aires</pre></div>
+
+<p>becomes</p>
+
+<div class="md-result"><ol><li>Mexico</li><li>Tegucigalpa</li><li>Buenos Aires</li></ol></div>
+
+<p>Notice that the actual numbers used to generate the list have no impact in the generated output. So you would get the same output if you write instead</p>
+
+<div class="md-example"><pre>18. Mexico
+1. Tegucigalpa
+25. Buenos Aires</pre></div>
+
+<p>This could generate some unintentional lists. To avoid this problem you will need to escape the period after the number. For example to generate the paragraph</p>
+
+<div class="md-result"><p>1986. What a great season.</p></div>
+
+<p>you need to write</p>
+
+<div class="md-example"><pre>1986\. What a great season.</pre></div>
+
+<h3 id="code">Code and quotes</h3>
+
+<p>To indicate a span of code wrap it with backtick quotes (`). This produces inline code, for example</p>
+
+<div class="md-example"><pre>To define a function in Common Lisp use the `(defun ...)` construct.</pre></div>
+
+<p>produces</p>
+
+<div class="md-result"><p>To define a function in Common Lisp use the <code>(defun ...)</code> construct.</p></div>
+
+<p>To produce a block of code you need to indent each line by 4 spaces or 1 tab</p>
+
+<div class="md-example"><pre>    def hello(name = None):
+        if name:
+            print "Hello " + name
+        else:
+            print "Hello stranger"
+        return</pre></div>
+
+<p>is rendered as</p>
+
+<div class="md-result"><pre><code>def hello(name = None):
+    if name:
+        print "Hello " + name
+    else:
+        print "Hello stranger"
+    return</code></pre></div>
+
+<p>Quotation is handled in email-style with the &gt; sign. If you want to make a line appear as a quote you just prefix it with &gt;. If the quote contains several lines you need to quote them all. Remember that quotes can be nested. Here is an example:
+
+<div class="md-example"><pre>&gt; This line will be quoted.
+&gt; You need to quote each line individually
+&gt;
+&gt; &gt; This is a nested quote
+&gt;
+&gt; Here is a long line quoted. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem.</pre></div>
+
+<p>which is rendered as</p>
+
+<div class="md-result"><blockquote>
+<p>This line will be quoted.
+You need to quote each line individually</p>
+<blockquote>
+<p>This is a nested quote</p>
+</blockquote>
+<p>Here is a long line quoted. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem.</p>
+</blockquote></div>
+
+<h3 id="links">Links</h3>
+
+<p>There are two styles of links: <em>inline</em> and <em>reference</em>. In both styles the link text is delimited by [square brackets] The text in the square brackets is the text that will be shown. For inline links you follow them by a set of regular parentheses indicating the URL where you want the link to pint, for example</p>
+
+<div class="md-example"><pre>My favorite search engine is [DuckDuckGo](https://duckduckgo.com/ "Optional title here").</pre></div>
+
+<p>is transformed to</p>
+
+<div class="md-result"><p>My favorite search engine is <a href="https://duckduckgo.com/" title="An optional title here">DuckDuckGo</a>.</p></div>
+
+<p>In <em>reference</em> links the first set of square brackets is followed by a second indicating a label to identify the link:
+
+<div class="md-example"><pre>But [Google][id] is my second favorite.</pre></div>
+
+<p>Then anywhere in the document you define the link label</p>
+
+<div class="md-example"><pre>[id]: https://www.google.com/ "Optional title here"</pre></div>
+
+<p>This produces the expected output:</p>
+
+<div class="md-result"><p>But <a href="https://www.google.com/" title="Optional title here">Google</a> is my second favorite.</p></div>
+
+<p>You can leave out the label in a reference link and the link text will be used as a label. For example 
+
+<div class="md-example"><pre>I highly recommend you reading [Cory Doctorow][]. He's a terrific writter.
+
+[Cory Doctorow]: http://craphound.com/ "Doctorow's blog"</pre></div>
+
+<p>Notice that you can have spaces in the text link.</p> Finally, you can also have an URL transformed automatically into a link if you surround it with angle brackets:</p>
+
+<div class="md-example"><pre>This will be linked automatically: &lt;http://example.com&gt;</pre></div>
+
+<p>becomes</p>
+
+<div class="md-result">This will be linked automatically: <a href="http://example.com">http://example.com</a></div>
+
+<h3 id="images">Images</h3>
+
+<p>The syntax for images resembles the link syntax. You just need to prefix the first set of square brackets with an exclamation mark. It can be done in both <em>inline</em> and <em>reference</em> styles.
+
+<div class="md-example"><pre>![Alt text](http://domain.com/my_image.png "Optional title")
+
+
+![Another image][myid]
+
+[myid]: http://domain.com/image2.png "Also an optional title here"</pre></div>
+
+<h3 id="escaping">Escaping special characters</h3>
+
+<p>Markdown allows you to use backslash escapes to generate literal characters which would otherwise have special meaning in Markdown&#8217;s formatting syntax. To do this you just need to escape it with a backslash:</p>
+
+<div class="md-example"><pre>\*literal asterisks\*</pre></div>
+
+<p>Markdown provides backslash escapes for the following characters:</p>
+
+<pre><code>\   backslash
+`   backtick
+*   asterisk
+_   underscore
+{}  curly braces
+[]  square brackets
+()  parentheses
+#   hash mark
++   plus sign
+-   minus sign (hyphen)
+.   dot
+!   exclamation mark
+</code></pre>
+
+<h3 id="math">Mathematics</h3>
+
+<p>We use <a href="http://www.mathjax.org">Mathjax</a> as the display engine for mathematics using <a href="http://en.wikipedia.org/wiki/LaTeX"> \(\LaTeX\)</a> syntax. The delimiters are <code>\\( ... \\)</code> for inline math and <code>\\[ ... \\]</code> for displayed equations (we need an extra backslash because we&#8217;re using mathjax on top of Markdown). This is an example: </p>
+
+<div class="md-example"><pre>This equation: \\(e^i{\pi + 1} = 0\\) is one of my favorites, but this one 
+\\[ - \frac{\hbar^2}{2 m}\frac{\partial^2 \psi(x)}{\partial x^2} = E \psi(x) \\]
+looks far more impressive.</pre></div> 
+
+<p>which is displayed as:</p>
+
+<div class="md-result"><p>This equation: \(e^i{\pi + 1} = 0\) is one of my favorites, but this one<br />
+\[ - \frac{\hbar^2}{2 m}\frac{\partial^2 \psi(x)}{\partial x^2} = E \psi(x) \]
+looks far more impressive.  </p></div>
+
+<p>You can right=click at the rendered equation and copy the \(\LaTeX\) code to your clipboard.</p>
+
+<h3 id="generalhtml">General HTML</h3>
+
+      </div>
+    </div>
+  </body>
+
+</html>

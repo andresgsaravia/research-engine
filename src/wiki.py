@@ -20,7 +20,7 @@ class WikiRevisions(db.Model):
     author = db.ReferenceProperty(required = True)
     date = db.DateTimeProperty(auto_now_add = True)
     content = db.TextProperty(required = True)
-    summary = db.StringProperty(required = True)
+    summary = db.StringProperty(required = False)
 
 
 ######################

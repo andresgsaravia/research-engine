@@ -98,6 +98,7 @@ class NewNotebookPage(GenericPage):
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
               "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.name),
+              "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.name),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -147,6 +148,7 @@ class NewNotebookPage(GenericPage):
                   "content_placeholder" : "Description of the new notebook",
                   "submit_button_text" : "Create notebook",
                   "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.name),
+                  "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.name),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value" : n_name,
                   "content_value" : n_description,
@@ -217,6 +219,7 @@ class NewNotePage(GenericPage):
               "content_placeholder" : "Content of the note",
               "submit_button_text" : "Create note",
               "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+              "markdown_p" : True,
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -263,6 +266,7 @@ class NewNotePage(GenericPage):
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
                   "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+                  "markdown_p" : True,
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)

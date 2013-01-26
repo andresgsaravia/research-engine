@@ -74,8 +74,9 @@ class NewThreadPage(GenericPage):
               "submit_button_text" : "Create thread",
               "cancel_url" : "/%s/%s/forum" % (p_author.username, project.name),
               "more_head" : "<style>.forum-tab {background: white;}</style>",
+              "markdown_p" : True,
               "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectname)}
-        self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname):
         user = self.get_user()
@@ -114,11 +115,12 @@ class NewThreadPage(GenericPage):
                   "name_placeholder" : "Brief description of the thread. ",
                   "content_placeholder" : "Content of the thread",
                   "submit_button_text" : "Create thread",
+                  "markdown_p" : True,
                   "cancel_url" : "/%s/%s/forum" % (p_author.username, project.name),
                   "more_head" : "<style>.forum-tab {background: white;}</style>",
                   "name_value": t_title, "content_value": t_content, "error_message" : error_message,
                   "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectname)}
-            self.render("project_form_2_fancy.html", p_author = p_author, project = project, **kw)
+            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key(), title = t_title, content = t_content, parent = project)
             self.log_and_put(new_thread)

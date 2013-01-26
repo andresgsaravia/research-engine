@@ -188,8 +188,7 @@ class ProjectPage(GenericPage):
 
 class EditProjectPage(GenericPage):
     # Template variables (form_text_textarea.html)
-    kw = {"fancy_textarea_p" : False,
-          "page_title" : "Edit Project",
+    kw = {"page_title" : "Edit Project",
           "title" : "Edit Project",
           "subtitle" : '',
           "text_name" : "p_name",

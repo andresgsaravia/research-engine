@@ -95,7 +95,7 @@
 }
 
 textarea {
-    width: 100%;
+    width: 98%;
     height: 20em;
     padding: 0.5em;
 }
@@ -104,4 +104,13 @@ input[type=submit] {
     font-size: 1.1em;
     margin-top: 0.8em;
     margin-bottom: 1.5em;
+}
+
+.error {
+    padding-left: 1em;
+}
+
+.help {
+    font-size: 0.9em;
+    margin-left: 0.5em;
 }

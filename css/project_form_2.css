@@ -25,7 +25,7 @@ textarea {
     font-family: Helvetica, Arial, sans-serif;
     width: 100%;
     padding: 0.5em;
-    height: 15em;
+    height: 30em;
 }
 
 .bottom-buttons {
@@ -36,4 +36,9 @@ textarea {
 
 .error {
     margin-left: 2em;
+}
+
+.help {
+    font-size: 0.9em;
+    margin-left: 5%;
 }
