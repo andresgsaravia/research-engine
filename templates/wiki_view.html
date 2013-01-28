@@ -14,7 +14,7 @@
 
   <div class="w-content">
     {% if wikipage %}
-      {{wikipage.content | gfm_markdown | safe}}
+      {{wikitext | gfm_markdown | safe}}
     {% else %}
       <em>This page doesn't exist yet. Click <a href="/{{p_author.username}}/{{project.name}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
       {% endif %}

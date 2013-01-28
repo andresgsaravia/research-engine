@@ -4,6 +4,28 @@
 from generic import *
 import projects
 
+# This regexp finds MediaWiki-like inner links in the following way.
+# A simple [[link and text]]                 -->   (''       , 'link and text')
+# Another [[link | display text]]   -->   ('link |' , 'display text') 
+WIKILINKS_RE = r'\[\[([^\|\]]+\|)?([^\]]+)\]\]'
+
+# Given a link prefix and assuming the regex r'\[\[([^\|\]]+\|)?([^\]]+)\]\]'
+# was used, this function returns the link and display text to be used un an
+# html <a ...> tag.
+def link_and_text(mobject, link_prefix):
+    text = mobject.groups()[1].strip()
+    if mobject.groups()[0]:
+        link_posfix = mobject.groups()[0][:-1].strip().replace(" ","_").lower()
+    else:
+        link_posfix = text.replace(" ", "_").lower()
+    return (link_prefix + link_posfix, text)
+
+# Returns a function suitable to use inside a re.sub(...) call to generate
+# a valid htlm <a ...> tag inside a wiki.
+def make_sub_repl(username, projectname):
+    link_prefix = "/%s/%s/wiki/page/" % (username, projectname)
+    return lambda x: '<a href="%s">%s</a>' % (link_and_text(x, link_prefix))
+
 
 ###########################
 ##   Datastore Objects   ##
@@ -44,8 +66,12 @@ class ViewWikiPage(GenericPage):
             self.render("404.html")
             return
         wikipage = WikiPages.all().ancestor(project).filter("url =", wikiurl.lower()).get()
+        if wikipage: 
+            wikitext = re.sub(WIKILINKS_RE, make_sub_repl(username, projectname), wikipage.content) 
+        else:
+            wikitext = '' 
         self.render("wiki_view.html", p_author = p_author, project = project, 
-                    wikiurl = wikiurl, wikipage = wikipage)
+                    wikiurl = wikiurl, wikipage = wikipage, wikitext = wikitext)
 
 
 class EditWikiPage(GenericPage):
