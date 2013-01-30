@@ -1,0 +1,34 @@
+{% extends "project_base.html" %}
+
+
+{% block p_head %}
+  <link href="/css/dataset_revision_base.css" rel="stylesheet" type="text/css" />
+  {% block dv_head %}
+  {% endblock %}
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{p_author.username}}/{{project.name}}/datasets">Datasets</a>
+/  <a href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}">{{dataset.name}}</a>
+/  <a href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}">{{datac.name[0:80]}}</a> 
+{% endblock %}
+
+
+{% block p_content %}
+  <div class="dr-head">
+    <div class="dr-date">Last Updated: {{datac.last_updated.strftime("%d-%b-%Y")}}</div>
+    <div class="dr-name">{{datac.name}}</div>
+  </div>
+  
+  <div class="dr-navbar">
+    <a class="dr-revisions-tab" href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}">Revisions</a>
+    <a class="dr-new-tab" href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/new">Upload new revision</a>
+    <a class="dr-info-tab" href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/info">Info</a>
+  </div>
+    
+  {% block dv_content %}
+  {% endblock %}
+
+
+{% endblock %}

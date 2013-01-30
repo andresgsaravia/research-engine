@@ -19,12 +19,6 @@ class Notebooks(db.Model):
     started = db.DateTimeProperty(auto_now_add = True)
     last_updated = db.DateTimeProperty(auto_now = True)
 
-    def short_render(self, project_key):
-        last_note_date = self.last_updated.strftime("%d-%b-%Y")
-        owner_name = self.owner.username
-        return render_str("notebook_short.html", notebook = self, project_key = project_key,
-                          last_note_date = last_note_date, owner_name = owner_name)
-
     def short_description(self):
         if len(self.description) < SHORT_DESCRIPTION_LENGTH:
             return self.description

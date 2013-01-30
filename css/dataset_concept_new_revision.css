@@ -1,0 +1,28 @@
+/* Stylesheet for the dataset_concept_new_revision.html template */
+
+.dr-navbar .dr-new-tab {
+    background: #D0B1B1;
+}
+
+.dr-navbar .dr-new-tab:hover {
+    background: #D0B1B1;
+}
+
+.dv-content {
+    margin-top: 2em;
+    margin-left: 2em;
+}
+
+textarea {
+    width: 80%;
+    height: 20em;
+    padding: 0.5em;
+}
+
+.an-input {
+    margin-top: 0.5em;
+}
+
+.help {
+    font-size: 0.9em;
+    margin-left: 2em;

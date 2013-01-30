@@ -41,6 +41,15 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/wiki/edit/(.+)', wiki.EditWikiPage),
                                ('/(.+)/(.+)/wiki/history/(.+)/rev/([0-9]+)', wiki.RevisionWikiPage),
                                ('/(.+)/(.+)/wiki/history/(.+)', wiki.HistoryWikiPage),
+                               # Datasets
+                               ('/(.+)/(.+)/datasets', datasets.MainPage),
+                               ('/(.+)/(.+)/datasets/new', datasets.NewDataSetPage),
+                               ('/(.+)/(.+)/datasets/([0-9]+)', datasets.DataSetPage),
+                               ('/(.+)/(.+)/datasets/([0-9]+)/new_data', datasets.NewDataConceptPage),
+                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)', datasets.DataConceptPage),
+                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/new', datasets.NewDataRevisionPage),
+                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/upload', datasets.UploadDataRevisionHandler),
+                               ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
 
                                ('/(.+)/(.+)', projects.OverviewPage),                   
                                # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
@@ -54,42 +63,3 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)', users.UserPage)],                                             # Needs review
                               debug = True)
 
-
-# I want this structure:
- 
-# TODO     /                                     Main site page
-# TODO     /login
-# TODO     /logout
-# TODO     /signup
-# TODO     /recover_password
-# TODO     /verify_email
-# TODO     /settings                             Edit user's settings
- 
-# TODO     /(username)                           View profile and list projects
-# TODO     /(username)/following                 
-# ----     /(username)/new_project
-# ----     /(username)/(project_name)            News and overview
-# ----     /(username)/(project_name)/wiki
-# ----     /(username)/(project_name)/forum
-# ----     /(username)/(project_name)/notebooks
-# ----     /(username)/(project_name)/notebooks/new
-# ----     /(username)/(project_name)/notebooks/(notebook_name)
-# ----     /(username)/(project_name)/notebooks/(notebook_name)/new_note
-# ----     /(username)/(project_name)/notebooks/(notebook_name)/edit
-# ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)
-# ----     /(username)/(project_name)/notebooks/(notebook_name)/(note_id)/edit
-# ----     /(username)/(project_name)/writings
-# ----     /(username)/(project_name)/writings/new
-# ----     /(username)/(project_name)/writings/(writing_id)
-# ----     /(username)/(project_name)/writings/(writing_id)/edit
-# ----     /(username)/(project_name)/writings/(writing_id)/history
-# ----     /(username)/(project_name)/writings/(writing_id)/rev/(revision_id)
-# ----     /(username)/(project_name)/writings/(writing_id)/discussion
-# ----     /(username)/(project_name)/writings/(writing_id)/info
-# TODO     /(username)/(project_name)/references
-# TODO     /(username)/(project_name)/references/new
-# TODO     /(username)/(project_name)/references/(reference_id)
-# TODO     /(username)/(project_name)/code
-# TODO     /(username)/(project_name)/datasets
-# TODO     /(username)/(project_name)/admin   # Perhaps from here I should add a collaborator.
-# TODO     /(username)/classroom       I still need to figure out this part

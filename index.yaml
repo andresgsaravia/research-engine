@@ -10,6 +10,46 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: CollaborativeWritings
+  ancestor: yes
+  properties:
+  - name: last_updated
+    direction: desc
+
+- kind: DataConcepts
+  ancestor: yes
+  properties:
+  - name: date
+
+- kind: DataFiles
+  ancestor: yes
+  properties:
+  - name: date
+
+- kind: DataRevisions
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
+- kind: DataSets
+  ancestor: yes
+  properties:
+  - name: last_updated
+    direction: desc
+
+- kind: ForumThreads
+  ancestor: yes
+  properties:
+  - name: last_updated
+    direction: desc
+
+- kind: NotebookNotes
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
 - kind: Notebooks
   ancestor: yes
   properties:

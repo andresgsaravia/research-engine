@@ -1,0 +1,57 @@
+/* Stylesheet for the datasets_main.html template */
+
+
+.datasets-tab{
+    background: white;
+}
+
+h2 {
+    padding-left: 1.5em;
+    padding-top: 0.3em;
+}
+
+.d-wrapper {
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-top: 1em;
+    padding-bottom: 0.5em;
+    box-shadow: 0em 0.1em 0.3em #C0C0C0;
+}
+
+.d-name a {
+    display: block;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    background-color: #E2CFCF;
+    background-image: linear-gradient(#FCF8F8, #D0B1B1);
+    background-image: -webkit-linear-gradient(#FCF8F8, #D0B1B1);
+    background-repeat: repeat-x;
+}
+
+.d-name a:hover {
+    text-decoration: none;
+    background-color: #F1B9B9;
+    background-image: linear-gradient(#FCF8F8, #ECD7B9);
+    background-image: -webkit-linear-gradient(#FCF8F8, #ECD7B9);
+    background-repeat: repeat-x;
+}
+
+.d-last-updated {
+    position: relative;
+    float: right;
+    margin-top: 0.2em;
+    margin-right: 0.2em;
+    margin-left: 0.5em;
+    font-size: 0.8em;
+    color: #888888;
+    height: 3em;
+}
+
+.d-description {
+    text-align: justify;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 1em;
+}
