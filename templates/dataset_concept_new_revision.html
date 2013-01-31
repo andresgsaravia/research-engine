@@ -1,4 +1,4 @@
-{% extends "dataset_revision_base.html" %}
+{% extends "dataset_concept_base.html" %}
 
 
 {% block dv_head %}
@@ -12,7 +12,7 @@
   <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
     <textarea name="meta" placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used.">{{meta}}</textarea><br/>
     <div class="an-input">Data file: <input type="file" name="file" /></div>
-    <div class="an-input"><input type="submit" value="Upload new data" /></div>
+    <div class="an-input"><input type="submit" value="Upload data" /></div>
   </form>
 </div>
  

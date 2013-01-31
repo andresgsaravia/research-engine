@@ -1,6 +1,6 @@
-/* Stylesheet for the dataset_concept_new_revision.html template */
+/* Stylesheet for the dataset_revision_edit.html template */
 
-.dr-navbar .dr-new-tab {
+.dr-navbar .dr-revisions-tab {
     background: #D0B1B1;
 }
 
@@ -26,7 +26,13 @@ textarea {
 .help {
     font-size: 0.9em;
     margin-left: 2em;
+}
 
 input[type=file] {
     width: 60em;
+}
+
+.warning {
+    font-size: 0.9em;
+    margin-top: 0.5em;
 }

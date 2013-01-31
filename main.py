@@ -49,6 +49,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)', datasets.DataConceptPage),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/new', datasets.NewDataRevisionPage),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/upload', datasets.UploadDataRevisionHandler),
+                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/edit/([0-9]+)', datasets.EditRevisionPage),
+                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/update/([0-9]+)', datasets.UpdateDataRevisionHandler),
                                ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
 
                                ('/(.+)/(.+)', projects.OverviewPage),                   

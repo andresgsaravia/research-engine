@@ -1,4 +1,4 @@
-{% extends "dataset_revision_base.html" %}
+{% extends "dataset_concept_base.html" %}
 
 
 {% block dv_head %}
@@ -22,12 +22,13 @@
 	 <div class="datafile"><a href="/file/{{rev.datafile.key()}}">Download</a></div>
 	 <div class="info-link"><a href="#" onClick="showInfo('rid{{rev.key().id()}}', 'mw');">Show info</a></div>
 	 <div class="meta" id="rid{{rev.key().id()}}">
+	   <div class="button1"><a href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/edit/{{rev.key().id()}}">Edit</a></div>
 	   {% if rev.meta %}{{rev.meta | gfm_markdown | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
 	 </div>
        </div>
      {% endfor %}
      </div>
-     <div class="meta-window" id="mw">{{revisions[0].meta | gfm_markdown | safe}}</div>
+     <div class="meta-window" id="mw"></div>
    {% else %}
      <p>There isn't any data uploaded yet. Click <a href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/new">here</a> or the <strong>Upload new revision</strong> tab above to upload the first revision.
    {% endif %}

@@ -1,0 +1,30 @@
+{% extends "dataset_concept_base.html" %}
+
+
+{% block dv_head %}
+<link href="/css/dataset_revision_edit.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+    
+{% block dv_content %}
+
+<div class="dv-content">
+  <h3>Edit revision</h3>
+  <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
+    <textarea name="meta" placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used.">{{rev.meta}}</textarea><br/>
+    <div class="an-input">Data File: <a href="/file/{{rev.datafile.key()}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
+    <div class="an-input">New file (optional): <input type="file" name="file" /></div>
+    <div class="warning">WARNING: If you upload a new file, the previous file will be lost.</div>
+    <div class="an-input">
+      <input type="submit" value="Update revision" />
+      <input type="button" value="Cancel" onClick="window.location = '{{cancel_url}}'" />
+    </div>
+  </form>
+</div>
+ 
+<div class="error">{{error_message}}</div>
+
+<div class="help">
+  <p>The text will be processed as markdown syntax, click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+</div>
+{% endblock %}
