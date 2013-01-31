@@ -83,3 +83,7 @@
     overflow: auto;
 }
 
+.button1 a {
+    margin-top: 0.1em;
+    margin-right: 0.1em;
+}

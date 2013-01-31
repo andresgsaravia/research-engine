@@ -1,0 +1,42 @@
+/* Stylesheet for the dataset_concept_view.html template */
+
+.dr-navbar .dr-info-tab {
+    background: #D0B1B1;
+}
+
+.dr-navbar .dr-info-tab:hover {
+    background: #D0B1B1;
+}
+
+h3 {
+    margin-left: 10%;
+}
+
+input[type=text] {
+    width: 80%;
+    margin-left: 10%;
+    font-size: 1.1em;
+    padding-left: 0.3em;
+}
+
+textarea {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 0.5em;
+    min-height: 30em;
+    padding: 0.5em;
+}
+
+.bottom-buttons {
+    margin-left: 10%;
+    margin-top: 0.5em;
+}
+
+.bottom-buttons > * {
+    font-size: 1.2em;
+}
+
+.error {
+    margin-top: 1em;
+    margin-left: 10%;
+}

@@ -87,7 +87,6 @@ class NewDataSetPage(GenericPage):
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-
     def post(self, username, project_name):
         user = self.get_user()
         if not user:
@@ -199,7 +198,6 @@ class NewDataConceptPage(GenericPage):
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-
     def post(self, username, projectname, dataset_id):
         user = self.get_user()
         if not user:
@@ -290,6 +288,85 @@ class DataConceptPage(GenericPage):
             revisions.append(rev)
         self.render("dataset_concept_view.html", p_author = p_author, project = project, 
                     dataset = dataset, datac = datac, revisions = revisions)
+
+
+class EditConceptPage(GenericPage):
+    def get(self, username, projectname, dataset_id, datac_id):
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = "User not found. ")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = "Project not found. ")
+            return
+        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        if not dataset:
+            self.error(404)
+            self.render("404.html", info = "Dataset not found. ")
+            return
+        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        if not datac:
+            self.error(404)
+            self.render("404.html", info = "Data concept not found. ")
+            return
+        self.render("dataset_concept_edit.html", p_author = p_author, project = project, 
+                    dataset = dataset, datac = datac, description = datac.description, name = datac.name)
+
+    def post(self, username, projectname, dataset_id, datac_id):
+        user = self.get_user()
+        if not user:
+            self.redirect("/login")
+            return
+        p_author = RegisteredUsers.all().filter("username =", username).get()
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = "User not found. ")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = "Project not found. ")
+            return
+        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        if not dataset:
+            self.error(404)
+            self.render("404.html", info = "Dataset not found. ")
+            return
+        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        if not datac:
+            self.error(404)
+            self.render("404.html", info = "Data concept not found. ")
+            return
+        d_name = self.request.get("title")
+        d_description = self.request.get("description")
+        have_error = False
+        error_message = ''
+        if not d_name:
+            have_error = True
+            error_message = "You must provide a name for your new data concept. "
+        if not d_description:
+            have_error = True
+            error_message += "Please provide a description of this data concept. "
+        if have_error:
+            self.render("dataset_concept_edit.html", p_author = p_author, project = project, 
+                        dataset = dataset, datac = datac, name = d_name, description = d_description,
+                        error_message = error_message)
+        else:
+            datac.name = d_name
+            datac.description = d_description
+            self.log_and_put(datac)
+            self.redirect("/%s/%s/datasets/%s/%s" % (username, projectname, dataset_id, datac_id) )
 
 
 class NewDataRevisionPage(GenericPage):

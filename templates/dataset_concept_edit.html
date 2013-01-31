@@ -1,0 +1,26 @@
+{% extends "dataset_concept_base.html" %}
+
+
+{% block dv_head %}
+  <link href="/css/dataset_concept_edit.css" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+    
+{% block dv_content %}
+  <h3>Edit data concept information</h3>
+
+  <form method="post">
+    <input type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus />
+    <textarea name="description" placeholder="Description of the dataset">{{description}}</textarea>
+    <div  class="bottom-buttons">
+      <input type="submit" value="Save changes" />
+      <input type="button" value="Cancel" 
+	     onClick="window.location = '/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}'" />
+    </div>
+  </form>
+
+
+  <div class="error">{{error_message}}</div>
+
+{% endblock %}
