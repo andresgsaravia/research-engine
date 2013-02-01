@@ -89,7 +89,7 @@ class NewProjectPage(GenericPage):
             self.redirect("/%s/new_project" % user.username)
         have_error = False
         error_message = ''
-        p_name = self.request.get('p_name')
+        p_name = self.request.get('p_name').replace("_", " ").strip()
         p_description = self.request.get('p_description')
         if not p_name:
             have_error = True
@@ -102,8 +102,8 @@ class NewProjectPage(GenericPage):
             error_message = 'Invalid project name. Please user only letters, numbers, spaces and dashes. '
         # Check for duplicate project names.
         duplicate_p = False
-        for p in user.my_projects:
-            if p.name == p_name.lower().replace(" ", "_"):
+        for p_key in user.my_projects:
+            if self.get_item_from_key(p_key).name == p_name.lower().replace(" ", "_"):
                 duplicate_p = True
                 break
         if duplicate_p:
