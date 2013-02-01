@@ -1,4 +1,4 @@
-/* For the user.html template */
+/* Stylesheet for the user_self.html template */
 
 .content {
     width: 80%;
@@ -7,13 +7,14 @@
     min-height: 30em;
     background: white;
     box-shadow: 0 0.1em 0.3em #C0C0C0;
-    padding: 1em;
-    overflow: auto;
+    padding-left: 3em;
+    padding-top: 1em;
+
 }
 
 .u-info {
     position: relative;
-    float: left;
+    float: right;
     width: 25%;
 }
 
@@ -22,19 +23,7 @@
     font-size: 2.5em;
 }
 
-.u-email {
-    text-align: center;
-}
-
-.u-email a {
-    font-style: italic;
-    font-weight: normal;
-    color: #666666;
-}
-
 .u-pwrapper {
-    position: relative;
-    float: right;
     width: 70%;
 }
 
@@ -42,11 +31,10 @@
     margin-left: 0.5em;
     margin-right: 2em;
     margin-top: 1em;
-    padding-bottom: 0.5em;
     box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.u-pname a {
+.name a {
     display: block;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
@@ -61,7 +49,7 @@
     font-family: Helvetica, Arial, sans-serif;
 }
 
-.u-pname a:hover {
+.name a:hover {
     text-decoration: none;
     background-color: #DDE8EB;
     background-image: linear-gradient(#F8FBFC, #C1D1D6);
@@ -69,17 +57,33 @@
     background-repeat: repeat-x;
 }
 
-.u-pdescription {
-    padding-left: 1em;
-    padding-right: 1em;
-    margin-top: 0.5em;
-    text-align: justify;
-    height: 7em;
+
+.info-link {
+    position: relative;
+    float: right;
+    padding-top: 1em;
+    margin-right: 1em;
+    font-size: 0.8em;
+}
+
+.description {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    -o-transition: all 0.8s;
+    -moz-transition: all 0.8s;
+    -webkit-transition: all 0.8s;
+}
+
+.info-link:focus + .name + .description {
+    opacity: 1;
+    height: auto;
     overflow: auto;
 }
 
 .u-pupdated {
-    margin-left: 1em;
     margin-top: 0.5em;
     font-size: 0.9em;
     color: #888888

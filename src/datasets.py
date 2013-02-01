@@ -162,7 +162,7 @@ class DataSetPage(GenericPage):
             self.render("404.html", info = "Dataset not found. ")
             return
         dataconcepts = []
-        for d in DataConcepts.all().ancestor(dataset).order("date").run():
+        for d in DataConcepts.all().ancestor(dataset).order("-date").run():
             dataconcepts.append(d)
         self.render("dataset_view.html", p_author = p_author, project = project, dataset = dataset, dataconcepts = dataconcepts)
 

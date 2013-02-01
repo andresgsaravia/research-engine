@@ -16,11 +16,6 @@ indexes:
   - name: last_updated
     direction: desc
 
-- kind: DataConcepts
-  ancestor: yes
-  properties:
-  - name: date
-
 - kind: DataFiles
   ancestor: yes
   properties:
