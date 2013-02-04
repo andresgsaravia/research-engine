@@ -32,7 +32,7 @@ class ForumComments(db.Model):
 
 class MainPage(GenericPage):
     def get(self, username, projectname):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -54,7 +54,7 @@ class MainPage(GenericPage):
 
 class NewThreadPage(GenericPage):
     def get(self, username, projectname):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -79,11 +79,11 @@ class NewThreadPage(GenericPage):
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -130,7 +130,7 @@ class NewThreadPage(GenericPage):
 
 class ThreadPage(GenericPage):
     def get(self, username, projectname, thread_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -155,11 +155,11 @@ class ThreadPage(GenericPage):
         self.render("forum_thread.html", p_author = p_author, project = project, thread = thread, comments = comments)
 
     def post(self, username, projectname, thread_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")

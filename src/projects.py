@@ -52,7 +52,7 @@ class Projects(db.Model):
 
 class OverviewPage(GenericPage):
     def get(self, username, project_name):
-        p_user = RegisteredUsers.all().filter("username =", username).get()
+        p_user = self.get_user_by_username(username)
         if not p_user:
             self.error(404)
             self.render("404.html")
@@ -71,7 +71,7 @@ class OverviewPage(GenericPage):
 
 class NewProjectPage(GenericPage):
     def get(self, username):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -81,7 +81,7 @@ class NewProjectPage(GenericPage):
         self.render("project_new.html", user = user)
 
     def post(self, username):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -132,7 +132,7 @@ class NewProjectPage(GenericPage):
 # Needs to handle the case in which project_key is invalid
 class ProjectPage(GenericPage):
     def get(self, project_key):
-        user = self.get_user()
+        user = self.get_login_user()
         project = self.get_item_from_key_str(project_key)
         kw = {"project_key" : project_key, 
               "project"     : project, 
@@ -163,7 +163,7 @@ class ProjectPage(GenericPage):
         self.render("project_overview.html", **kw)
 
     def post(self, project_key):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -198,7 +198,7 @@ class EditProjectPage(GenericPage):
           "submit_value" : "Save changes"}
 
     def get(self, project_key):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -218,7 +218,7 @@ class EditProjectPage(GenericPage):
             self.error(404)
 
     def post(self, project_key):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return

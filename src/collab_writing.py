@@ -37,7 +37,7 @@ class WritingComments(db.Model):
 
 class WritingsListPage(GenericPage):
     def get(self, username, projectname):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -59,11 +59,11 @@ class WritingsListPage(GenericPage):
 
 class NewWritingPage(GenericPage):
     def get(self, username, projectname):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -85,18 +85,18 @@ class NewWritingPage(GenericPage):
               "more_head" : "<style>.writings-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, project_name):
-        user = self.get_user()
+    def post(self, username, projectname):
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
         project = False
-        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
             if p.user_is_author(p_author):
                 project = p
                 break
@@ -140,7 +140,7 @@ class NewWritingPage(GenericPage):
 
 class ViewWritingPage(GenericPage):
     def get(self, username, projectname, writing_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -165,7 +165,7 @@ class ViewWritingPage(GenericPage):
 
 class EditWritingPage(GenericPage):
     def get(self, username, projectname, writing_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -192,11 +192,11 @@ class EditWritingPage(GenericPage):
         self.render("writings_edit.html", p_author = p_author, project = project, writing = writing, content = content, status = writing.status)
 
     def post(self, username, projectname, writing_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -244,7 +244,7 @@ class EditWritingPage(GenericPage):
 
 class HistoryWritingPage(GenericPage):
     def get(self, username, projectname, writing_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -272,7 +272,7 @@ class HistoryWritingPage(GenericPage):
 
 class ViewRevisionPage(GenericPage):
     def get(self, username, projectname, writing_id, rev_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -302,7 +302,7 @@ class ViewRevisionPage(GenericPage):
 
 class DiscussionPage(GenericPage):
     def get(self, username, projectname, writing_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -328,11 +328,11 @@ class DiscussionPage(GenericPage):
                     writing = writing, comments = comments)
 
     def post(self, username, projectname, writing_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -374,7 +374,7 @@ class DiscussionPage(GenericPage):
 
 class InfoPage(GenericPage):
     def get(self, username, projectname, writing_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -397,11 +397,11 @@ class InfoPage(GenericPage):
                     title_value = writing.title, description_value = writing.description)
 
     def post(self, username, projectname, writing_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")

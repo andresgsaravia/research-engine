@@ -5,7 +5,8 @@
 import webapp2 
 import jinja2
 import os, re, string, hashlib, logging
-from google.appengine.ext import db
+from google.appengine.ext import db, blobstore
+from google.appengine.ext.webapp import blobstore_handlers
 
 import email_messages
 from filters.gfm_markdown import gfm_markdown
@@ -149,7 +150,7 @@ class GenericPage(webapp2.RequestHandler):
         return False
 
     # Users
-    def get_user(self):
+    def get_login_user(self):
         cookie = self.request.cookies.get("username")
         if not cookie: return None
         cookie_username = cookie.split("|")[0]
@@ -159,10 +160,16 @@ class GenericPage(webapp2.RequestHandler):
         if not get_secure_val(cookie, u.salt): return None
         return u
 
-    def get_username(self):
-        u = self.get_user()
-        if not u: return None
-        return u.username
+    def get_user_by_username(self, username, logmessage = ''):
+        logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
+                      % (self.__class__.__name__, logmessage))
+        return RegisteredUsers.all().filter("username =", username).get()
+
+    def get_user_by_email(self, username, logmessage = ''):
+        logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
+                      % (self.__class__.__name__, logmessage))
+        return RegisteredUsers.all().filter("email =", username).get()
+        
 
     # Rendering
     def write(self, *a, **kw):
@@ -172,9 +179,33 @@ class GenericPage(webapp2.RequestHandler):
         return render_str(template, **params)
 
     def render(self, template, **kw):
-        kw['username'] = self.get_username()
-        if kw['username'] is None:
+        kw['user'] = self.get_login_user()
+        if kw['user'] is None:
             kw['login_message'] = ('<a href="/login">Login</a> <ul><li><a href="/signup">Signup</a></li></ul>')
         else:
-            kw['login_message'] = ('<a href="/%s">%s</a> <ul><li><a href="/logout">Logout</a></li></ul>' % (kw['username'], kw['username'].title()))            
+            kw['login_message'] = ('<a href="/%s">%s</a> <ul><li><a href="/logout">Logout</a></li></ul>' % (kw['user'].username, kw['user'].username.title()))            
         self.write(self.render_str(template, **kw))
+
+
+class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
+    # Querying the Datastore
+    def log_read(self, dbmodel, message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of %s. %s"
+                      % (self.__class__.__name__, dbmodel.__name__, message))
+        return
+
+    # Users
+    def get_login_user(self):
+        cookie = self.request.cookies.get("username")
+        if not cookie: return None
+        cookie_username = cookie.split("|")[0]
+        self.log_read(RegisteredUsers, "Getting logged in user. ")
+        u = RegisteredUsers.all().filter("username =", cookie_username).get()
+        if not u: return None
+        if not get_secure_val(cookie, u.salt): return None
+        return u
+
+    def get_user_by_username(self, username, logmessage = ''):
+        logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
+                      % (self.__class__.__name__, logmessage))
+        return RegisteredUsers.all().filter("username =", username).get()

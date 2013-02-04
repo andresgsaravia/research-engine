@@ -51,7 +51,7 @@ class WikiRevisions(db.Model):
 
 class ViewWikiPage(GenericPage):
     def get(self, username, projectname, wikiurl):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -76,7 +76,7 @@ class ViewWikiPage(GenericPage):
 
 class EditWikiPage(GenericPage):
     def get(self, username, projectname, wikiurl):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -95,11 +95,11 @@ class EditWikiPage(GenericPage):
                     wikiurl = wikiurl, wikipage = wikipage)
 
     def post(self, username, projectname, wikiurl):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -145,7 +145,7 @@ class EditWikiPage(GenericPage):
 
 class HistoryWikiPage(GenericPage):
     def get(self, username, projectname, wikiurl):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -170,7 +170,7 @@ class HistoryWikiPage(GenericPage):
 
 class RevisionWikiPage(GenericPage):
     def get(self, username, projectname, wikiurl, rev_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")

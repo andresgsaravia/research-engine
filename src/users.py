@@ -10,12 +10,12 @@ PASSWORD_RE = r'^.{3,20}$'
 
 class UserPage(GenericPage):
     def get(self, username):
-        page_user = RegisteredUsers.all().filter("username =", username.lower()).get()
+        page_user = self.get_user_by_username(username)
         if not page_user:
             self.error(404)
             self.render("404.html")
             return
-        user = self.get_user()
+        user = self.get_login_user()
         projects = page_user.list_of_projects()
         if user and user.key() == page_user.key():
             self.render("user_self.html", user = user, projects = projects)
@@ -31,12 +31,12 @@ class UserPage(GenericPage):
 ###########################################################
 
     def post(self, username):
-        page_user = RegisteredUsers.all().filter("username =", username.lower()).get()
+        page_user = self.get_user_by_username(username)
         if not page_user:
             self.error(404)
             self.render("404.html")
             return
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -48,31 +48,12 @@ class UserPage(GenericPage):
             return
         if action == "follow":
             pass
-                          
-
-    # def post(self, page_username):
-    #     logged_in_user = self.get_user()
-    #     if not logged_in_user:
-    #         self.redirect("/login")
-    #         return
-    #     self.log_read(RegisteredUsers, "Getting user instance of this page.")
-    #     page_user = RegisteredUsers.all().filter("username =", page_username).get()
-    #     if not page_user:
-    #         self.error(404)
-    #         return
-    #     if page_user.key() in logged_in_user.contacts:
-    #         logged_in_user.contacts.remove(page_user.key())
-    #         self.log_and_put(logged_in_user, "Removing a contact.")
-    #     else:
-    #         logged_in_user.contacts.append(page_user.key())
-    #         self.log_and_put(logged_in_user, "Adding a contact.")
-    #     self.redirect("/%s" % page_username)
 
 
 class SignupPage(GenericPage):
     def get(self):
-        username = self.get_username()
-        self.render("signup.html", username = username)
+        user = self.get_login_user()
+        self.render("signup.html", user = user)
 
     def post(self):
         usern = self.request.get('usern')
@@ -101,8 +82,7 @@ class SignupPage(GenericPage):
         if not have_error:
             usern = usern.lower()
             # Available username
-            self.log_read(RegisteredUsers, "Checking if username is available. ")
-            another_user = RegisteredUsers.all().filter("username =", usern).get() 
+            another_user = self.get_user_by_username(usern, "Checking if username is available")
             if not another_user:
                 self.log_read(UnverifiedUsers, "Checking if username is available. ")
                 another_user = UnverifiedUsers.all().filter("username =", usern).get()
@@ -111,8 +91,7 @@ class SignupPage(GenericPage):
                 kw['error_username'] = "*"
                 kw['error'] += 'That username is not available. '
             # Available email
-            self.log_read(RegisteredUsers, "Checking if email is available. ")
-            another_email = RegisteredUsers.all().filter("email =", email).get()
+            another_email = self.get_user_by_email(email, "Checking if email is available. ")
             if another_email:
                 have_error = True
                 kw['error_email'] = "*"
@@ -137,8 +116,8 @@ class SignupPage(GenericPage):
 
 class LoginPage(GenericPage):
     def get(self):
-        username = self.get_username()
-        self.render("login.html", username = username)
+        user = self.get_login_user()
+        self.render("login.html", user = user)
 
     def post(self):
         email_or_username = self.request.get('email_or_username')
@@ -153,11 +132,9 @@ class LoginPage(GenericPage):
             have_error = True
         if not have_error:
             if re.match(EMAIL_RE, email_or_username):
-                self.log_read(RegisteredUsers, "Checking user's login information. ")
-                u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE email = :1", email_or_username).get()
+                u = self.get_user_by_email(email_or_username, "Checking user's login information. ")
             else:
-                self.log_read(RegisteredUsers, "Checking user's login information. ")
-                u = db.GqlQuery("SELECT * FROM RegisteredUsers WHERE username = :1", email_or_username.lower()).get() 
+                u = self.get_user_by_username(email_or_username.lower(), "Checking user's login information. ")
             if (not u) or (u.password_hash != hash_str(password + u.salt)):
                 kw["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
                 have_error = True
@@ -179,7 +156,7 @@ class LogoutPage(GenericPage):
 
 class SettingsPage(GenericPage):
     def get(self):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -189,7 +166,7 @@ class SettingsPage(GenericPage):
 
 
     def post(self):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
@@ -201,15 +178,13 @@ class SettingsPage(GenericPage):
         have_error = False
         if kw["usern"]: kw["usern"] = kw["usern"].lower()
         if user.username != kw["usern"]:
-            self.log_read(RegisteredUsers, "Checking if new username is available. ")
-            u2 = RegisteredUsers.all().filter("username =", kw["usern"]).get()
+            u2 = self.get_user_by_username(kw["usern"], "Checking if new username is available. ")
             if u2 or (not re.match(USERNAME_RE, kw["usern"])):
                 kw["error_username"] = "*"
                 kw['error'] += "Sorry, that username is not available. "
                 have_error = True
         if user.email != kw["email"]:
-            self.log_read(RegisteredUsers, "Checking if new email is available. ")
-            u2 = RegisteredUsers.all().filter("email =", kw["email"]).get()
+            u2 = self.get_user_by_email(kw["email"], "Checking if new email is available. ")
             if u2:
                 kw["error_email"] = "*"
                 kw["error"] += "That email is already in use by someone. "
@@ -241,8 +216,7 @@ class SearchForUserPage(GenericPage):
         if not search_username:
             have_error = True
             error += 'You must provide an username to search for.'
-        logging.debug("DB READ: Handler SearchForUserPage is searching for an user using its username. ")
-        u = RegisteredUsers.all().filter("username =", search_username.lower()).get()
+        u = self.get_user_by_username(search_username.lower())
         if search_username and (not u):
             have_error = True
             error += "Sorry, we don't know any user with that username."

@@ -46,7 +46,7 @@ class NoteComments(db.Model):
 
 class NotebooksListPage(GenericPage):
     def get(self, username, projectname):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -68,18 +68,18 @@ class NotebooksListPage(GenericPage):
 
 
 class NewNotebookPage(GenericPage):
-    def get(self, username, project_name):
-        user = self.get_user()
+    def get(self, username, projectname):
+        user = self.get_login_user()
         if not user:
             self.redirec('/login')
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
         project = False
-        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
             if p.user_is_author(p_author):
                 project = p
                 break
@@ -96,18 +96,18 @@ class NewNotebookPage(GenericPage):
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, project_name):
-        user = self.get_user()
+    def post(self, username, projectname):
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
         project = False
-        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
             if p.user_is_author(p_author):
                 project = p
                 break
@@ -162,7 +162,7 @@ class NewNotebookPage(GenericPage):
 
 class NotebookMainPage(GenericPage):
     def get(self, username, projectname, nbname):
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -189,7 +189,7 @@ class NotebookMainPage(GenericPage):
 
 class NewNotePage(GenericPage):
     def get(self, username, projectname, nbname):
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -218,11 +218,11 @@ class NewNotePage(GenericPage):
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname, nbname):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -274,7 +274,7 @@ class NewNotePage(GenericPage):
 
 class NotePage(GenericPage):
     def get(self, username, projectname, nbname, note_id):
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -305,11 +305,11 @@ class NotePage(GenericPage):
                     notebook = notebook, note = note, comments = comments)
 
     def post(self, username, projectname, nbname, note_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -358,7 +358,7 @@ class NotePage(GenericPage):
 
 class EditNotebookPage(GenericPage):
     def get(self, username, projectname, nbname):
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -387,18 +387,18 @@ class EditNotebookPage(GenericPage):
               "content_value" : notebook.description}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, project_name, nbname):
-        user = self.get_user()
+    def post(self, username, projectname, nbname):
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
         project = False
-        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
             if p.user_is_author(p_author):
                 project = p
                 break
@@ -453,7 +453,7 @@ class EditNotebookPage(GenericPage):
 
 class EditNotePage(GenericPage):
     def get(self, username, projectname, nbname, note_id):
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
@@ -492,11 +492,11 @@ class EditNotePage(GenericPage):
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname, nbname, note_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username.lower()).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")

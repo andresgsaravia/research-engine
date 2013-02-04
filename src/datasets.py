@@ -42,7 +42,7 @@ class DataRevisions(db.Model):
 
 class MainPage(GenericPage):
     def get(self, username, projectname):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -64,7 +64,7 @@ class MainPage(GenericPage):
 
 class NewDataSetPage(GenericPage):
     def get(self, username, projectname):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -87,18 +87,18 @@ class NewDataSetPage(GenericPage):
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, project_name):
-        user = self.get_user()
+    def post(self, username, projectname):
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
         project = False
-        for p in projects.Projects.all().filter("name =", project_name.lower()).run():
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
             if p.user_is_author(p_author):
                 project = p
                 break
@@ -142,7 +142,7 @@ class NewDataSetPage(GenericPage):
 
 class DataSetPage(GenericPage):
     def get(self, username, projectname, dataset_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -169,7 +169,7 @@ class DataSetPage(GenericPage):
 
 class NewDataConceptPage(GenericPage):
     def get(self, username, projectname, dataset_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -199,11 +199,11 @@ class NewDataConceptPage(GenericPage):
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname, dataset_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -259,7 +259,7 @@ class NewDataConceptPage(GenericPage):
 
 class DataConceptPage(GenericPage):
     def get(self, username, projectname, dataset_id, datac_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -292,7 +292,7 @@ class DataConceptPage(GenericPage):
 
 class EditConceptPage(GenericPage):
     def get(self, username, projectname, dataset_id, datac_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -320,11 +320,11 @@ class EditConceptPage(GenericPage):
                     dataset = dataset, datac = datac, description = datac.description, name = datac.name)
 
     def post(self, username, projectname, dataset_id, datac_id):
-        user = self.get_user()
+        user = self.get_login_user()
         if not user:
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -371,7 +371,7 @@ class EditConceptPage(GenericPage):
 
 class NewDataRevisionPage(GenericPage):
     def get(self, username, projectname, dataset_id, datac_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -400,19 +400,53 @@ class NewDataRevisionPage(GenericPage):
                     dataset = dataset, datac = datac, upload_url = upload_url, error_message = self.request.get("error_message"))
 
 
-class UploadDataRevisionHandler(blobstore_handlers.BlobstoreUploadHandler):
+class EditRevisionPage(GenericPage):
+    def get(self, username, projectname, dataset_id, datac_id, rev_id):
+        p_author = self.get_user_by_username(username)
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = "User not found. ")
+            return
+        project = False
+        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
+                project = p
+                break
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = "Project not found. ")
+            return
+        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        if not dataset:
+            self.error(404)
+            self.render("404.html", info = "Dataset not found. ")
+            return
+        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        if not datac:
+            self.error(404)
+            self.render("404.html", info = "Data concept not found. ")
+            return
+        rev = DataRevisions.get_by_id(int(rev_id), parent = datac)
+        if not rev:
+            self.error(404)
+            self.render("404.html", info = "Revision not found")
+        blob_info = blobstore.BlobInfo.get(rev.datafile.key())
+        size = blob_info.size / 1024.0
+        cancel_url = '/%s/%s/datasets/%s/%s' % (username, projectname, dataset.key().id(), datac.key().id())
+        upload_url = blobstore.create_upload_url("/%s/%s/datasets/%s/%s/update/%s" % (p_author.username, projectname, dataset_id, datac_id, rev_id))
+        self.render("dataset_revision_edit.html", p_author = p_author, project = project,
+                    dataset = dataset, datac = datac, rev = rev, blob_info = blob_info, size = size,
+                    cancel_url = cancel_url, upload_url = upload_url,
+                    error_message = self.request.get("error_message"))
+
+
+class UploadDataRevisionHandler(GenericBlobstoreUpload):
     def post(self, username, projectname, dataset_id, datac_id):
-        user = None
-        cookie = self.request.cookies.get("username")
-        if cookie: 
-            cookie_username = cookie.split("|")[0]
-            u = RegisteredUsers.all().filter("username =", cookie_username).get()
-            if u: 
-                if get_secure_val(cookie, u.salt): user = u
+        user = self.get_login_user()
         if not user: 
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
@@ -465,58 +499,13 @@ class DownloadDataRevisionHandler(blobstore_handlers.BlobstoreDownloadHandler):
             self.send_blob(blob_info, save_as = True)
 
 
-class EditRevisionPage(GenericPage):
-    def get(self, username, projectname, dataset_id, datac_id, rev_id):
-        p_author = RegisteredUsers.all().filter("username =", username).get()
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
-        if not project: 
-            self.error(404)
-            self.render("404.html", info = "Project not found. ")
-            return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
-        if not dataset:
-            self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
-            return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
-        if not datac:
-            self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
-            return
-        rev = DataRevisions.get_by_id(int(rev_id), parent = datac)
-        if not rev:
-            self.error(404)
-            self.render("404.html", info = "Revision not found")
-        blob_info = blobstore.BlobInfo.get(rev.datafile.key())
-        size = blob_info.size / 1024.0
-        cancel_url = '/%s/%s/datasets/%s/%s' % (username, projectname, dataset.key().id(), datac.key().id())
-        upload_url = blobstore.create_upload_url("/%s/%s/datasets/%s/%s/update/%s" % (p_author.username, projectname, dataset_id, datac_id, rev_id))
-        self.render("dataset_revision_edit.html", p_author = p_author, project = project,
-                    dataset = dataset, datac = datac, rev = rev, blob_info = blob_info, size = size,
-                    cancel_url = cancel_url, upload_url = upload_url,
-                    error_message = self.request.get("error_message"))
-
-class UpdateDataRevisionHandler(blobstore_handlers.BlobstoreUploadHandler):
+class UpdateDataRevisionHandler(GenericBlobstoreUpload):
     def post(self, username, projectname, dataset_id, datac_id, rev_id):
-        user = None
-        cookie = self.request.cookies.get("username")
-        if cookie: 
-            cookie_username = cookie.split("|")[0]
-            u = RegisteredUsers.all().filter("username =", cookie_username).get()
-            if u: 
-                if get_secure_val(cookie, u.salt): user = u
+        user = self.get_login_user()
         if not user: 
             self.redirect("/login")
             return
-        p_author = RegisteredUsers.all().filter("username =", username).get()
+        p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
