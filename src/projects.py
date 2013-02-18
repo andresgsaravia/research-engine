@@ -100,6 +100,9 @@ class NewProjectPage(GenericPage):
         if p_name and (not re.match(PROJECT_NAME_REGEXP, p_name)):
             have_error = True
             error_message = 'Invalid project name. Please user only letters, numbers, spaces and dashes. '
+        if p_name and p_name.lower() == 'new project':
+            have_error = True
+            error_message = 'Invalid project name. Please choose a different name. '
         # Check for duplicate project names.
         duplicate_p = False
         for p_key in user.my_projects:
