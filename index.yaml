@@ -16,6 +16,12 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: DataConcepts
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
 - kind: DataFiles
   ancestor: yes
   properties:
@@ -33,11 +39,21 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: ForumComments
+  ancestor: yes
+  properties:
+  - name: date
+
 - kind: ForumThreads
   ancestor: yes
   properties:
   - name: last_updated
     direction: desc
+
+- kind: NoteComments
+  ancestor: yes
+  properties:
+  - name: date
 
 - kind: NotebookNotes
   ancestor: yes
@@ -55,9 +71,20 @@ indexes:
   ancestor: yes
   properties:
   - name: date
+
+- kind: Revisions
+  ancestor: yes
+  properties:
+  - name: date
     direction: desc
 
 - kind: WikiRevisions
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
+- kind: WritingComments
   ancestor: yes
   properties:
   - name: date

@@ -73,3 +73,7 @@
     text-decoration: none;
     background: #E0ECB9;
 }
+
+.w-content a {
+    font-weight: normal;
+}
