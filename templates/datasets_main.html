@@ -19,6 +19,7 @@
 {% for d in datasets %}
 <div class="d-wrapper">
   <div class="d-last-updated">Last updated: {{d.last_updated.strftime("%d-%b-%Y")}}</div>
+  <a class="info-link" href="#">Description</a>
   <div class="d-name"><a href="/{{p_author.username}}/{{project.name}}/datasets/{{d.key().id()}}">{{d.name}}</a></div>
   <div class="d-description">{{d.description | gfm_markdown | safe}}</div>
 </div>
