@@ -6,13 +6,13 @@ from src import *
 
 app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # Users
-                               ('/login', users.LoginPage),                                            # Needs review
-                               ('/logout', users.LogoutPage),                                          # Needs review
-                               ('/signup', users.SignupPage),                                          # Needs review
+                               ('/login', users.LoginPage),
+                               ('/logout', users.LogoutPage),
+                               ('/signup', users.SignupPage),
                                ('/settings', users.SettingsPage),                                      # Needs review
                                ('/user/search', users.SearchForUserPage),                              # Needs review
                                ('/recover_password', users.RecoverPasswordPage),                       # Needs review
-                               ('/verify_email', users.VerifyEmailPage),                               # Needs review
+                               ('/verify_email', users.VerifyEmailPage),
 
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks

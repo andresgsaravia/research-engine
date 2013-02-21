@@ -24,7 +24,9 @@
 }
 
 .u-pwrapper {
+    border-right: 1px solid #C0C0C0;
     width: 70%;
+    min-height: 25em;
 }
 
 .u-project {

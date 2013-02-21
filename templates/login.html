@@ -2,52 +2,53 @@
 
 {% block head %}
 <title>Research Engine | Login</title>
-<link href="/css/logging.css" rel="stylesheet" type="text/css" />
+<link href="/css/login.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block content %}
 
-{% if user %}
-<p>Welcome back {{user.username.title()}}, you are already logged in</p>
-<p>If you are not {{user.username.title()}} you can <a href="/logout">Logout</a></p>
-
-{% else %}
-
 <h2>Login</h2>
 
-<form method="post">
-  <table>
-    
-    <tr>
-      <td>
-	Email or username
-      </td>
-      <td>
-	<input type="text" name="email_or_username" value="{{email_or_username}}">
-      </td>
-    </tr>
-    
-    <tr>
-      <td>
-	Password
-      </td>
-      <td>
-	<input type="password" name="password" value="">
-	</td>
-    </tr>
-    
-  </table>
-  <div class="submit-button">
-    <input type="submit" value="login">
-  </div>
-</form>
-<br/>
-<div class="error">{{error | safe}}</div>
+  {% if user %}
+  <p>Welcome back {{user.username.title()}}, you are already logged in</p>
+  <p>If you are not {{user.username.title()}} you can <a href="/logout">Logout</a></p>
 
-<br/>
+  {% else %}
+  
+  <form method="post">
+    <table>
+      
+      <tr>
+	<td>
+	  Email or username
+	</td>
+	<td>
+	  <input type="text" name="email_or_username" value="{{email_or_username}}" autofocus>
+	</td>
+      </tr>
+      
+      <tr>
+	<td>
+	  Password
+	</td>
+	<td>
+	  <input type="password" name="password" value="">
+	</td>
+      </tr>
+      
+    </table>
+    <div class="submit-button">
+      <input type="submit" value="Login">
+    </div>
+  </form>
+  <br/>
+  <div class="error">{{error | safe}}</div>
+  
+  <br/>
 <p>If you don't have an account you can <a href="/signup">signup</a> for free.</p>
 
 {% endif %}
+
 
 {% endblock %}
