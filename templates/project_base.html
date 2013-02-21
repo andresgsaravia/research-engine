@@ -3,7 +3,7 @@
 
 {% block head %}
     <link href="/css/project_base.css" rel="stylesheet" type="text/css" />
-    <title>{{p_author.username.capitalize() }} / {{project.name.capitalize()}}</title>
+    <title>{{p_author.username.capitalize() }} / {{project.name.replace("_", " ").title()}}</title>
     {% block p_head %}
     {% endblock %}
 {% endblock %}
@@ -34,7 +34,7 @@
 
 <div class="p-title-bar">
   <a href="/{{p_author.username}}">{{p_author.username.capitalize()}}</a> / 
-  <a href="/{{p_author.username}}/{{project.name}}">{{project.name.replace("_", " ").capitalize()}}</a>
+  <a href="/{{p_author.username}}/{{project.name}}">{{project.name.replace("_", " ").title()}}</a>
   {% block title_bar_extra %} {% endblock %}
 </div>
 

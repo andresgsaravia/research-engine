@@ -19,7 +19,7 @@
 {% for n in notebooks %}
 <div class="n-wrapper">
   <div class="n-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="n-name"><a href="/{{n.owner.username}}/{{project.name}}/notebooks/{{n.name}}">{{n.name.replace("_", " ").capitalize()}}</a></div>
+  <div class="n-name"><a href="/{{n.owner.username}}/{{project.name}}/notebooks/{{n.name}}">{{n.name.replace("_", " ").title()}}</a></div>
   <div class="n-description">{{n.description.replace("\n", "<br/>") | safe}}</div>
   <div class="n-owner"><a href="/{{n.owner.username}}">{{n.owner.username.capitalize()}}</a></div>
 </div>
