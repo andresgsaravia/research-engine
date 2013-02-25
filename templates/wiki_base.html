@@ -8,7 +8,7 @@
 
 {% block title_bar_extra %}
 /  <a href="/{{p_author.username}}/{{project.name}}/wiki/page/main_page">Wiki</a>
-/  <a href="/{{p_author.username}}/{{project.name}}/wiki/page/{{wikiurl}}">{{wikiurl.replace("_", " ").capitalize()}}</a>
+/  <a href="/{{p_author.username}}/{{project.name}}/wiki/page/{{wikiurl}}">{{wikiurl.replace("_", " ").title()}}</a>
 {% endblock %}
 
 {% block p_content %}
