@@ -8,6 +8,49 @@ USERNAME_RE = r'^[a-zA-Z0-9_-]{3,20}$'
 PASSWORD_RE = r'^.{3,20}$'
 
 
+class LoginPage(GenericPage):
+    def get(self):
+        user = self.get_login_user()
+        goback = self.request.get('goback')
+        self.render("login.html", user = user, goback = goback)
+
+    def post(self):
+        email_or_username = self.request.get('email_or_username')
+        password = self.request.get('password')
+        have_error = False
+        kw = {'email_or_username' : email_or_username, 'password' : password, 'error' : '', 'goback' : self.request.get('goback')}
+        if not email_or_username:
+            kw["error"] += "You must provide a valid email or username. "
+            have_error = True
+        if not password:
+            kw["error"] += "You must provide your password. "
+            have_error = True
+        if not have_error:
+            if re.match(EMAIL_RE, email_or_username):
+                u = self.get_user_by_email(email_or_username, "Checking user's login information. ")
+            else:
+                u = self.get_user_by_username(email_or_username.lower(), "Checking user's login information. ")
+            if (not u) or (u.password_hash != hash_str(password + u.salt)):
+                kw["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
+                have_error = True
+        if have_error:
+            self.render("login.html", **kw)
+        else:
+            u.salt = make_salt()
+            u.password_hash = hash_str(password + u.salt)
+            self.log_and_put(u, "Making new salt. ")
+            self.set_cookie("username", u.username, u.salt)
+            if kw['goback']: 
+                self.redirect(kw['goback'])
+                return
+            self.redirect("/%s" % u.username)
+
+
+class LogoutPage(GenericPage):
+    def get(self):
+        self.remove_cookie("username")
+        self.redirect("/login")
+
 class UserPage(GenericPage):
     def get(self, username):
         page_user = self.get_user_by_username(username)
@@ -113,45 +156,6 @@ class SignupPage(GenericPage):
             self.log_and_put(u, "New user registration")
             u.send_verify_email()
             self.render("please_verify_email.html")
-
-class LoginPage(GenericPage):
-    def get(self):
-        user = self.get_login_user()
-        self.render("login.html", user = user)
-
-    def post(self):
-        email_or_username = self.request.get('email_or_username')
-        password = self.request.get('password')
-        have_error = False
-        kw = {'email_or_username' : email_or_username, 'password' : password, 'error' : ''}
-        if not email_or_username:
-            kw["error"] += "You must provide a valid email or username. "
-            have_error = True
-        if not password:
-            kw["error"] += "You must provide your password. "
-            have_error = True
-        if not have_error:
-            if re.match(EMAIL_RE, email_or_username):
-                u = self.get_user_by_email(email_or_username, "Checking user's login information. ")
-            else:
-                u = self.get_user_by_username(email_or_username.lower(), "Checking user's login information. ")
-            if (not u) or (u.password_hash != hash_str(password + u.salt)):
-                kw["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
-                have_error = True
-        if have_error:
-            self.render("login.html", **kw)
-        else:
-            u.salt = make_salt()
-            u.password_hash = hash_str(password + u.salt)
-            self.log_and_put(u, "Making new salt. ")
-            self.set_cookie("username", u.username, u.salt)
-            self.redirect("/%s" % u.username)
-
-
-class LogoutPage(GenericPage):
-    def get(self):
-        self.remove_cookie("username")
-        self.redirect("/login")
 
 
 class SettingsPage(GenericPage):

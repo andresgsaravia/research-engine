@@ -71,7 +71,8 @@ class NewNotebookPage(GenericPage):
     def get(self, username, projectname):
         user = self.get_login_user()
         if not user:
-            self.redirec('/login')
+            goback = '/' + username + '/' + projectname + '/notebooks/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -99,7 +100,8 @@ class NewNotebookPage(GenericPage):
     def post(self, username, projectname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/notebooks/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -222,7 +224,8 @@ class NewNotePage(GenericPage):
     def post(self, username, projectname, nbname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/new_note'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -309,7 +312,8 @@ class NotePage(GenericPage):
     def post(self, username, projectname, nbname, note_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/' + note_id
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -392,7 +396,8 @@ class EditNotebookPage(GenericPage):
     def post(self, username, projectname, nbname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/edit'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -496,7 +501,8 @@ class EditNotePage(GenericPage):
     def post(self, username, projectname, nbname, note_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/' + note_id + '/edit'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:

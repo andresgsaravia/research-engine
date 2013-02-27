@@ -81,7 +81,8 @@ class NewThreadPage(GenericPage):
     def post(self, username, projectname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/forum/new_thread'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -157,7 +158,8 @@ class ThreadPage(GenericPage):
     def post(self, username, projectname, thread_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/forum/' + thread_id
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:

@@ -61,7 +61,8 @@ class NewWritingPage(GenericPage):
     def get(self, username, projectname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/writings/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -88,7 +89,8 @@ class NewWritingPage(GenericPage):
     def post(self, username, projectname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/writings/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -194,7 +196,8 @@ class EditWritingPage(GenericPage):
     def post(self, username, projectname, writing_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/writings/' + writing_id + '/edit'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -330,7 +333,8 @@ class DiscussionPage(GenericPage):
     def post(self, username, projectname, writing_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/writings/' + writing_id + '/discussion'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -399,7 +403,8 @@ class InfoPage(GenericPage):
     def post(self, username, projectname, writing_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/writings/' + writing_id + '/info'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:

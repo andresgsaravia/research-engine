@@ -73,7 +73,8 @@ class NewProjectPage(GenericPage):
     def get(self, username):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/new_project'
+            self.redirect("/login?goback=%s" % goback)
             return
         if not username.lower() == user.username:
             self.redirect("/%s/new_project" % user.username)
@@ -83,7 +84,8 @@ class NewProjectPage(GenericPage):
     def post(self, username):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/new_project'
+            self.redirect("/login?goback=%s" % goback)
             return
         if not username.lower() == user.username:
             self.redirect("/%s/new_project" % user.username)

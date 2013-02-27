@@ -90,7 +90,8 @@ class NewDataSetPage(GenericPage):
     def post(self, username, projectname):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/datasets/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -201,7 +202,8 @@ class NewDataConceptPage(GenericPage):
     def post(self, username, projectname, dataset_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/datasets/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -322,7 +324,8 @@ class EditConceptPage(GenericPage):
     def post(self, username, projectname, dataset_id, datac_id):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/datasets/' + dataset_id + '/' + datac_id + '/edit'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -444,7 +447,8 @@ class UploadDataRevisionHandler(GenericBlobstoreUpload):
     def post(self, username, projectname, dataset_id, datac_id):
         user = self.get_login_user()
         if not user: 
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/datasets/' + dataset_id + '/' + datac_id + '/new'
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -503,7 +507,8 @@ class UpdateDataRevisionHandler(GenericBlobstoreUpload):
     def post(self, username, projectname, dataset_id, datac_id, rev_id):
         user = self.get_login_user()
         if not user: 
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/datasets/' + dataset_id + '/' + datac_id + '/edit/' + rev_id
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:

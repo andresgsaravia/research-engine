@@ -97,7 +97,8 @@ class EditWikiPage(GenericPage):
     def post(self, username, projectname, wikiurl):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            goback = '/' + username + '/' + projectname + '/wiki/edit/' + wikiurl
+            self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
