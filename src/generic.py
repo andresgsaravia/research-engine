@@ -9,14 +9,14 @@ from google.appengine.ext import db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 import email_messages
-from filters.gfm_markdown import gfm_markdown
+import filters
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 SALT_LENGTH = 16
 
-jinja_env.filters['gfm_markdown'] = gfm_markdown
+jinja_env.filters['wikify'] = filters.wikify
 
 
 ##########################
