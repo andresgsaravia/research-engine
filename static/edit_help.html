@@ -4,6 +4,11 @@
   <head>
     <title>Research Engine | Edit help</title>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+          "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true }
+      });
+    </script>
     <link href="/css/general.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
       html { background: #F5F5F5;}
@@ -49,7 +54,8 @@
 	  <li><a href="#headers">Headers</a></li>
 	  <li><a href="#text">Bold and Italics</a></li>
 	  <li><a href="#lists">Lists</a></li>
-	  <li><a href="#code">Code and quotes</a></li>
+	  <li><a href="#code">Code</a></li>
+	  <li><a href="#quotes">Quotes</a></li>
 	  <li><a href="#links">Links</a></li>
 	  <li><a href="#images">Images</a></li>
 	  <li><a href="#escaping">Escaping special characters</a></li>
@@ -96,6 +102,7 @@ This is a second-level header
 ## This is a second-level header ##
 ### This is a third-level header ###################</pre></div>
 
+<p>You can produde a Table of contents from your headers by writing <code>[TOC]</code> in the place you want it to appear.<p/>
 
 <h3 id="text">Bold and Italics</h3>
 
@@ -163,7 +170,7 @@ You can still use * safely if you surround it with whitespace</div>
 
 <div class="md-example"><pre>1986\. What a great season.</pre></div>
 
-<h3 id="code">Code and quotes</h3>
+<h3 id="code">Code</h3>
 
 <p>To indicate a span of code wrap it with backtick quotes (`). This produces inline code, for example</p>
 
@@ -173,7 +180,7 @@ You can still use * safely if you surround it with whitespace</div>
 
 <div class="md-result"><p>To define a function in Common Lisp use the <code>(defun ...)</code> construct.</p></div>
 
-<p>To produce a block of code you need to indent each line by 4 spaces or 1 tab</p>
+<p>You have several options to produce a block of code. One option is to indent each line by 4 spaces or 1 tab </p>
 
 <div class="md-example"><pre>    def hello(name = None):
         if name:
@@ -182,7 +189,29 @@ You can still use * safely if you surround it with whitespace</div>
             print "Hello stranger"
         return</pre></div>
 
-<p>is rendered as</p>
+<p>Another option is to <em>fence</em> the code with tildes </p>
+
+<div class="md-example"><pre>~~~
+def hello(name = None):
+    if name:
+        print "Hello " + name
+    else:
+        print "Hello stranger"
+    return
+~~~</pre></div>
+
+<p>or backquotes</p>
+
+<div class="md-example"><pre>```
+def hello(name = None):
+    if name:
+        print "Hello " + name
+    else:
+        print "Hello stranger"
+    return
+```</pre></div>
+
+<p>all examples are rendered as</p>
 
 <div class="md-result"><pre><code>def hello(name = None):
     if name:
@@ -190,6 +219,8 @@ You can still use * safely if you surround it with whitespace</div>
     else:
         print "Hello stranger"
     return</code></pre></div>
+
+<h3 id="quotes">Quotes</h3>
 
 <p>Quotation is handled in email-style with the &gt; sign. If you want to make a line appear as a quote you just prefix it with &gt;. If the quote contains several lines you need to quote them all. Remember that quotes can be nested. Here is an example:
 
@@ -282,21 +313,25 @@ _   underscore
 
 <h3 id="math">Mathematics</h3>
 
-<p>We use <a href="http://www.mathjax.org">Mathjax</a> as the display engine for mathematics using <a href="http://en.wikipedia.org/wiki/LaTeX"> \(\LaTeX\)</a> syntax. The delimiters are <code>\\( ... \\)</code> for inline math and <code>\\[ ... \\]</code> for displayed equations (we need an extra backslash because we&#8217;re using mathjax on top of Markdown). This is an example: </p>
+<p>We use <a href="http://www.mathjax.org">Mathjax</a> as the display engine for mathematics using <a href="http://en.wikipedia.org/wiki/LaTeX"> $\LaTeX$</a> syntax. The delimiters are <code>$ ... $</code> for inline math and <code>$$ ... $$</code> for displayed equations. This is an example: </p>
 
-<div class="md-example"><pre>This equation: \\(e^i{\pi + 1} = 0\\) is one of my favorites, but this one 
-\\[ - \frac{\hbar^2}{2 m}\frac{\partial^2 \psi(x)}{\partial x^2} = E \psi(x) \\]
+<div class="md-example"><pre>This equation: $e^{i\pi + 1} = 0$ is one of my favorites, but this one 
+$$ - \frac{\hbar^2}{2 m}\frac{\partial^2 \psi(x)}{\partial x^2} = E \psi(x) $$
 looks far more impressive.</pre></div> 
 
 <p>which is displayed as:</p>
 
-<div class="md-result"><p>This equation: \(e^i{\pi + 1} = 0\) is one of my favorites, but this one<br />
-\[ - \frac{\hbar^2}{2 m}\frac{\partial^2 \psi(x)}{\partial x^2} = E \psi(x) \]
+<div class="md-result"><p>This equation: $e^{i\pi + 1} = 0$ is one of my favorites, but this one<br />
+$$ - \frac{\hbar^2}{2 m}\frac{\partial^2 \psi(x)}{\partial x^2} = E \psi(x) $$
 looks far more impressive.  </p></div>
 
-<p>You can right=click at the rendered equation and copy the \(\LaTeX\) code to your clipboard.</p>
+<p>You can right-click at the rendered equation and copy the $\LaTeX$ code to your clipboard. Notice that equations will not be rendered inside code blocks.</p>
+
+<p>If you want to write literal dollar signs \$ you will need to escape them with a backslash <code>\$</code>.
 
 <h3 id="generalhtml">General HTML</h3>
+
+<p>If you know HTML you can write the code and Markdown will (hopefully) interpret it correctly.</p>
 
       </div>
     </div>
