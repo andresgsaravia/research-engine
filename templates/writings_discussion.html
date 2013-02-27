@@ -3,6 +3,11 @@
 {% block w_head %}
   <link href="/css/writings_discussion.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ] }
+    });
+  </script>
 {% endblock %}
 
     
@@ -25,7 +30,7 @@
       <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
       <div class="c-author">{{c.author.username.capitalize()}}</div>
     </div>
-    <div class="c-content">{{c.comment | gfm_markdown | safe}}</div>
+    <div class="c-content">{{c.comment | md | safe}}</div>
   </div>
   {% endfor %}
 </div>

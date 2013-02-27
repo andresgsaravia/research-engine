@@ -3,6 +3,13 @@
 
 {% block p_head %}
   <link href ="/css/writings_list.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ] }
+    });
+  </script>
+
 {% endblock %}
 
 
@@ -20,7 +27,7 @@
 <div class="w-wrapper">
   <div class="w-last-updated">Last updated: {{w.last_updated.strftime("%d-%b-%Y")}}</div>
   <div class="w-title"><a href="/{{p_author.username}}/{{project.name}}/writings/{{w.key().id()}}">{{w.title}}</a></div>
-  <div class="w-description">{{w.description.replace("\n", "<br/>") | safe}}</div>
+  <div class="w-description">{{w.description | md | safe}}</div>
   <div class="w-status">Status: <em>{{w.status}}</em></div>
 </div>
 {% endfor %}
