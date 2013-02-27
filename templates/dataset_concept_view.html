@@ -4,6 +4,11 @@
 {% block dv_head %}
   <link href="/css/dataset_concept_view.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ] }
+    });
+  </script>
   <script type="text/javascript" language="javascript">
     function showInfo(objid, targetid) {document.getElementById(targetid).innerHTML = document.getElementById(objid).innerHTML;}
   </script>
@@ -23,7 +28,7 @@
 	 <div class="info-link"><a href="#" onClick="showInfo('rid{{rev.key().id()}}', 'mw');">Show info</a></div>
 	 <div class="meta" id="rid{{rev.key().id()}}">
 	   <div class="button1"><a href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/edit/{{rev.key().id()}}">Edit</a></div>
-	   {% if rev.meta %}{{rev.meta | gfm_markdown | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
+	   {% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
 	 </div>
        </div>
      {% endfor %}

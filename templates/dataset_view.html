@@ -3,6 +3,11 @@
 {% block p_head %}
   <link href="/css/dataset_view.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ] }
+    });
+  </script>
 {% endblock %}
 
 
@@ -22,7 +27,7 @@
   <div class="last-updated">Last updated: {{d.last_updated.strftime("%d-%b-%Y")}}</div>
   <a class="info-link" href="#">Description</a>
   <div class="name"><a href="/{{p_author.username}}/{{project.name}}/datasets/{{dataset.key().id()}}/{{d.key().id()}}">{{d.name}}</a></div>
-  <div class="description">{{d.description | gfm_markdown | safe}}</div>
+  <div class="description">{{d.description | md | safe}}</div>
 </div>
 {% endfor %}
 
