@@ -4,6 +4,11 @@
 {% block p_head %}
   <link href="/css/forum_thread.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ] }
+    });
+  </script>
 {% endblock %}
 
 
@@ -21,7 +26,7 @@
     <div class="t-date">{{thread.date.strftime("%d-%b-%Y")}}</div>
     <div class="t-author">by <a href="/{{thread.author.username}}">{{thread.author.username.capitalize()}}</a></div>
   </div>
-  <div class="t-content">{{thread.content | gfm_markdown | safe}}</div>
+  <div class="t-content">{{thread.content | md | safe}}</div>
 </div>
 
 
@@ -31,7 +36,7 @@
     <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
     <div class="c-author"><a href="/{{c.author.username}}">{{c.author.username.capitalize()}}</a></div>
   </div>
-  <div class="c-comment">{{c.comment | gfm_markdown | safe}}</div>
+  <div class="c-comment">{{c.comment | md | safe}}</div>
 </div>
 {% endfor %}
 
