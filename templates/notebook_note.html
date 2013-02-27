@@ -4,6 +4,11 @@
 {% block p_head %}
   <link href="/css/notebook_note.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ] }
+    });
+  </script>
 {% endblock %}
 
 {% block title_bar_extra %}
@@ -18,7 +23,7 @@
     <div class="note-title">{{note.title}}</div>
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
   </div>
-  <div class="note-content">{{note.content | gfm_markdown | safe}}</div>
+  <div class="note-content">{{note.content | md | safe}}</div>
 
 
 <h3 class="c-heading">Comments</h3>
@@ -29,7 +34,7 @@
       <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
       <div class="c-author"><a href="/{{c.author.username}}">{{c.author.username.capitalize()}}</a></div>
     </div>
-    <div class="c-comment">{{c.comment | gfm_markdown | safe}}</div>
+    <div class="c-comment">{{c.comment | md | safe}}</div>
   </div>
 {% endfor %}
 
