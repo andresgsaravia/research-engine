@@ -17,7 +17,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/user/search', users.SearchForUserPage),                              # Needs review
                                ('/recover_password', users.RecoverPasswordPage),                       # Needs review
                                ('/verify_email', users.VerifyEmailPage),
-
+                               
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks
                                ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projectname
@@ -58,15 +58,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/update/([0-9]+)', datasets.UpdateDataRevisionHandler),
                                ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
 
-                               ('/(.+)/(.+)', projects.OverviewPage),                   
-                               # ('/projects/recent_activity', projects.RecentActivityPage),           # Needs review
-                               # ('/projects/project/edit/(.+)', projects.EditProjectPage),           # Needs review
-                               # ('/projects/project/new_reference/(.+)', references.NewReferencePage),           # Needs review
-                               # ('/projects/project/(.+)/ref/edit/(.+)', references.EditReferencePage),           # Needs review
-                               # ('/projects/project/(.+)/ref/(.+)', references.ReferencePage),           # Needs review
-                               # ('/news', frontend.UnderConstructionPage),           # Needs review
-                               # ('/classroom', frontend.UnderConstructionPage),           # Needs review                               
-
-                               ('/(.+)', users.UserPage)],                                             # Needs review
+                               ('/(.+)/(.+)', projects.OverviewPage),
+                               ('/(.+)', users.UserPage)],
                               debug = True)
 
