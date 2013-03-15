@@ -1,0 +1,44 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/project_admin.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block p_content %}
+
+<h2>Your settings for this project</h2>
+
+<h3>Email notifications</h3>
+
+<p>You are subscribed to update notifications for:</p>
+
+<form method="post">
+  <div class="notif-checkbox">
+    <input type="checkbox" value="checked" name="wiki_p" {{wiki_p}}/>
+    An update in a <strong>wiki</strong> page
+  </div>
+  <div class="notif-checkbox"><input type="checkbox" value="checked" name="notebooks_p" {{notebooks_p}}/>
+    A new note in a <strong>notebook</strong>
+  </div>
+  <div class="notif-checkbox"><input type="checkbox" value="checked" name="writings_p" {{writings_p}}/>
+    A change in a <strong>collaborative writing</strong>
+  </div>
+  <div class="notif-checkbox"><input type="checkbox" value="checked" name="code_p" {{code_p}}/>
+    Updates to a <strong>source code</strong> repository
+  </div>
+  <div class="notif-checkbox"><input type="checkbox" value="checked" name="datasets_p" {{datasets_p}}/>
+    Updates in a <strong>dataset</strong>
+  </div>
+  <div class="notif-checkbox"><input type="checkbox" value="checked" name="forum_threads_p" {{forum_threads_p}}/>
+    A new thread in the <strong>forum</strong>
+  </div>
+  <div class="notif-checkbox"><input type="checkbox" value="checked" name="forum_posts_p" {{forum_posts_p}}/>
+    A new post in a <strong>forum</strong> thread
+  </div>
+
+  <input type="submit" value="Save changes" />
+</form>
+
+<div class="info">{{info_message}}</div>
+
+{% endblock %}
