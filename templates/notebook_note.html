@@ -13,7 +13,7 @@
 
 {% block title_bar_extra %}
   / <a href="/{{p_author.username}}/{{project.name}}/notebooks">Notebooks</a>
-  / <a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}">{{notebook.name.replace("_"," ").capitalize()}}</a>
+  / <a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}">{{notebook.name.replace("_"," ").title()}}</a>
   / <a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/{{note.key().id()}}">{{note.title}}</a>
 {% endblock %}
 

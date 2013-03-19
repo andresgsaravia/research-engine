@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      body {background: #F5F5F5;}
+      .author a {text-decoration: none; font-weight: normal;}
+      h3 { margin-left: 1em;}
+      .wrapper {background: white; width: 90%; margin-left: 5%; padding-top: 0.5em; margin: 0 auto; box-shadow: 0em 0.1em 0.2em #C0C0C0;}
+      .item {margin-top: 1em; padding: 0.5em;}
+      .author {font-size: 0.9em; background: #D0D0D0; border-top: 1px solid #CCCCCC; border-bottom: 1px solid #CCCCCC;}
+      .title a:hover {text-decoration: underline;}
+      .date {font-size: 0.9em; color: #808080;}
+      .footer {border-top: 1px solid #444444; background: #E0E0E0;}
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h3>There has been some activity in your projects</h3>
+      {% for item in notifications_list %}
+        <div class="item">
+	  {% if item.category == "NotebookNotes" %}
+            <div class="author"><a href="/{{item.author.username}}">{{item.author.username.capitalize()}}</a> 
+	      wrote a new note in a notebook.</div>
+	    <div class="title"><a href="{{item.link}}">{{item.title}}</a></div>
+	    <div class="content">{{item.content | md | safe}}</div>
+	    <div class="date">{{item.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>
+	  {% endif %}
+	</div>
+      {% endfor %}
+
+	<div class="footer">
+	  You can stop receiving these emails by visiting your <em>Admin</em> tab for each project.
+	</div>
+    </div>
+
+  </body>
+</html>

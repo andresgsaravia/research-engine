@@ -3,24 +3,54 @@
 
 from google.appengine.api import mail
 from google.appengine.ext import db
-
-###########################
-##   Datastore Objects   ##
-###########################
-
-# Each Notification should have as parent a RegisteredUser
-class Notifications(db.Model):
-    author = db.ReferenceProperty(required = False)
-    category = db.StringProperty(required = True)
-    title = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    link = db.StringProperty(required = False)
-    sent = db.BooleanProperty(required = True)
-        
-
+from generic import *
 
 ADMIN_EMAIL = "admin@research-engine.appspot.com"
+
+
+######################
+##   Web Handlers   ##
+######################
+
+class SendNotifications(GenericPage):
+    def get(self):
+        logging.debug("CRON: Handler %s has been requested by cron" % self.__class__.__name__)
+        for u in RegisteredUsers.all().run():
+            notifications_list = []
+            for n in EmailNotifications.all().ancestor(u).filter("sent =", False).order("date").run():
+                notifications_list.append(n)
+            send_notifications(notifications_list, u)
+        self.write("Done")
+
+
+##########################
+##   Helper Functions   ##
+##########################
+
+def send_notifications(notifications_list, user):
+    message = mail.EmailMessage(sender = ADMIN_EMAIL,
+                                to = user.email,
+                                subject = "Recent activity in your projects",
+                                body = render_str("notification_email.txt", 
+                                                  notifications_list = notifications_list, user = user),
+                                html = render_str("notification_email.html", 
+                                                  notifications_list = notifications_list, user = user))
+    logging.debug("EMAIL: Sending an email with notifications to user %s" % user.username)
+    message.send()
+    for n in notifications_list:
+        n.sent = True
+        logging.debug("DB WRITE: CRON: Changing a notification's 'sent' property to true")
+        n.put()
+    return
+
+
+def send_verify_email(user):
+    link = "http://research-engine.appspot.com/verify_email?username=%s&h=%s" % (user.username, hash_str(user.username + user.salt))
+    message = verify_email_message(link)
+    message.to = user.email
+    logging.debug("EMAIL: Sending an email verification request.")
+    message.send()
+    return
 
 
 SIGNATURE = """

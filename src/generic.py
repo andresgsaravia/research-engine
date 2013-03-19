@@ -8,13 +8,13 @@ import os, re, string, hashlib, logging
 from google.appengine.ext import db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
-import email_messages
 import filters
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 SALT_LENGTH = 16
+DOMAIN_PREFIX = "http://research-engine.appspot.com"
 
 jinja_env.filters['wikify'] = filters.wikify
 jinja_env.filters['md'] = filters.md
@@ -59,14 +59,6 @@ class UnverifiedUsers(db.Model):
     salt = db.StringProperty(required = True)
     password_hash = db.TextProperty(required = True)
 
-    def send_verify_email(self):
-        link = "http://research-engine.appspot.com/verify_email?username=%s&h=%s" % (self.username, hash_str(self.username + self.salt))
-        message = email_messages.verify_email_message(link)
-        message.to = self.email
-        logging.debug("EMAIL: Sending an email verification request.")
-        message.send()
-        return
-
 
 class RegisteredUsers(db.Model):
     username = db.StringProperty(required = True)
@@ -76,7 +68,7 @@ class RegisteredUsers(db.Model):
     about_me = db.TextProperty(required = False)
     google_userid = db.StringProperty(required = False)
     my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
-    my_notebooks = db.ListProperty(db.Key)                  # keys to Notebooks (defined in notebooks.py)
+    my_notebooks = db.ListProperty(db.Key)                  # keys tootebooks (defined in notebooks.py)
     following = db.ListProperty(db.Key)
 
     def list_of_projects(self):
@@ -91,6 +83,18 @@ class RegisteredUsers(db.Model):
         if len(projects_list) > 0:
             projects_list.sort(key=lambda p: p.last_updated, reverse=True)
         return projects_list
+
+
+# Each Notification should have as parent a RegisteredUser
+class EmailNotifications(db.Model):
+    author = db.ReferenceProperty(required = False)
+    category = db.StringProperty(required = True)
+    title = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    date = db.DateTimeProperty(auto_now_add = True)
+    link = db.StringProperty(required = False)       # Absolute link
+    sent = db.BooleanProperty(required = True)
+
 
 ######################
 ##   Web Handlers   ##
@@ -129,11 +133,11 @@ class GenericPage(webapp2.RequestHandler):
         instance.delete()
         return
 
-    def add_notifications(self, item, users_to_notify, author, link):
+    def add_notifications(self, item, users_to_notify, author, relative_link):
         for u in users_to_notify:
-            notification = email_messages.Notifications(author = author, category = item.__class__.__name__,
-                                                        title = item.title, content = item.content, 
-                                                        link = link, sent = False)
+            notification = EmailNotifications(author = author, category = item.__class__.__name__,
+                                              title = item.title, content = item.content, 
+                                              link = DOMAIN_PREFIX + relative_link, sent = False, parent = u)
             self.log_and_put(notification)
         return
 
@@ -219,3 +223,4 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
                       % (self.__class__.__name__, logmessage))
         return RegisteredUsers.all().filter("username =", username).get()
+

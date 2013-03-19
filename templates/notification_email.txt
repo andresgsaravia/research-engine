@@ -1,0 +1,17 @@
+There has been some activity in your projects:
+
+{% for item in notifications_list %}
+------------------------------------------------
+{% if item.category == "NotebookNotes" %}
+{{item.author.username.capitalize()}} wrote a new note in a notebook.
+{{item.title}}
+<{{item.link}}>
+
+{{item.content}}
+
+{{item.date.strftime("%d-%b-%Y %H:%M")}} (server time)
+{% endif %}
+{% endfor %}
+
+You can stop receiving these emails by visiting your *Admin* tab for each project.
+

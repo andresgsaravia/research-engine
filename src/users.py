@@ -2,6 +2,7 @@
 # All related to user login/signup and preferences storage.
 
 from generic import *
+import email_messages
 
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z0-9_-]{3,20}$'
@@ -159,7 +160,7 @@ class SignupPage(GenericPage):
             ph = hash_str(password + salt)
             u = UnverifiedUsers(username = usern, password_hash = ph, salt = salt, email = email)
             self.log_and_put(u, "New user registration")
-            u.send_verify_email()
+            email_messages.send_verify_email(u)
             self.render("please_verify_email.html")
 
 

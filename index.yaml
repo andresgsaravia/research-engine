@@ -39,6 +39,12 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: EmailNotifications
+  ancestor: yes
+  properties:
+  - name: sent
+  - name: date
+
 - kind: ForumComments
   ancestor: yes
   properties:

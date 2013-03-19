@@ -17,6 +17,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/user/search', users.SearchForUserPage),                              # Needs review
                                ('/recover_password', users.RecoverPasswordPage),                       # Needs review
                                ('/verify_email', users.VerifyEmailPage),
+                               # Cron jobs
+                               ('/cron/send_email_notifications', email_messages.SendNotifications),
                                
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks
