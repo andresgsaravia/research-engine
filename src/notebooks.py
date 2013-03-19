@@ -493,6 +493,7 @@ class EditNotePage(GenericPage):
               "name_placeholder" : "Title of the note",
               "content_placeholder" : "Content of the note",
               "submit_button_text" : "Save changes",
+              "markdown_p" : True,
               "cancel_url" : note_url,
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s<a/> / <a href="%s">%s<a/>' 
