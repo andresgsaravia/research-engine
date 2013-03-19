@@ -6,7 +6,8 @@ from generic import *
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z0-9_-]{3,20}$'
 PASSWORD_RE = r'^.{3,20}$'
-
+FORBIDDEN_USERNAMES = ["login", "logout", "signup", "settings","recover_password","verify_email",
+                       "file", "cron"]
 
 class LoginPage(GenericPage):
     def get(self):
@@ -106,6 +107,10 @@ class SignupPage(GenericPage):
         have_error = False
         kw = {"usern" : usern, "email" : email, "error" : ''}
         # Valid input
+        if usern and (usern.lower() in FORBIDDEN_USERNAMES):
+            kw['error_username'] = "*"
+            kw['error'] = "That username is not available"
+            have_error = True
         if not re.match(USERNAME_RE, usern):
             kw['error_username'] = "*"
             kw['error'] += "That's not a valid username, it must be from 3 to 20 characters long and contain only letters, numbers, dashes and underscores. "
