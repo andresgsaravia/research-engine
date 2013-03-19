@@ -390,7 +390,8 @@ class EditNotebookPage(GenericPage):
               "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
               "name_value" : notebook.name.replace("_", " ").capitalize(),
-              "content_value" : notebook.description}
+              "content_value" : notebook.description,
+              "markdown_p" : True}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname, nbname):
@@ -449,7 +450,8 @@ class EditNotebookPage(GenericPage):
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value" : n_name,
                   "content_value" : n_description,
-                  "error_message" : error_message}
+                  "error_message" : error_message,
+                  "markdown_p" : True}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
             notebook.name = n_name.replace(" ", "_").lower()
