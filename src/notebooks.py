@@ -272,9 +272,11 @@ class NewNotePage(GenericPage):
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook)
             self.log_and_put(new_note)
+            link = "/%s/%s/notebooks/%s/%s" % (username, projectname, nbname, new_note.key().id())
+            self.add_notifications(new_note, project.nb_notifications_list, user, link)
             self.log_and_put(notebook, "Updating last_updated property. ")
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s/%s" % (user.username, project.name, notebook.name, new_note.key().id()))
+            self.redirect(link)
 
 
 class NotePage(GenericPage):

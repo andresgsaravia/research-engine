@@ -129,6 +129,15 @@ class GenericPage(webapp2.RequestHandler):
         instance.delete()
         return
 
+    def add_notifications(self, item, users_to_notify, author, link):
+        for u in users_to_notify:
+            notification = email_messages.Notifications(author = author, category = item.__class__.__name__,
+                                                        title = item.title, content = item.content, 
+                                                        link = link, sent = False)
+            self.log_and_put(notification)
+        return
+
+
     # Cookies
     def get_cookie_val(self, cookie_name, salt):
         cookie = self.request.cookies.get(cookie_name)

@@ -2,6 +2,22 @@
 # Perhaps later this will be a little smarter...
 
 from google.appengine.api import mail
+from google.appengine.ext import db
+
+###########################
+##   Datastore Objects   ##
+###########################
+
+# Each Notification should have as parent a RegisteredUser
+class Notifications(db.Model):
+    author = db.ReferenceProperty(required = False)
+    category = db.StringProperty(required = True)
+    title = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    date = db.DateTimeProperty(auto_now_add = True)
+    link = db.StringProperty(required = False)
+    sent = db.BooleanProperty(required = True)
+        
 
 
 ADMIN_EMAIL = "admin@research-engine.appspot.com"
