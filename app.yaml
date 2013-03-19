@@ -17,6 +17,10 @@ handlers:
   static_dir: js
   secure: always
 
+- url: /cron/.*
+  script: main.app
+  login: admin
+
 - url: /.*
   script: main.app
   secure: always
