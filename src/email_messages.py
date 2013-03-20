@@ -30,7 +30,7 @@ class SendNotifications(GenericPage):
 def send_notifications(notifications_list, user):
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
-                                subject = "Recent activity in your projects",
+                                subject = "Recent activity in your projects at Research Engine",
                                 body = render_str("notification_email.txt", 
                                                   notifications_list = notifications_list, user = user),
                                 html = render_str("notification_email.html", 

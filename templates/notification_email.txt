@@ -1,4 +1,4 @@
-There has been some activity in your projects:
+There has been some activity in your projects at *Research engine* <https://research-engine.appspot.com>:
 
 {% for item in notifications_list %}
 ------------------------------------------------

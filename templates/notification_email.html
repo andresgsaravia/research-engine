@@ -11,12 +11,12 @@
       .author {font-size: 0.9em; background: #D0D0D0; border-top: 1px solid #CCCCCC; border-bottom: 1px solid #CCCCCC;}
       .title a:hover {text-decoration: underline;}
       .date {font-size: 0.9em; color: #808080;}
-      .footer {border-top: 1px solid #444444; background: #E0E0E0;}
+      .footer {border-top: 2px solid #777777; background: #E0E0E0; padding-top: 0.5em; padding-bottom: 0.5em;}
     </style>
   </head>
   <body>
     <div class="wrapper">
-      <h3>There has been some activity in your projects</h3>
+      <h3>There has been some activity in your projects at <a href="https://research-engine.appspot.com">Research Engine</a></h3>
       {% for item in notifications_list %}
         <div class="item">
 	  {% if item.category == "NotebookNotes" %}
