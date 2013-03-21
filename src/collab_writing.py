@@ -238,11 +238,13 @@ class EditWritingPage(GenericPage):
                         content = content, status = status, summary = summary, error_message = error_message)
         else:
             new_revision = Revisions(author = user, content = content, summary = summary, parent = writing)
+            link = "/%s/%s/writings/%s" % (user.username, projectname, writing_id)
             self.log_and_put(new_revision)
+            self.add_notifications(new_revision, project.writings_notifications_list, user, link)
             if status: writing.status = status
             self.log_and_put(writing, "Updating its last_updated and status property. ")
             self.log_and_put(project, "Updating its last_updated property. ")
-            self.redirect("/%s/%s/writings/%s" % (user.username, projectname, writing_id))
+            self.redirect(link)
 
 
 class HistoryWritingPage(GenericPage):

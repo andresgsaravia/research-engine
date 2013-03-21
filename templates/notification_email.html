@@ -19,13 +19,21 @@
       <h3>There has been some activity in your projects at <a href="https://research-engine.appspot.com">Research Engine</a></h3>
       {% for item in notifications_list %}
         <div class="item">
+
 	  {% if item.category == "NotebookNotes" %}
             <div class="author"><a href="/{{item.author.username}}">{{item.author.username.capitalize()}}</a> 
 	      wrote a new note in a notebook.</div>
+
+	  {% elif item.category == "Revisions" %}
+	    <div class="author"><a href="{{item.author.username}}">{{item.author.username.capitalize()}}</a>
+	      made a new revision of a collaborative writing.</div>
+
+	  {% endif %}
+
 	    <div class="title"><a href="{{item.link}}">{{item.title}}</a></div>
 	    <div class="content">{{item.content | md | safe}}</div>
 	    <div class="date">{{item.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>
-	  {% endif %}
+
 	</div>
       {% endfor %}
 

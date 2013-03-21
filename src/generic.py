@@ -136,8 +136,13 @@ class GenericPage(webapp2.RequestHandler):
     def add_notifications(self, item, users_to_notify, author, relative_link):
         for u in users_to_notify:
             notification = EmailNotifications(author = author, category = item.__class__.__name__,
-                                              title = item.title, content = item.content, 
-                                              link = DOMAIN_PREFIX + relative_link, sent = False, parent = u)
+                                              link = DOMAIN_PREFIX + relative_link, sent = False, parent = u, content = 'None', title = 'None')
+            if notification.category == "NotebookNotes":
+                notification.title = item.title 
+                notification.content = item.content
+            elif notification.category == "Revisions":                
+                notification.title = "A new revision of a collaborative writing."
+                notification.content = item.content[0:500]
             self.log_and_put(notification)
         return
 
