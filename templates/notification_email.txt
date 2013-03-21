@@ -4,7 +4,7 @@ There has been some activity in your projects at *Research engine* <https://rese
 ------------------------------------------------
 {% if item.category == "NotebookNotes" %}
 {{item.author.username.capitalize()}} wrote a new note in a notebook.
-{% elif item.categoty == "Revisions" &}
+{% elif item.categoty == "Revisions" %}
 {{item.author.username.capitalize()}} made a new revision of a collaborative writing.
 {% endif %}
 {{item.title}}
