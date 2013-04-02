@@ -28,6 +28,7 @@ class SendNotifications(GenericPage):
 ##########################
 
 def send_notifications(notifications_list, user):
+    if len(notifications_list) == 0: return
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
                                 subject = "Recent activity in your projects at Research Engine",
