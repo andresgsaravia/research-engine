@@ -1,0 +1,8 @@
+<div class="author">
+  <a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> made a new 
+  <a href="{{revision_absolute_link}}">revision</a> of the collaborative writing
+  <a href="{{writing_absolute_link}}">{{writing.title}}</a> from your project
+  <a href="{{project_absolute_link}}">{{project.name.replace("_", " ").capitalize()}}</a>.
+</div>
+<div class="content"><p>{% if revision.summary %}<em>Summary of changes:</em> {{revision.summary}}{% else %}<em>No summary of changes provided</em>{% endif %}</p></div>
+<div class="date">{{revision.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>

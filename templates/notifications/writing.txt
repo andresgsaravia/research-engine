@@ -1,0 +1,5 @@
+{{author.username.capitalize()}} <{{author_absolute_link}}> made a new revision <{{revision_absolute_link}}> of the collaborative writing "{{writing.title}}" <{{writing_absolute_link}}> from your project "{{project.name.replace("_", " ").capitalize()}}" <{{project_absolute_link}}>
+
+{% if revision.summary %}Summary of changes: {{revision.summary}}{% else %}No summary of changes provided{% endif %}
+
+{{revision.date.strftime("%d-%b-%Y %H:%M")}} (server time)

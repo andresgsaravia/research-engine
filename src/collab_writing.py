@@ -23,6 +23,14 @@ class Revisions(db.Model):
     content = db.TextProperty(required = True)
     summary = db.TextProperty(required = False)
 
+    def notification_html_and_txt(self, author, project, writing):
+        kw = {"author" : author, "project" : project, "writing" : writing, "revision" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key().id())
+        kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key().id())
+        return (render_str("notifications/writing.html", **kw), render_str("notifications/writing.txt", **kw))
+
 
 # Should have as parent a CollaborativeWriting
 class WritingComments(db.Model):
@@ -240,7 +248,10 @@ class EditWritingPage(GenericPage):
             new_revision = Revisions(author = user, content = content, summary = summary, parent = writing)
             link = "/%s/%s/writings/%s" % (user.username, projectname, writing_id)
             self.log_and_put(new_revision)
-            self.add_notifications(new_revision, project.writings_notifications_list, user, link)
+            html, txt = new_revision.notification_html_and_txt(user, project, writing)
+            self.add_notifications(category = new_revision.__class__.__name__,
+                                   author = user, html = html, txt = txt,
+                                   users_to_notify = project.writings_notifications_list)
             if status: writing.status = status
             self.log_and_put(writing, "Updating its last_updated and status property. ")
             self.log_and_put(project, "Updating its last_updated property. ")
