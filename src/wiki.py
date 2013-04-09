@@ -44,6 +44,13 @@ class WikiRevisions(db.Model):
     content = db.TextProperty(required = True)
     summary = db.StringProperty(required = False)
 
+    def notification_html_and_txt(self, author, project, wikipage):
+        kw = {"author" : author, "project" : project, "wikipage" : wikipage, "revision" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["wikipage_absolute_link"] = kw["project_absolute_link"] + "/wiki/page/" + wikipage.url
+        return (render_str("notifications/wiki.html", **kw), render_str("notifications/wiki.txt", **kw))
+
 
 ######################
 ##   Web Handlers   ##
@@ -138,6 +145,11 @@ class EditWikiPage(GenericPage):
             new_revision = WikiRevisions(author = user.key(), content = content, summary = summary,
                                          parent = wikipage)
             self.log_and_put(new_revision)
+            html, txt = new_revision.notification_html_and_txt(user, project, wikipage)
+            self.add_notifications(category = new_revision.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.wiki_notifications_list,
+                                   html = html, txt = txt)
             self.redirect("/%s/%s/wiki/page/%s" % (username, projectname, wikiurl))
         else:
             self.render("wiki_edit.html", p_author = p_author, project = project, wikipage = wikipage,
