@@ -1,0 +1,8 @@
+<div class="author">
+  <a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> wrote a new note 
+  <a href="{{note_absolute_link}}">{{note.title}}</a> in the notebook
+  <a href="{{notebook_absolute_link}}">{{notebook.name.replace("_", " ").capitalize()}}</a> from your project
+  <a href="{{project_absolute_link}}">{{project.name.replace("_", " ").capitalize()}}</a>.
+</div>
+<div class="content">{{note.content | md | safe}}</div>
+<div class="date">{{note.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>

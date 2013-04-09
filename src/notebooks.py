@@ -32,6 +32,13 @@ class NotebookNotes(db.Model):
     content = db.TextProperty(required = True)
     date = db.DateTimeProperty(auto_now_add = True)
 
+    def notification_html_and_txt(self, author, project, notebook):
+        kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + notebook.name
+        kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key().id())
+        return (render_str("notifications/note.html", **kw), render_str("notifications/note.txt", **kw))
 
 # Each comment should be a child of a NotebookNote
 class NoteComments(db.Model):
@@ -272,11 +279,14 @@ class NewNotePage(GenericPage):
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook)
             self.log_and_put(new_note)
-            link = "/%s/%s/notebooks/%s/%s" % (username, projectname, nbname, new_note.key().id())
-            self.add_notifications(new_note, project.nb_notifications_list, user, link)
+            html, txt = new_note.notification_html_and_txt(user, project, notebook)
+            self.add_notifications(category = new_note.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.nb_notifications_list,
+                                   html = html, txt = txt)
             self.log_and_put(notebook, "Updating last_updated property. ")
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect(link)
+            self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectname, nbname, new_note.key().id()))
 
 
 class NotePage(GenericPage):

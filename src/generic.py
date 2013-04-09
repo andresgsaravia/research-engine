@@ -85,15 +85,14 @@ class RegisteredUsers(db.Model):
         return projects_list
 
 
-# Each Notification should have as parent a RegisteredUser
+# Each Notification should have as parent a RegisteredUser, this parent is the one who will receive the notification
 class EmailNotifications(db.Model):
     author = db.ReferenceProperty(required = False)
     category = db.StringProperty(required = True)
-    title = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    link = db.StringProperty(required = False)       # Absolute link
+    html = db.TextProperty(required = True)
+    txt = db.TextProperty(required = False)
     sent = db.BooleanProperty(required = True)
+    date = db.DateTimeProperty(auto_now_add = True)
 
 
 ######################
@@ -133,16 +132,10 @@ class GenericPage(webapp2.RequestHandler):
         instance.delete()
         return
 
-    def add_notifications(self, item, users_to_notify, author, relative_link):
+    def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
-            notification = EmailNotifications(author = author, category = item.__class__.__name__,
-                                              link = DOMAIN_PREFIX + relative_link, sent = False, parent = u, content = 'None', title = 'None')
-            if notification.category == "NotebookNotes":
-                notification.title = item.title 
-                notification.content = item.content
-            elif notification.category == "Revisions":                
-                notification.title = "A new revision of a collaborative writing."
-                notification.content = item.content[0:500]
+            notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
+                                              sent = False, parent = u)
             self.log_and_put(notification)
         return
 

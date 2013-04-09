@@ -31,16 +31,16 @@ def send_notifications(notifications_list, user):
     if len(notifications_list) == 0: return
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
-                                subject = "Recent activity in your projects at Research Engine",
-                                body = render_str("notification_email.txt", 
-                                                  notifications_list = notifications_list, user = user),
-                                html = render_str("notification_email.html", 
-                                                  notifications_list = notifications_list, user = user))
+                                subject = "Research Engine: Recent activity in your projects.",
+                                body = render_str("notifications/notification_email.txt", 
+                                                  notifications_list = notifications_list),
+                                html = render_str("notifications/notification_email.html", 
+                                                  notifications_list = notifications_list))
     logging.debug("EMAIL: Sending an email with notifications to user %s" % user.username)
     message.send()
     for n in notifications_list:
         n.sent = True
-        logging.debug("DB WRITE: CRON: Changing a notification's 'sent' property to true")
+        logging.debug("DB WRITE: CRON: Changing a notification's 'sent' property to True")
         n.put()
     return
 
