@@ -35,6 +35,14 @@ class DataRevisions(db.Model):
     meta = db.TextProperty(required = False)
     datafile = blobstore.BlobReferenceProperty(required = True)
 
+    def notification_html_and_txt(self, author, project, dataset, datac):
+        kw = {"author" : author, "project" : project, "dataset" : dataset,
+              "datac" : datac, "rev" : self, 
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key().id())
+        kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key().id())
+        return (render_str("notifications/datarev.html", **kw), render_str("notifications/datarev.txt", **kw))
 
 ######################
 ##   Web Handlers   ##
@@ -488,9 +496,14 @@ class UploadDataRevisionHandler(GenericBlobstoreUpload):
         else:
             new_revision = DataRevisions(author = user.key(), meta = meta, datafile = datafile[0].key(), parent = datac)
             new_revision.put()
-            dataset.put()
-            datac.put()
-            project.put()
+            html, txt = new_revision.notification_html_and_txt(user, project, dataset, datac)
+            self.add_notifications(category = new_revision.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.datasets_notifications_list,
+                                   html = html, txt = txt)
+            self.log_and_put(dataset, "Updating last_updated property. ")
+            self.log_and_put(datac, "Updating last_updated property. ")
+            self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/%s/%s/datasets/%s/%s" % (username, projectname, dataset_id, datac_id))
 
 

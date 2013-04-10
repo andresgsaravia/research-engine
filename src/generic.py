@@ -206,6 +206,26 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
                       % (self.__class__.__name__, dbmodel.__name__, message))
         return
 
+    # Writing to the Datastore
+    def log_and_put(self, instance, message = ''):
+        logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
+                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        instance.put()
+        return
+
+    def log_and_delete(self, instance, message = ''):
+        logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
+                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        instance.delete()
+        return
+
+    def add_notifications(self, category, author, users_to_notify, html, txt):
+        for u in users_to_notify:
+            notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
+                                              sent = False, parent = u)
+            self.log_and_put(notification)
+        return
+
     # Users
     def get_login_user(self):
         cookie = self.request.cookies.get("username")
@@ -221,4 +241,3 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
                       % (self.__class__.__name__, logmessage))
         return RegisteredUsers.all().filter("username =", username).get()
-
