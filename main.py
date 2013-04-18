@@ -58,6 +58,8 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/upload', datasets.UploadDataRevisionHandler),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/edit/([0-9]+)', datasets.EditRevisionPage),
                                ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/update/([0-9]+)', datasets.UpdateDataRevisionHandler),
+                               # Code
+                               ('/(.+)/(.+)/code', code.MainPage), 
                                # Admin projects
                                ('/(.+)/(.+)/admin', projects.AdminPage),
                                ('/(.+)/(.+)/invite', projects.InvitePage),
