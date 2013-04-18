@@ -17,7 +17,6 @@ class Projects(db.Model):
     authors = db.ListProperty(db.Key)                        # There's no such thing as an "owner"
     started = db.DateTimeProperty(auto_now_add = True)
     last_updated = db.DateTimeProperty(auto_now = True)
-    references = db.ListProperty(db.Key)
     notebooks = db.ListProperty(db.Key)
     # Lists of authors to send notifications after an update
     wiki_notifications_list = db.ListProperty(db.Key)
@@ -134,8 +133,7 @@ class NewProjectPage(GenericPage):
         else:
             new_project = Projects(name = p_name.lower().replace(" ","_"),
                                    description = p_description,
-                                   authors = [user.key()],
-                                   references = [], notebooks = [],
+                                   authors = [user.key()], notebooks = [],
                                    wiki_notifications_list = [user.key()],
                                    nb_notifications_list = [user.key()],
                                    writings_notifications_list = [user.key()],
