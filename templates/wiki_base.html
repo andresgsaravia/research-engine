@@ -7,16 +7,16 @@
 {% endblock %}
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.name}}/wiki/page/main_page">Wiki</a>
-/  <a href="/{{p_author.username}}/{{project.name}}/wiki/page/{{wikiurl}}">{{wikiurl.replace("_", " ").title()}}</a>
+/  <a href="/{{p_author.username}}/{{project.key().id()}}/wiki/page/main_page">Wiki</a>
+/  <a href="/{{p_author.username}}/{{project.key().id()}}/wiki/page/{{wikiurl}}">{{wikiurl.replace("_", " ").title()}}</a>
 {% endblock %}
 
 {% block p_content %}
   
   <div class="w-navbar">
-    <a class="w-history-tab" href="/{{p_author.username}}/{{project.name}}/wiki/history/{{wikiurl}}">History</a>
-    <a class="w-edit-tab" href="/{{p_author.username}}/{{project.name}}/wiki/edit/{{wikiurl}}">Edit</a>
-    <a class="w-view-tab" href="/{{p_author.username}}/{{project.name}}/wiki/page/{{wikiurl}}">View</a>
+    <a class="w-history-tab" href="/{{p_author.username}}/{{project.key().id()}}/wiki/history/{{wikiurl}}">History</a>
+    <a class="w-edit-tab" href="/{{p_author.username}}/{{project.key().id()}}/wiki/edit/{{wikiurl}}">Edit</a>
+    <a class="w-view-tab" href="/{{p_author.username}}/{{project.key().id()}}/wiki/page/{{wikiurl}}">View</a>
   </div>
 
 

@@ -22,8 +22,8 @@ def link_and_text(mobject, link_prefix):
 
 # Returns a function suitable to use inside a re.sub(...) call to generate
 # a valid htlm <a ...> tag inside a wiki.
-def make_sub_repl(username, projectname):
-    link_prefix = "/%s/%s/wiki/page/" % (username, projectname)
+def make_sub_repl(username, projectid):
+    link_prefix = "/%s/%s/wiki/page/" % (username, projectid)
     return lambda x: '<a href="%s">%s</a>' % (link_and_text(x, link_prefix))
 
 
@@ -47,7 +47,7 @@ class WikiRevisions(db.Model):
     def notification_html_and_txt(self, author, project, wikipage):
         kw = {"author" : author, "project" : project, "wikipage" : wikipage, "revision" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key().id())
         kw["wikipage_absolute_link"] = kw["project_absolute_link"] + "/wiki/page/" + wikipage.url
         return (render_str("emails/wiki.html", **kw), render_str("emails/wiki.txt", **kw))
 
@@ -57,20 +57,20 @@ class WikiRevisions(db.Model):
 ######################
 
 class ViewWikiPage(projects.ProjectPage):
-    def get(self, username, projectname, wikiurl):
+    def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
         wikipage = WikiPages.all().ancestor(project).filter("url =", wikiurl.lower()).get()
         if wikipage: 
-            wikitext = re.sub(WIKILINKS_RE, make_sub_repl(username, projectname), wikipage.content) 
+            wikitext = re.sub(WIKILINKS_RE, make_sub_repl(username, projectid), wikipage.content) 
         else:
             wikitext = '' 
         self.render("wiki_view.html", p_author = p_author, project = project, 
@@ -78,25 +78,25 @@ class ViewWikiPage(projects.ProjectPage):
 
 
 class EditWikiPage(projects.ProjectPage):
-    def get(self, username, projectname, wikiurl):
+    def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
         wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
         self.render("wiki_edit.html", p_author = p_author, project = project, 
                     wikiurl = wikiurl, wikipage = wikipage)
 
-    def post(self, username, projectname, wikiurl):
+    def post(self, username, projectid, wikiurl):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/wiki/edit/' + wikiurl
+            goback = '/' + username + '/' + projectid + '/wiki/edit/' + wikiurl
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -104,10 +104,10 @@ class EditWikiPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
         content = self.request.get("content")
         summary = self.request.get("summary")
@@ -138,23 +138,23 @@ class EditWikiPage(projects.ProjectPage):
                                    author = user,
                                    users_to_notify = project.wiki_notifications_list,
                                    html = html, txt = txt)
-            self.redirect("/%s/%s/wiki/page/%s" % (username, projectname, wikiurl))
+            self.redirect("/%s/%s/wiki/page/%s" % (username, projectid, wikiurl))
         else:
             self.render("wiki_edit.html", p_author = p_author, project = project, wikipage = wikipage,
                         wikiurl = wikiurl, wikitext = content, error_message = error_message)
 
 
 class HistoryWikiPage(projects.ProjectPage):
-    def get(self, username, projectname, wikiurl):
+    def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
         wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
         revisions = []
@@ -166,16 +166,16 @@ class HistoryWikiPage(projects.ProjectPage):
 
 
 class RevisionWikiPage(projects.ProjectPage):
-    def get(self, username, projectname, wikiurl, rev_id):
+    def get(self, username, projectid, wikiurl, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_", " ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
         wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
         if not wikipage:
