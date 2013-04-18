@@ -55,7 +55,7 @@
 {% endfor %}
 <div class="button1">
   <a href="#" onClick="alert('\'Leave this project\' is not implemented yet... sorry.')">Leave this project</a>
-  <a href="/{{p_author.username}}/{{project.name}}/invite">Invite a collaborator</a>
+  <a href="/{{p_author.username}}/{{project.key().id()}}/invite">Invite a collaborator</a>
 </div>
 
 {% endblock %}

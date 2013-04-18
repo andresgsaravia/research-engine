@@ -6,7 +6,7 @@
 
 {% block p_content %}
 
-<h3>{{project.name.replace("_", " ").capitalize()}}</h3>
+<h3>{{project.name}}</h3>
 <div class="p-description">{{project.description.replace("\n", "<br/>") | safe}}</div>
 
 <div class="p-authors">

@@ -7,18 +7,18 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.name}}/forum">Forum</a>
+/  <a href="/{{p_author.username}}/{{project.key().id()}}/forum">Forum</a>
 {% endblock %}
 
 
 {% block p_content %}
  
-<div class="button1"><a href="/{{p_author.username}}/{{project.name}}/forum/new_thread">New thread</a></div>
+<div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/forum/new_thread">New thread</a></div>
 <h2>Forum</h2>
 
 {% for t in threads %}
 <div class="f-thread">
-  <div class="f-title"><a href="/{{p_author.username}}/{{project.name}}/forum/{{t.key().id()}}">{{t.title[0:160]}}</a></div>
+  <div class="f-title"><a href="/{{p_author.username}}/{{project.key().id()}}/forum/{{t.key().id()}}">{{t.title[0:160]}}</a></div>
   <div class="f-date">Last comment: {{t.last_updated.strftime("%d-%b-%Y")}}</div>
   <div class="f-author"><a href="/{{t.author.username}}">{{t.author.username.capitalize()}}</a></div>
 </div>

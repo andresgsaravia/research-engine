@@ -9,8 +9,8 @@
 
 
 {% block title_bar_extra %}
-  / <a href="/{{p_author.username}}/{{project.name}}/writings">Collaborative writings</a>
-  / <a href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">{{writing.title}}</a>
+  / <a href="/{{p_author.username}}/{{project.key().id()}}/writings">Collaborative writings</a>
+  / <a href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}">{{writing.title}}</a>
 {% endblock %}
 
 
@@ -24,11 +24,11 @@
   </div>
   
   <div class="w-navbar">
-    <a class="w-current-revision-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}">Current revision</a>
-    <a class="w-edit-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/edit">Edit</a>
-    <a class="w-history-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/history">History</a>
-    <a class="w-discussion-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/discussion">Discussion</a>
-    <a class="w-info-tab" href="/{{p_author.username}}/{{project.name}}/writings/{{writing.key().id()}}/info">Info</a>
+    <a class="w-current-revision-tab" href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}">Current revision</a>
+    <a class="w-edit-tab" href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}/edit">Edit</a>
+    <a class="w-history-tab" href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}/history">History</a>
+    <a class="w-discussion-tab" href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}/discussion">Discussion</a>
+    <a class="w-info-tab" href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}/info">Info</a>
   </div>
     
   {% block w_content %}

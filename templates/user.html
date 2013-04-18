@@ -19,7 +19,7 @@
   {% for p in projects %} 
     <div class="u-project">
       <a class="info-link" href="#">Description</a>
-      <div class="name"><a href="/{{page_user.username}}/{{p.name}}">{{p.name.capitalize().replace("_", " ")}}</a></div>
+      <div class="name"><a href="/{{page_user.username}}/{{p.key().id()}}">{{p.name}}</a></div>
       <div class="description"><br/>{{p.description.replace("\n", "<br/>") | safe}}<div class="u-pupdated">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</div>
       </div>
     </div>

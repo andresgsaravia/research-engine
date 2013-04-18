@@ -35,7 +35,7 @@ class NotebookNotes(db.Model):
     def notification_html_and_txt(self, author, project, notebook):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key().id())
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + notebook.name
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key().id())
         return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
@@ -52,13 +52,13 @@ class NoteComments(db.Model):
 ######################
 
 class NotebooksListPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -66,15 +66,14 @@ class NotebooksListPage(projects.ProjectPage):
         notebooks = []
         for n in Notebooks.all().ancestor(project).order("-last_updated").run():
             notebooks.append(n)
-        self.render("project_notebooks.html", p_author = p_author, project = project, notebooks = notebooks, n_len = len(notebooks))
-
+        self.render("notebooks_list.html", p_author = p_author, project = project, notebooks = notebooks, n_len = len(notebooks))
 
 
 class NewNotebookPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/notebooks/new'
+            goback = '/' + username + '/' + projectid + '/notebooks/new'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -82,24 +81,24 @@ class NewNotebookPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid.replace("_"," ").title())
             return
         kw = {"title" : "New notebook",
               "name_placeholder" : "Title of the new notebook",
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
-              "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.name),
-              "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.name),
+              "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key().id()),
+              "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key().id()),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname):
+    def post(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/notebooks/new'
+            goback = '/' + username + '/' + projectid + '/notebooks/new'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -107,10 +106,10 @@ class NewNotebookPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid.replace("_"," ").title())
             return
         have_error = False
         error_message = ''
@@ -138,8 +137,8 @@ class NewNotebookPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new notebook",
                   "content_placeholder" : "Description of the new notebook",
                   "submit_button_text" : "Create notebook",
-                  "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.name),
-                  "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.name),
+                  "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key().id()),
+                  "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key().id()),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value" : n_name,
                   "content_value" : n_description,
@@ -152,17 +151,17 @@ class NewNotebookPage(projects.ProjectPage):
                                      parent  = project.key())
             self.log_and_put(new_notebook)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, new_notebook.name))
+            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key().id(), new_notebook.name))
 
 
 class NotebookMainPage(projects.ProjectPage):
-    def get(self, username, projectname, nbname):
+    def get(self, username, projectid, nbname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -179,13 +178,13 @@ class NotebookMainPage(projects.ProjectPage):
 
 
 class NewNotePage(projects.ProjectPage):
-    def get(self, username, projectname, nbname):
+    def get(self, username, projectid, nbname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -195,7 +194,7 @@ class NewNotePage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        parent_url = "/%s/%s/notebooks" % (p_author.username, project.name)
+        parent_url = "/%s/%s/notebooks" % (p_author.username, project.key().id())
         kw = {"title" : "New note",
               "name_placeholder" : "Title of the new note",
               "content_placeholder" : "Content of the note",
@@ -206,10 +205,10 @@ class NewNotePage(projects.ProjectPage):
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + notebook.name, notebook.name.replace("_", " ").title())}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname, nbname):
+    def post(self, username, projectid, nbname):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/new_note'
+            goback = '/' + username + '/' + projectid + '/notebooks/' + nbname + '/new_note'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -217,7 +216,7 @@ class NewNotePage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -245,7 +244,7 @@ class NewNotePage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
-                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.key().id(), notebook.name),
                   "markdown_p" : True,
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
@@ -260,17 +259,17 @@ class NewNotePage(projects.ProjectPage):
                                    html = html, txt = txt)
             self.log_and_put(notebook, "Updating last_updated property. ")
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectname, nbname, new_note.key().id()))
+            self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectid, nbname, new_note.key().id()))
 
 
 class NotePage(projects.ProjectPage):
-    def get(self, username, projectname, nbname, note_id):
+    def get(self, username, projectid, nbname, note_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -291,10 +290,10 @@ class NotePage(projects.ProjectPage):
         self.render("notebook_note.html", p_author = p_author, project = project, 
                     notebook = notebook, note = note, comments = comments)
 
-    def post(self, username, projectname, nbname, note_id):
+    def post(self, username, projectid, nbname, note_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/' + note_id
+            goback = '/' + username + '/' + projectid + '/notebooks/' + nbname + '/' + note_id
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -302,7 +301,7 @@ class NotePage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -341,13 +340,13 @@ class NotePage(projects.ProjectPage):
 
 
 class EditNotebookPage(projects.ProjectPage):
-    def get(self, username, projectname, nbname):
+    def get(self, username, projectid, nbname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -361,17 +360,17 @@ class EditNotebookPage(projects.ProjectPage):
               "name_placeholder" : "Title of the notebook",
               "content_placeholder" : "Description of the notebook",
               "submit_button_text" : "Save Changes",
-              "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+              "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.key().id(), notebook.name),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
               "name_value" : notebook.name.replace("_", " ").capitalize(),
               "content_value" : notebook.description,
               "markdown_p" : True}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname, nbname):
+    def post(self, username, projectid, nbname):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/edit'
+            goback = '/' + username + '/' + projectid + '/notebooks/' + nbname + '/edit'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -379,7 +378,7 @@ class EditNotebookPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -416,7 +415,7 @@ class EditNotebookPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the notebook",
                   "content_placeholder" : "Description of the notebook",
                   "submit_button_text" : "Save Changes",
-                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.key().id(), notebook.name),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value" : n_name,
                   "content_value" : n_description,
@@ -427,17 +426,17 @@ class EditNotebookPage(projects.ProjectPage):
             notebook.name = n_name.replace(" ", "_").lower()
             notebook.description = n_description
             self.log_and_put(notebook)
-            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, notebook.name))
+            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key().id(), notebook.name))
 
 
 class EditNotePage(projects.ProjectPage):
-    def get(self, username, projectname, nbname, note_id):
+    def get(self, username, projectid, nbname, note_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -452,7 +451,7 @@ class EditNotePage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        nbs_url = "/%s/%s/notebooks" % (p_author.username, project.name)
+        nbs_url = "/%s/%s/notebooks" % (p_author.username, project.key().id())
         nb_url = nbs_url + "/" + notebook.name
         note_url = nb_url + "/" + note_id
         kw = {"title" : "Edit note",
@@ -467,10 +466,10 @@ class EditNotePage(projects.ProjectPage):
               "name_value" : note.title, "content_value" : note.content}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname, nbname, note_id):
+    def post(self, username, projectid, nbname, note_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/notebooks/' + nbname + '/' + note_id + '/edit'
+            goback = '/' + username + '/' + projectid + '/notebooks/' + nbname + '/' + note_id + '/edit'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -478,7 +477,7 @@ class EditNotePage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -511,7 +510,7 @@ class EditNotePage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
-                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.name, notebook.name),
+                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, project.key().id(), notebook.name),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
@@ -520,5 +519,5 @@ class EditNotePage(projects.ProjectPage):
                 note.title = n_title
                 note.content = n_content
                 self.log_and_put(note)
-            self.redirect("/%s/%s/notebooks/%s/%s" % (user.username, project.name, notebook.name, note.key().id()))
+            self.redirect("/%s/%s/notebooks/%s/%s" % (user.username, project.key().id(), notebook.name, note.key().id()))
 

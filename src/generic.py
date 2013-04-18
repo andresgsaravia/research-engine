@@ -218,6 +218,13 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         instance.delete()
         return
 
+    def add_notifications(self, category, author, users_to_notify, html, txt):
+        for u in users_to_notify:
+            notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
+                                              sent = False, parent = u)
+            self.log_and_put(notification)
+        return
+
     # Users
     def get_login_user(self):
         cookie = self.request.cookies.get("username")

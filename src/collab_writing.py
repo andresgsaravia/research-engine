@@ -26,7 +26,7 @@ class Revisions(db.Model):
     def notification_html_and_txt(self, author, project, writing):
         kw = {"author" : author, "project" : project, "writing" : writing, "revision" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key().id())
         kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key().id())
         kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key().id())
         return (render_str("emails/writing.html", **kw), render_str("emails/writing.txt", **kw))
@@ -44,13 +44,13 @@ class WritingComments(db.Model):
 ######################
 
 class WritingsListPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -62,10 +62,10 @@ class WritingsListPage(projects.ProjectPage):
 
 
 class NewWritingPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/writings/new'
+            goback = '/' + username + '/' + projectid + '/writings/new'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -73,7 +73,7 @@ class NewWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -82,14 +82,14 @@ class NewWritingPage(projects.ProjectPage):
               "name_placeholder" : "Title of the new writing",
               "content_placeholder" : "Description of the new writing",
               "submit_button_text" : "Create writing",
-              "cancel_url" : "/%s/%s/writings" % (p_author.username, project.name),
+              "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key().id()),
               "more_head" : "<style>.writings-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname):
+    def post(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/writings/new'
+            goback = '/' + username + '/' + projectid + '/writings/new'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -97,7 +97,7 @@ class NewWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -120,7 +120,7 @@ class NewWritingPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new writing",
                   "content_placeholder" : "Description of the new writing",
                   "submit_button_text" : "Create writing",
-                  "cancel_url" : "/%s/%s/writings" % (p_author.username, project.name),
+                  "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key().id()),
                   "more_head" : "<style>.writings-tab {background: white;}</style>",
                   "name_value" : w_name,
                   "content_value" : w_description,
@@ -133,17 +133,17 @@ class NewWritingPage(projects.ProjectPage):
                                                 parent = project.key())
             self.log_and_put(new_writing)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/writings/%s" % (user.username, project.name, new_writing.key().id()))
+            self.redirect("/%s/%s/writings/%s" % (user.username, project.key().id(), new_writing.key().id()))
 
 
 class ViewWritingPage(projects.ProjectPage):
-    def get(self, username, projectname, writing_id):
+    def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -158,13 +158,13 @@ class ViewWritingPage(projects.ProjectPage):
 
 
 class EditWritingPage(projects.ProjectPage):
-    def get(self, username, projectname, writing_id):
+    def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -181,10 +181,10 @@ class EditWritingPage(projects.ProjectPage):
             content = ''
         self.render("writings_edit.html", p_author = p_author, project = project, writing = writing, content = content, status = writing.status)
 
-    def post(self, username, projectname, writing_id):
+    def post(self, username, projectid, writing_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/writings/' + writing_id + '/edit'
+            goback = '/' + username + '/' + projectid + '/writings/' + writing_id + '/edit'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -192,7 +192,7 @@ class EditWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -222,7 +222,7 @@ class EditWritingPage(projects.ProjectPage):
                         content = content, status = status, summary = summary, error_message = error_message)
         else:
             new_revision = Revisions(author = user, content = content, summary = summary, parent = writing)
-            link = "/%s/%s/writings/%s" % (user.username, projectname, writing_id)
+            link = "/%s/%s/writings/%s" % (user.username, projectid, writing_id)
             self.log_and_put(new_revision)
             html, txt = new_revision.notification_html_and_txt(user, project, writing)
             self.add_notifications(category = new_revision.__class__.__name__,
@@ -235,13 +235,13 @@ class EditWritingPage(projects.ProjectPage):
 
 
 class HistoryWritingPage(projects.ProjectPage):
-    def get(self, username, projectname, writing_id):
+    def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -259,13 +259,13 @@ class HistoryWritingPage(projects.ProjectPage):
 
 
 class ViewRevisionPage(projects.ProjectPage):
-    def get(self, username, projectname, writing_id, rev_id):
+    def get(self, username, projectid, writing_id, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -285,13 +285,13 @@ class ViewRevisionPage(projects.ProjectPage):
 
 
 class DiscussionPage(projects.ProjectPage):
-    def get(self, username, projectname, writing_id):
+    def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -307,10 +307,10 @@ class DiscussionPage(projects.ProjectPage):
         self.render("writings_discussion.html", p_author = p_author, project = project,
                     writing = writing, comments = comments)
 
-    def post(self, username, projectname, writing_id):
+    def post(self, username, projectid, writing_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/writings/' + writing_id + '/discussion'
+            goback = '/' + username + '/' + projectid + '/writings/' + writing_id + '/discussion'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -318,7 +318,7 @@ class DiscussionPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -350,13 +350,13 @@ class DiscussionPage(projects.ProjectPage):
 
 
 class InfoPage(projects.ProjectPage):
-    def get(self, username, projectname, writing_id):
+    def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -369,10 +369,10 @@ class InfoPage(projects.ProjectPage):
         self.render("writings_info.html", p_author = p_author, project = project, writing = writing,
                     title_value = writing.title, description_value = writing.description)
 
-    def post(self, username, projectname, writing_id):
+    def post(self, username, projectid, writing_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/writings/' + writing_id + '/info'
+            goback = '/' + username + '/' + projectid + '/writings/' + writing_id + '/info'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -380,7 +380,7 @@ class InfoPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
             self.render("404.html")

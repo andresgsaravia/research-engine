@@ -22,50 +22,50 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks
-                               ('/(.+)/(.+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projectname
-                               ('/(.+)/(.+)/notebooks/new', notebooks.NewNotebookPage),
-                               ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's numeric id
-                               ('/(.+)/(.+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
-                               ('/(.+)/(.+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook name
-                               ('/(.+)/(.+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
-                               ('/(.+)/(.+)/notebooks/(.+)', notebooks.NotebookMainPage),
+                               ('/(.+)/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projectname
+                               ('/(.+)/([0-9]+)/notebooks/new', notebooks.NewNotebookPage),
+                               ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's numeric id
+                               ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
+                               ('/(.+)/([0-9]+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook name
+                               ('/(.+)/([0-9]+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
+                               ('/(.+)/([0-9]+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                # Collaborative writings
-                               ('/(.+)/(.+)/writings', collab_writing.WritingsListPage),
-                               ('/(.+)/(.+)/writings/new', collab_writing.NewWritingPage),
-                               ('/(.+)/(.+)/writings/([0-9]+)/edit', collab_writing.EditWritingPage),
-                               ('/(.+)/(.+)/writings/([0-9]+)/discussion', collab_writing.DiscussionPage),
-                               ('/(.+)/(.+)/writings/([0-9]+)/history', collab_writing.HistoryWritingPage),
-                               ('/(.+)/(.+)/writings/([0-9]+)/info', collab_writing.InfoPage),
-                               ('/(.+)/(.+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
-                               ('/(.+)/(.+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
+                               ('/(.+)/([0-9]+)/writings', collab_writing.WritingsListPage),
+                               ('/(.+)/([0-9]+)/writings/new', collab_writing.NewWritingPage),
+                               ('/(.+)/([0-9]+)/writings/([0-9]+)/edit', collab_writing.EditWritingPage),
+                               ('/(.+)/([0-9]+)/writings/([0-9]+)/discussion', collab_writing.DiscussionPage),
+                               ('/(.+)/([0-9]+)/writings/([0-9]+)/history', collab_writing.HistoryWritingPage),
+                               ('/(.+)/([0-9]+)/writings/([0-9]+)/info', collab_writing.InfoPage),
+                               ('/(.+)/([0-9]+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
+                               ('/(.+)/([0-9]+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
                                # Forum
-                               ('/(.+)/(.+)/forum', forum.MainPage),
-                               ('/(.+)/(.+)/forum/new_thread', forum.NewThreadPage),
-                               ('/(.+)/(.+)/forum/([0-9]+)', forum.ThreadPage),
+                               ('/(.+)/([0-9]+)/forum', forum.MainPage),
+                               ('/(.+)/([0-9]+)/forum/new_thread', forum.NewThreadPage),
+                               ('/(.+)/([0-9]+)/forum/([0-9]+)', forum.ThreadPage),
                                # Wiki
-                               ('/(.+)/(.+)/wiki/page/(.+)', wiki.ViewWikiPage),
-                               ('/(.+)/(.+)/wiki/edit/(.+)', wiki.EditWikiPage),
-                               ('/(.+)/(.+)/wiki/history/(.+)/rev/([0-9]+)', wiki.RevisionWikiPage),
-                               ('/(.+)/(.+)/wiki/history/(.+)', wiki.HistoryWikiPage),
+                               ('/(.+)/([0-9]+)/wiki/page/(.+)', wiki.ViewWikiPage),
+                               ('/(.+)/([0-9]+)/wiki/edit/(.+)', wiki.EditWikiPage),
+                               ('/(.+)/([0-9]+)/wiki/history/(.+)/rev/([0-9]+)', wiki.RevisionWikiPage),
+                               ('/(.+)/([0-9]+)/wiki/history/(.+)', wiki.HistoryWikiPage),
                                # Datasets
-                               ('/(.+)/(.+)/datasets', datasets.MainPage),
-                               ('/(.+)/(.+)/datasets/new', datasets.NewDataSetPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)', datasets.DataSetPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/new_data', datasets.NewDataConceptPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)', datasets.DataConceptPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/new', datasets.NewDataRevisionPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/edit', datasets.EditConceptPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/upload', datasets.UploadDataRevisionHandler),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/edit/([0-9]+)', datasets.EditRevisionPage),
-                               ('/(.+)/(.+)/datasets/([0-9]+)/([0-9]+)/update/([0-9]+)', datasets.UpdateDataRevisionHandler),
+                               ('/(.+)/([0-9]+)/datasets', datasets.MainPage),
+                               ('/(.+)/([0-9]+)/datasets/new', datasets.NewDataSetPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)', datasets.DataSetPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/new_data', datasets.NewDataConceptPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/([0-9]+)', datasets.DataConceptPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/([0-9]+)/new', datasets.NewDataRevisionPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/([0-9]+)/edit', datasets.EditConceptPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/([0-9]+)/upload', datasets.UploadDataRevisionHandler),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/([0-9]+)/edit/([0-9]+)', datasets.EditRevisionPage),
+                               ('/(.+)/([0-9]+)/datasets/([0-9]+)/([0-9]+)/update/([0-9]+)', datasets.UpdateDataRevisionHandler),
                                # Code
-                               ('/(.+)/(.+)/code', code.MainPage), 
+                               ('/(.+)/([0-9]+)/code', code.MainPage), 
                                # Admin projects
-                               ('/(.+)/(.+)/admin', projects.AdminPage),
-                               ('/(.+)/(.+)/invite', projects.InvitePage),
+                               ('/(.+)/([0-9]+)/admin', projects.AdminPage),
+                               ('/(.+)/([0-9]+)/invite', projects.InvitePage),
                                ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
 
-                               ('/(.+)/(.+)', projects.OverviewPage),
+                               ('/(.+)/([0-9]+)', projects.OverviewPage),
                                ('/(.+)', users.UserPage)],
                               debug = True)
 

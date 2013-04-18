@@ -14,15 +14,15 @@ import projects
 ######################
 
 class MainPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectname.replace("_", " ").title())
+            self.render("404.html", info = 'Project "%s" not found' % project.name)
             return
-        self.write(project.name.replace("_", " ").title() + " will have a source code section here soon.")
+        self.write(project.name + " will have a source code section here soon.")

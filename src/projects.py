@@ -5,7 +5,6 @@ from generic import *
 import email_messages
 
 SHORT_DESCRIPTION_LENGTH = 150
-PROJECT_NAME_REGEXP = r'^[a-zA-Z0-9\s-]+$'
 
 ###########################
 ##   Datastore Objects   ##
@@ -74,13 +73,14 @@ class Projects(db.Model):
 ######################
 
 class ProjectPage(GenericPage):
-    def get_project(self, p_author, projectname):
-        project = False
-        for p in Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
-        return project
+    def get_project(self, p_author, projectid, message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of Projects. %s"
+                      % (self.__class__.__name__, message))
+        project = Projects.get_by_id(int(projectid))
+        if project.user_is_author(p_author): 
+            return project
+        else:
+            return False
 
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
@@ -91,16 +91,16 @@ class ProjectPage(GenericPage):
 
 
 class OverviewPage(ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectname.replace("_", " ").title())
+            self.render("404.html", info = 'Project with key "%s" not found' % projectid)
             return
         self.render("project_overview.html", p_author = p_author, project = project, authors = project.list_of_authors(self))
 
@@ -127,7 +127,7 @@ class NewProjectPage(GenericPage):
             self.redirect("/%s/new_project" % user.username)
         have_error = False
         error_message = ''
-        p_name = self.request.get('p_name').replace("_", " ").strip()
+        p_name = self.request.get('p_name').strip()
         p_description = self.request.get('p_description')
         if not p_name:
             have_error = True
@@ -135,26 +135,11 @@ class NewProjectPage(GenericPage):
         if not p_description:
             have_error = True
             error_message = 'Please provide a description of the project. '
-        if p_name and (not re.match(PROJECT_NAME_REGEXP, p_name)):
-            have_error = True
-            error_message = 'Invalid project name. Please user only letters, numbers, spaces and dashes. '
-        if p_name and p_name.lower() == 'new project':
-            have_error = True
-            error_message = 'Invalid project name. Please choose a different name. '
-        # Check for duplicate project names.
-        duplicate_p = False
-        for p_key in user.my_projects:
-            if self.get_item_from_key(p_key).name == p_name.lower().replace(" ", "_"):
-                duplicate_p = True
-                break
-        if duplicate_p:
-            have_error = True
-            error_message = "There is already a project with the same name. Please choose a different one. "
         if have_error:
             self.render("project_new.html", user = user, p_name = p_name, p_description = p_description,
                         error_message = error_message)
         else:
-            new_project = Projects(name = p_name.lower().replace(" ","_"),
+            new_project = Projects(name = p_name,
                                    description = p_description,
                                    authors = [user.key()], notebooks = [],
                                    wiki_notifications_list = [user.key()],
@@ -167,15 +152,15 @@ class NewProjectPage(GenericPage):
             self.log_and_put(new_project, "Creating a new project. ")
             user.my_projects.append(new_project.key())
             self.log_and_put(user, "Appending a project to a RegisteredUser's my_projects list ")
-            self.redirect("/%s/%s" % (user.username, new_project.name))
+            self.redirect("/%s/%s" % (user.username, new_project.key().id()))
 
 
 class AdminPage(ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         user = self.get_login_user()
         h = self.request.get("h")           # This will be present if a new user is invited to the project.
         if not user:
-            goback = '/' + username + '/' + projectname + '/admin'
+            goback = '/' + username + '/' + projectid + '/admin'
             if h: goback += "?h=" + h
             self.redirect("/login?goback=%s" % goback)
             return
@@ -183,7 +168,7 @@ class AdminPage(ProjectPage):
         if not p_author:
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -191,13 +176,13 @@ class AdminPage(ProjectPage):
         # New user here?
         if h and (hash_str(username + user.username + str(project.key())) == h):
             project.add_author(user)
-            self.redirect("/%s/%s/admin" % (user.username, projectname))
+            self.redirect("/%s/%s/admin" % (user.username, projectid))
             return
         if not project.user_is_author(user):
             self.write("You are not a member of this project.")
             return
         if not user.key() == p_author.key():
-            self.redirect("/%s/%s/admin" % (user.username, projectname))
+            self.redirect("/%s/%s/admin" % (user.username, projectid))
             return
         kw = {"wiki_p"          : "checked" if user.key() in project.wiki_notifications_list else "",
               "notebooks_p"     : "checked" if user.key() in project.nb_notifications_list else "",
@@ -210,17 +195,17 @@ class AdminPage(ProjectPage):
               "authors"         : project.list_of_authors(self)}
         self.render('project_admin.html', p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname):
+    def post(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/admin'
+            goback = '/' + username + '/' + projectid + '/admin'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -286,17 +271,17 @@ class AdminPage(ProjectPage):
         
 
 class InvitePage(ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/invite'
+            goback = '/' + username + '/' + projectid + '/invite'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -309,22 +294,22 @@ class InvitePage(ProjectPage):
               "name_placeholder" : "Write here the name of the user you want to invite.",
               "content_placeholder" : "Write here a brief invitation message.",
               "submit_button_text" : "Send invitation",
-              "cancel_url" : "/%s/%s/admin" % (username, projectname),
-              "title_bar_extra" : '/ <a href="/%s/%s/admin">Admin</a>' % (username, projectname),
+              "cancel_url" : "/%s/%s/admin" % (username, projectid),
+              "title_bar_extra" : '/ <a href="/%s/%s/admin">Admin</a>' % (username, projectid),
               "more_head" : "<style>.admin-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname):
+    def post(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/invite'
+            goback = '/' + username + '/' + projectid + '/invite'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -337,8 +322,8 @@ class InvitePage(ProjectPage):
               "name_placeholder" : "Write here the name of the user you want to invite.",
               "content_placeholder" : "Write here a brief invitation message.",
               "submit_button_text" : "Send invitation",
-              "cancel_url" : "/%s/%s/admin" % (username, projectname),
-              "title_bar_extra" : '/ <a href="/%s/%s/admin">Admin</a>' % (username, projectname),
+              "cancel_url" : "/%s/%s/admin" % (username, projectid),
+              "title_bar_extra" : '/ <a href="/%s/%s/admin">Admin</a>' % (username, projectid),
               "more_head" : "<style>.admin-tab {background: white;}</style>"}
         have_error = False
         kw["name_value"] = self.request.get("name")

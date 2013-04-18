@@ -11,15 +11,15 @@
 {% endblock %}
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.name}}/notebooks">Notebooks</a>
-/  <a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}">{{notebook.name.replace("_"," ").title()}}</a>
+/  <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks">Notebooks</a>
+/  <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.name}}">{{notebook.name.replace("_"," ").title()}}</a>
 {% endblock %}
 
 {% block p_content %}
 
 <div class="nb-heading">
-  <div class="button1"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/new_note">New note</a></div>
-  <div class="button1"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/edit">Edit notebook</a></div>
+  <div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.name}}/new_note">New note</a></div>
+  <div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.name}}/edit">Edit notebook</a></div>
   <div class="nb-name">{{notebook.name.replace("_"," ").capitalize()}}</div>
 </div>
 
@@ -27,7 +27,7 @@
 <div class="note">
   <div class="note-head">
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
-    <div class="note-title"><a href="/{{p_author.username}}/{{project.name}}/notebooks/{{notebook.name}}/{{note.key().id()}}">{{note.title}}</a></div>
+    <div class="note-title"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.name}}/{{note.key().id()}}">{{note.title}}</a></div>
   </div>
   <div class="note-content">{{note.content | md | safe}}</div>
 </div>

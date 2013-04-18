@@ -31,16 +31,16 @@ class ForumComments(db.Model):
 ######################
 
 class MainPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
+            self.render("404.html", info = 'Project "%s" not found.' % projectid.replace("_"," ").title())
             return
         threads = []
         for t in ForumThreads.all().ancestor(project).order("-last_updated").run():
@@ -49,13 +49,13 @@ class MainPage(projects.ProjectPage):
 
 
 class NewThreadPage(projects.ProjectPage):
-    def get(self, username, projectname):
+    def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -64,16 +64,16 @@ class NewThreadPage(projects.ProjectPage):
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
               "submit_button_text" : "Create thread",
-              "cancel_url" : "/%s/%s/forum" % (p_author.username, project.name),
+              "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key().id()),
               "more_head" : "<style>.forum-tab {background: white;}</style>",
               "markdown_p" : True,
-              "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectname)}
+              "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
-    def post(self, username, projectname):
+    def post(self, username, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/forum/new_thread'
+            goback = '/' + username + '/' + projectid + '/forum/new_thread'
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -81,7 +81,7 @@ class NewThreadPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -105,26 +105,26 @@ class NewThreadPage(projects.ProjectPage):
                   "content_placeholder" : "Content of the thread",
                   "submit_button_text" : "Create thread",
                   "markdown_p" : True,
-                  "cancel_url" : "/%s/%s/forum" % (p_author.username, project.name),
+                  "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key().id()),
                   "more_head" : "<style>.forum-tab {background: white;}</style>",
                   "name_value": t_title, "content_value": t_content, "error_message" : error_message,
-                  "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectname)}
+                  "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key(), title = t_title, content = t_content, parent = project)
             self.log_and_put(new_thread)
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/forum/%s" % (user.username, project.name, new_thread.key().id()))
+            self.redirect("/%s/%s/forum/%s" % (user.username, project.key().id(), new_thread.key().id()))
 
 
 class ThreadPage(projects.ProjectPage):
-    def get(self, username, projectname, thread_id):
+    def get(self, username, projectid, thread_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -139,10 +139,10 @@ class ThreadPage(projects.ProjectPage):
             comments.append(c)
         self.render("forum_thread.html", p_author = p_author, project = project, thread = thread, comments = comments)
 
-    def post(self, username, projectname, thread_id):
+    def post(self, username, projectid, thread_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectname + '/forum/' + thread_id
+            goback = '/' + username + '/' + projectid + '/forum/' + thread_id
             self.redirect("/login?goback=%s" % goback)
             return
         p_author = self.get_user_by_username(username)
@@ -150,7 +150,7 @@ class ThreadPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        project = self.get_project(p_author, projectname)
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html")
