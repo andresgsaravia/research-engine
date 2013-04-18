@@ -38,7 +38,7 @@ class NotebookNotes(db.Model):
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + notebook.name
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key().id())
-        return (render_str("notifications/note.html", **kw), render_str("notifications/note.txt", **kw))
+        return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
 
 # Each comment should be a child of a NotebookNote
 class NoteComments(db.Model):

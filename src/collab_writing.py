@@ -29,7 +29,7 @@ class Revisions(db.Model):
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
         kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key().id())
         kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key().id())
-        return (render_str("notifications/writing.html", **kw), render_str("notifications/writing.txt", **kw))
+        return (render_str("emails/writing.html", **kw), render_str("emails/writing.txt", **kw))
 
 
 # Should have as parent a CollaborativeWriting

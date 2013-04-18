@@ -42,7 +42,7 @@ class DataRevisions(db.Model):
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
         kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key().id())
         kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key().id())
-        return (render_str("notifications/datarev.html", **kw), render_str("notifications/datarev.txt", **kw))
+        return (render_str("emails/datarev.html", **kw), render_str("emails/datarev.txt", **kw))
 
 ######################
 ##   Web Handlers   ##

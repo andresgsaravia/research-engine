@@ -32,9 +32,9 @@ def send_notifications(notifications_list, user):
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
                                 subject = "Research Engine: Recent activity in your projects.",
-                                body = render_str("notifications/notification_email.txt", 
+                                body = render_str("emails/notification_email.txt", 
                                                   notifications_list = notifications_list),
-                                html = render_str("notifications/notification_email.html", 
+                                html = render_str("emails/notification_email.html", 
                                                   notifications_list = notifications_list))
     logging.debug("EMAIL: Sending an email with notifications to user %s" % user.username)
     message.send()
@@ -52,6 +52,24 @@ def send_verify_email(user):
     logging.debug("EMAIL: Sending an email verification request.")
     message.send()
     return
+
+
+def send_invitation_to_project(project, inviting, invited):
+    h = hash_str(inviting.username + invited.username + str(project.key()))
+    kw = {"project" : project,
+          "inviting" : inviting,
+          "invited" : invited,
+          "DOMAIN_PREFIX" : DOMAIN_PREFIX,
+          "accept_link" : "%s/%s/%s/admin?h=%s" % (DOMAIN_PREFIX, inviting.username, project.name, h)}
+    message = mail.EmailMessage(sender = ADMIN_EMAIL,
+                                to = invited.email,
+                                subject = "Research Engine: %s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name.replace("_", " ").title()),
+                                body = render_str("emails/invite_to_project.txt" , **kw),
+                                html = render_str("emails/invite_to_project.html", **kw))
+    logging.debug("EMAIL: Sending an email with a invitation to a project from user %s to user %s" % (inviting.username, invited.username))
+    message.send()
+    return
+
 
 
 SIGNATURE = """
@@ -73,7 +91,7 @@ If you didn't made this request, please ignore this email.
     body += SIGNATURE
 
     html = """
-We received a request to create a new account on our website with this email address. If you made this request please visit the following link to confirm your email by clicking the following link:<br/><br/>
+We received a request to create a new account on our website with this email address. If you made this request please visit the following link to confirm your email:<br/><br/>
 <a href="%s">%s</a><br/><br/>
 If you didn't made this request, please ignore this email.
 """ % (verify_link, verify_link)

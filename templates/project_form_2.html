@@ -13,13 +13,15 @@
   <h3>{{subtitle}}</h3>
 
   <form method="post">
-    <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" />
+    <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus/>
     <textarea name="content" placeholder="{{content_placeholder}}">{{content_value}}</textarea>
     <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" />
     <input type="button" value="Cancel" class="bottom-buttons" onClick="window.location = '{{cancel_url}}'" />
   </form>
 
-  <br/><div class="error">{{error_message}}</div>
+  <br/>
+  <div class="error">{{error_message | safe}}</div>
+  <div class="info">{{info_message | safe}}</div>
 
 {% if markdown_p %}<div class="help">
   <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 

@@ -8,12 +8,7 @@
 
 <h2>Your settings for this project</h2>
 
-
 <form method="post">
-
-  <h3>Project description</h3>
-  
-  <textarea name="p_description" placeholder="Description of the project.">{{p_description}}</textarea>
 
   <h3>Email notifications</h3>
 
@@ -42,10 +37,25 @@
     A new post in a <strong>forum</strong> thread
   </div>
 
+  <h2>Project settings</h2>
+
+  <h3>Description</h3>
+  
+  <textarea name="p_description" placeholder="Description of the project.">{{p_description}}</textarea>
+  <br/>
   <input type="submit" value="Save changes" />
 </form>
 
 <div class="info">{{info_message}}</div>
 <div class="error">{{error}}</div>
+
+<h3>Authors:</h3>
+{% for a in authors %}
+  <div class="p-author"><a href="/{{a.username}}">{{a.username.capitalize()}}</a></div>
+{% endfor %}
+<div class="button1">
+  <a href="#" onClick="alert('\'Leave this project\' is not implemented yet... sorry.')">Leave this project</a>
+  <a href="/{{p_author.username}}/{{project.name}}/invite">Invite a collaborator</a>
+</div>
 
 {% endblock %}

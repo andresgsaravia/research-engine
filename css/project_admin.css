@@ -16,3 +16,8 @@ textarea {
     padding: 0.5em;
     height: 20em;
 }
+
+.button1 {
+    margin-top: 1em;
+    float: left;
+}

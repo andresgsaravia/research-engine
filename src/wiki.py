@@ -49,7 +49,7 @@ class WikiRevisions(db.Model):
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + project.name
         kw["wikipage_absolute_link"] = kw["project_absolute_link"] + "/wiki/page/" + wikipage.url
-        return (render_str("notifications/wiki.html", **kw), render_str("notifications/wiki.txt", **kw))
+        return (render_str("emails/wiki.html", **kw), render_str("emails/wiki.txt", **kw))
 
 
 ######################

@@ -5,6 +5,10 @@ h2 {
     padding-top: 0.3em;
 }
 
+h3 { 
+    margin-left: 5%;
+}
+
 form {
     width: 90%;
     margin-left: 5%;
