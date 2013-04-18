@@ -177,7 +177,8 @@ class AdminPage(ProjectPage):
               "code_p"          : "checked" if user.key() in project.code_notifications_list else "",
               "datasets_p"      : "checked" if user.key() in project.datasets_notifications_list else "",
               "forum_threads_p" : "checked" if user.key() in project.forum_threads_notifications_list else "",
-              "forum_posts_p"   : "checked" if user.key() in project.forum_posts_notifications_list else ""}
+              "forum_posts_p"   : "checked" if user.key() in project.forum_posts_notifications_list else "",
+              "p_description"   : project.description}
         self.render('project_admin.html', p_author = p_author, project = project, **kw)
 
     def post(self, username, projectname):
@@ -198,13 +199,25 @@ class AdminPage(ProjectPage):
         if not project.user_is_author(user):
             self.write("You are not a member of this project.")
             return
-        kw = {"wiki_p" : self.request.get("wiki_p"),
-              "notebooks_p" : self.request.get('notebooks_p'),
-              "writings_p" : self.request.get('writings_p'),
-              "code_p" : self.request.get('code_p'),
-              "datasets_p" : self.request.get('datasets_p'),
+        kw = {"wiki_p"          : self.request.get("wiki_p"),
+              "notebooks_p"     : self.request.get('notebooks_p'),
+              "writings_p"      : self.request.get('writings_p'),
+              "code_p"          : self.request.get('code_p'),
+              "datasets_p"      : self.request.get('datasets_p'),
               "forum_threads_p" : self.request.get('forum_threads_p'),
-              "forum_posts_p" : self.request.get('forum_posts_p')}
+              "forum_posts_p"   : self.request.get('forum_posts_p'),
+              "p_description"   : self.request.get('p_description')}
+
+        have_error = False
+        kw["error"] = ''
+        ## Project description
+        if kw["p_description"]:
+            project.description = kw["p_description"]
+        else:
+            have_error = True
+            kw["error"] = "You must provide a description for the project. "
+
+        ## Email notifications
         # Add to list
         if kw["wiki_p"] and not (user.key() in project.wiki_notifications_list):
             project.wiki_notifications_list.append(user.key())
@@ -235,7 +248,9 @@ class AdminPage(ProjectPage):
             project.forum_threads_notifications_list.remove(user.key())
         if (not kw["forum_posts_p"]) and (user.key() in project.forum_posts_notifications_list):
             project.forum_posts_notifications_list.remove(user.key())
-        self.log_and_put(project, "Updating email notifications")
-        kw["info_message"] = "Changes saved"
+    
+        if not have_error:
+            self.log_and_put(project, "Updating email notifications and/or description. ")
+            kw["info_message"] = "Changes saved"
         self.render('project_admin.html', p_author = p_author, project = project, **kw)
         

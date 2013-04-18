@@ -3,3 +3,16 @@
 .admin-tab {
     background: white;
 }
+
+input[type=submit] {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+textarea {
+    margin-top: 0.5em;
+    font-family: Helvetica, Arial, sans-serif;
+    width: 70%;
+    padding: 0.5em;
+    height: 20em;
+}

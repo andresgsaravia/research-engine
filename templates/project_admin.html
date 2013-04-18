@@ -8,11 +8,17 @@
 
 <h2>Your settings for this project</h2>
 
-<h3>Email notifications</h3>
-
-<p>You are subscribed to update notifications for:</p>
 
 <form method="post">
+
+  <h3>Project description</h3>
+  
+  <textarea name="p_description" placeholder="Description of the project.">{{p_description}}</textarea>
+
+  <h3>Email notifications</h3>
+
+  <p>You will receive an email notification for:</p>
+
   <div class="notif-checkbox">
     <input type="checkbox" value="checked" name="wiki_p" {{wiki_p}}/>
     An update in a <strong>wiki</strong> page
@@ -40,5 +46,6 @@
 </form>
 
 <div class="info">{{info_message}}</div>
+<div class="error">{{error}}</div>
 
 {% endblock %}
