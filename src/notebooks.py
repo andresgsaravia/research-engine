@@ -151,8 +151,6 @@ class NewNotebookPage(projects.ProjectPage):
                                      description = n_description, 
                                      parent  = project.key())
             self.log_and_put(new_notebook)
-            user.my_notebooks.append(new_notebook.key())
-            self.log_and_put(user, "Updating my_notebooks property. ")
             self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, new_notebook.name))
 

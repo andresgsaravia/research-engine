@@ -68,7 +68,6 @@ class RegisteredUsers(db.Model):
     about_me = db.TextProperty(required = False)
     google_userid = db.StringProperty(required = False)
     my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
-    my_notebooks = db.ListProperty(db.Key)                  # keys tootebooks (defined in notebooks.py)
     following = db.ListProperty(db.Key)
 
     def list_of_projects(self):
