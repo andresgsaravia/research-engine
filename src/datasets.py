@@ -48,18 +48,14 @@ class DataRevisions(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class MainPage(GenericPage):
+class MainPage(projects.ProjectPage):
     def get(self, username, projectname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -70,18 +66,14 @@ class MainPage(GenericPage):
         self.render("datasets_main.html", p_author = p_author, project = project, datasets = datasets)
 
 
-class NewDataSetPage(GenericPage):
+class NewDataSetPage(projects.ProjectPage):
     def get(self, username, projectname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -106,11 +98,7 @@ class NewDataSetPage(GenericPage):
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -149,18 +137,14 @@ class NewDataSetPage(GenericPage):
             self.redirect("/%s/%s/datasets/%s" % (user.username, project.name, new_dataset.key().id()))
 
 
-class DataSetPage(GenericPage):
+class DataSetPage(projects.ProjectPage):
     def get(self, username, projectname, dataset_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -176,18 +160,14 @@ class DataSetPage(GenericPage):
         self.render("dataset_view.html", p_author = p_author, project = project, dataset = dataset, dataconcepts = dataconcepts)
 
 
-class NewDataConceptPage(GenericPage):
+class NewDataConceptPage(projects.ProjectPage):
     def get(self, username, projectname, dataset_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -218,11 +198,7 @@ class NewDataConceptPage(GenericPage):
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -267,18 +243,14 @@ class NewDataConceptPage(GenericPage):
             self.redirect("/%s/%s/datasets/%s/%s" % (user.username, project.name, dataset.key().id(), new_dataconcept.key().id()))
 
 
-class DataConceptPage(GenericPage):
+class DataConceptPage(projects.ProjectPage):
     def get(self, username, projectname, dataset_id, datac_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -300,18 +272,14 @@ class DataConceptPage(GenericPage):
                     dataset = dataset, datac = datac, revisions = revisions)
 
 
-class EditConceptPage(GenericPage):
+class EditConceptPage(projects.ProjectPage):
     def get(self, username, projectname, dataset_id, datac_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -340,11 +308,7 @@ class EditConceptPage(GenericPage):
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -380,18 +344,14 @@ class EditConceptPage(GenericPage):
             self.redirect("/%s/%s/datasets/%s/%s" % (username, projectname, dataset_id, datac_id) )
 
 
-class NewDataRevisionPage(GenericPage):
+class NewDataRevisionPage(projects.ProjectPage):
     def get(self, username, projectname, dataset_id, datac_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
@@ -411,18 +371,14 @@ class NewDataRevisionPage(GenericPage):
                     dataset = dataset, datac = datac, upload_url = upload_url, error_message = self.request.get("error_message"))
 
 
-class EditRevisionPage(GenericPage):
+class EditRevisionPage(projects.ProjectPage):
     def get(self, username, projectname, dataset_id, datac_id, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")

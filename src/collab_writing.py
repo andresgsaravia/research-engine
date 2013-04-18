@@ -43,18 +43,14 @@ class WritingComments(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class WritingsListPage(GenericPage):
+class WritingsListPage(projects.ProjectPage):
     def get(self, username, projectname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -65,7 +61,7 @@ class WritingsListPage(GenericPage):
         self.render("writings_list.html", p_author = p_author, project = project, writings = writings)
 
 
-class NewWritingPage(GenericPage):
+class NewWritingPage(projects.ProjectPage):
     def get(self, username, projectname):
         user = self.get_login_user()
         if not user:
@@ -77,11 +73,7 @@ class NewWritingPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -105,11 +97,7 @@ class NewWritingPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -148,18 +136,14 @@ class NewWritingPage(GenericPage):
             self.redirect("/%s/%s/writings/%s" % (user.username, project.name, new_writing.key().id()))
 
 
-class ViewWritingPage(GenericPage):
+class ViewWritingPage(projects.ProjectPage):
     def get(self, username, projectname, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -173,18 +157,14 @@ class ViewWritingPage(GenericPage):
         self.render("writings_view.html", p_author = p_author, project = project, writing = writing, last_revision = last_revision)
 
 
-class EditWritingPage(GenericPage):
+class EditWritingPage(projects.ProjectPage):
     def get(self, username, projectname, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -212,11 +192,7 @@ class EditWritingPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -258,18 +234,14 @@ class EditWritingPage(GenericPage):
             self.redirect(link)
 
 
-class HistoryWritingPage(GenericPage):
+class HistoryWritingPage(projects.ProjectPage):
     def get(self, username, projectname, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -286,18 +258,14 @@ class HistoryWritingPage(GenericPage):
                     writing = writing, revisions = revisions)
 
 
-class ViewRevisionPage(GenericPage):
+class ViewRevisionPage(projects.ProjectPage):
     def get(self, username, projectname, writing_id, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -316,18 +284,14 @@ class ViewRevisionPage(GenericPage):
                     writing = writing, revision = revision)
 
 
-class DiscussionPage(GenericPage):
+class DiscussionPage(projects.ProjectPage):
     def get(self, username, projectname, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -354,11 +318,7 @@ class DiscussionPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -389,18 +349,14 @@ class DiscussionPage(GenericPage):
                     error_message = error_message)
 
 
-class InfoPage(GenericPage):
+class InfoPage(projects.ProjectPage):
     def get(self, username, projectname, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -424,11 +380,7 @@ class InfoPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")

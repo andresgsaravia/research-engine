@@ -30,21 +30,17 @@ class ForumComments(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class MainPage(GenericPage):
+class MainPage(projects.ProjectPage):
     def get(self, username, projectname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
             return
         threads = []
         for t in ForumThreads.all().ancestor(project).order("-last_updated").run():
@@ -52,18 +48,14 @@ class MainPage(GenericPage):
         self.render("forum_main.html", p_author = p_author, project = project, threads = threads)
 
 
-class NewThreadPage(GenericPage):
+class NewThreadPage(projects.ProjectPage):
     def get(self, username, projectname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -89,11 +81,7 @@ class NewThreadPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -129,18 +117,14 @@ class NewThreadPage(GenericPage):
             self.redirect("/%s/%s/forum/%s" % (user.username, project.name, new_thread.key().id()))
 
 
-class ThreadPage(GenericPage):
+class ThreadPage(projects.ProjectPage):
     def get(self, username, projectname, thread_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -166,11 +150,7 @@ class ThreadPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")

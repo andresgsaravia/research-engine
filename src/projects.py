@@ -2,7 +2,6 @@
 # For creating, managing and updating projects.
 
 from generic import *
-from notebooks import Notebooks
 
 SHORT_DESCRIPTION_LENGTH = 150
 PROJECT_NAME_REGEXP = r'^[a-zA-Z0-9\s-]+$'
@@ -59,23 +58,29 @@ class Projects(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class OverviewPage(GenericPage):
-    def get(self, username, project_name):
-        p_user = self.get_user_by_username(username)
-        if not p_user:
-            self.error(404)
-            self.render("404.html")
-            return
+class ProjectPage(GenericPage):
+    def get_project(self, p_author, projectname):
         project = False
-        for p in Projects.all().filter("name =", project_name.lower()).run():
-            if p.user_is_author(p_user):
+        for p in Projects.all().filter("name =", projectname.lower()).run():
+            if p.user_is_author(p_author):
                 project = p
                 break
+        return project
+
+
+class OverviewPage(ProjectPage):
+    def get(self, username, projectname):
+        p_author = self.get_user_by_username(username)
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = 'User "%s" not found' % username)
+            return
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project "%s" not found' % projectname.replace("_", " ").title())
             return
-        self.render("project_overview.html", p_user = p_user, project = project, p_author = p_user, authors = project.list_of_authors(self))
+        self.render("project_overview.html", p_author = p_author, project = project, authors = project.list_of_authors(self))
 
 
 class NewProjectPage(GenericPage):
@@ -144,7 +149,7 @@ class NewProjectPage(GenericPage):
             self.redirect("/%s/%s" % (user.username, new_project.name))
 
 
-class AdminPage(GenericPage):
+class AdminPage(ProjectPage):
     def get(self, username, projectname):
         user = self.get_login_user()
         if not user:
@@ -155,11 +160,7 @@ class AdminPage(GenericPage):
         if not p_author:
             self.render("404.html")
             return
-        project = False
-        for p in Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -189,11 +190,7 @@ class AdminPage(GenericPage):
         if not p_author:
             self.render("404.html")
             return
-        project = False
-        for p in Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")

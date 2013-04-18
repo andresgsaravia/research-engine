@@ -51,18 +51,14 @@ class NoteComments(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class NotebooksListPage(GenericPage):
+class NotebooksListPage(projects.ProjectPage):
     def get(self, username, projectname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
             self.render("404.html")
@@ -74,7 +70,7 @@ class NotebooksListPage(GenericPage):
 
 
 
-class NewNotebookPage(GenericPage):
+class NewNotebookPage(projects.ProjectPage):
     def get(self, username, projectname):
         user = self.get_login_user()
         if not user:
@@ -84,16 +80,12 @@ class NewNotebookPage(GenericPage):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
             return
         kw = {"title" : "New notebook",
               "name_placeholder" : "Title of the new notebook",
@@ -113,16 +105,12 @@ class NewNotebookPage(GenericPage):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'User "%s" not found.' % username)
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project "%s" not found.' % projectname.replace("_"," ").title())
             return
         have_error = False
         error_message = ''
@@ -169,18 +157,14 @@ class NewNotebookPage(GenericPage):
             self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, new_notebook.name))
 
 
-class NotebookMainPage(GenericPage):
+class NotebookMainPage(projects.ProjectPage):
     def get(self, username, projectname, nbname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -196,18 +180,14 @@ class NotebookMainPage(GenericPage):
         self.render("notebook_main.html", p_author = p_author, project = project, notebook = notebook, notes = notes)
 
 
-class NewNotePage(GenericPage):
+class NewNotePage(projects.ProjectPage):
     def get(self, username, projectname, nbname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -239,11 +219,7 @@ class NewNotePage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -289,18 +265,14 @@ class NewNotePage(GenericPage):
             self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectname, nbname, new_note.key().id()))
 
 
-class NotePage(GenericPage):
+class NotePage(projects.ProjectPage):
     def get(self, username, projectname, nbname, note_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -332,11 +304,7 @@ class NotePage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -374,18 +342,14 @@ class NotePage(GenericPage):
                     comment = comment, error_message = error_message)
 
 
-class EditNotebookPage(GenericPage):
+class EditNotebookPage(projects.ProjectPage):
     def get(self, username, projectname, nbname):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -417,11 +381,7 @@ class EditNotebookPage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -472,18 +432,14 @@ class EditNotebookPage(GenericPage):
             self.redirect("/%s/%s/notebooks/%s" % (user.username, project.name, notebook.name))
 
 
-class EditNotePage(GenericPage):
+class EditNotePage(projects.ProjectPage):
     def get(self, username, projectname, nbname, note_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
@@ -524,11 +480,7 @@ class EditNotePage(GenericPage):
             self.error(404)
             self.render("404.html")
             return
-        project = False
-        for p in projects.Projects.all().filter("name =", projectname.lower()).run():
-            if p.user_is_author(p_author):
-                project = p
-                break
+        project = self.get_project(p_author, projectname)
         if not project:
             self.error(404)
             self.render("404.html")
