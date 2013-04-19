@@ -32,17 +32,17 @@ def make_sub_repl(username, projectid):
 ###########################
 
 # Each WikiPage should have a project as parent.
-class WikiPages(db.Model):
-    url = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)      # Should be equal to the lastest WikiRevision's content
+class WikiPages(ndb.Model):
+    url = ndb.StringProperty(required = True)
+    content = ndb.TextProperty(required = True)      # Should be equal to the lastest WikiRevision's content
 
 
 # Each WikiRevision should have a WikiPage as parent.
-class WikiRevisions(db.Model):
-    author = db.ReferenceProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    content = db.TextProperty(required = True)
-    summary = db.StringProperty(required = False)
+class WikiRevisions(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    content = ndb.TextProperty(required = True)
+    summary = ndb.StringProperty(required = False)
 
     def notification_html_and_txt(self, author, project, wikipage):
         kw = {"author" : author, "project" : project, "wikipage" : wikipage, "revision" : self,
@@ -56,7 +56,25 @@ class WikiRevisions(db.Model):
 ##   Web Handlers   ##
 ######################
 
-class ViewWikiPage(projects.ProjectPage):
+class GenericWikiPage(projects.ProjectPage):
+    def get_wikipage(self, project, url, log_message = ''):
+        url = url.strip().replace(" ", "_").lower()
+        logging.debug("DB READ: Handler %s requests an instance of WikiPages. %s"
+                      % (self.__class__.__name__, log_message))
+        return WikiPages.query(WikiPages.url == url, ancestor = project.key).get()
+
+    def get_revisions(self, wikipage):
+        revisions = []
+        if not wikipage: return
+        for rev in WikiRevisions.query(ancestor = wikipage.key).order(-WikiRevisions.date).iter():
+            revisions.append(rev)
+        return revisions
+
+    def get_revision(self, wikipage, rev_id):
+        if not wikipage: return
+        return WikiRevisions.get_by_id(int(rev_id), parent = wikipage.key)
+
+class ViewWikiPage(GenericWikiPage):
     def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -68,7 +86,7 @@ class ViewWikiPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
-        wikipage = WikiPages.all().ancestor(project).filter("url =", wikiurl.lower()).get()
+        wikipage = self.get_wikipage(project, wikiurl)
         if wikipage: 
             wikitext = re.sub(WIKILINKS_RE, make_sub_repl(username, projectid), wikipage.content) 
         else:
@@ -77,7 +95,7 @@ class ViewWikiPage(projects.ProjectPage):
                     wikiurl = wikiurl, wikipage = wikipage, wikitext = wikitext)
 
 
-class EditWikiPage(projects.ProjectPage):
+class EditWikiPage(GenericWikiPage):
     def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -89,7 +107,7 @@ class EditWikiPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
-        wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
+        wikipage = self.get_wikipage(project, wikiurl)
         self.render("wiki_edit.html", p_author = p_author, project = project, 
                     wikiurl = wikiurl, wikipage = wikipage)
 
@@ -111,7 +129,7 @@ class EditWikiPage(projects.ProjectPage):
             return
         content = self.request.get("content")
         summary = self.request.get("summary")
-        wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
+        wikipage = self.get_wikipage(project, wikiurl)
         have_error = False
         error_message = ''
         if not project.user_is_author(user):
@@ -125,13 +143,13 @@ class EditWikiPage(projects.ProjectPage):
             error_message = "There aren't any changes to save. "
         if not have_error:
             if not wikipage:
-                wikipage = WikiPages(url = wikiurl.lower(), content = content, parent = project)
+                wikipage = WikiPages(url = wikiurl.lower(), content = content, parent = project.key)
                 self.log_and_put(wikipage, "New instance. ")
             else:
                 wikipage.content = content
                 self.log_and_put(wikipage, "Changing content." )
-            new_revision = WikiRevisions(author = user.key(), content = content, summary = summary,
-                                         parent = wikipage)
+            new_revision = WikiRevisions(author = user.key, content = content, summary = summary,
+                                         parent = wikipage.key)
             self.log_and_put(new_revision)
             html, txt = new_revision.notification_html_and_txt(user, project, wikipage)
             self.add_notifications(category = new_revision.__class__.__name__,
@@ -144,7 +162,7 @@ class EditWikiPage(projects.ProjectPage):
                         wikiurl = wikiurl, wikitext = content, error_message = error_message)
 
 
-class HistoryWikiPage(projects.ProjectPage):
+class HistoryWikiPage(GenericWikiPage):
     def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -156,16 +174,13 @@ class HistoryWikiPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
-        wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
-        revisions = []
-        if wikipage:
-            for rev in WikiRevisions.all().ancestor(wikipage).order("-date").run():
-                revisions.append(rev)
+        wikipage = self.get_wikipage(project, wikiurl.lower())
+        revisions = self.get_revisions(wikipage)
         self.render("wiki_history.html", p_author = p_author, project = project, 
                     wikiurl = wikiurl, wikipage = wikipage, revisions = revisions)
 
 
-class RevisionWikiPage(projects.ProjectPage):
+class RevisionWikiPage(GenericWikiPage):
     def get(self, username, projectid, wikiurl, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -177,12 +192,13 @@ class RevisionWikiPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
-        wikipage = WikiPages.all().ancestor(project).filter("url = ", wikiurl).get()
+        wikipage = self.get_wikipage(project, wikiurl)
         if not wikipage:
             self.error(404)
-            self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.replace("_"," ").title())
+            self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.url.replace("_"," ").title())
             return
-        revision = WikiRevisions.get_by_id(int(rev_id), parent = wikipage)
+        revision = self.get_revision(wikipage, rev_id)
+#        revision = WikiRevisions.get_by_id(int(rev_id), parent = wikipage)
         if not revision:
             self.error(404)
             self.render("404.html", info = "Revision %s not found" % rev_id)

@@ -15,10 +15,10 @@
   <div class="revision">
     <div class="rev-meta">
       <div class="rev-date">{{rev.date.strftime("%d-%b-%Y")}}</div>
-      <div class="rev-author">Author: <a href="/{{rev.author.username}}">{{rev.author.username.capitalize()}}</a></div>
+      <div class="rev-author">Author: <a href="/{{rev.author.get().username}}">{{rev.author.get().username.capitalize()}}</a></div>
     </div>
     <div class="rev-summary">
-      <a href="/{{p_author.username}}/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key().id()}}">
+      <a href="/{{p_author.username}}/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key.id()}}">
 	{% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
       </a>
     </div>
