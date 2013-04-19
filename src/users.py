@@ -63,7 +63,7 @@ class UserPage(GenericPage):
             return
         user = self.get_login_user()
         projects = page_user.list_of_projects()
-        if user and user.key() == page_user.key():
+        if user and user.key == page_user.key:
             kw = {"self_user_p" : True,
                   "button_text" : "Create new project",
                   "button_link" : "/%s/new_project" % username}
@@ -110,7 +110,7 @@ class SignupPage(GenericPage):
             another_user = self.get_user_by_username(usern, "Checking if username is available")
             if not another_user:
                 self.log_read(UnverifiedUsers, "Checking if username is available. ")
-                another_user = UnverifiedUsers.all().filter("username =", usern).get()
+                another_user = UnverifiedUsers.query(UnverifiedUsers.username == usern).get()
             if another_user:
                 have_error = True
                 kw['error_username'] = "*"
@@ -123,7 +123,7 @@ class SignupPage(GenericPage):
                 kw['error'] += 'That email is already in use by someone. Did you <a href="/recover_password?email=%s">forget your password?. </a>' % email
             else:
                 self.log_read(UnverifiedUsers, "Checking if email is available. ")
-                another_email = UnverifiedUsers.all().filter("email =", email).get()
+                another_email = UnverifiedUsers.query(UnverifiedUsers.email == email).get()
                 if another_email:
                     have_error = True
                     kw['error_email'] = '*'
@@ -198,7 +198,7 @@ class VerifyEmailPage(GenericPage):
         username = self.request.get("username")
         h = self.request.get("h")
         self.log_read(UnverifiedUsers)
-        u = UnverifiedUsers.all().filter("username =", username).get()
+        u = UnverifiedUsers.query(UnverifiedUsers.username == username).get()
         if not u:
             logging.warning("Handler VerifyEmailPage attempted to verify an email not in Datastore.")
             self.error(404)
@@ -208,10 +208,8 @@ class VerifyEmailPage(GenericPage):
                                        password_hash = u.password_hash,
                                        salt = u.salt,
                                        email = u.email,
-                                       about_me = '', google_userid = '',
-                                       my_projects = [],
-                                       my_notebooks = [],
-                                       following = [])
+                                       about_me = '',
+                                       my_projects = [])
             self.log_and_put(new_user)
             self.log_and_delete(u)
             self.set_cookie("username", new_user.username, new_user.salt)

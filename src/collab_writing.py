@@ -26,7 +26,7 @@ class Revisions(db.Model):
     def notification_html_and_txt(self, author, project, writing):
         kw = {"author" : author, "project" : project, "writing" : writing, "revision" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key().id())
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
         kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key().id())
         kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key().id())
         return (render_str("emails/writing.html", **kw), render_str("emails/writing.txt", **kw))
@@ -82,7 +82,7 @@ class NewWritingPage(projects.ProjectPage):
               "name_placeholder" : "Title of the new writing",
               "content_placeholder" : "Description of the new writing",
               "submit_button_text" : "Create writing",
-              "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key().id()),
+              "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key.integer_id()),
               "more_head" : "<style>.writings-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -120,7 +120,7 @@ class NewWritingPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new writing",
                   "content_placeholder" : "Description of the new writing",
                   "submit_button_text" : "Create writing",
-                  "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key().id()),
+                  "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key.integer_id()),
                   "more_head" : "<style>.writings-tab {background: white;}</style>",
                   "name_value" : w_name,
                   "content_value" : w_description,
@@ -130,10 +130,10 @@ class NewWritingPage(projects.ProjectPage):
             new_writing = CollaborativeWritings(title = w_name,
                                                 description = w_description,
                                                 status = "In progress",
-                                                parent = project.key())
+                                                parent = project.key)
             self.log_and_put(new_writing)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/writings/%s" % (user.username, project.key().id(), new_writing.key().id()))
+            self.redirect("/%s/%s/writings/%s" % (user.username, project.key.integer_id(), new_writing.key().id()))
 
 
 class ViewWritingPage(projects.ProjectPage):
@@ -338,7 +338,7 @@ class DiscussionPage(projects.ProjectPage):
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
-            new_comment = WritingComments(author = user.key(), comment = comment, parent = writing)
+            new_comment = WritingComments(author = user.key, comment = comment, parent = writing)
             self.log_and_put(new_comment, "New comment. ")
             comment = ''
         comments = []

@@ -21,7 +21,7 @@
     {% if wikipage %}
       {{wikitext | wikify | safe}}
     {% else %}
-      <em>This page doesn't exist yet. Click <a href="/{{p_author.username}}/{{project.key().id()}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
+      <em>This page doesn't exist yet. Click <a href="/{{p_author.username}}/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
       {% endif %}
   </div>
 

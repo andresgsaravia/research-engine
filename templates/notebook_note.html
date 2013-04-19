@@ -12,14 +12,14 @@
 {% endblock %}
 
 {% block title_bar_extra %}
-  / <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks">Notebooks</a>
-  / <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}">{{notebook.name}}</a>
-  / <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}/{{note.key().id()}}">{{note.title}}</a>
+  / <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks">Notebooks</a>
+  / <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}">{{notebook.name}}</a>
+  / <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}/{{note.key().id()}}">{{note.title}}</a>
 {% endblock %}
 
 {% block p_content %}
   <div class="note-head">
-    <div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}/{{note.key().id()}}/edit">Edit</a></div>
+    <div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}/{{note.key().id()}}/edit">Edit</a></div>
     <div class="note-title">{{note.title}}</div>
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
   </div>

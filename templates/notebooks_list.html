@@ -7,19 +7,19 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks">Notebooks</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks">Notebooks</a>
 {% endblock %}
 
 
 {% block p_content %}
   
-<div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/new">New notebook</a></div>
+<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/new">New notebook</a></div>
 <h2>Notebooks</h2>
 
 {% for n in notebooks %}
 <div class="n-wrapper">
   <div class="n-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="n-name"><a href="/{{n.owner.username}}/{{project.key().id()}}/notebooks/{{n.key().id()}}">{{n.name}}</a></div>
+  <div class="n-name"><a href="/{{n.owner.username}}/{{project.key.integer_id()}}/notebooks/{{n.key().id()}}">{{n.name}}</a></div>
   <div class="n-description">{{n.description.replace("\n", "<br/>") | safe}}</div>
   <div class="n-owner"><a href="/{{n.owner.username}}">{{n.owner.username.capitalize()}}</a></div>
 </div>

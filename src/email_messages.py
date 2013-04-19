@@ -55,22 +55,24 @@ def send_verify_email(user):
 
 
 def send_invitation_to_project(project, inviting, invited):
-    h = hash_str(inviting.username + invited.username + str(project.key()))
+    h = hash_str(inviting.username + invited.username + str(project.key))
     kw = {"project" : project,
           "inviting" : inviting,
           "invited" : invited,
           "DOMAIN_PREFIX" : DOMAIN_PREFIX,
-          "accept_link" : "%s/%s/%s/admin?h=%s" % (DOMAIN_PREFIX, inviting.username, project.name, h)}
+          "accept_link" : "%s/%s/%s/admin?h=%s" % (DOMAIN_PREFIX, inviting.username, project.key.integer_id(), h)}
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = invited.email,
-                                subject = "Research Engine: %s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name.replace("_", " ").title()),
+                                subject = "Research Engine: %s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name),
                                 body = render_str("emails/invite_to_project.txt" , **kw),
                                 html = render_str("emails/invite_to_project.html", **kw))
     logging.debug("EMAIL: Sending an email with a invitation to a project from user %s to user %s" % (inviting.username, invited.username))
     message.send()
     return
 
-
+###
+### Beware!! Uglyness below! 
+###
 
 SIGNATURE = """
 -----------------------------------

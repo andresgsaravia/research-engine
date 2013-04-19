@@ -17,7 +17,7 @@
   <body>
     <div class="wrapper">
       <h3>Collaboration invitation</h3>
-      <p>User <a href="{{DOMAIN_PREFIX}}/{{inviting.username}}">{{inviting.username.capitalize()}}</a> has invited you to collaborate with the project <em><a href="{{DOMAIN_PREFIX}}/{{inviting.username}}/{{project.name}}">{{project.name.replace("_", " ").title()}}.</a></em> at <a href="{{DOMAIN_PREFIX}}">Research Engine</a></p>
+      <p>User <a href="{{DOMAIN_PREFIX}}/{{inviting.username}}">{{inviting.username.capitalize()}}</a> has invited you to collaborate with the project <em><a href="{{DOMAIN_PREFIX}}/{{inviting.username}}/{{project.key.integer_id()}}">{{project.name}}.</a></em> at <a href="{{DOMAIN_PREFIX}}">Research Engine</a></p>
       <p>If you want to accept the invitation please click on the following link:</p>
       <p><a href="{{accept_link}}">{{accept_link}}</a></p>
       <p>If you don't want to start this collaboration now please just disregard this email.</p>

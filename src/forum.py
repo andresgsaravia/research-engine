@@ -64,7 +64,7 @@ class NewThreadPage(projects.ProjectPage):
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
               "submit_button_text" : "Create thread",
-              "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key().id()),
+              "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key.integer_id()),
               "more_head" : "<style>.forum-tab {background: white;}</style>",
               "markdown_p" : True,
               "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
@@ -105,16 +105,16 @@ class NewThreadPage(projects.ProjectPage):
                   "content_placeholder" : "Content of the thread",
                   "submit_button_text" : "Create thread",
                   "markdown_p" : True,
-                  "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key().id()),
+                  "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key.integer_id()),
                   "more_head" : "<style>.forum-tab {background: white;}</style>",
                   "name_value": t_title, "content_value": t_content, "error_message" : error_message,
                   "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_thread = ForumThreads(author = user.key(), title = t_title, content = t_content, parent = project)
+            new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project)
             self.log_and_put(new_thread)
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/forum/%s" % (user.username, project.key().id(), new_thread.key().id()))
+            self.redirect("/%s/%s/forum/%s" % (user.username, project.key.integer_id(), new_thread.key().id()))
 
 
 class ThreadPage(projects.ProjectPage):
@@ -170,7 +170,7 @@ class ThreadPage(projects.ProjectPage):
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
-            new_comment = ForumComments(author = user.key(), comment = comment, parent = thread)
+            new_comment = ForumComments(author = user.key, comment = comment, parent = thread)
             self.log_and_put(new_comment)
             self.log_and_put(thread, "Updating it's last_updated property. ")
             self.log_and_put(project, "Updating it's last_updated property. ")

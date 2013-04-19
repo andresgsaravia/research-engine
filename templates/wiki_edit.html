@@ -15,7 +15,7 @@
     <input type="text" name="summary" placeholder="Summary of changes (optional)" maxlength="160" />
     <input type="submit" class="bottom-buttons" value="Save" />
     <input type="button" class="bottom-buttons" value="Cancel" 
-	   onClick="window.location = '/{{p_author.username}}/{{project.key().id()}}/wiki/page/{{wikiurl}}'" />
+	   onClick="window.location = '/{{p_author.username}}/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}'" />
   </form>
 
   <div class="error">{{error_message}}</div>

@@ -27,7 +27,7 @@
 	 <div class="datafile"><a href="/file/{{rev.datafile.key()}}">Download</a></div>
 	 <div class="info-link"><a href="#" onClick="showInfo('rid{{rev.key().id()}}', 'mw');">Show info</a></div>
 	 <div class="meta" id="rid{{rev.key().id()}}">
-	   <div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/edit/{{rev.key().id()}}">Edit</a></div>
+	   <div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/edit/{{rev.key().id()}}">Edit</a></div>
 	   {% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
 	 </div>
        </div>
@@ -35,7 +35,7 @@
      </div>
      <div class="meta-window" id="mw"></div>
    {% else %}
-     <p>There isn't any data uploaded yet. Click <a href="/{{p_author.username}}/{{project.key().id()}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/new">here</a> or the <strong>Upload new revision</strong> tab above to upload the first revision.
+     <p>There isn't any data uploaded yet. Click <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key().id()}}/{{datac.key().id()}}/new">here</a> or the <strong>Upload new revision</strong> tab above to upload the first revision.
    {% endif %}
 </div>
 

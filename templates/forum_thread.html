@@ -13,8 +13,8 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key().id()}}/forum">Forum</a>
-/  <a href="/{{p_author.username}}/{{project.key().id()}}/forum/{{thread.key().id()}}">{{thread.title[0:30]}}...</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/forum">Forum</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/forum/{{thread.key().id()}}">{{thread.title[0:30]}}...</a>
 {% endblock %}
 
 

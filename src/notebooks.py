@@ -34,7 +34,7 @@ class NotebookNotes(db.Model):
     def notification_html_and_txt(self, author, project, notebook):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key().id())
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + notebook.name
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key().id())
         return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
@@ -124,8 +124,8 @@ class NewNotebookPage(NotebookPage):
               "name_placeholder" : "Title of the new notebook",
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
-              "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key().id()),
-              "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key().id()),
+              "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key.integer_id()),
+              "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key.integer_id()),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -163,21 +163,21 @@ class NewNotebookPage(NotebookPage):
                   "name_placeholder" : "Title of the new notebook",
                   "content_placeholder" : "Description of the new notebook",
                   "submit_button_text" : "Create notebook",
-                  "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key().id()),
-                  "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key().id()),
+                  "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key.integer_id()),
+                  "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key.integer_id()),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value" : n_name,
                   "content_value" : n_description,
                   "error_message" : error_message}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_notebook = Notebooks(owner = user.key(), 
+            new_notebook = Notebooks(owner = user.key, 
                                      name = n_name, 
                                      description = n_description, 
-                                     parent  = project.key())
+                                     parent  = project.key)
             self.log_and_put(new_notebook)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key().id(), new_notebook.key().id()))
+            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key.integer_id(), new_notebook.key().id()))
 
 
 class NotebookMainPage(NotebookPage):
@@ -218,7 +218,7 @@ class NewNotePage(NotebookPage):
             self.error(404)
             self.render("404.html")
             return
-        parent_url = "/%s/%s/notebooks" % (p_author.username, project.key().id())
+        parent_url = "/%s/%s/notebooks" % (p_author.username, project.key.integer_id())
         kw = {"title" : "New note",
               "name_placeholder" : "Title of the new note",
               "content_placeholder" : "Content of the note",
@@ -260,11 +260,11 @@ class NewNotePage(NotebookPage):
         if not n_content:
             have_error = True
             error_message += "You need to write some content before saving this note. "
-        if not notebook.owner.key() == user.key():
+        if not notebook.owner.key == user.key:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         if have_error:
-            parent_url = "/%s/%s/notebooks" % (p_author.username, project.key().id())
+            parent_url = "/%s/%s/notebooks" % (p_author.username, project.key.integer_id())
             kw = {"title" : "New note",
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
@@ -350,7 +350,7 @@ class NotePage(NotebookPage):
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
-            new_comment = NoteComments(author = user.key(), comment = comment, parent = note)
+            new_comment = NoteComments(author = user.key, comment = comment, parent = note)
             self.log_and_put(new_comment)
             self.log_and_put(notebook, "Updating its last_updated property. ")
             self.log_and_put(project, "Updating its last_updated property. ")
@@ -412,7 +412,7 @@ class EditNotebookPage(NotebookPage):
             return
         have_error = False
         error_message = ''
-        if not notebook.owner.key() == user.key():
+        if not notebook.owner.key == user.key:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         n_name = self.request.get("name")
@@ -515,7 +515,7 @@ class EditNotePage(NotebookPage):
         if not n_content:
             have_error = True
             error_message += "You need to write some content before saving this note. "
-        if not notebook.owner.key() == user.key():
+        if not notebook.owner.key == user.key:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         if have_error:

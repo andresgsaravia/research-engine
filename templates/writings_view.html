@@ -18,7 +18,7 @@
    {% if last_revision %}
      {{last_revision.content | md | safe}}
    {% else %}
-     <p>This writing hasn't been started yet. Click <a href="/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}/edit">here</a> or the <em>Edit</em> tab to make the first draft.</p>
+     <p>This writing hasn't been started yet. Click <a href="/{{p_author.username}}/{{project.key.integer_id()}}/writings/{{writing.key().id()}}/edit">here</a> or the <em>Edit</em> tab to make the first draft.</p>
    {% endif %}
 </div>
 

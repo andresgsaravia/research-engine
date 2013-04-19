@@ -15,7 +15,7 @@
     
     <input type="submit"  class="bottom-buttons" value="Save changes" />
     <input type="button" value="Cancel" class="bottom-buttons" 
-	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{p_author.username}}/{{project.key().id()}}/writings/{{writing.key().id()}}'}" />
+	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{p_author.username}}/{{project.key.integer_id()}}/writings/{{writing.key().id()}}'}" />
   </form>
 
 <div class="error">{{error_message}}</div>

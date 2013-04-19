@@ -39,7 +39,7 @@ class DataRevisions(db.Model):
         kw = {"author" : author, "project" : project, "dataset" : dataset,
               "datac" : datac, "rev" : self, 
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key().id())
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
         kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key().id())
         kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key().id())
         return (render_str("emails/datarev.html", **kw), render_str("emails/datarev.txt", **kw))
@@ -82,8 +82,8 @@ class NewDataSetPage(projects.ProjectPage):
               "name_placeholder" : "Title of the new dataset",
               "content_placeholder" : "Description of the new dataset",
               "submit_button_text" : "Create dataset",
-              "cancel_url" : "/%s/%s/datasets" % (p_author.username, project.key().id()),
-              "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, project.key().id()),
+              "cancel_url" : "/%s/%s/datasets" % (p_author.username, project.key.integer_id()),
+              "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, project.key.integer_id()),
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -121,8 +121,8 @@ class NewDataSetPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new dataset",
                   "content_placeholder" : "Description of the new dataset",
                   "submit_button_text" : "Create dataset",
-                  "cancel_url" : "/%s/%s/datasets" % (p_author.username, project.key().id()),
-                  "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, project.key().id()),
+                  "cancel_url" : "/%s/%s/datasets" % (p_author.username, project.key.integer_id()),
+                  "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, project.key.integer_id()),
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
@@ -131,10 +131,10 @@ class NewDataSetPage(projects.ProjectPage):
         else:
             new_dataset = DataSets(name = d_name, 
                                    description = d_description, 
-                                   parent  = project.key())
+                                   parent  = project.key)
             self.log_and_put(new_dataset)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key().id(), new_dataset.key().id()))
+            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key.integer_id(), new_dataset.key().id()))
 
 
 class DataSetPage(projects.ProjectPage):
@@ -240,7 +240,7 @@ class NewDataConceptPage(projects.ProjectPage):
                                            parent  = dataset)
             self.log_and_put(new_dataconcept)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s/%s" % (user.username, project.key().id(), dataset.key().id(), new_dataconcept.key().id()))
+            self.redirect("/%s/%s/datasets/%s/%s" % (user.username, project.key.integer_id(), dataset.key().id(), new_dataconcept.key().id()))
 
 
 class DataConceptPage(projects.ProjectPage):
@@ -447,7 +447,7 @@ class UploadDataRevisionHandler(GenericBlobstoreUpload):
         if have_error:
             self.redirect("/%s/%s/datasets/%s/%s/new?error_message=%s" % (username, projectid, dataset_id, datac_id, error_message))
         else:
-            new_revision = DataRevisions(author = user.key(), meta = meta, datafile = datafile[0].key(), parent = datac)
+            new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac)
             new_revision.put()
             html, txt = new_revision.notification_html_and_txt(user, project, dataset, datac)
             self.add_notifications(category = new_revision.__class__.__name__,

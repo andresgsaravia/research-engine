@@ -10,28 +10,27 @@ SHORT_DESCRIPTION_LENGTH = 150
 ##   Datastore Objects   ##
 ###########################
 
-class Projects(db.Model):
-    name = db.StringProperty(required = True)
-    description = db.TextProperty(required = False)
-    authors = db.ListProperty(db.Key)                        # There's no such thing as an "owner"
-    started = db.DateTimeProperty(auto_now_add = True)
-    last_updated = db.DateTimeProperty(auto_now = True)
-    notebooks = db.ListProperty(db.Key)
+class Projects(ndb.Model):
+    name = ndb.StringProperty(required = True)
+    description = ndb.TextProperty(required = False)
+    authors = ndb.KeyProperty(repeated = True)                        # There's no such thing as an "owner"
+    started = ndb.DateTimeProperty(auto_now_add = True)
+    last_updated = ndb.DateTimeProperty(auto_now = True)
     # Lists of authors to send notifications after an update
-    wiki_notifications_list = db.ListProperty(db.Key)
-    nb_notifications_list = db.ListProperty(db.Key)
-    writings_notifications_list = db.ListProperty(db.Key)
-    code_notifications_list = db.ListProperty(db.Key)
-    datasets_notifications_list = db.ListProperty(db.Key)
-    forum_threads_notifications_list = db.ListProperty(db.Key)
-    forum_posts_notifications_list = db.ListProperty(db.Key)
+    wiki_notifications_list = ndb.KeyProperty(repeated = True)
+    nb_notifications_list = ndb.KeyProperty(repeated = True)
+    writings_notifications_list = ndb.KeyProperty(repeated = True)
+    code_notifications_list = ndb.KeyProperty(repeated = True)
+    datasets_notifications_list = ndb.KeyProperty(repeated = True)
+    forum_threads_notifications_list = ndb.KeyProperty(repeated = True)
+    forum_posts_notifications_list = ndb.KeyProperty(repeated = True)
 
 
     def list_of_authors(self, requesting_handler):
         authors_list = []
         for author_key in self.authors:
             requesting_handler.log_read(RegisteredUsers, "Getting an author from a Project's list of authors. ")
-            author = db.Query().filter("__key__ =", author_key).get()
+            author = author_key.get()
             if author: 
                 authors_list.append(author)
             else:
@@ -42,7 +41,7 @@ class Projects(db.Model):
     def user_is_author(self, user):
         result = False
         for author_key in self.authors:
-            if user.key() == author_key: result = True
+            if user.key == author_key: result = True
         return result
 
     def short_description(self):
@@ -52,18 +51,18 @@ class Projects(db.Model):
             return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
 
     def add_author(self, user):
-        if user.key() in self.authors: return False
-        self.authors.append(user.key())
-        self.wiki_notifications_list.append(user.key())
-        self.nb_notifications_list.append(user.key())
-        self.writings_notifications_list.append(user.key())
-        self.code_notifications_list.append(user.key())
-        self.datasets_notifications_list.append(user.key())
-        self.forum_threads_notifications_list.append(user.key())
-        self.forum_posts_notifications_list.append(user.key())
+        if user.key in self.authors: return False
+        self.authors.append(user.key)
+        self.wiki_notifications_list.append(user.key)
+        self.nb_notifications_list.append(user.key)
+        self.writings_notifications_list.append(user.key)
+        self.code_notifications_list.append(user.key)
+        self.datasets_notifications_list.append(user.key)
+        self.forum_threads_notifications_list.append(user.key)
+        self.forum_posts_notifications_list.append(user.key)
         logging.debug("DB WRITE: Adding a new author to project %s" % self.name)
         self.put()
-        user.my_projects.append(self.key())
+        user.my_projects.append(self.key)
         logging.debug("DB WRITE: Adding a new project to %s my_projects property" %  user.__class__.__name__)
         user.put()
         return True
@@ -85,7 +84,7 @@ class ProjectPage(GenericPage):
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
             notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
-                                              sent = False, parent = u)
+                                              sent = False, parent = u.key)
             self.log_and_put(notification)
         return
 
@@ -141,18 +140,18 @@ class NewProjectPage(GenericPage):
         else:
             new_project = Projects(name = p_name,
                                    description = p_description,
-                                   authors = [user.key()], notebooks = [],
-                                   wiki_notifications_list = [user.key()],
-                                   nb_notifications_list = [user.key()],
-                                   writings_notifications_list = [user.key()],
-                                   code_notifications_list = [user.key()],
-                                   datasets_notifications_list = [user.key()],
-                                   forum_threads_notifications_list = [user.key()],
-                                   forum_posts_notifications_list = [user.key()])
+                                   authors = [user.key],
+                                   wiki_notifications_list = [user.key],
+                                   nb_notifications_list = [user.key],
+                                   writings_notifications_list = [user.key],
+                                   code_notifications_list = [user.key],
+                                   datasets_notifications_list = [user.key],
+                                   forum_threads_notifications_list = [user.key],
+                                   forum_posts_notifications_list = [user.key])
             self.log_and_put(new_project, "Creating a new project. ")
-            user.my_projects.append(new_project.key())
+            user.my_projects.append(new_project.key)
             self.log_and_put(user, "Appending a project to a RegisteredUser's my_projects list ")
-            self.redirect("/%s/%s" % (user.username, new_project.key().id()))
+            self.redirect("/%s/%s" % (user.username, new_project.key.integer_id()))
 
 
 class AdminPage(ProjectPage):
@@ -174,23 +173,23 @@ class AdminPage(ProjectPage):
             self.render("404.html")
             return
         # New user here?
-        if h and (hash_str(username + user.username + str(project.key())) == h):
+        if h and (hash_str(username + user.username + str(project.key)) == h):
             project.add_author(user)
             self.redirect("/%s/%s/admin" % (user.username, projectid))
             return
         if not project.user_is_author(user):
             self.write("You are not a member of this project.")
             return
-        if not user.key() == p_author.key():
+        if not user.key == p_author.key:
             self.redirect("/%s/%s/admin" % (user.username, projectid))
             return
-        kw = {"wiki_p"          : "checked" if user.key() in project.wiki_notifications_list else "",
-              "notebooks_p"     : "checked" if user.key() in project.nb_notifications_list else "",
-              "writings_p"      : "checked" if user.key() in project.writings_notifications_list else "",
-              "code_p"          : "checked" if user.key() in project.code_notifications_list else "",
-              "datasets_p"      : "checked" if user.key() in project.datasets_notifications_list else "",
-              "forum_threads_p" : "checked" if user.key() in project.forum_threads_notifications_list else "",
-              "forum_posts_p"   : "checked" if user.key() in project.forum_posts_notifications_list else "",
+        kw = {"wiki_p"          : "checked" if user.key in project.wiki_notifications_list else "",
+              "notebooks_p"     : "checked" if user.key in project.nb_notifications_list else "",
+              "writings_p"      : "checked" if user.key in project.writings_notifications_list else "",
+              "code_p"          : "checked" if user.key in project.code_notifications_list else "",
+              "datasets_p"      : "checked" if user.key in project.datasets_notifications_list else "",
+              "forum_threads_p" : "checked" if user.key in project.forum_threads_notifications_list else "",
+              "forum_posts_p"   : "checked" if user.key in project.forum_posts_notifications_list else "",
               "p_description"   : project.description,
               "authors"         : project.list_of_authors(self)}
         self.render('project_admin.html', p_author = p_author, project = project, **kw)
@@ -234,35 +233,35 @@ class AdminPage(ProjectPage):
 
         ## Email notifications
         # Add to list
-        if kw["wiki_p"] and not (user.key() in project.wiki_notifications_list):
-            project.wiki_notifications_list.append(user.key())
-        if kw["notebooks_p"] and not (user.key() in project.nb_notifications_list):
-            project.nb_notifications_list.append(user.key())
-        if kw["writings_p"] and not (user.key() in project.writings_notifications_list):
-            project.writings_notifications_list.append(user.key())
-        if kw["code_p"] and not (user.key() in project.code_notifications_list):
-            project.code_notifications_list.append(user.key())
-        if kw["datasets_p"] and not (user.key() in project.datasets_notifications_list):
-            project.datasets_notifications_list.append(user.key())
-        if kw["forum_threads_p"] and not (user.key() in project.forum_threads_notifications_list):
-            project.forum_threads_notifications_list.append(user.key())
-        if kw["forum_posts_p"] and not (user.key() in project.forum_posts_notifications_list):
-            project.forum_posts_notifications_list.append(user.key())
+        if kw["wiki_p"] and not (user.key in project.wiki_notifications_list):
+            project.wiki_notifications_list.append(user.key)
+        if kw["notebooks_p"] and not (user.key in project.nb_notifications_list):
+            project.nb_notifications_list.append(user.key)
+        if kw["writings_p"] and not (user.key in project.writings_notifications_list):
+            project.writings_notifications_list.append(user.key)
+        if kw["code_p"] and not (user.key in project.code_notifications_list):
+            project.code_notifications_list.append(user.key)
+        if kw["datasets_p"] and not (user.key in project.datasets_notifications_list):
+            project.datasets_notifications_list.append(user.key)
+        if kw["forum_threads_p"] and not (user.key in project.forum_threads_notifications_list):
+            project.forum_threads_notifications_list.append(user.key)
+        if kw["forum_posts_p"] and not (user.key in project.forum_posts_notifications_list):
+            project.forum_posts_notifications_list.append(user.key)
         # Remove from list
-        if (not kw["wiki_p"]) and (user.key() in project.wiki_notifications_list):
-            project.wiki_notifications_list.remove(user.key())
-        if (not kw["notebooks_p"]) and (user.key() in project.nb_notifications_list):
-            project.nb_notifications_list.remove(user.key())
-        if (not kw["writings_p"]) and (user.key() in project.writings_notifications_list):
-            project.writings_notifications_list.remove(user.key())
-        if (not kw["code_p"]) and (user.key() in project.code_notifications_list):
-            project.code_notifications_list.remove(user.key())
-        if (not kw["datasets_p"]) and (user.key() in project.datasets_notifications_list):
-            project.datasets_notifications_list.remove(user.key())
-        if (not kw["forum_threads_p"]) and (user.key() in project.forum_threads_notifications_list):
-            project.forum_threads_notifications_list.remove(user.key())
-        if (not kw["forum_posts_p"]) and (user.key() in project.forum_posts_notifications_list):
-            project.forum_posts_notifications_list.remove(user.key())
+        if (not kw["wiki_p"]) and (user.key in project.wiki_notifications_list):
+            project.wiki_notifications_list.remove(user.key)
+        if (not kw["notebooks_p"]) and (user.key in project.nb_notifications_list):
+            project.nb_notifications_list.remove(user.key)
+        if (not kw["writings_p"]) and (user.key in project.writings_notifications_list):
+            project.writings_notifications_list.remove(user.key)
+        if (not kw["code_p"]) and (user.key in project.code_notifications_list):
+            project.code_notifications_list.remove(user.key)
+        if (not kw["datasets_p"]) and (user.key in project.datasets_notifications_list):
+            project.datasets_notifications_list.remove(user.key)
+        if (not kw["forum_threads_p"]) and (user.key in project.forum_threads_notifications_list):
+            project.forum_threads_notifications_list.remove(user.key)
+        if (not kw["forum_posts_p"]) and (user.key in project.forum_posts_notifications_list):
+            project.forum_posts_notifications_list.remove(user.key)
     
         if not have_error:
             self.log_and_put(project, "Updating email notifications and/or description. ")

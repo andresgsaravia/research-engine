@@ -5,7 +5,7 @@
 import webapp2 
 import jinja2
 import os, re, string, hashlib, logging
-from google.appengine.ext import db, blobstore
+from google.appengine.ext import ndb, db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 import filters
@@ -53,27 +53,25 @@ def get_secure_val(h, salt):
 
 # User related stuff.
 
-class UnverifiedUsers(db.Model):
-    username = db.StringProperty(required = True)
-    email = db.EmailProperty(required = True)
-    salt = db.StringProperty(required = True)
-    password_hash = db.TextProperty(required = True)
+class UnverifiedUsers(ndb.Model):
+    username = ndb.StringProperty(required = True)
+    email = ndb.StringProperty(required = True)
+    salt = ndb.StringProperty(required = True)
+    password_hash = ndb.TextProperty(required = True)
 
 
-class RegisteredUsers(db.Model):
-    username = db.StringProperty(required = True)
-    password_hash = db.TextProperty(required = True)
-    salt = db.StringProperty(required = True)
-    email = db.EmailProperty(required = False)
-    about_me = db.TextProperty(required = False)
-    google_userid = db.StringProperty(required = False)
-    my_projects = db.ListProperty(db.Key)                   # keys to Projects (defined in projects.py)
-    following = db.ListProperty(db.Key)
+class RegisteredUsers(ndb.Model):
+    username = ndb.StringProperty(required = True)
+    password_hash = ndb.TextProperty(required = True)
+    salt = ndb.StringProperty(required = True)
+    email = ndb.StringProperty(required = False)
+    about_me = ndb.TextProperty(required = False)
+    my_projects = ndb.KeyProperty(repeated = True)                   # keys to Projects (defined in projects.py)
 
     def list_of_projects(self):
         projects_list = []
         for p_key in self.my_projects:
-            project = db.Query().filter("__key__ =", p_key).get()
+            project = p_key.get()
             if project: 
                 projects_list.append(project)
             else:
@@ -85,13 +83,13 @@ class RegisteredUsers(db.Model):
 
 
 # Each Notification should have as parent a RegisteredUser, this parent is the one who will receive the notification
-class EmailNotifications(db.Model):
-    author = db.ReferenceProperty(required = False)
-    category = db.StringProperty(required = True)
-    html = db.TextProperty(required = True)
-    txt = db.TextProperty(required = False)
-    sent = db.BooleanProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
+class EmailNotifications(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers)
+    category = ndb.StringProperty(required = True)
+    html = ndb.TextProperty(required = True)
+    txt = ndb.TextProperty(required = False)
+    sent = ndb.BooleanProperty(required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
 
 
 ######################
@@ -105,18 +103,6 @@ class GenericPage(webapp2.RequestHandler):
         logging.debug("DB READ: Handler %s requests an instance of %s. %s"
                       % (self.__class__.__name__, dbmodel.__name__, message))
         return
-
-    def get_item_from_key(self, instance_key, message = ''):
-        item = db.Query().filter("__key__ =", instance_key).get()
-        self.log_read(item.__class__, "From key. " + message)
-        return item
-
-    def get_item_from_key_str(self, key_str, message = ''):
-        try:
-            item = self.get_item_from_key(db.Key(key_str), message)
-        except db.BadKeyError:
-            item = None
-        return item
     
     # Writing the Datastore
     def log_and_put(self, instance, message = ''):
@@ -128,13 +114,13 @@ class GenericPage(webapp2.RequestHandler):
     def log_and_delete(self, instance, message = ''):
         logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
                       % (self.__class__.__name__, instance.__class__.__name__, message))
-        instance.delete()
+        instance.key.delete()
         return
 
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
             notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
-                                              sent = False, parent = u)
+                                              sent = False, parent = u.key)
             self.log_and_put(notification)
         return
 
@@ -166,7 +152,7 @@ class GenericPage(webapp2.RequestHandler):
         if not cookie: return None
         cookie_username = cookie.split("|")[0]
         self.log_read(RegisteredUsers, "Getting logged in user. ")
-        u = RegisteredUsers.all().filter("username =", cookie_username).get()
+        u = RegisteredUsers.query(RegisteredUsers.username == cookie_username).get()
         if not u: return None
         if not get_secure_val(cookie, u.salt): return None
         return u
@@ -174,13 +160,12 @@ class GenericPage(webapp2.RequestHandler):
     def get_user_by_username(self, username, logmessage = ''):
         logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
                       % (self.__class__.__name__, logmessage))
-        return RegisteredUsers.all().filter("username =", username).get()
+        return RegisteredUsers.query(RegisteredUsers.username == username).get()
 
-    def get_user_by_email(self, username, logmessage = ''):
+    def get_user_by_email(self, email, logmessage = ''):
         logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
                       % (self.__class__.__name__, logmessage))
-        return RegisteredUsers.all().filter("email =", username).get()
-        
+        return RegisteredUsers.query(RegisteredUsers.email == email).get()
 
     # Rendering
     def write(self, *a, **kw):
@@ -215,13 +200,13 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
     def log_and_delete(self, instance, message = ''):
         logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
                       % (self.__class__.__name__, instance.__class__.__name__, message))
-        instance.delete()
+        instance.key.delete()
         return
 
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
             notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
-                                              sent = False, parent = u)
+                                              sent = False, parent = u.key)
             self.log_and_put(notification)
         return
 
@@ -231,7 +216,7 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         if not cookie: return None
         cookie_username = cookie.split("|")[0]
         self.log_read(RegisteredUsers, "Getting logged in user. ")
-        u = RegisteredUsers.all().filter("username =", cookie_username).get()
+        u = RegisteredUsers.query(RegisteredUsers.username == cookie_username).get()
         if not u: return None
         if not get_secure_val(cookie, u.salt): return None
         return u
@@ -239,4 +224,4 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
     def get_user_by_username(self, username, logmessage = ''):
         logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
                       % (self.__class__.__name__, logmessage))
-        return RegisteredUsers.all().filter("username =", username).get()
+        return RegisteredUsers.query(RegisteredUsers.username == username).get()

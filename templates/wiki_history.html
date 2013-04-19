@@ -18,7 +18,7 @@
       <div class="rev-author">Author: <a href="/{{rev.author.username}}">{{rev.author.username.capitalize()}}</a></div>
     </div>
     <div class="rev-summary">
-      <a href="/{{p_author.username}}/{{project.key().id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key().id()}}">
+      <a href="/{{p_author.username}}/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key().id()}}">
 	{% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
       </a>
     </div>

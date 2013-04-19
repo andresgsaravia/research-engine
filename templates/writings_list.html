@@ -14,19 +14,19 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key().id()}}/writings">Collaborative writings</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/writings">Collaborative writings</a>
 {% endblock %}
 
 
 {% block p_content %}
 
-<div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/writings/new">New collaborative writing</a></div>
+<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/writings/new">New collaborative writing</a></div>
 <h2>Collaborative Writings</h2>
 
 {% for w in writings %}
 <div class="w-wrapper">
   <div class="w-last-updated">Last updated: {{w.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="w-title"><a href="/{{p_author.username}}/{{project.key().id()}}/writings/{{w.key().id()}}">{{w.title}}</a></div>
+  <div class="w-title"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/writings/{{w.key().id()}}">{{w.title}}</a></div>
   <div class="w-description">{{w.description | md | safe}}</div>
   <div class="w-status">Status: <em>{{w.status}}</em></div>
 </div>

@@ -11,15 +11,15 @@
 {% endblock %}
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks">Notebooks</a>
-/  <a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}">{{notebook.name}}</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks">Notebooks</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}">{{notebook.name}}</a>
 {% endblock %}
 
 {% block p_content %}
 
 <div class="nb-heading">
-  <div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}/new_note">New note</a></div>
-  <div class="button1"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}/edit">Edit notebook</a></div>
+  <div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}/new_note">New note</a></div>
+  <div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}/edit">Edit notebook</a></div>
   <div class="nb-name">{{notebook.name}}</div>
 </div>
 
@@ -27,7 +27,7 @@
 <div class="note">
   <div class="note-head">
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
-    <div class="note-title"><a href="/{{p_author.username}}/{{project.key().id()}}/notebooks/{{notebook.key().id()}}/{{note.key().id()}}">{{note.title}}</a></div>
+    <div class="note-title"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/{{notebook.key().id()}}/{{note.key().id()}}">{{note.title}}</a></div>
   </div>
   <div class="note-content">{{note.content | md | safe}}</div>
 </div>
