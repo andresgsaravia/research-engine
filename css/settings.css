@@ -1,0 +1,32 @@
+/* Stylesheet for the settings.html template */
+
+.content {
+    margin: 0 auto;
+    width: 80%;
+    background: white;
+    border-radius: 0.5em;
+    box-shadow: 0em 0.1em 0.5em #C0C0C0;
+}
+
+.content > * {
+    padding-left: 1em;
+}
+
+h2 {
+    padding-top: 1em;
+}
+
+input[type=text] {
+    width: 20em;
+}
+
+textarea {
+    width: 30em;
+    height: 15em;
+}
+    
+
+input[type=submit] {
+    font-size: 1.1em;
+    margin-top: 0.5em;
+}

@@ -13,8 +13,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                ('/login', users.LoginPage),
                                ('/logout', users.LogoutPage),
                                ('/signup', users.SignupPage),
-                               ('/settings', users.SettingsPage),                                      # Needs review
-                               ('/user/search', users.SearchForUserPage),                              # Needs review
+                               ('/settings', users.SettingsPage),
                                ('/recover_password', users.RecoverPasswordPage),                       # Needs review
                                ('/verify_email', users.VerifyEmailPage),
                                # Cron jobs
@@ -22,11 +21,11 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                
                                ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks
-                               ('/(.+)/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projectname
+                               ('/(.+)/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projects' id
                                ('/(.+)/([0-9]+)/notebooks/new', notebooks.NewNotebookPage),
-                               ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's numeric id
+                               ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's id
                                ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
-                               ('/(.+)/([0-9]+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook name
+                               ('/(.+)/([0-9]+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook id
                                ('/(.+)/([0-9]+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
                                ('/(.+)/([0-9]+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                # Collaborative writings

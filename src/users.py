@@ -53,46 +53,22 @@ class LogoutPage(GenericPage):
         self.remove_cookie("username")
         self.redirect("/login")
 
+
 class UserPage(GenericPage):
     def get(self, username):
         page_user = self.get_user_by_username(username)
         if not page_user:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = "User <em>%s</em> not found." % username)
             return
         user = self.get_login_user()
         projects = page_user.list_of_projects()
         if user and user.key() == page_user.key():
-            self.render("user_self.html", user = user, projects = projects)
-        else:
-#            if page_user.key() in user.following:
-#                b_text = "Unfollow"
-#            else:
-            b_text = "Follow (coming soon)"
-            self.render("user.html", page_user = page_user, projects = projects, follow_button_text = b_text)
-
-###########################################################
-#### EVERTTHING BELOW SHOULD BE REVISED AND/OR REMOVED ####
-###########################################################
-
-    def post(self, username):
-        page_user = self.get_user_by_username(username)
-        if not page_user:
-            self.error(404)
-            self.render("404.html")
-            return
-        user = self.get_login_user()
-        if not user:
-            self.redirect("/login")
-            return
-        action = self.request.get("action")
-        if not action:
-            logging.error("Handler UserPage recieved a POST request without a post action. ")
-            self.error(400)
-            self.write("There was an error processing your request. ")
-            return
-        if action == "follow":
-            pass
+            kw = {"self_user_p" : True,
+                  "button_text" : "Create new project",
+                  "button_link" : "/%s/new_project" % username}
+        else: kw = {}
+        self.render("user.html", page_user = page_user, projects = projects, **kw)
 
 
 class SignupPage(GenericPage):
@@ -168,30 +144,27 @@ class SettingsPage(GenericPage):
     def get(self):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            self.redirect("/login", goback = "/settings")
             return
         kw = {"usern": user.username, "email" : user.email}
         if user.about_me: kw["about_me"] = user.about_me
         self.render("settings.html", **kw)
 
-
     def post(self):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login")
+            self.redirect("/login", goback = "/settings")
             return
         kw = {"usern"    : self.request.get("usern"),
               "email"    : self.request.get("email"),
-              "about_me" : self.request.get("about_me"),
-              "info"     : '',
-              "error"    : ''}
+              "about_me" : self.request.get("about_me")}
         have_error = False
         if kw["usern"]: kw["usern"] = kw["usern"].lower()
         if user.username != kw["usern"]:
             u2 = self.get_user_by_username(kw["usern"], "Checking if new username is available. ")
             if u2 or (not re.match(USERNAME_RE, kw["usern"])):
                 kw["error_username"] = "*"
-                kw['error'] += "Sorry, that username is not available. "
+                kw['error'] = "Sorry, that username is not available. "
                 have_error = True
         if user.email != kw["email"]:
             u2 = self.get_user_by_email(kw["email"], "Checking if new email is available. ")
@@ -213,27 +186,6 @@ class SettingsPage(GenericPage):
             kw["info"] = "Changes saved"
             self.set_cookie("username", user.username, user.salt)
             self.render("settings.html", **kw)
-
-
-class SearchForUserPage(GenericPage):
-    def get(self):
-        self.render("search_for_user.html")
-
-    def post(self):
-        search_username = self.request.get("search_username")
-        have_error = False
-        error = ''
-        if not search_username:
-            have_error = True
-            error += 'You must provide an username to search for.'
-        u = self.get_user_by_username(search_username.lower())
-        if search_username and (not u):
-            have_error = True
-            error += "Sorry, we don't know any user with that username."
-        if have_error:
-            self.render("search_for_user.html", error = error, search_username = search_username)
-        else:
-            self.redirect("/%s" % u.username)
 
 
 class RecoverPasswordPage(GenericPage):
