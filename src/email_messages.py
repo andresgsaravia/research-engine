@@ -5,7 +5,7 @@ from google.appengine.api import mail
 from google.appengine.ext import db
 from generic import *
 
-ADMIN_EMAIL = "admin@research-engine.appspot.com"
+ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 
 
 ######################
