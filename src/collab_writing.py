@@ -8,42 +8,83 @@ import projects
 ###########################
 
 # Should have a Project as parent
-class CollaborativeWritings(db.Model):
-    title = db.StringProperty(required = True)
-    description = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_updated = db.DateTimeProperty(auto_now = True)
-    status = db.StringProperty(required = False)
+class CollaborativeWritings(ndb.Model):
+    title = ndb.StringProperty(required = True)
+    description = ndb.TextProperty(required = True)
+    created = ndb.DateTimeProperty(auto_now_add = True)
+    last_updated = ndb.DateTimeProperty(auto_now = True)
+    status = ndb.StringProperty(required = False)
 
 
 # Should have as parent a CollaborativeWriting
-class Revisions(db.Model):
-    author = db.ReferenceProperty(required = True)
-    date = db.DateTimeProperty(auto_now = True)
-    content = db.TextProperty(required = True)
-    summary = db.TextProperty(required = False)
+class WritingRevisions(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    date = ndb.DateTimeProperty(auto_now = True)
+    content = ndb.TextProperty(required = True)
+    summary = ndb.TextProperty(required = False)
 
     def notification_html_and_txt(self, author, project, writing):
         kw = {"author" : author, "project" : project, "writing" : writing, "revision" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
-        kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key().id())
-        kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key().id())
+        kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key.integer_id())
+        kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key.integer_id())
         return (render_str("emails/writing.html", **kw), render_str("emails/writing.txt", **kw))
 
 
 # Should have as parent a CollaborativeWriting
-class WritingComments(db.Model):
-    author = db.ReferenceProperty(required = True)
-    comment = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
+class WritingComments(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    comment = ndb.TextProperty(required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
 
 
 ######################
 ##   Web Handlers   ##
 ######################
 
-class WritingsListPage(projects.ProjectPage):
+class WritingPage(projects.ProjectPage):
+    def get_writings_list(self, project, log_message = ''):
+        writings = []
+        for w in CollaborativeWritings.query(ancestor = project.key).order(-CollaborativeWritings.last_updated).iter():
+            logging.debug("DB READ: Handler %s requests an instance of CollaborativeWritings, %s"
+                          % (self.__class__.__name__, log_message))
+            writings.append(w)
+        return writings
+
+    def get_writing(self, project, writing_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of CollaborativeWritings. %s"
+                      % (self.__class__.__name__, log_message))
+        return CollaborativeWritings.get_by_id(int(writing_id), parent = project.key)
+
+    def get_last_revision(self, writing, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of CollaborativeWritings. %s"
+                      % (self.__class__.__name__, log_message))
+        return WritingRevisions.query(ancestor = writing.key).order(-WritingRevisions.date).get()
+
+    def get_revision(self, writing, rev_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of WritingRevisions. %s"
+                      % (self.__class__.__name__, log_message))
+        return WritingRevisions.get_by_id(int(rev_id), parent = writing.key)
+
+    def get_revisions(self, writing, log_message = ''):
+        revisions = []
+        for r in WritingRevisions.query(ancestor = writing.key).order(-WritingRevisions.date).iter():
+            logging.debug("DB READ: Handler %s requests an instance of WritingRevisions. %s"
+                          % (self.__class__.__name__, log_message))
+            revisions.append(r)
+        return revisions
+
+    def get_comments(self, writing, log_message = ''):
+        comments = []
+        for c in WritingComments.query(ancestor = writing.key).order(-WritingComments.date).iter():
+            logging.debug("DB READ: Handler %s requests an instance of WritingComments. %s"
+                          % (self.__class__.__name__, log_message))
+            comments.append(c)
+        return comments
+
+
+class WritingsListPage(WritingPage):
     def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -55,13 +96,11 @@ class WritingsListPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writings = []
-        for w in CollaborativeWritings.all().ancestor(project).order("-last_updated").run():
-            writings.append(w)
+        writings = self.get_writings_list(project)
         self.render("writings_list.html", p_author = p_author, project = project, writings = writings)
 
 
-class NewWritingPage(projects.ProjectPage):
+class NewWritingPage(WritingPage):
     def get(self, username, projectid):
         user = self.get_login_user()
         if not user:
@@ -82,7 +121,8 @@ class NewWritingPage(projects.ProjectPage):
               "name_placeholder" : "Title of the new writing",
               "content_placeholder" : "Description of the new writing",
               "submit_button_text" : "Create writing",
-              "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key.integer_id()),
+              "cancel_url" : "/%s/%s/writings" % (username, projectid),
+              "title_bar_extra" : '/ <a href="/%s/%s/writings">Collaborative writings</a>' % (username, projectid),
               "more_head" : "<style>.writings-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -120,7 +160,8 @@ class NewWritingPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new writing",
                   "content_placeholder" : "Description of the new writing",
                   "submit_button_text" : "Create writing",
-                  "cancel_url" : "/%s/%s/writings" % (p_author.username, project.key.integer_id()),
+                  "cancel_url" : "/%s/%s/writings" % (username, projectid),
+                  "title_bar_extra" : '/ <a href="/%s/%s/writings">Collaborative writings</a>' % (username, projectid),
                   "more_head" : "<style>.writings-tab {background: white;}</style>",
                   "name_value" : w_name,
                   "content_value" : w_description,
@@ -133,10 +174,10 @@ class NewWritingPage(projects.ProjectPage):
                                                 parent = project.key)
             self.log_and_put(new_writing)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/writings/%s" % (user.username, project.key.integer_id(), new_writing.key().id()))
+            self.redirect("/%s/%s/writings/%s" % (user.username, project.key.integer_id(), new_writing.key.integer_id()))
 
 
-class ViewWritingPage(projects.ProjectPage):
+class ViewWritingPage(WritingPage):
     def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -148,16 +189,16 @@ class ViewWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
             return
-        last_revision = Revisions.all().ancestor(writing).order("-date").get()
+        last_revision = self.get_last_revision(writing)
         self.render("writings_view.html", p_author = p_author, project = project, writing = writing, last_revision = last_revision)
 
 
-class EditWritingPage(projects.ProjectPage):
+class EditWritingPage(WritingPage):
     def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -169,12 +210,12 @@ class EditWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
             return
-        last_revision = Revisions.all().ancestor(writing).order("-date").get()
+        last_revision = self.get_last_revision(writing)
         if last_revision:
             content = last_revision.content
         else:
@@ -197,12 +238,12 @@ class EditWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
             return
-        last_revision = Revisions.all().ancestor(writing).order("date").get()
+        last_revision = self.get_last_revision(writing)
         content = self.request.get("content")
         status = self.request.get("status")
         summary = self.request.get("summary")
@@ -221,7 +262,7 @@ class EditWritingPage(projects.ProjectPage):
             self.render("writings_edit.html", p_author = p_author, project = project, writing = writing, 
                         content = content, status = status, summary = summary, error_message = error_message)
         else:
-            new_revision = Revisions(author = user, content = content, summary = summary, parent = writing)
+            new_revision = WritingRevisions(author = user.key, content = content, summary = summary, parent = writing.key)
             link = "/%s/%s/writings/%s" % (user.username, projectid, writing_id)
             self.log_and_put(new_revision)
             html, txt = new_revision.notification_html_and_txt(user, project, writing)
@@ -234,7 +275,7 @@ class EditWritingPage(projects.ProjectPage):
             self.redirect(link)
 
 
-class HistoryWritingPage(projects.ProjectPage):
+class HistoryWritingPage(WritingPage):
     def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -246,19 +287,17 @@ class HistoryWritingPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
             return
-        revisions = []
-        for r in Revisions.all().ancestor(writing).order("-date").run():
-            revisions.append(r)
+        revisions = self.get_revisions(writing)
         self.render("writings_history.html", p_author = p_author, project = project, 
                     writing = writing, revisions = revisions)
 
 
-class ViewRevisionPage(projects.ProjectPage):
+class ViewRevisionPage(WritingPage):
     def get(self, username, projectid, writing_id, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -270,12 +309,12 @@ class ViewRevisionPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
             return
-        revision = Revisions.get_by_id(int(rev_id), parent = writing)
+        revision = self.get_revision(writing, rev_id)
         if not revision:
             self.error(404)
             self.render("404.html")
@@ -284,7 +323,7 @@ class ViewRevisionPage(projects.ProjectPage):
                     writing = writing, revision = revision)
 
 
-class DiscussionPage(projects.ProjectPage):
+class DiscussionPage(WritingPage):
     def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -296,14 +335,12 @@ class DiscussionPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
             return
-        comments = []
-        for c in WritingComments.all().ancestor(writing).order("-date").run():
-            comments.append(c)
+        comments = self.get_comments(writing)
         self.render("writings_discussion.html", p_author = p_author, project = project,
                     writing = writing, comments = comments)
 
@@ -323,7 +360,7 @@ class DiscussionPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
@@ -338,18 +375,16 @@ class DiscussionPage(projects.ProjectPage):
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
-            new_comment = WritingComments(author = user.key, comment = comment, parent = writing)
+            new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
             self.log_and_put(new_comment, "New comment. ")
             comment = ''
-        comments = []
-        for c in WritingComments.all().ancestor(writing).order("-date").run():
-            comments.append(c)
+        comments = self.get_comments(writing)
         self.render("writings_discussion.html", p_author = p_author, project = project,
                     writing = writing, comments = comments, comment = comment,
                     error_message = error_message)
 
 
-class InfoPage(projects.ProjectPage):
+class InfoPage(WritingPage):
     def get(self, username, projectid, writing_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -361,7 +396,7 @@ class InfoPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")
@@ -385,7 +420,7 @@ class InfoPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        writing = CollaborativeWritings.get_by_id(int(writing_id), parent = project)
+        writing = self.get_writing(project, writing_id)
         if not writing:
             self.error(404)
             self.render("404.html")

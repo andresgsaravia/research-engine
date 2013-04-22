@@ -73,17 +73,6 @@ indexes:
   - name: last_updated
     direction: desc
 
-- kind: Revisions
-  ancestor: yes
-  properties:
-  - name: date
-
-- kind: Revisions
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
-
 - kind: WikiRevisions
   ancestor: yes
   properties:
@@ -91,6 +80,12 @@ indexes:
     direction: desc
 
 - kind: WritingComments
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
+- kind: WritingRevisions
   ancestor: yes
   properties:
   - name: date

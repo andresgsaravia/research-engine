@@ -28,7 +28,7 @@
   <div class="comment">
     <div class="c-meta">
       <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
-      <div class="c-author">{{c.author.username.capitalize()}}</div>
+      <div class="c-author">{{c.author.get().username.capitalize()}}</div>
     </div>
     <div class="c-content">{{c.comment | md | safe}}</div>
   </div>
