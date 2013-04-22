@@ -10,27 +10,50 @@ import projects
 ###########################
 
 # Each ForumThread should have a project as parent.
-class ForumThreads(db.Model):
-    author = db.ReferenceProperty(required = True)
-    title = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    started = db.DateTimeProperty(auto_now_add = True)
-    date = db.DateTimeProperty(auto_now = True)
-    last_updated = db.DateTimeProperty(auto_now = True)
+class ForumThreads(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    title = ndb.StringProperty(required = True)
+    content = ndb.TextProperty(required = True)
+    started = ndb.DateTimeProperty(auto_now_add = True)
+    date = ndb.DateTimeProperty(auto_now = True)
+    last_updated = ndb.DateTimeProperty(auto_now = True)
 
 
 # each ForumComment should have a ForumThread as parent.
-class ForumComments(db.Model):
-    author = db.ReferenceProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    comment = db.TextProperty(required = True)
+class ForumComments(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    comment = ndb.TextProperty(required = True)
 
 
 ######################
 ##   Web Handlers   ##
 ######################
 
-class MainPage(projects.ProjectPage):
+class ForumPage(projects.ProjectPage):
+    def get_threads(self, project, log_message = ''):
+        threads = []
+        for t in ForumThreads.query(ancestor = project.key).order(-ForumThreads.last_updated).iter():
+            logging.debug("DB READ: Hanlder %s requests an instance of ForumThreads. %s"
+                          % (self.__class__.__name__, log_message))
+            threads.append(t)
+        return threads
+
+    def get_thread(self, project, thread_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of ForumThreads. %s"
+                      % (self.__class__.__name__, log_message))
+        return ForumThreads.get_by_id(int(thread_id), parent = project.key)
+
+    def get_comments(self, thread, log_message = ''):
+        comments = []
+        for c in ForumComments.query(ancestor = thread.key).order(ForumComments.date).iter():
+            logging.debug("DB READ: Handler %s requests an instance of ForumComments. %s"
+                          % (self.__class__.__name__, log_message))
+            comments.append(c)
+        return comments
+
+
+class MainPage(ForumPage):
     def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -42,13 +65,11 @@ class MainPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project "%s" not found.' % projectid.replace("_"," ").title())
             return
-        threads = []
-        for t in ForumThreads.all().ancestor(project).order("-last_updated").run():
-            threads.append(t)
+        threads = self.get_threads(project)
         self.render("forum_main.html", p_author = p_author, project = project, threads = threads)
 
 
-class NewThreadPage(projects.ProjectPage):
+class NewThreadPage(ForumPage):
     def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -64,7 +85,7 @@ class NewThreadPage(projects.ProjectPage):
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
               "submit_button_text" : "Create thread",
-              "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key.integer_id()),
+              "cancel_url" : "/%s/%s/forum" % (username, projectid),
               "more_head" : "<style>.forum-tab {background: white;}</style>",
               "markdown_p" : True,
               "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
@@ -105,19 +126,19 @@ class NewThreadPage(projects.ProjectPage):
                   "content_placeholder" : "Content of the thread",
                   "submit_button_text" : "Create thread",
                   "markdown_p" : True,
-                  "cancel_url" : "/%s/%s/forum" % (p_author.username, project.key.integer_id()),
+                  "cancel_url" : "/%s/%s/forum" % (username, projectid),
                   "more_head" : "<style>.forum-tab {background: white;}</style>",
                   "name_value": t_title, "content_value": t_content, "error_message" : error_message,
                   "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project)
+            new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
             self.log_and_put(new_thread)
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/forum/%s" % (user.username, project.key.integer_id(), new_thread.key().id()))
+            self.redirect("/%s/%s/forum/%s" % (user.username, projectid, new_thread.key.integer_id()))
 
 
-class ThreadPage(projects.ProjectPage):
+class ThreadPage(ForumPage):
     def get(self, username, projectid, thread_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -129,14 +150,12 @@ class ThreadPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        thread = ForumThreads.get_by_id(int(thread_id), parent = project)
+        thread = self.get_thread(project, thread_id)
         if not thread:
             self.error(404)
             self.render("404.html")
             return
-        comments = []
-        for c in ForumComments.all().ancestor(thread).order("date").run():
-            comments.append(c)
+        comments = self.get_comments(thread)
         self.render("forum_thread.html", p_author = p_author, project = project, thread = thread, comments = comments)
 
     def post(self, username, projectid, thread_id):
@@ -155,7 +174,7 @@ class ThreadPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        thread = ForumThreads.get_by_id(int(thread_id), parent = project)
+        thread = self.get_thread(project, thread_id)
         if not thread:
             self.error(404)
             self.render("404.html")
@@ -170,13 +189,11 @@ class ThreadPage(projects.ProjectPage):
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
-            new_comment = ForumComments(author = user.key, comment = comment, parent = thread)
+            new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
             self.log_and_put(new_comment)
             self.log_and_put(thread, "Updating it's last_updated property. ")
             self.log_and_put(project, "Updating it's last_updated property. ")
             comment = ''
-        comments = []
-        for c in ForumComments.all().ancestor(thread).order("date").run():
-            comments.append(c)
+        comments = self.get_comments(thread)
         self.render("forum_thread.html", p_author = p_author, project = project, thread = thread, comments = comments,
                     comment = comment, error_message = error_message)

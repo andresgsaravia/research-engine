@@ -14,7 +14,7 @@
 
 {% block title_bar_extra %}
 /  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/forum">Forum</a>
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/forum/{{thread.key().id()}}">{{thread.title[0:30]}}...</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}">{{thread.title[0:30]}}...</a>
 {% endblock %}
 
 
@@ -24,7 +24,7 @@
   <div class="t-head">
     <div class="t-title">{{thread.title}}</div>
     <div class="t-date">{{thread.date.strftime("%d-%b-%Y")}}</div>
-    <div class="t-author">by <a href="/{{thread.author.username}}">{{thread.author.username.capitalize()}}</a></div>
+    <div class="t-author">by <a href="/{{thread.author.get().username}}">{{thread.author.get().username.capitalize()}}</a></div>
   </div>
   <div class="t-content">{{thread.content | md | safe}}</div>
 </div>
@@ -34,7 +34,7 @@
 <div class="t-comment">
   <div class="c-head">
     <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
-    <div class="c-author"><a href="/{{c.author.username}}">{{c.author.username.capitalize()}}</a></div>
+    <div class="c-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a></div>
   </div>
   <div class="c-comment">{{c.comment | md | safe}}</div>
 </div>
