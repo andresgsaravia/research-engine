@@ -73,7 +73,6 @@ class GenericWikiPage(projects.ProjectPage):
         return revisions
 
     def get_revision(self, wikipage, rev_id, log_message = ''):
-        if not wikipage: return
         logging.debug("DB READ: Handler %s requests an instance of WikiRevisions. %s"
                       % (self.__class__.__name__, log_message))
         return WikiRevisions.get_by_id(int(rev_id), parent = wikipage.key)

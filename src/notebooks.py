@@ -4,7 +4,6 @@
 from generic import *
 import projects
 
-SHORT_DESCRIPTION_LENGTH = 150
 
 ###########################
 ##   Datastore Objects   ##
@@ -17,13 +16,6 @@ class Notebooks(ndb.Model):
     description = ndb.TextProperty(required = True)
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
-
-    # def short_description(self):
-    #     if len(self.description) < SHORT_DESCRIPTION_LENGTH:
-    #         return self.description
-    #     else:
-    #         return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
-
 
 # Each note should be a child of a Notebook.
 class NotebookNotes(ndb.Model):
