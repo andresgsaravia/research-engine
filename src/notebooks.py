@@ -11,39 +11,39 @@ SHORT_DESCRIPTION_LENGTH = 150
 ###########################
 
 # Notebooks have a Project as parent.
-class Notebooks(db.Model):
-    owner = db.ReferenceProperty(required = True)
-    name = db.StringProperty(required = True)
-    description = db.TextProperty(required = True)
-    started = db.DateTimeProperty(auto_now_add = True)
-    last_updated = db.DateTimeProperty(auto_now = True)
+class Notebooks(ndb.Model):
+    owner = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    name = ndb.StringProperty(required = True)
+    description = ndb.TextProperty(required = True)
+    started = ndb.DateTimeProperty(auto_now_add = True)
+    last_updated = ndb.DateTimeProperty(auto_now = True)
 
-    def short_description(self):
-        if len(self.description) < SHORT_DESCRIPTION_LENGTH:
-            return self.description
-        else:
-            return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
+    # def short_description(self):
+    #     if len(self.description) < SHORT_DESCRIPTION_LENGTH:
+    #         return self.description
+    #     else:
+    #         return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
 
 
 # Each note should be a child of a Notebook.
-class NotebookNotes(db.Model):
-    title = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
+class NotebookNotes(ndb.Model):
+    title = ndb.StringProperty(required = True)
+    content = ndb.TextProperty(required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
 
     def notification_html_and_txt(self, author, project, notebook):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + notebook.name
-        kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key().id())
+        kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key.integer_id())
         return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
 
 # Each comment should be a child of a NotebookNote
-class NoteComments(db.Model):
-    author = db.ReferenceProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    comment = db.TextProperty(required = True)
+class NoteComments(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    comment = ndb.TextProperty(required = True)
 
 
 ######################
@@ -53,7 +53,7 @@ class NoteComments(db.Model):
 class NotebookPage(projects.ProjectPage):
     def get_notebooks_list(self, project, log_message = ''):
         notebooks = []
-        for n in Notebooks.all().ancestor(project).order("-last_updated").run():
+        for n in Notebooks.query(ancestor = project.key).order(-Notebooks.last_updated).iter():
             logging.debug("DB READ: Handler %s requests an instance of Notebooks. %s"
                           % (self.__class__.__name__, log_message))
             notebooks.append(n)
@@ -62,11 +62,11 @@ class NotebookPage(projects.ProjectPage):
     def get_notebook(self, project, nbid, log_message = ''):
         logging.debug("DB READ: Handler %s requests an instance of Notebooks. %s"
                       % (self.__class__.__name__, log_message))
-        return Notebooks.get_by_id(int(nbid), parent = project)
+        return Notebooks.get_by_id(int(nbid), parent = project.key)
 
     def get_notes_list(self, notebook, log_message = ''):
         notes = []
-        for n in NotebookNotes.all().ancestor(notebook).order('-date').run():
+        for n in NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).iter():
             logging.debug("DB READ: Handler %s requests an instance of NotebookNotes. %s"
                           % (self.__class__.__name__, log_message))
             notes.append(n)
@@ -75,11 +75,11 @@ class NotebookPage(projects.ProjectPage):
     def get_note(self, notebook, note_id, log_message = ''):
         logging.debug("DB READ: Handler %s requests an instance of NotebookNotes. %s"
                       % (self.__class__.__name__, log_message))
-        return NotebookNotes.get_by_id(int(note_id), parent = notebook)
+        return NotebookNotes.get_by_id(int(note_id), parent = notebook.key)
 
     def get_comments_list(self, note, log_message = ''):
         comments = []
-        for c in NoteComments.all().ancestor(note).order("date").run():
+        for c in NoteComments.query(ancestor = note.key).order(NoteComments.date).iter():
             logging.debug("DB READ: Handler %s requests an instance of NoteComments. %s"
                       % (self.__class__.__name__, log_message))
             comments.append(c)
@@ -177,7 +177,7 @@ class NewNotebookPage(NotebookPage):
                                      parent  = project.key)
             self.log_and_put(new_notebook)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key.integer_id(), new_notebook.key().id()))
+            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key.integer_id(), new_notebook.key.id()))
 
 
 class NotebookMainPage(NotebookPage):
@@ -223,10 +223,10 @@ class NewNotePage(NotebookPage):
               "name_placeholder" : "Title of the new note",
               "content_placeholder" : "Content of the note",
               "submit_button_text" : "Create note",
-              "cancel_url" : "%s/%s" % (parent_url ,notebook.key().id()),
+              "cancel_url" : "%s/%s" % (parent_url ,notebook.key.integer_id()),
               "markdown_p" : True,
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + notebook.name, notebook.name)}
+              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name)}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectid, nbid):
@@ -260,7 +260,7 @@ class NewNotePage(NotebookPage):
         if not n_content:
             have_error = True
             error_message += "You need to write some content before saving this note. "
-        if not notebook.owner.key == user.key:
+        if not notebook.owner.get().key == user.key:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         if have_error:
@@ -269,14 +269,14 @@ class NewNotePage(NotebookPage):
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
-                  "cancel_url" : "%s/%s" % (parent_url ,notebook.key().id()),
+                  "cancel_url" : "%s/%s" % (parent_url ,notebook.key.integer_id()),
                   "markdown_p" : True,
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
-                  "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + notebook.name, notebook.name),
+                  "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook)
+            new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key)
             self.log_and_put(new_note)
             html, txt = new_note.notification_html_and_txt(user, project, notebook)
             self.add_notifications(category = new_note.__class__.__name__,
@@ -285,7 +285,7 @@ class NewNotePage(NotebookPage):
                                    html = html, txt = txt)
             self.log_and_put(notebook, "Updating last_updated property. ")
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectid, nbid, new_note.key().id()))
+            self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectid, nbid, new_note.key.integer_id()))
 
 
 class NotePage(NotebookPage):
@@ -350,7 +350,7 @@ class NotePage(NotebookPage):
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
-            new_comment = NoteComments(author = user.key, comment = comment, parent = note)
+            new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
             self.log_and_put(new_comment)
             self.log_and_put(notebook, "Updating its last_updated property. ")
             self.log_and_put(project, "Updating its last_updated property. ")
@@ -412,7 +412,7 @@ class EditNotebookPage(NotebookPage):
             return
         have_error = False
         error_message = ''
-        if not notebook.owner.key == user.key:
+        if not notebook.owner.get().key == user.key:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         n_name = self.request.get("name")
@@ -515,7 +515,7 @@ class EditNotePage(NotebookPage):
         if not n_content:
             have_error = True
             error_message += "You need to write some content before saving this note. "
-        if not notebook.owner.key == user.key:
+        if not notebook.owner.get().key == user.key:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         if have_error:
