@@ -205,8 +205,8 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
 
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
-            notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
-                                              sent = False, parent = u.key)
+            notification = EmailNotifications(author = author.key, category = category, html = html, txt = txt,
+                                              sent = False, parent = u)
             self.log_and_put(notification)
         return
 

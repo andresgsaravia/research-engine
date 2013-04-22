@@ -12,7 +12,7 @@
   <h3>Edit revision</h3>
   <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
     <textarea name="meta" placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used.">{{rev.meta}}</textarea><br/>
-    <div class="an-input">Data File: <a href="/file/{{rev.datafile.key()}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
+    <div class="an-input">Data File: <a href="/file/{{rev.datafile.key}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
     <div class="an-input">New file (optional): <input type="file" name="file" /></div>
     <div class="warning">WARNING: If you upload a new file, the previous file will be lost.</div>
     <div class="an-input">

@@ -13,20 +13,20 @@
 
 {% block title_bar_extra %}
 /  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets">Datasets</a>
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key().id()}}">{{dataset.name[:150]}}</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name[:150]}}</a>
 {% endblock %}
 
 
 {% block p_content %}
 
-<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key().id()}}/new_data">New data concept</a></div>
+<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data">New data concept</a></div>
 <h2>{{dataset.name}}</h2>
 
 {% for d in dataconcepts %}
 <div class="data-concept">
   <div class="last-updated">Last updated: {{d.last_updated.strftime("%d-%b-%Y")}}</div>
   <a class="info-link" href="#">Description</a>
-  <div class="name"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key().id()}}/{{d.key().id()}}">{{d.name}}</a></div>
+  <div class="name"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{d.key.integer_id()}}">{{d.name}}</a></div>
   <div class="description">{{d.description | md | safe}}</div>
 </div>
 {% endfor %}

@@ -13,42 +13,83 @@ from google.appengine.ext.webapp import blobstore_handlers
 ###########################
 
 # Each instance should have a Project as parent.
-class DataSets(db.Model):
-    name = db.StringProperty(required = True)
-    description = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    last_updated = db.DateTimeProperty(auto_now = True)
+class DataSets(ndb.Model):
+    name = ndb.StringProperty(required = True)
+    description = ndb.TextProperty(required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    last_updated = ndb.DateTimeProperty(auto_now = True)
 
 
 # Should have a DataSet as parent
-class DataConcepts(db.Model):
-    name = db.StringProperty(required = True)
-    description = db.TextProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    last_updated = db.DateTimeProperty(auto_now = True)
+class DataConcepts(ndb.Model):
+    name = ndb.StringProperty(required = True)
+    description = ndb.TextProperty(required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    last_updated = ndb.DateTimeProperty(auto_now = True)
 
 
 # Should have a DataConcept as parent
-class DataRevisions(db.Model):
-    author = db.ReferenceProperty(required = True)
-    date = db.DateTimeProperty(auto_now_add = True)
-    meta = db.TextProperty(required = False)
-    datafile = blobstore.BlobReferenceProperty(required = True)
+class DataRevisions(ndb.Model):
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    meta = ndb.TextProperty(required = False)
+    datafile = ndb.BlobKeyProperty(required = True)
 
     def notification_html_and_txt(self, author, project, dataset, datac):
         kw = {"author" : author, "project" : project, "dataset" : dataset,
               "datac" : datac, "rev" : self, 
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
-        kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key().id())
-        kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key().id())
+        kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key.integer_id())
+        kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key.integer_id())
         return (render_str("emails/datarev.html", **kw), render_str("emails/datarev.txt", **kw))
 
 ######################
 ##   Web Handlers   ##
 ######################
 
-class MainPage(projects.ProjectPage):
+class DataPage(projects.ProjectPage):
+    def get_datasets(self, project, log_message = ''):
+        datasets = []
+        for d in DataSets.query(ancestor = project.key).order(-DataSets.last_updated).iter():
+            logging.debug("DB READ: Handler %s requests an instance of DataSets. %s"
+                          % (self.__class__.__name__, log_message))
+            datasets.append(d)
+        return datasets
+
+    def get_dataset(self, project, dataset_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of DataSets. %s"
+                      % (self.__class__.__name__, log_message))
+        return DataSets.get_by_id(int(dataset_id), parent = project.key)
+
+    def get_dataconcepts(self, dataset, log_message = ''):
+        dataconcepts = []
+        for d in DataConcepts.query(ancestor = dataset.key).order(-DataConcepts.date).iter():
+            logging.debug("DB READ: Handler %s requests an instance of DataConcepts. %s"
+                          % (self.__class__.__name__, log_message))
+            dataconcepts.append(d)
+        return dataconcepts
+
+    def get_dataconcept(self, dataset, datac_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of DataConcepts. %s"
+                      % (self.__class__.__name__, log_message))
+        return DataConcepts.get_by_id(int(datac_id), parent = dataset.key)
+
+    def get_revisions(self, datac, log_message = ''):
+        revisions = []
+        for r in DataRevisions.query(ancestor = datac.key).order(-DataRevisions.date).iter():
+            logging.debug("DB READ: Handler %s requests an instance of DataRevisions. %s"
+                          % (self.__class__.__name__, log_message))
+            revisions.append(r)
+        return revisions
+
+    def get_revision(self, datac, rev_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of DataRevisions. %s"
+                      % (self.__class__.__name__, log_message))
+        return DataRevisions.get_by_id(int(rev_id), parent = datac.key)
+
+
+class MainPage(DataPage):
     def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -60,13 +101,11 @@ class MainPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        datasets = []
-        for d in DataSets.all().ancestor(project).order("-last_updated").run():
-            datasets.append(d)
+        datasets = self.get_datasets(project)
         self.render("datasets_main.html", p_author = p_author, project = project, datasets = datasets)
 
 
-class NewDataSetPage(projects.ProjectPage):
+class NewDataSetPage(DataPage):
     def get(self, username, projectid):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -82,8 +121,8 @@ class NewDataSetPage(projects.ProjectPage):
               "name_placeholder" : "Title of the new dataset",
               "content_placeholder" : "Description of the new dataset",
               "submit_button_text" : "Create dataset",
-              "cancel_url" : "/%s/%s/datasets" % (p_author.username, project.key.integer_id()),
-              "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, project.key.integer_id()),
+              "cancel_url" : "/%s/%s/datasets" % (username, projectid),
+              "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, projectid),
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -121,23 +160,23 @@ class NewDataSetPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new dataset",
                   "content_placeholder" : "Description of the new dataset",
                   "submit_button_text" : "Create dataset",
-                  "cancel_url" : "/%s/%s/datasets" % (p_author.username, project.key.integer_id()),
-                  "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, project.key.integer_id()),
+                  "cancel_url" : "/%s/%s/datasets" % (username, projectid),
+                  "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, projectid),
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
                   "error_message" : error_message}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            new_dataset = DataSets(name = d_name, 
-                                   description = d_description, 
+            new_dataset = DataSets(name = d_name,
+                                   description = d_description,
                                    parent  = project.key)
             self.log_and_put(new_dataset)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key.integer_id(), new_dataset.key().id()))
+            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key.integer_id(), new_dataset.key.integer_id()))
 
 
-class DataSetPage(projects.ProjectPage):
+class DataSetPage(DataPage):
     def get(self, username, projectid, dataset_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -149,18 +188,16 @@ class DataSetPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        dataconcepts = []
-        for d in DataConcepts.all().ancestor(dataset).order("-date").run():
-            dataconcepts.append(d)
+        dataconcepts = self.get_dataconcepts(dataset)
         self.render("dataset_view.html", p_author = p_author, project = project, dataset = dataset, dataconcepts = dataconcepts)
 
 
-class NewDataConceptPage(projects.ProjectPage):
+class NewDataConceptPage(DataPage):
     def get(self, username, projectid, dataset_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -172,7 +209,7 @@ class NewDataConceptPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
@@ -181,9 +218,9 @@ class NewDataConceptPage(projects.ProjectPage):
               "name_placeholder" : "Title of the new data concept",
               "content_placeholder" : "Description of the new data concept",
               "submit_button_text" : "Create data concept",
-              "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset.key().id()),
+              "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset_id),
               "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a> / <a href="/%s/%s/datasets/%s">%s</a>' 
-              % (username, projectid, username, projectid, dataset.key().id(), dataset.name),
+              % (username, projectid, username, projectid, dataset_id, dataset.name),
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -203,7 +240,7 @@ class NewDataConceptPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
@@ -226,9 +263,9 @@ class NewDataConceptPage(projects.ProjectPage):
                   "name_placeholder" : "Title of the new data concept",
                   "content_placeholder" : "Description of the new data concept",
                   "submit_button_text" : "Create data concept",
-                  "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset.key().id()),
+                  "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset_id),
                   "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a> / <a href="/%s/%s/datasets/%s">%s</a>' 
-                  % (username, projectid, username, projectid, dataset.key().id(), dataset.name),
+                  % (username, projectid, username, projectid, dataset_id, dataset.name),
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
@@ -237,13 +274,13 @@ class NewDataConceptPage(projects.ProjectPage):
         else:
             new_dataconcept = DataConcepts(name = d_name, 
                                            description = d_description, 
-                                           parent  = dataset)
+                                           parent  = dataset.key)
             self.log_and_put(new_dataconcept)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s/%s" % (user.username, project.key.integer_id(), dataset.key().id(), new_dataconcept.key().id()))
+            self.redirect("/%s/%s/datasets/%s/%s" % (user.username, projectid, dataset_id, new_dataconcept.key.integer_id()))
 
 
-class DataConceptPage(projects.ProjectPage):
+class DataConceptPage(DataPage):
     def get(self, username, projectid, dataset_id, datac_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -255,24 +292,22 @@ class DataConceptPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
             return
-        revisions = []
-        for rev in DataRevisions.all().ancestor(datac).order("-date").run():
-            revisions.append(rev)
+        revisions = self.get_revisions(datac)
         self.render("dataset_concept_view.html", p_author = p_author, project = project, 
                     dataset = dataset, datac = datac, revisions = revisions)
 
 
-class EditConceptPage(projects.ProjectPage):
+class EditConceptPage(DataPage):
     def get(self, username, projectid, dataset_id, datac_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -284,12 +319,12 @@ class EditConceptPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
@@ -313,12 +348,12 @@ class EditConceptPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
@@ -344,7 +379,7 @@ class EditConceptPage(projects.ProjectPage):
             self.redirect("/%s/%s/datasets/%s/%s" % (username, projectid, dataset_id, datac_id) )
 
 
-class NewDataRevisionPage(projects.ProjectPage):
+class NewDataRevisionPage(DataPage):
     def get(self, username, projectid, dataset_id, datac_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -356,12 +391,12 @@ class NewDataRevisionPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
@@ -371,7 +406,7 @@ class NewDataRevisionPage(projects.ProjectPage):
                     dataset = dataset, datac = datac, upload_url = upload_url, error_message = self.request.get("error_message"))
 
 
-class EditRevisionPage(projects.ProjectPage):
+class EditRevisionPage(DataPage):
     def get(self, username, projectid, dataset_id, datac_id, rev_id):
         p_author = self.get_user_by_username(username)
         if not p_author:
@@ -383,23 +418,24 @@ class EditRevisionPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
             return
-        rev = DataRevisions.get_by_id(int(rev_id), parent = datac)
+        rev = self.get_revision(datac, rev_id)
         if not rev:
             self.error(404)
-            self.render("404.html", info = "Revision not found")
-        blob_info = blobstore.BlobInfo.get(rev.datafile.key())
+            self.render("404.html", info = "Revision %s not found" % rev_id)
+            return
+        blob_info = blobstore.BlobInfo.get(rev.datafile)
         size = blob_info.size / 1024.0
-        cancel_url = '/%s/%s/datasets/%s/%s' % (username, projectid, dataset.key().id(), datac.key().id())
+        cancel_url = '/%s/%s/datasets/%s/%s' % (username, projectid, dataset.key.integer_id(), datac.key.integer_id())
         upload_url = blobstore.create_upload_url("/%s/%s/datasets/%s/%s/update/%s" % (p_author.username, projectid, dataset_id, datac_id, rev_id))
         self.render("dataset_revision_edit.html", p_author = p_author, project = project,
                     dataset = dataset, datac = datac, rev = rev, blob_info = blob_info, size = size,
@@ -407,7 +443,34 @@ class EditRevisionPage(projects.ProjectPage):
                     error_message = self.request.get("error_message"))
 
 
-class UploadDataRevisionHandler(GenericBlobstoreUpload):
+class DataSetBlobstoreUpload(GenericBlobstoreUpload):
+    def get_project(self, p_author, projectid, message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of Projects. %s"
+                      % (self.__class__.__name__, message))
+        project = projects.Projects.get_by_id(int(projectid))
+        if project.user_is_author(p_author): 
+            return project
+        else:
+            return False
+
+    def get_dataset(self, project, dataset_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of DataSets. %s"
+                      % (self.__class__.__name__, log_message))
+        return DataSets.get_by_id(int(dataset_id), parent = project.key)
+
+    def get_dataconcept(self, dataset, datac_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of DataConcepts. %s"
+                      % (self.__class__.__name__, log_message))
+        return DataConcepts.get_by_id(int(datac_id), parent = dataset.key)
+
+    def get_datarevision(self, datac, rev_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of DataRevisions. %s"
+                      % (self.__class__.__name__, log_message))
+        return DataRevisions.get_by_id(int(rev_id), parent = datac.key)
+
+
+
+class UploadDataRevisionHandler(DataSetBlobstoreUpload):
     def post(self, username, projectid, dataset_id, datac_id):
         user = self.get_login_user()
         if not user: 
@@ -419,18 +482,17 @@ class UploadDataRevisionHandler(GenericBlobstoreUpload):
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = projects.Projects.get_by_id(int(projectid))
-        if not project.user_is_author(p_author): project = False
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
@@ -447,8 +509,8 @@ class UploadDataRevisionHandler(GenericBlobstoreUpload):
         if have_error:
             self.redirect("/%s/%s/datasets/%s/%s/new?error_message=%s" % (username, projectid, dataset_id, datac_id, error_message))
         else:
-            new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac)
-            new_revision.put()
+            new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac.key)
+            self.log_and_put(new_revision)
             html, txt = new_revision.notification_html_and_txt(user, project, dataset, datac)
             self.add_notifications(category = new_revision.__class__.__name__,
                                    author = user,
@@ -469,7 +531,7 @@ class DownloadDataRevisionHandler(blobstore_handlers.BlobstoreDownloadHandler):
             self.send_blob(blob_info, save_as = True)
 
 
-class UpdateDataRevisionHandler(GenericBlobstoreUpload):
+class UpdateDataRevisionHandler(DataSetBlobstoreUpload):
     def post(self, username, projectid, dataset_id, datac_id, rev_id):
         user = self.get_login_user()
         if not user: 
@@ -481,23 +543,22 @@ class UpdateDataRevisionHandler(GenericBlobstoreUpload):
             self.error(404)
             self.render("404.html", info = "User not found. ")
             return
-        project = projects.Projects.get_by_id(int(projectid))
-        if not project.user_is_author(p_author): project = False
+        project = self.get_project(p_author, projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = "Project not found. ")
             return
-        dataset = DataSets.get_by_id(int(dataset_id), parent = project)
+        dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = "Dataset not found. ")
             return
-        datac = DataConcepts.get_by_id(int(datac_id), parent = dataset)
+        datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
             self.render("404.html", info = "Data concept not found. ")
             return
-        rev = DataRevisions.get_by_id(int(rev_id), parent = datac)
+        rev = self.get_datarevision(datac, rev_id)
         if not rev:
             self.error(404)
             self.render("404.html", info = "Revision not found")
@@ -510,7 +571,7 @@ class UpdateDataRevisionHandler(GenericBlobstoreUpload):
         else:
             # Delete previous blob and reference the new one if necessary
             if datafile:
-                rev.datafile.delete()
+                blobstore.BlobInfo.get(rev.datafile).delete()
                 rev.datafile = datafile[0].key()
             if meta != rev.meta: rev.meta = meta
             rev.put()
