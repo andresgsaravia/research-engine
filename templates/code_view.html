@@ -1,0 +1,57 @@
+{% extends "project_base.html" %}
+
+
+{% block p_head %}
+  <link href="/css/code_view.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true }
+    });
+  </script>
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/code">Source code</a>
+/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/code/{{code.key.integer_id()}}">{{code.name}}</a>
+{% endblock %}
+
+
+{% block p_content %}
+ 
+<div class="c-wrapper">
+  <div class="c-head">
+    <div class="c-date">Last comment: {{code.last_updated.strftime("%d-%b-%Y")}}</div>
+    <div class="c-name">{{code.name}}</div>
+    <div class="c-link"><a href="{{code.link}}">External link</a></div>
+  </div>
+  <div class="c-description">{{code.description.replace("\n", "<br/>") | safe}}</div>
+</div>
+
+
+{% for c in comments %}
+<div class="comment">
+  <div class="comment-head">
+    <div class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</div>
+    <div class="comment-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a></div>
+  </div>
+  <div class="comment-content">{{c.comment | md | safe}}</div>
+</div>
+{% endfor %}
+
+<div class="comment-form">
+  <form method="post">
+    <textarea name="comment">{{comment_value}}</textarea>
+    <input type="submit" value="Comment" />
+  </form>
+</div>
+
+<div class="error">{{error_message}}</div>
+
+<div class="help">
+  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+</div>
+
+
+{% endblock %}

@@ -43,6 +43,12 @@ class CodePage(projects.ProjectPage):
             codes.append(c)
         return codes
 
+    def get_code(self, project, code_id, log_message = ''):
+        logging.debug("DB READ: Handler %s requests an instance of CodeRepositories. %s"
+                      % (self.__class__.__name__, log_message))
+        return CodeRepositories.get_by_id(int(code_id), parent = project.key)
+
+
 
 class CodesListPage(CodePage):
     def get(self, username, projectid):
@@ -141,4 +147,15 @@ class NewCodePage(CodePage):
 
 class ViewCodePage(CodePage):
     def get(self, username, projectid, code_id):
-        self.write("Code: %s" % code_id)
+        p_author = self.get_user_by_username(username)
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = 'User "%s" not found' % username)
+            return
+        project = self.get_project(p_author, projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project "%s" not found' % project.name)
+            return
+        code = self.get_code(project, code_id)
+        self.render("code_view.html", p_author = p_author, project = project, code = code, comments = [])

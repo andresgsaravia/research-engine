@@ -1,0 +1,107 @@
+/* Stylesheet for the forum_thread.html template */
+
+.code-tab {
+    background: white;
+}
+
+.p-content {
+    padding: 0
+}
+
+.c-head {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    background-color: #F1EEB9;
+    background-image: linear-gradient(#FCFAF8, #F1D9B9);
+    background-image: -webkit-linear-gradient(#FCFAF8, #F1D9B9);
+    background-repeat: repeat-x;
+}
+
+.c-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4B2921;
+}
+
+.c-link {
+    margin-top: 0.5em;
+    font-size: 0.9em;
+}
+
+.c-date {
+    position: relative;
+    float: right;
+    color: #555555;
+}
+
+.c-description {
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    margin-bottom: 2em;
+    box-shadow: 0em 0.3em 0.3em #C0C0C0;
+    border-radius: 0 0 1em 1em;
+}
+
+.comment {
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0.8em;
+    border: 1px solid #C0C0C0;
+}
+
+.comment-head {
+    height: 3em;
+    background: #F5F5F5;
+}
+
+.comment-date {
+    position: relative;
+    float: right;
+    color: #555555;
+    font-size: 0.9em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+}
+
+.comment-author {
+    padding-top: 1em;
+    padding-left: 1em;
+}
+
+.comment-content {
+    padding-top: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    min-height: 4em;
+}
+
+.comment-form {
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+textarea {
+    width: 100%;
+    height: 20em;
+    padding: 0.5em;
+}
+
+input[type=submit] {
+    font-size: 1.1em;
+    margin-top: 0.8em;
+    margin-bottom: 1.5em;
+}
+
+.help {
+    font-size: 0.9em;
+    margin-left: 1em;
+    padding-bottom: 1em;
+}

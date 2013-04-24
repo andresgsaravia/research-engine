@@ -23,15 +23,15 @@ h2 {
     padding-bottom: 0.5em;
     padding-left: 1em;
     padding-right: 1em;
-    background-color: #DDE8EB;
-    background-image: linear-gradient(#F8FBFC, #CFDEE2);
-    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
+    background-color: #F1EEB9;
+    background-image: linear-gradient(#FCFAF8, #F1D9B9);
+    background-image: -webkit-linear-gradient(#FCFAF8, #F1D9B9);
     background-repeat: repeat-x;
 }
 
 .c-name a:hover {
     text-decoration: none;
-    background-color: DDE8EB;
+    background-color: #F1EEB9;
     background-image: linear-gradient(#FCFCF8, #F1EEB9);
     background-image: -webkit-linear-gradient(#FCFCF8, #F1EEB9);
     background-repeat: repeat-x;
