@@ -9,7 +9,7 @@ h2 {
     background: white;
 }
 
-.n-wrapper {
+.c-wrapper {
     margin-left: 2em;
     margin-right: 2em;
     margin-top: 1em;
@@ -63,4 +63,11 @@ h2 {
 
 .c-owner a {
     color: black;
+}
+
+.c-link {
+    font-size: 0.9em;
+    fint-weight: normal;
+    margin-left: 1.5em;
+    margin-top: 0.5em;
 }

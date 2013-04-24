@@ -9,7 +9,7 @@ h3 {
     margin-left: 5%;
 }
 
-form, .pre-message {
+form, .pre-message, .error {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
@@ -36,10 +36,6 @@ textarea {
     margin-top: 0.5em;
     margin-right: 0.5em;
     font-size: 1.2em;
-}
-
-.error {
-    margin-left: 2em;
 }
 
 .help {

@@ -60,6 +60,7 @@ app = webapp2.WSGIApplication([('/', frontend.MainPage),
                                # Code
                                ('/(.+)/([0-9]+)/code', code.CodesListPage),
                                ('/(.+)/([0-9]+)/code/new', code.NewCodePage),
+                               ('/(.+)/([0-9]+)/code/([0-9]+)', code.ViewCodePage),
                                # Admin projects
                                ('/(.+)/([0-9]+)/admin', projects.AdminPage),
                                ('/(.+)/([0-9]+)/invite', projects.InvitePage),

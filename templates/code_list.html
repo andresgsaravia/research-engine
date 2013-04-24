@@ -19,7 +19,8 @@
 {% for c in codes %}
 <div class="c-wrapper">
   <div class="c-last-updated">Last updated: {{c.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="c-name"><a href="{{c.link}}">{{c.name}}</a></div>
+  <div class="c-name"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/code/{{c.key.integer_id()}}">{{c.name}}</a></div>
+  <div class="c-link"><a href="{{c.link}}">External link</a></div>
   <div class="c-description">{{c.description.replace("\n", "<br/>") | safe}}</div>
 </div>
 {% endfor %}
