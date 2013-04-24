@@ -24,7 +24,7 @@ class CodeRepositories(ndb.Model):
 
 
 # Each RepositoryComment should have a CodeRepository as parent
-class RepositoryComments(ndb.Model):
+class CodeComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
@@ -48,6 +48,14 @@ class CodePage(projects.ProjectPage):
                       % (self.__class__.__name__, log_message))
         return CodeRepositories.get_by_id(int(code_id), parent = project.key)
 
+    def get_comments(self, code, log_message = ''):
+        comments = []
+        for c in CodeComments.query(ancestor = code.key).order(CodeComments.date).iter():
+            logging.debug("DB READ: Handler %s requests an instance of CodeComments. %s"
+                          % (self.__class__.__name__, log_message))
+            comments.append(c)
+        return comments
+
 
 
 class CodesListPage(CodePage):
@@ -60,7 +68,7 @@ class CodesListPage(CodePage):
         project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % project.name)
+            self.render("404.html", info = 'Project "%s" not found' % projectid)
             return
         codes = self.get_codes_list(project)
         self.render("code_list.html", p_author = p_author, project = project, codes = codes)
@@ -76,7 +84,7 @@ class NewCodePage(CodePage):
         project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % project.name)
+            self.render("404.html", info = 'Project "%s" not found' % projectid)
             return
         kw = {"title_bar_extra" : '/ <a href="/%s/%s/code">Source code</a>' % (username, projectid),
               "more_head" : "<style>.code-tab {background: white;}</style>",
@@ -97,7 +105,7 @@ class NewCodePage(CodePage):
         project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % project.name)
+            self.render("404.html", info = 'Project "%s" not found' % projectid)
             return
         link = self.request.get("name").strip()
         description = self.request.get("content")
@@ -155,7 +163,51 @@ class ViewCodePage(CodePage):
         project = self.get_project(p_author, projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % project.name)
+            self.render("404.html", info = 'Project "%s" not found' % projectid)
             return
         code = self.get_code(project, code_id)
+        if not code:
+            self.error(404)
+            self.render("404.html", info = 'Code "%s" not found' % code_id)
+            return
         self.render("code_view.html", p_author = p_author, project = project, code = code, comments = [])
+
+    def post(self, username, projectid, code_id):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + username + '/' + projectid + '/forum/' + thread_id
+            self.redirect("/login?goback=%s" % goback)
+            return
+        p_author = self.get_user_by_username(username)
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = 'User "%s" not found' % username)
+            return
+        project = self.get_project(p_author, projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project "%s" not found' % projectid)
+            return
+        code = self.get_code(project, code_id)
+        if not code:
+            self.error(404)
+            self.render("404.html", info = 'Code "%s" not found' % code_id)
+            return
+        have_error = False
+        error_message = ''
+        comment = self.request.get("comment")
+        if not project.user_is_author(user):
+            have_error = True
+            erro_message = "You are not an author in this project. "
+        if not comment:
+            have_error = True
+            error_message = "You can't submit an empty comment. "
+        if not have_error:
+            new_comment = CodeComments(author = user.key, comment = comment, parent = code.key)
+            self.log_and_put(new_comment)
+            self.log_and_put(code, "Updating it's last_updated property. ")
+            self.log_and_put(project, "Updating it's last_updated property. ")
+            comment = ''
+        comments = self.get_comments(code)
+        self.render("code_view.html", p_author = p_author, project = project, code = code, comments = comments,
+                    comment = comment, error_message = error_message)
