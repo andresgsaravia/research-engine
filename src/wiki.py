@@ -77,6 +77,7 @@ class GenericWikiPage(projects.ProjectPage):
                       % (self.__class__.__name__, log_message))
         return WikiRevisions.get_by_id(int(rev_id), parent = wikipage.key)
 
+
 class ViewWikiPage(GenericWikiPage):
     def get(self, username, projectid, wikiurl):
         p_author = self.get_user_by_username(username)
@@ -201,10 +202,13 @@ class RevisionWikiPage(GenericWikiPage):
             self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.url.replace("_"," ").title())
             return
         revision = self.get_revision(wikipage, rev_id)
-#        revision = WikiRevisions.get_by_id(int(rev_id), parent = wikipage)
         if not revision:
             self.error(404)
             self.render("404.html", info = "Revision %s not found" % rev_id)
             return
+        if revision:
+            wikitext = re.sub(WIKILINKS_RE, make_sub_repl(username, projectid), revision.content) 
+        else:
+            wikitext = ''
         self.render("wiki_revision.html", p_author = p_author, project = project, 
-                    wikiurl = wikiurl, revision = revision)
+                    wikiurl = wikiurl, revision = revision, wikitext = wikitext)

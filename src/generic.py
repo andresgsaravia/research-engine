@@ -16,7 +16,6 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 SALT_LENGTH = 16
 DOMAIN_PREFIX = "http://research-engine.appspot.com"
 
-jinja_env.filters['wikify'] = filters.wikify
 jinja_env.filters['md'] = filters.md
 
 

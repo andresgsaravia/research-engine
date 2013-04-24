@@ -19,7 +19,7 @@
   <div class="w-title">{{wikiurl.replace("_", " ").capitalize()}}</div>
   <div class="rev-meta">Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a></div>
 
-  <div class="w-content">{{revision.content | wikify | safe}}</div>
+  <div class="w-content">{{wikitext | safe}}</div>
 
 </div>
 
