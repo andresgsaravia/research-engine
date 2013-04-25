@@ -1,0 +1,5 @@
+{{author.username.capitalize()}} <{{author_absolute_link}}> added a new code repository: "{{code.name}}" <{{code_absolute_link}}> to your project "{{project.name}}" <{{project_absolute_link}}>
+
+{{code.description | safe}}
+
+{{code.last_updated.strftime("%d-%b-%Y %H:%M")}} (server time)

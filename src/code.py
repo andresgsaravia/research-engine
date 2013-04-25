@@ -22,12 +22,26 @@ class CodeRepositories(ndb.Model):
     link = ndb.StringProperty(required = True)
     github_json = ndb.JsonProperty()
 
+    def notification_html_and_txt(self, author, project):
+        kw = {"author" : author, "project" : project, "code" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(self.key.integer_id())
+        return (render_str("emails/code.html", **kw), render_str("emails/code.txt", **kw))
+
 
 # Each RepositoryComment should have a CodeRepository as parent
 class CodeComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
+
+    def notification_html_and_txt(self, author, project, code):
+        kw = {"author" : author, "project" : project, "code" : code, "comment" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(code.key.integer_id())
+        return (render_str("emails/code_comment.html", **kw), render_str("emails/code_comment.txt", **kw))
 
 
 ######################
@@ -97,6 +111,10 @@ class NewCodePage(CodePage):
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
     def post(self, username, projectid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("\login?goback=%s/%s" % (username, projectid))
+            return
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
@@ -148,6 +166,11 @@ class NewCodePage(CodePage):
             new_repo = CodeRepositories(link = link, description = description, parent = project.key,
                                         name = repo_json["full_name"], github_json = repo_json)
             self.log_and_put(new_repo)
+            html, txt = new_repo.notification_html_and_txt(user, project)
+            self.add_notifications(category = new_repo.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.code_notifications_list,
+                                   html = html, txt = txt)
             self.log_and_put(project, "Updating last_updated property")
             self.redirect("/%s/%s/code/%s" 
                           % (username, projectid, new_repo.key.integer_id()))
@@ -205,6 +228,11 @@ class ViewCodePage(CodePage):
         if not have_error:
             new_comment = CodeComments(author = user.key, comment = comment, parent = code.key)
             self.log_and_put(new_comment)
+            html, txt = new_comment.notification_html_and_txt(user, project, code)
+            self.add_notifications(category = new_comment.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.code_notifications_list,
+                                   html = html, txt = txt)
             self.log_and_put(code, "Updating it's last_updated property. ")
             self.log_and_put(project, "Updating it's last_updated property. ")
             comment = ''
