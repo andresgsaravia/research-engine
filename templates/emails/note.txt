@@ -1,4 +1,4 @@
-{{author.username.capitalize()}} <{{author_absolute_link}}> wrote a new note: "{{note.title}}" <{{note_absolute_link}}> in the notebook "{{notebook.name.replace("_", " ").capitalize()}}" <{{notebook_absolute_link}}> from your project "{{project.name.replace("_", " ").capitalize()}}" <{{project_absolute_link}}>
+{{author.username.capitalize()}} <{{author_absolute_link}}> wrote a new note: "{{note.title}}" <{{note_absolute_link}}> in the notebook "{{notebook.name}}" <{{notebook_absolute_link}}> from your project "{{project.name}}" <{{project_absolute_link}}>
 
 {{note.content | safe}}
 

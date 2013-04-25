@@ -18,6 +18,13 @@ class ForumThreads(ndb.Model):
     date = ndb.DateTimeProperty(auto_now = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
+    def notification_html_and_txt(self, author, project):
+        kw = {"author" : author, "project" : project, "thread" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["thread_absolute_link"] = kw["project_absolute_link"] + "/forum/" + str(self.key.integer_id())
+        return (render_str("emails/forum_thread.html", **kw), render_str("emails/forum_thread.txt", **kw))
+
 
 # each ForumComment should have a ForumThread as parent.
 class ForumComments(ndb.Model):
@@ -134,6 +141,11 @@ class NewThreadPage(ForumPage):
         else:
             new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
             self.log_and_put(new_thread)
+            html, txt = new_thread.notification_html_and_txt(user, project)
+            self.add_notifications(category = new_thread.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.forum_threads_notifications_list,
+                                   html = html, txt = txt)
             self.log_and_put(project,  "Updating last_updated property. ")
             self.redirect("/%s/%s/forum/%s" % (user.username, projectid, new_thread.key.integer_id()))
 

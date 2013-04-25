@@ -1,7 +1,7 @@
 <div class="author">
   <a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> made a new revision of the Wiki page
   <a href="{{wikipage_absolute_link}}">{{wikipage.url.replace("_"," ").capitalize()}}</a> from your project
-  <a href="{{project_absolute_link}}">{{project.name.replace("_", " ").capitalize()}}</a>.
+  <a href="{{project_absolute_link}}">{{project.name}}</a>.
 </div>
 <div class="content"><p>{% if revision.summary %}<em>Summary of changes:</em> {{revision.summary}}{% else %}<em>No summary of changes provided</em>{% endif %}</p></div>
 <div class="date">{{revision.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>

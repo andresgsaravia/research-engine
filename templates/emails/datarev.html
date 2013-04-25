@@ -2,7 +2,7 @@
   <a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> uploaded a new revision to the
   <a href="{{datac_absolute_link}}">{{datac.name}}</a> concept in the
   <a href="{{dataset_absolute_link}}">{{dataset.name}}</a> dataset for your
-  <a href="{{project_absolute_link}}">{{project.name.replace("_", " ").capitalize()}}</a> project.
+  <a href="{{project_absolute_link}}">{{project.name}}</a> project.
 </div>
 <div class="content">{{rev.meta | md | safe}}</div>
 <div class="date">{{rev.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>

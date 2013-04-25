@@ -1,0 +1,7 @@
+<div class="author">
+  <a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> started a new thread: 
+  <a href="{{thread_absolute_link}}">{{thread.title}}</a> in the forum of your project
+  <a href="{{project_absolute_link}}">{{project.name}}</a>.
+</div>
+<div class="content">{{thread.content | md | safe}}</div>
+<div class="date">{{thread.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>
