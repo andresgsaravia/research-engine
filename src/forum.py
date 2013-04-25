@@ -32,6 +32,13 @@ class ForumComments(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
 
+    def notification_html_and_txt(self, author, project, thread):
+        kw = {"author" : author, "project" : project, "thread" : thread, "comment" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["thread_absolute_link"] = kw["project_absolute_link"] + "/forum/" + str(self.key.integer_id())
+        return (render_str("emails/forum_comment.html", **kw), render_str("emails/forum_comment.txt", **kw))
+
 
 ######################
 ##   Web Handlers   ##
@@ -203,6 +210,11 @@ class ThreadPage(ForumPage):
         if not have_error:
             new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
             self.log_and_put(new_comment)
+            html, txt = new_comment.notification_html_and_txt(user, project, thread)
+            self.add_notifications(category = new_comment.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.forum_posts_notifications_list,
+                                   html = html, txt = txt)
             self.log_and_put(thread, "Updating it's last_updated property. ")
             self.log_and_put(project, "Updating it's last_updated property. ")
             comment = ''
