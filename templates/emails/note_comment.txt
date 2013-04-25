@@ -1,0 +1,5 @@
+{{author.username.capitalize()}} <{{author_absolute_link}}> wrote a new comment to the note: "{{note.title}}" <{{note_absolute_link}}> in the notebook "{{notebook.name}}" <{{notebook_absolute_link}}> from your project "{{project.name}}" <{{project_absolute_link}}>
+
+{{comment.comment | safe}}
+
+{{comment.date.strftime("%d-%b-%Y %H:%M")}} (server time)

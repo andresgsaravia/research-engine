@@ -27,7 +27,7 @@ class NotebookNotes(ndb.Model):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
         kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
-        kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + notebook.key.integer_id()
+        kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + str(notebook.key.integer_id())
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key.integer_id())
         return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
 
@@ -36,6 +36,14 @@ class NoteComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
+
+    def notification_html_and_txt(self, author, project, notebook, note):
+        kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : note, "comment" : self,
+              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
+        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + str(notebook.key.integer_id())
+        kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key.integer_id())
+        return (render_str("emails/note_comment.html", **kw), render_str("emails/note_comment.txt", **kw))
 
 
 ######################
@@ -344,6 +352,11 @@ class NotePage(NotebookPage):
         if not have_error:
             new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
             self.log_and_put(new_comment)
+            html, txt = new_comment.notification_html_and_txt(user, project, notebook, note)
+            self.add_notifications(category = new_comment.__class__.__name__,
+                                   author = user,
+                                   users_to_notify = project.nb_notifications_list,
+                                   html = html, txt = txt)
             self.log_and_put(notebook, "Updating its last_updated property. ")
             self.log_and_put(project, "Updating its last_updated property. ")
             comment = ''
