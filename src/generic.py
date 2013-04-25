@@ -132,8 +132,9 @@ class GenericPage(webapp2.RequestHandler):
             return val
         return None
 
-    def set_cookie(self, name, value, salt, path = "/"):
-        cookie = "%s=%s; Path=%s" % (name, make_secure_val(value, salt), path)
+    def set_cookie(self, name, value, salt, path = "/", max_age = None):
+        cookie = "%s=%s; Path=%s; " % (name, make_secure_val(value, salt), path)
+        if max_age: cookie += "max-age=%s" % max_age
         self.response.headers.add_header('Set-Cookie', str(cookie))
         return
 

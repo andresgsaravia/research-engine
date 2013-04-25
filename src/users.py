@@ -4,6 +4,7 @@
 from generic import *
 import email_messages
 
+LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z0-9_-]{3,20}$'
 PASSWORD_RE = r'^.{3,20}$'
@@ -41,7 +42,7 @@ class LoginPage(GenericPage):
             u.salt = make_salt()
             u.password_hash = hash_str(password + u.salt)
             self.log_and_put(u, "Making new salt. ")
-            self.set_cookie("username", u.username, u.salt)
+            self.set_cookie("username", u.username, u.salt, max_age = LOGIN_COOKIE_MAXAGE)
             if kw['goback']: 
                 self.redirect(kw['goback'])
                 return
@@ -184,7 +185,7 @@ class SettingsPage(GenericPage):
             user.about_me = kw["about_me"]
             self.log_and_put(user, "Updating settings.")
             kw["info"] = "Changes saved"
-            self.set_cookie("username", user.username, user.salt)
+            self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
             self.render("settings.html", **kw)
 
 
@@ -212,7 +213,7 @@ class VerifyEmailPage(GenericPage):
                                        my_projects = [])
             self.log_and_put(new_user)
             self.log_and_delete(u)
-            self.set_cookie("username", new_user.username, new_user.salt)
+            self.set_cookie("username", new_user.username, new_user.salt, max_age = LOGIN_COOKIE_MAXAGE)
             self.render("email_verified.html")
         else:
             logging.warning("Handler VerifyEmailPage attempted to verify an email with the wrong hash.")
