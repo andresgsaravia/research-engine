@@ -107,6 +107,7 @@ class NewCodePage(CodePage):
               "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",
               "content_placeholder" : "Briefly describe how this repository is related to the project.",
               "submit_button_text" : "Add repository",
+              "markdown_p" : True,
               "cancel_url" : "/%s/%s/code" % (username, projectid)}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
 
@@ -156,6 +157,7 @@ class NewCodePage(CodePage):
                   "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",
                   "content_placeholder" : "Briefly describe how this repository is related to the project.",
                   "submit_button_text" : "Add repository",
+                  "markdown_p" : True,
                   "cancel_url" : "/%s/%s/code" % (username, projectid),
                   "error_message" : error_message,
                   "name_value" : link,

@@ -26,7 +26,7 @@
     <div class="c-name">{{code.name}}</div>
     <div class="c-link"><a href="{{code.link}}">External link</a></div>
   </div>
-  <div class="c-description">{{code.description.replace("\n", "<br/>") | safe}}</div>
+  <div class="c-description">{{code.description | md | safe}}</div>
 </div>
 
 

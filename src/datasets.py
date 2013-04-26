@@ -121,6 +121,7 @@ class NewDataSetPage(DataPage):
               "name_placeholder" : "Title of the new dataset",
               "content_placeholder" : "Description of the new dataset",
               "submit_button_text" : "Create dataset",
+              "markdown_p": True,
               "cancel_url" : "/%s/%s/datasets" % (username, projectid),
               "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, projectid),
               "more_head" : "<style>.datasets-tab {background: white;}</style>"}
@@ -160,6 +161,7 @@ class NewDataSetPage(DataPage):
                   "name_placeholder" : "Title of the new dataset",
                   "content_placeholder" : "Description of the new dataset",
                   "submit_button_text" : "Create dataset",
+                  "markdown_p": True,
                   "cancel_url" : "/%s/%s/datasets" % (username, projectid),
                   "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, projectid),
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
