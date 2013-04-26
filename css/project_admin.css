@@ -21,3 +21,8 @@ textarea {
     margin-top: 1em;
     float: left;
 }
+
+.help {
+    font-size: 0.9em;
+    margin-top: 0.4em;
+}
