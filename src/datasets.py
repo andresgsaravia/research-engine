@@ -220,6 +220,7 @@ class NewDataConceptPage(DataPage):
               "name_placeholder" : "Title of the new data concept",
               "content_placeholder" : "Description of the new data concept",
               "submit_button_text" : "Create data concept",
+              "markdown_p": True,
               "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset_id),
               "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a> / <a href="/%s/%s/datasets/%s">%s</a>' 
               % (username, projectid, username, projectid, dataset_id, dataset.name),
@@ -265,6 +266,7 @@ class NewDataConceptPage(DataPage):
                   "name_placeholder" : "Title of the new data concept",
                   "content_placeholder" : "Description of the new data concept",
                   "submit_button_text" : "Create data concept",
+                  "markdown_p": True,
                   "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset_id),
                   "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a> / <a href="/%s/%s/datasets/%s">%s</a>' 
                   % (username, projectid, username, projectid, dataset_id, dataset.name),

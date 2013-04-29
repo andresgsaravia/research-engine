@@ -19,7 +19,7 @@
 
   <div class="w-content">
     {% if wikipage %}
-      {{wikitext | safe}}
+      {{wikitext | md | safe}}
     {% else %}
       <em>This page doesn't exist yet. Click <a href="/{{p_author.username}}/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
       {% endif %}
