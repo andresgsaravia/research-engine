@@ -479,7 +479,7 @@ class EditNotePage(NotebookPage):
               "markdown_p" : True,
               "cancel_url" : note_url,
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s<a/> / <a href="%s">%s<a/>' 
+              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a> / <a href="%s">%s</a>' 
               % (nbs_url, nb_url, notebook.name, note_url, note.title),
               "name_value" : note.title, "content_value" : note.content}
         self.render("project_form_2.html", p_author = p_author, project = project, **kw)
