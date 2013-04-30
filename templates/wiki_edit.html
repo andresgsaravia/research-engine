@@ -8,7 +8,7 @@
     
 {% block w_content %}
 
-  <div class="w-title">Editing {{wikiurl.replace("_"," ").capitalize()}}</div>
+  <div class="w-title">Editing {{wikiurl.replace("_"," ")}}</div>
 
   <form method="post">
     <textarea name="content" placeholder="Write the content of this page here." autofocus>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>

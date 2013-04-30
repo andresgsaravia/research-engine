@@ -15,9 +15,9 @@ WIKILINKS_RE = r'\[\[([^\|\]]+\|)?([^\]]+)\]\]'
 def link_and_text(mobject, link_prefix):
     text = mobject.groups()[1].strip()
     if mobject.groups()[0]:
-        link_posfix = mobject.groups()[0][:-1].strip().replace(" ","_").lower()
+        link_posfix = mobject.groups()[0][:-1].strip().replace(" ","_")
     else:
-        link_posfix = text.replace(" ", "_").lower()
+        link_posfix = text.replace(" ", "_")
     return (link_prefix + link_posfix, text)
 
 # Returns a function suitable to use inside a re.sub(...) call to generate
@@ -58,7 +58,7 @@ class WikiRevisions(ndb.Model):
 
 class GenericWikiPage(projects.ProjectPage):
     def get_wikipage(self, project, url, log_message = ''):
-        url = url.strip().replace(" ", "_").lower()
+        url = url.strip().replace(" ", "_")
         self.log_read(WikiPages, log_message)
         return WikiPages.query(WikiPages.url == url, ancestor = project.key).get()
 
@@ -144,7 +144,7 @@ class EditWikiPage(GenericWikiPage):
             error_message = "There aren't any changes to save. "
         if not have_error:
             if not wikipage:
-                wikipage = WikiPages(url = wikiurl.lower(), content = content, parent = project.key)
+                wikipage = WikiPages(url = wikiurl, content = content, parent = project.key)
                 self.log_and_put(wikipage, "New instance. ")
             else:
                 wikipage.content = content
@@ -175,7 +175,7 @@ class HistoryWikiPage(GenericWikiPage):
             self.error(404)
             self.render("404.html", info = 'Project "%s" not found.' % projectid)
             return
-        wikipage = self.get_wikipage(project, wikiurl.lower())
+        wikipage = self.get_wikipage(project, wikiurl)
         revisions = self.get_revisions(wikipage)
         self.render("wiki_history.html", p_author = p_author, project = project, 
                     wikiurl = wikiurl, wikipage = wikipage, revisions = revisions)
