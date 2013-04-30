@@ -35,7 +35,7 @@ class Projects(ndb.Model):
                 authors_list.append(author)
             else:
                 logging.warning("Project with key (%s) contains a broken reference to author (%s)" 
-                                % (self.key(), author_key))
+                                % (self.key, author_key))
         return authors_list
 
     def user_is_author(self, user):
@@ -50,7 +50,7 @@ class Projects(ndb.Model):
         else:
             return self.description[0:SHORT_DESCRIPTION_LENGTH - 3] + "..."
 
-    def add_author(self, user):
+    def add_author(self, requesting_handler, user):
         if user.key in self.authors: return False
         self.authors.append(user.key)
         self.wiki_notifications_list.append(user.key)
@@ -60,11 +60,9 @@ class Projects(ndb.Model):
         self.datasets_notifications_list.append(user.key)
         self.forum_threads_notifications_list.append(user.key)
         self.forum_posts_notifications_list.append(user.key)
-        logging.debug("DB WRITE: Adding a new author to project %s" % self.name)
-        self.put()
+        requesting_handler.log_and_put(self, "Adding a new author. ")
         user.my_projects.append(self.key)
-        logging.debug("DB WRITE: Adding a new project to %s my_projects property" %  user.__class__.__name__)
-        user.put()
+        requesting_handler.log_and_put(user, "Adding a new project to my_projects property")
         return True
 
 ######################
@@ -72,9 +70,8 @@ class Projects(ndb.Model):
 ######################
 
 class ProjectPage(GenericPage):
-    def get_project(self, p_author, projectid, message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of Projects. %s"
-                      % (self.__class__.__name__, message))
+    def get_project(self, p_author, projectid, log_message = ''):
+        self.log_read(Projects, log_message)
         project = Projects.get_by_id(int(projectid))
         if project.user_is_author(p_author): 
             return project
@@ -174,7 +171,7 @@ class AdminPage(ProjectPage):
             return
         # New user here?
         if h and (hash_str(username + user.username + str(project.key)) == h):
-            project.add_author(user)
+            project.add_author(self, user)
             self.redirect("/%s/%s/admin" % (user.username, projectid))
             return
         if not project.user_is_author(user):

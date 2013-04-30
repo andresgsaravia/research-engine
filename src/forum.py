@@ -48,21 +48,18 @@ class ForumPage(projects.ProjectPage):
     def get_threads(self, project, log_message = ''):
         threads = []
         for t in ForumThreads.query(ancestor = project.key).order(-ForumThreads.last_updated).iter():
-            logging.debug("DB READ: Hanlder %s requests an instance of ForumThreads. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(ForumThreads, log_message)
             threads.append(t)
         return threads
 
     def get_thread(self, project, thread_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of ForumThreads. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(ForumThreads, log_message)
         return ForumThreads.get_by_id(int(thread_id), parent = project.key)
 
     def get_comments(self, thread, log_message = ''):
         comments = []
         for c in ForumComments.query(ancestor = thread.key).order(ForumComments.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of ForumComments. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(ForumComments, log_message)
             comments.append(c)
         return comments
 

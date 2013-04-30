@@ -47,39 +47,33 @@ class WritingPage(projects.ProjectPage):
     def get_writings_list(self, project, log_message = ''):
         writings = []
         for w in CollaborativeWritings.query(ancestor = project.key).order(-CollaborativeWritings.last_updated).iter():
-            logging.debug("DB READ: Handler %s requests an instance of CollaborativeWritings, %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(CollaborativeWritings, log_message)
             writings.append(w)
         return writings
 
     def get_writing(self, project, writing_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of CollaborativeWritings. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(CollaborativeWritings, log_message)
         return CollaborativeWritings.get_by_id(int(writing_id), parent = project.key)
 
     def get_last_revision(self, writing, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of CollaborativeWritings. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(WritingRevisions, log_message)
         return WritingRevisions.query(ancestor = writing.key).order(-WritingRevisions.date).get()
 
     def get_revision(self, writing, rev_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of WritingRevisions. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(WritingRevisions, log_message)
         return WritingRevisions.get_by_id(int(rev_id), parent = writing.key)
 
     def get_revisions(self, writing, log_message = ''):
         revisions = []
         for r in WritingRevisions.query(ancestor = writing.key).order(-WritingRevisions.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of WritingRevisions. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(WritingRevisions, log_message)
             revisions.append(r)
         return revisions
 
     def get_comments(self, writing, log_message = ''):
         comments = []
         for c in WritingComments.query(ancestor = writing.key).order(-WritingComments.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of WritingComments. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(WritingComments, log_message)
             comments.append(c)
         return comments
 

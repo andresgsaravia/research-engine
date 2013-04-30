@@ -59,22 +59,19 @@ class WikiRevisions(ndb.Model):
 class GenericWikiPage(projects.ProjectPage):
     def get_wikipage(self, project, url, log_message = ''):
         url = url.strip().replace(" ", "_").lower()
-        logging.debug("DB READ: Handler %s requests an instance of WikiPages. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(WikiPages, log_message)
         return WikiPages.query(WikiPages.url == url, ancestor = project.key).get()
 
     def get_revisions(self, wikipage, log_message = ''):
         revisions = []
         if not wikipage: return []
         for rev in WikiRevisions.query(ancestor = wikipage.key).order(-WikiRevisions.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of WikiRevisions. %s" 
-                          % (self.__class__.__name__, log_message))
+            self.log_read(WikiRevisions, log_message)
             revisions.append(rev)
         return revisions
 
     def get_revision(self, wikipage, rev_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of WikiRevisions. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(WikiRevisions, log_message)
         return WikiRevisions.get_by_id(int(rev_id), parent = wikipage.key)
 
 

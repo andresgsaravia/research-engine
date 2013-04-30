@@ -13,6 +13,7 @@ import filters
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
+DEBUG = True             # Debug messages using logging.debug
 SALT_LENGTH = 16
 DOMAIN_PREFIX = "http://research-engine.appspot.com"
 
@@ -99,19 +100,19 @@ class GenericPage(webapp2.RequestHandler):
 
     # Querying the Datastore
     def log_read(self, dbmodel, message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of %s. %s"
-                      % (self.__class__.__name__, dbmodel.__name__, message))
+        if DEBUG: logging.debug("DB READ: Handler %s requests an instance of %s. %s"
+                                % (self.__class__.__name__, dbmodel.__name__, message))
         return
     
     # Writing the Datastore
     def log_and_put(self, instance, message = ''):
-        logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
-                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        if DEBUG: logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
+                                % (self.__class__.__name__, instance.__class__.__name__, message))
         instance.put()
         return
 
     def log_and_delete(self, instance, message = ''):
-        logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
+        if DEBUG: logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
                       % (self.__class__.__name__, instance.__class__.__name__, message))
         instance.key.delete()
         return
@@ -157,14 +158,12 @@ class GenericPage(webapp2.RequestHandler):
         if not get_secure_val(cookie, u.salt): return None
         return u
 
-    def get_user_by_username(self, username, logmessage = ''):
-        logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
-                      % (self.__class__.__name__, logmessage))
+    def get_user_by_username(self, username, log_message = ''):
+        self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.username == username).get()
 
     def get_user_by_email(self, email, logmessage = ''):
-        logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
-                      % (self.__class__.__name__, logmessage))
+        self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.email == email).get()
 
     # Rendering
@@ -187,20 +186,20 @@ class GenericPage(webapp2.RequestHandler):
 class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
     # Querying the Datastore
     def log_read(self, dbmodel, message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of %s. %s"
-                      % (self.__class__.__name__, dbmodel.__name__, message))
+        if DEBUG: logging.debug("DB READ: Handler %s requests an instance of %s. %s"
+                                % (self.__class__.__name__, dbmodel.__name__, message))
         return
 
     # Writing to the Datastore
     def log_and_put(self, instance, message = ''):
-        logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
-                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        if DEBUG: logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
+                                % (self.__class__.__name__, instance.__class__.__name__, message))
         instance.put()
         return
 
     def log_and_delete(self, instance, message = ''):
-        logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
-                      % (self.__class__.__name__, instance.__class__.__name__, message))
+        if DEBUG: logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
+                                % (self.__class__.__name__, instance.__class__.__name__, message))
         instance.key.delete()
         return
 
@@ -223,6 +222,5 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         return u
 
     def get_user_by_username(self, username, logmessage = ''):
-        logging.debug("DB READ: Handler %s requests an instance of RegisteredUsers. %s"
-                      % (self.__class__.__name__, logmessage))
+        self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.username == username).get()

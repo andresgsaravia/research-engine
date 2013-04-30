@@ -54,34 +54,29 @@ class NotebookPage(projects.ProjectPage):
     def get_notebooks_list(self, project, log_message = ''):
         notebooks = []
         for n in Notebooks.query(ancestor = project.key).order(-Notebooks.last_updated).iter():
-            logging.debug("DB READ: Handler %s requests an instance of Notebooks. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(Notebooks, log_message)
             notebooks.append(n)
         return notebooks
 
     def get_notebook(self, project, nbid, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of Notebooks. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(Notebooks, log_message)
         return Notebooks.get_by_id(int(nbid), parent = project.key)
 
     def get_notes_list(self, notebook, log_message = ''):
         notes = []
         for n in NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of NotebookNotes. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(NotebookNotes, log_message)
             notes.append(n)
         return notes
 
     def get_note(self, notebook, note_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of NotebookNotes. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(NotebookNotes, log_message)
         return NotebookNotes.get_by_id(int(note_id), parent = notebook.key)
 
     def get_comments_list(self, note, log_message = ''):
         comments = []
         for c in NoteComments.query(ancestor = note.key).order(NoteComments.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of NoteComments. %s"
-                      % (self.__class__.__name__, log_message))
+            self.log_read(NoteComments, log_message)
             comments.append(c)
         return comments
 

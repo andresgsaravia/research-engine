@@ -52,40 +52,34 @@ class DataPage(projects.ProjectPage):
     def get_datasets(self, project, log_message = ''):
         datasets = []
         for d in DataSets.query(ancestor = project.key).order(-DataSets.last_updated).iter():
-            logging.debug("DB READ: Handler %s requests an instance of DataSets. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(DataSets, log_message)
             datasets.append(d)
         return datasets
 
     def get_dataset(self, project, dataset_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of DataSets. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(DataSets, log_message)
         return DataSets.get_by_id(int(dataset_id), parent = project.key)
 
     def get_dataconcepts(self, dataset, log_message = ''):
         dataconcepts = []
         for d in DataConcepts.query(ancestor = dataset.key).order(-DataConcepts.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of DataConcepts. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(DataConcepts, log_message)
             dataconcepts.append(d)
         return dataconcepts
 
     def get_dataconcept(self, dataset, datac_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of DataConcepts. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(DataConcepts, log_message)
         return DataConcepts.get_by_id(int(datac_id), parent = dataset.key)
 
     def get_revisions(self, datac, log_message = ''):
         revisions = []
         for r in DataRevisions.query(ancestor = datac.key).order(-DataRevisions.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of DataRevisions. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(DataRevisions, log_message)
             revisions.append(r)
         return revisions
 
     def get_revision(self, datac, rev_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of DataRevisions. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(DataRevisions, log_message)
         return DataRevisions.get_by_id(int(rev_id), parent = datac.key)
 
 
@@ -448,9 +442,8 @@ class EditRevisionPage(DataPage):
 
 
 class DataSetBlobstoreUpload(GenericBlobstoreUpload):
-    def get_project(self, p_author, projectid, message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of Projects. %s"
-                      % (self.__class__.__name__, message))
+    def get_project(self, p_author, projectid, log_message = ''):
+        self.log_read(projects.Projects, log_message)
         project = projects.Projects.get_by_id(int(projectid))
         if project.user_is_author(p_author): 
             return project
@@ -458,18 +451,15 @@ class DataSetBlobstoreUpload(GenericBlobstoreUpload):
             return False
 
     def get_dataset(self, project, dataset_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of DataSets. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(DataSets, log_message)
         return DataSets.get_by_id(int(dataset_id), parent = project.key)
 
     def get_dataconcept(self, dataset, datac_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of DataConcepts. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(DataConcepts, log_message)
         return DataConcepts.get_by_id(int(datac_id), parent = dataset.key)
 
     def get_datarevision(self, datac, rev_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of DataRevisions. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(DataRevisions, log_message)
         return DataRevisions.get_by_id(int(rev_id), parent = datac.key)
 
 

@@ -1,4 +1,4 @@
-# main.py
+# frontend.py
 
 from generic import *
 

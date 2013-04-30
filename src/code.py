@@ -52,21 +52,18 @@ class CodePage(projects.ProjectPage):
     def get_codes_list(self, project, log_message = ''):
         codes = []
         for c in CodeRepositories.query(ancestor = project.key).order(-CodeRepositories.last_updated).iter():
-            logging.debug("DB READ: Handler %s requests an instance of CodeRepositories. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(CodeRepositories, log_message)
             codes.append(c)
         return codes
 
     def get_code(self, project, code_id, log_message = ''):
-        logging.debug("DB READ: Handler %s requests an instance of CodeRepositories. %s"
-                      % (self.__class__.__name__, log_message))
+        self.log_read(CodeRepositories, log_message)
         return CodeRepositories.get_by_id(int(code_id), parent = project.key)
 
     def get_comments(self, code, log_message = ''):
         comments = []
         for c in CodeComments.query(ancestor = code.key).order(CodeComments.date).iter():
-            logging.debug("DB READ: Handler %s requests an instance of CodeComments. %s"
-                          % (self.__class__.__name__, log_message))
+            self.log_read(CodeComments, log_message)
             comments.append(c)
         return comments
 
