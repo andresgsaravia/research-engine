@@ -5,7 +5,7 @@ from google.appengine.api import mail
 from google.appengine.ext import db
 from generic import *
 
-ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
+ADMIN_EMAIL = "Research Engine <admin@research-engine.appspotmail.com>"
 
 
 ######################
@@ -31,7 +31,7 @@ def send_notifications(notifications_list, user):
     if len(notifications_list) == 0: return
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
-                                subject = "Research Engine: Recent activity in your projects.",
+                                subject = "Recent activity in your projects.",
                                 body = render_str("emails/notification_email.txt", 
                                                   notifications_list = notifications_list),
                                 html = render_str("emails/notification_email.html", 
@@ -63,7 +63,7 @@ def send_invitation_to_project(project, inviting, invited):
           "accept_link" : "%s/%s/%s/admin?h=%s" % (DOMAIN_PREFIX, inviting.username, project.key.integer_id(), h)}
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = invited.email,
-                                subject = "Research Engine: %s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name),
+                                subject = "%s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name),
                                 body = render_str("emails/invite_to_project.txt" , **kw),
                                 html = render_str("emails/invite_to_project.html", **kw))
     logging.debug("EMAIL: Sending an email with a invitation to a project from user %s to user %s" % (inviting.username, invited.username))
