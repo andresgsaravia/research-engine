@@ -221,6 +221,6 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         if not get_secure_val(cookie, u.salt): return None
         return u
 
-    def get_user_by_username(self, username, logmessage = ''):
+    def get_user_by_username(self, username, log_message = ''):
         self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.username == username).get()

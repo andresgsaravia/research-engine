@@ -192,7 +192,8 @@ class ViewCodePage(CodePage):
             self.error(404)
             self.render("404.html", info = 'Code "%s" not found' % code_id)
             return
-        self.render("code_view.html", p_author = p_author, project = project, code = code, comments = [])
+        comments = self.get_comments(code)
+        self.render("code_view.html", p_author = p_author, project = project, code = code, comments = comments)
 
     def post(self, username, projectid, code_id):
         user = self.get_login_user()
