@@ -1,5 +1,3 @@
-{{author.username.capitalize()}} <{{author_absolute_link}}> started a new thread: "{{thread.title}}" <{{thread_absolute_link}}> in the forum of your project "{{project.name}}" <{{project_absolute_link}}>
-
+{{thread.date.strftime("%d-%b-%Y %H:%M")}} (server time). Project: {{project.name}} <{{project_absolute_link}}>: 
+{{author.username.capitalize()}} <{{author_absolute_link}}> started a new thread: "{{thread.title}}" <{{thread_absolute_link}}> in the forum.
 {{thread.content | safe}}
-
-{{thread.date.strftime("%d-%b-%Y %H:%M")}} (server time)

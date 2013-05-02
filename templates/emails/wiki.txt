@@ -1,5 +1,3 @@
-{{author.username.capitalize()}} <{{author_absolute_link}}> made a new revision of the Wiki page "{{wikipage.url.replace("_", " ").capitalize()}}" <{{wikipage_absolute_link}}> from your project "{{project.name}}" <{{project_absolute_link}}>
-
-{% if revision.summary %}Summary of changes: {{revision.summary}}{% else %}No summary of changes provided{% endif %}
-
-{{revision.date.strftime("%d-%b-%Y %H:%M")}} (server time)
+{{revision.date.strftime("%d-%b-%Y %H:%M")}} (server time). Project: {{project.name}} <{{project_absolute_link}}>: 
+{{author.username.capitalize()}} <{{author_absolute_link}}> made a new revision of the Wiki page {{wikipage.url.replace("_"," ")}}<{{wikipage_absolute_link}}>
+{% if revision.summary %}Summary of changes:{{revision.summary}}{% else %}No summary of changes provided{% endif %}

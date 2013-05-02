@@ -1,9 +1,96 @@
-There has been some activity in your projects at *Research engine* <https://research-engine.appspot.com>:
+There has been some activity in your projects at Research Engine <https://research-engine.appspot.com>
 
-{% for item in notifications_list %}
-------------------------------------------------
+{% if WikiRevisions %}- Wiki changes ({{WikiRevisions | count}})
+{% endif %}{% if NotebookNotes %}- Notebook Notes ({{NotebookNotes | count}})
+{% endif %}{% if NoteComments %}- Comments in Notebooks' Notes ({{NoteComments | count}})
+{% endif %}{% if WritingRevisions %}- Collaborative Writings ({{WritingRevisions | count}})
+{% endif %}{% if CodeRepositories %}- New Code Repositories ({{CodeRepositories | count}})
+{% endif %}{% if CodeComments %}- Comments in Code Repositories ({{CodeComments | count}})
+{% endif %}{% if DataRevisions %}- New Data Revisions ({{DataRevisions | count}})
+{% endif %}{% if ForumThreads %}- New Forum Threads ({{ForumThreads | count}})
+{% endif %}{% if ForumComments %}- New answers in existing Forum Threads ({{ForumComments | count}})
+{% endif %}
+
+============================================================================
+
+{% if WikiRevisions %}*Wiki changes ({{WikiRevisions | count}})*
+{% for item in WikiRevisions %}
 {{item.txt | safe}}
-
 {% endfor %}
 
-You can stop receiving these emails by visiting your *Admin* tab for each project.
+----------------------------------------------------------------------------
+
+{% endif %}{% if NotebookNotes %}
+*Notebook Notes ({{NotebookNotes | count}})*
+
+{% for item in NotebookNotes %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if NoteComments %}
+*Comments in Notebooks' Notes ({{NoteComments | count}})*
+
+{% for item in NoteComments %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if WritingRevisions %}
+*Collaborative Writings ({{WritingRevisions | count}})*
+
+{% for item in WritingRevisions %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if CodeRepositories %}
+*New Code Repositories ({{CodeRepositories | count}})*
+
+{% for item in CodeRepositories %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if CodeComments %}
+*Comments in Code Repositories ({{CodeComments | count}})*
+
+{% for item in CodeComments %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if DataRevisions %}
+*New Data Revisions ({{DataRevisions | count}})*
+
+{% for item in DataRevisions %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if ForumThreads %}
+*New Forum Threads ({{ForumThreads | count}})*
+
+{% for item in ForumThreads %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if ForumComments %}
+*New answers in existing Forum Threads ({{ForumComments | count}})*
+
+{% for item in ForumComments %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}
+You can stop receiving these emails by visiting your *Admin* tab for each project

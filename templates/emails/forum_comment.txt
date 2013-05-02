@@ -1,5 +1,3 @@
-{{author.username.capitalize()}} <{{author_absolute_link}}> made a new comment in the thread: "{{thread.title}}" <{{thread_absolute_link}}> in the forum of your project "{{project.name}}" <{{project_absolute_link}}>
-
+{{comment.date.strftime("%d-%b-%Y %H:%M")}} (server time). Project: {{project.name}} <{{project_absolute_link}}>: 
+{{author.username.capitalize()}} <{{author_absolute_link}}> made a new comment in the thread: "{{thread.title}}" <{{thread_absolute_link}}>.
 {{comment.comment | safe}}
-
-{{comment.date.strftime("%d-%b-%Y %H:%M")}} (server time)

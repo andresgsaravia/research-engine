@@ -27,15 +27,22 @@ class SendNotifications(GenericPage):
 ##   Helper Functions   ##
 ##########################
 
+def classify_notifications(notifications_list):
+    notifs = {"WikiRevisions" : [], "NotebookNotes" : [], "NoteComments" : [], "WritingRevisions" : [], "CodeComments" : [], 
+              "CodeRepositories" : [], "DataRevisions" : [],"ForumThreads" : [],"ForumComments" : []}            
+    for n in notifications_list:
+        notifs[str(n.category)].append(n)
+    return notifs
+
+
 def send_notifications(notifications_list, user):
     if len(notifications_list) == 0: return
+    notifs = classify_notifications(notifications_list)
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
                                 subject = "Recent activity in your projects.",
-                                body = render_str("emails/notification_email.txt", 
-                                                  notifications_list = notifications_list),
-                                html = render_str("emails/notification_email.html", 
-                                                  notifications_list = notifications_list))
+                                body = render_str("emails/notification_email.txt", **notifs),
+                                html = render_str("emails/notification_email.html", **notifs))
     logging.debug("EMAIL: Sending an email with notifications to user %s" % user.username)
     message.send()
     for n in notifications_list:

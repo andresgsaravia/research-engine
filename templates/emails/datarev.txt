@@ -1,5 +1,3 @@
-{{author.username.capitalize()}} <{{author_absolute_link}}> uploaded a new revision to the "{{datac.name}}" <{{datac_absolute_link}}> concept in the "{{dataset.name}}" <{{dataset_absolute_link}}> dataset for your "{{project.name}}" <{{project_absolute_link}}> project.
-
+{{rev.date.strftime("%d-%b-%Y %H:%M")}} (server time). Project: {{project.name}} <{{project_absolute_link}}>: 
+{{author.username.capitalize()}} <{{author_absolute_link}}> uploaded a new revision to the "{{datac.name}}" <{{datac_absolute_link}}> concept in the "{{dataset.name}}" <{{dataset_absolute_link}}> dataset.
 {{rev.meta | safe}}
-
-{{rev.date.strftime("%d-%b-%Y %H:%M")}} (server time)

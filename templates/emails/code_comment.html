@@ -1,7 +1,3 @@
-<div class="author">
-  <a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> made a new code comment to the code repository
-  <a href="{{code_absolute_link}}">{{code.name}}</a> in your project
-  <a href="{{project_absolute_link}}">{{project.name}}</a>.
-</div>
-<div class="content">{{comment.comment | md | safe}}</div>
-<div class="date">{{comment.date.strftime("%d-%b-%Y %H:%M")}} (server time)</div>
+<p><span class="date">{{comment.date.strftime("%d-%b-%Y %H:%M")}} (server time)</span>. Project: <a href="{{project_absolute_link}}">{{project.name}}</a>:</p>
+<p><a href="{{author_absolute_link}}">{{author.username.capitalize()}}</a> made a new comment to the code repository <a href="{{code_absolute_link}}">{{code.name}}</a></p>
+<div class="content">{{comment.comment | md | safe }}</div>
