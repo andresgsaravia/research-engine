@@ -162,7 +162,7 @@ class GenericPage(webapp2.RequestHandler):
         self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.username == username).get()
 
-    def get_user_by_email(self, email, logmessage = ''):
+    def get_user_by_email(self, email, log_message = ''):
         self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.email == email).get()
 

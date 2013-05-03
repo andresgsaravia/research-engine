@@ -54,6 +54,7 @@
 	  <li><a href="#headers">Headers</a></li>
 	  <li><a href="#text">Bold and Italics</a></li>
 	  <li><a href="#lists">Lists</a></li>
+	  <li><a href="#tables">Tables</a></li>
 	  <li><a href="#code">Code</a></li>
 	  <li><a href="#quotes">Quotes</a></li>
 	  <li><a href="#links">Links</a></li>
@@ -169,6 +170,38 @@ You can still use * safely if you surround it with whitespace</div>
 <p>you need to write</p>
 
 <div class="md-example"><pre>1986\. What a great season.</pre></div>
+
+<h3 id="tables">Tables</h3>
+
+<p>To make a table you need to write something like</p>
+
+<div class="md-example"><pre>First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell</pre></div>
+
+<p>And it will be rendered as</p>
+
+<div class="md-result"><table>
+  <thead>
+    <tr>
+      <th>First Header</th>
+      <th>Second Header</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Content Cell</td>
+      <td>Content Cell</td>
+    </tr>
+    <tr>
+      <td>Content Cell</td>
+      <td>Content Cell</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>See <a href="http://michelf.ca/projects/php-markdown/extra/#table">here</a> for more options.</p>
 
 <h3 id="code">Code</h3>
 
