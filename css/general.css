@@ -206,6 +206,15 @@ a:hover {
     padding-top: 0.4em;
 }
 
+/* Tables */
+table {
+    border-collapse: collapse; 
+}
+
+td, th { 
+    border: 1px solid #CCCCCC; 
+}
+
 
 /* Other */
 
