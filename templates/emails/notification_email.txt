@@ -1,9 +1,9 @@
 There has been some activity in your projects at Research Engine <https://research-engine.appspot.com>
 
-{% if WikiRevisions %}- Wiki changes ({{WikiRevisions | count}})
-{% endif %}{% if NotebookNotes %}- Notebook Notes ({{NotebookNotes | count}})
+{% if NotebookNotes %}- Notebook Notes ({{NotebookNotes | count}})
 {% endif %}{% if NoteComments %}- Comments in Notebooks' Notes ({{NoteComments | count}})
 {% endif %}{% if WritingRevisions %}- Collaborative Writings ({{WritingRevisions | count}})
+{% endif %}{% if WikiRevisions %}- Wiki changes ({{WikiRevisions | count}})
 {% endif %}{% if CodeRepositories %}- New Code Repositories ({{CodeRepositories | count}})
 {% endif %}{% if CodeComments %}- Comments in Code Repositories ({{CodeComments | count}})
 {% endif %}{% if DataRevisions %}- New Data Revisions ({{DataRevisions | count}})
@@ -13,14 +13,7 @@ There has been some activity in your projects at Research Engine <https://resear
 
 ============================================================================
 
-{% if WikiRevisions %}*Wiki changes ({{WikiRevisions | count}})*
-{% for item in WikiRevisions %}
-{{item.txt | safe}}
-{% endfor %}
-
-----------------------------------------------------------------------------
-
-{% endif %}{% if NotebookNotes %}
+{% if NotebookNotes %}
 *Notebook Notes ({{NotebookNotes | count}})*
 
 {% for item in NotebookNotes %}
@@ -33,6 +26,13 @@ There has been some activity in your projects at Research Engine <https://resear
 *Comments in Notebooks' Notes ({{NoteComments | count}})*
 
 {% for item in NoteComments %}
+{{item.txt | safe}}
+{% endfor %}
+
+----------------------------------------------------------------------------
+
+{% endif %}{% if WikiRevisions %}*Wiki changes ({{WikiRevisions | count}})*
+{% for item in WikiRevisions %}
 {{item.txt | safe}}
 {% endfor %}
 

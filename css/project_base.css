@@ -54,6 +54,16 @@
     color: #648A9E;
 }
 
+/* Tables */
+
+table {
+    border-collapse: collapse; 
+}
+
+td, th { 
+    border: 1px solid #CCCCCC; 
+}
+
 /* Other */
 
 .p-content {

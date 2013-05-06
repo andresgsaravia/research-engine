@@ -18,20 +18,16 @@
     <div class="wrapper">
 
       <div class="top-index"><ul>
-      {% if WikiRevisions %}<li><a href="#wiki">Wiki changes ({{WikiRevisions | count}})</a></li>{% endif %}
       {% if NotebookNotes %}<li><a href="#nnotes">Notebook Notes ({{NotebookNotes | count}})</a></li>{% endif %}
       {% if NoteComments %}<li><a href="#ncomments">Comments in Notebooks' Notes ({{NoteComments | count}})</a></li>{% endif %}
       {% if WritingRevisions %}<li><a href="#collabws">Collaborative Writings ({{WritingRevisions | count}})</a></li>{% endif %}
+      {% if WikiRevisions %}<li><a href="#wiki">Wiki changes ({{WikiRevisions | count}})</a></li>{% endif %}
       {% if CodeRepositories %}<li><a href="#coderepos">New Code Repositories ({{CodeRepositories | count}})</a></li>{% endif %}
       {% if CodeComments %}<li><a href="#codecomments">Comments in Code Repositories ({{CodeComments | count}})</a></li>{% endif %}
       {% if DataRevisions %}<li><a href="#datarevs">New Data Revisions ({{DataRevisions | count}})</a></li>{% endif %}
       {% if ForumThreads %}<li><a href="#forumts">New Forum Threads ({{ForumThreads | count}})</a></li>{% endif %}
       {% if ForumComments %}<li><a href="#forumcomments">New answers in existing Forum Threads ({{ForumComments | count}})</a></li>{% endif %}
       </ul></div>
-
-      {% if WikiRevisions %}<hr><div class="title" id="wiki">Wiki changes ({{WikiRevisions | count}})</div>
-      {% for item in WikiRevisions %}<div class="item">{{item.html | safe}}</div>{% endfor %}
-      {% endif %}
 
       {% if NotebookNotes %}<hr><div class="title" id="nnotes">Notebook Notes ({{NotebookNotes | count}})</div>
       {% for item in NotebookNotes %}<div class="item">{{item.html | safe}}</div>{% endfor %}
@@ -43,6 +39,10 @@
 
       {% if WritingRevisions %}<hr><div class="title" id="colllabws">Collaborative Writings ({{WritingRevisions | count}})</div>
       {% for item in WritingRevisions %}<div class="item">{{item.html | safe}}</div>{% endfor %}
+      {% endif %}
+
+      {% if WikiRevisions %}<hr><div class="title" id="wiki">Wiki changes ({{WikiRevisions | count}})</div>
+      {% for item in WikiRevisions %}<div class="item">{{item.html | safe}}</div>{% endfor %}
       {% endif %}
 
       {% if CodeRepositories %}<hr><div class="title" id="coderepos">New Code Repositories ({{CodeRepositories | count}})</div>
