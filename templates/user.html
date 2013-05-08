@@ -15,8 +15,10 @@
 </div>
 
 <div class="u-pwrapper">
-  {% if self_user_p %}<div class="button1"><a href="{{button_link}}">{{button_text}}</a></div>{% endif %}
-  <h2>Projects</h2>
+  <div class="u-phead">
+    {% if self_user_p %}<div class="button1"><a href="{{button_link}}">{{button_text}}</a></div>{% endif %}
+    <h2>Projects</h2>
+  </div>
   {% for p in projects %} 
     <div class="u-project">
       <a class="info-link" href="#">Description</a>
@@ -29,5 +31,3 @@
 
 
 {% endblock %}
-
-

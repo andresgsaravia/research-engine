@@ -22,6 +22,8 @@
     width: 45%;
     overflow: auto;
     box-shadow: 0em 0.1em 0.2em #C0C0C0;
+    border: 1px solid #C0C0C0;
+    border-radius: 0.5em 0.5em 0 0;
     margin-top: 2em;
 }
 
@@ -34,12 +36,6 @@
 
 .project {
     border-top: 1px solid #C0C0C0;
-    border-left: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-}
-
-.project:last-child {
-    border-bottom: 1px solid #C0C0C0;
 }
 
 .project a {
