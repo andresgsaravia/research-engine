@@ -206,9 +206,7 @@ class AdminPage(ProjectPage):
             self.error(404)
             self.render("404.html")
             return
-        if not project.user_is_author(user):
-            self.write("You are not a member of this project.")
-            return
+
         kw = {"wiki_p"          : self.request.get("wiki_p"),
               "notebooks_p"     : self.request.get('notebooks_p'),
               "writings_p"      : self.request.get('writings_p'),
@@ -217,16 +215,26 @@ class AdminPage(ProjectPage):
               "forum_threads_p" : self.request.get('forum_threads_p'),
               "forum_posts_p"   : self.request.get('forum_posts_p'),
               "p_description"   : self.request.get('p_description'),
+              "p_name"          : self.request.get('p_name'),
               "authors"         : project.list_of_authors(self)}
 
         have_error = False
         kw["error"] = ''
-        ## Project description
+        if not project.user_is_author(user):
+            have_error = True
+            kw["error"] = "You are not a member of this project. "
+
+        ## Project's name and description
+        if kw["p_name"]:
+            project.name = kw["p_name"]
+        else:
+            have_error = True
+            kw["error"] = "You must provide a name for your project. "
         if kw["p_description"]:
             project.description = kw["p_description"]
         else:
             have_error = True
-            kw["error"] = "You must provide a description for the project. "
+            kw["error"] += "You must provide a description for the project. "
 
         ## Email notifications
         # Add to list
