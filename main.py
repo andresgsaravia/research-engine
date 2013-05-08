@@ -8,7 +8,7 @@ sys.path.insert(0, lib_path)
 import webapp2
 from src import *
 
-app = webapp2.WSGIApplication([('/', frontend.MainPage),
+app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                # Users
                                ('/login', users.LoginPage),
                                ('/logout', users.LogoutPage),

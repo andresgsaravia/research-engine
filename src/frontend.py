@@ -2,10 +2,11 @@
 
 from generic import *
 
-class MainPage(GenericPage):
+class RootPage(GenericPage):
     def get(self):
         user = self.get_login_user()
-        self.render("welcome.html", user = user)
+        projects = user.list_of_projects() if user else []
+        self.render("root.html", user = user, projects = projects)
 
 class UnderConstructionPage(GenericPage):
     def get(self):

@@ -2,19 +2,28 @@
 
 {% block head %}
     <title>Research Engine | Welcome!</title>
-    <link href="/css/welcome.css" rel="stylesheet" type="text/css" />
+    <link href="/css/root.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block content %}
-<h1>Research Engine</h1>
-<h2>Welcome!</h2>
+<div class="site-title">Research Engine</div>
 
 {% if user %}
 <p>You are logged in as {{user.username}}. If you are not {{user.username}} you can <a href="/logout">logout here.</a></p>
-<p>You can also edit your settings <a href="/settings">here.</a></p>
+
+
+<div class="p-wrapper">
+<div class="projects-title">Your projects</div>
+{% for p in projects %}
+  <div class="project">
+    <a href="/{{user.username}}/{{p.key.integer_id()}}">&rarr; {{p.name}}</a>
+  </div>
+{% endfor %}
+
+
+</div>
 {% else %}
 <p>You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
 {% endif %}
-
 {% endblock %}

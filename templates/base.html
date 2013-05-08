@@ -2,7 +2,7 @@
 	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <link href="/css/general.css" rel="stylesheet" type="text/css" />
+    <link href="/css/base.css" rel="stylesheet" type="text/css" />
     {% block head %}
     {% endblock %}
   </head>
@@ -15,7 +15,15 @@
     <div class="menu-wrapper">
     <ul class="menu">
       <!-- <li><a href="/">Notifications</a></li> -->
-      <li><a href="/{{user.username}}">Projects</a></li>
+      <li class="root_menu"><a href="/">Home</a></li>
+      {% if user %}<li><a href="/{{user.username}}">Projects</a>
+	<ul class="projects-list">
+	  {% for p in user.list_of_projects()[:3] %}
+	  <li><a href="/{{user.username}}/{{p.key.integer_id()}}">{{p.name[:30]}}</a></li>
+	  {% endfor %}
+	  <li><a href="/{{user.username}}"><em>More...</em></a></li>
+	</ul>
+      </li>{% endif %}
       <!-- <li><a href="/classroom">Classroom</a></li> -->
       <!-- <li><a href="/blog">Blog</a></li> -->
       <li>{{login_message | safe}}</li>

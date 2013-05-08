@@ -157,7 +157,7 @@ a:hover {
 }
 
 .menu ul li a {
-    width: 120px;
+    width: 230px;
     padding: 1em 0 1em 2.5em;
     margin: 0;
     border: none;
@@ -173,8 +173,6 @@ a:hover {
     right: 0px;
     left: -100px;
 }
-
-
 
 /* Footer */
 

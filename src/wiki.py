@@ -157,6 +157,7 @@ class EditWikiPage(GenericWikiPage):
                                    author = user,
                                    users_to_notify = project.wiki_notifications_list,
                                    html = html, txt = txt)
+            self.log_and_put(project, "Updating its last_updated property. ")
             self.redirect("/%s/%s/wiki/page/%s" % (username, projectid, wikiurl))
         else:
             self.render("wiki_edit.html", p_author = p_author, project = project, wikipage = wikipage,

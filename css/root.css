@@ -1,0 +1,55 @@
+/* For the welcome page (i.e. the root page) */
+
+.site-title {
+    font-size: 2em;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.content {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 1em;
+    padding: 1em;
+    background: white;
+    min-height: 40em;
+    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+    overflow: auto
+}
+
+.p-wrapper {
+    width: 45%;
+    overflow: auto;
+    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+    margin-top: 2em;
+}
+
+.projects-title {
+    font-size: 1.5em;
+    text-align: center;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+}
+
+.project {
+    border-top: 1px solid #C0C0C0;
+    border-left: 1px solid #C0C0C0;
+    border-right: 1px solid #C0C0C0;
+}
+
+.project:last-child {
+    border-bottom: 1px solid #C0C0C0;
+}
+
+.project a {
+    display: block;
+    padding: 0.3em;
+    color: black;
+    background: #F0F0F0;
+}
+
+.project a:hover {
+    background: #F8F8F8;
+    text-decoration: none;
+}
