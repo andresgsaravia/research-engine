@@ -378,12 +378,16 @@ class EditNotebookPage(NotebookPage):
             self.error(404)
             self.render("404.html")
             return
+        nbs_url = "/%s/%s/notebooks" % (p_author.username, projectid)
+        nb_url = nbs_url + "/" + nbid
         kw = {"title" : "Edit notebook: %s" % notebook.name,
               "name_placeholder" : "Title of the notebook",
               "content_placeholder" : "Description of the notebook",
               "submit_button_text" : "Save Changes",
               "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, projectid, nbid),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
+              % (nbs_url, nb_url, notebook.name),
               "name_value" : notebook.name,
               "content_value" : notebook.description,
               "markdown_p" : True}
@@ -424,12 +428,16 @@ class EditNotebookPage(NotebookPage):
             have_error = True
             error_message += "Please provide a description of this notebook. "
         if have_error:
+            nbs_url = "/%s/%s/notebooks" % (p_author.username, projectid)
+            nb_url = nbs_url + "/" + nbid
             kw = {"title" : "Edit notebook: %s" % notebook.name,
                   "name_placeholder" : "Title of the notebook",
                   "content_placeholder" : "Description of the notebook",
                   "submit_button_text" : "Save Changes",
                   "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, projectid, nbid),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
+                  % (nbs_url, nb_url, notebook.name),
                   "name_value" : n_name,
                   "content_value" : n_description,
                   "error_message" : error_message,

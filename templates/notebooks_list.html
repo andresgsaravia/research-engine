@@ -20,7 +20,7 @@
 <div class="n-wrapper">
   <div class="n-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
   <div class="n-name"><a href="/{{n.owner.get().username}}/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name}}</a></div>
-  <div class="n-description">{{n.description.replace("\n", "<br/>") | safe}}</div>
+  <div class="n-description">{{n.description | md | safe}}</div>
   <div class="n-owner"><a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
 </div>
 {% endfor %}
