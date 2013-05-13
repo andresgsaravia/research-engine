@@ -18,10 +18,13 @@
 
 {% for n in notebooks %}
 <div class="n-wrapper">
-  <div class="n-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
+  <a class="info-link" href="#">Description</a>
   <div class="n-name"><a href="/{{n.owner.get().username}}/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name}}</a></div>
-  <div class="n-description">{{n.description | md | safe}}</div>
-  <div class="n-owner"><a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+  <div class="n-description">
+    <div class="n-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
+    {{n.description | md | safe}}
+    <div class="n-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+  </div>
 </div>
 {% endfor %}
 
