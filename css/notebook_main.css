@@ -11,8 +11,8 @@
 }
 
 .nb-heading {
-    height: 3em;
     padding-top: 0.5em;
+    padding-bottom: 1em;
     background-color: #DDE8EB;
     background-image: linear-gradient(#F8FBFC, #CFDEE2);
     background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
