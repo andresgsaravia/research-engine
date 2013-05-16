@@ -20,6 +20,8 @@
 {% block p_content %}
 
 <div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data">New data concept</a></div>
+<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">Edit Dataset</a></div>
+
 <h2>{{dataset.name}}</h2>
 
 {% for d in dataconcepts %}

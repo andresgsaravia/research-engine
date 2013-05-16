@@ -13,9 +13,10 @@ h2 {
 .d-wrapper {
     margin-left: 2em;
     margin-right: 2em;
+    box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.d-wrapper .d-name a {
+.d-name a {
     display: block;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
@@ -35,45 +36,44 @@ h2 {
     background-repeat: repeat-x;
 }
 
-.d-last-updated {
-    position: relative;
-    float: right;
-    padding-top: 0.8em;
-    margin-right: 0.2em;
-    margin-left: 0.5em;
-    font-size: 0.8em;
-    color: #888888;
-    height: 3em;
-}
-
 .info-link {
     position: relative;
     float: right;
     padding-top: 0.7em;
-}
-
-.info-link {
-    font-weight: normal;
-    font-size: 0.9em;
-}
-
-.d-description {
-    text-align: justify;
-    padding-left: 1em;
-    padding-right: 1em;
-    border-left: 1px solid #C0C0C0;
-    border-right: 1px solid #C0C0C0;
-    height: 0;
-    opacity: 0;
-    overflow: hidden;
-    width: 98%;
-    -o-transition: all 0.8s;
-    -moz-transition: all 0.8s;
-    -webkit-transition: all 0.8s;
+    margin-right: 0.8em;
+    font-size: 0.8em;
 }
 
 .info-link:focus + .d-name + .d-description {
     opacity: 1;
     height: auto;
     overflow: auto;
+}
+
+.d-last-updated {
+    position: relative;
+    float: right;
+    padding-top: 0.5em;
+    padding-right: 0.2em;
+    padding-left: 0.2em;
+    margin-left: 0.5em;
+    font-size: 0.8em;
+    color: #888888;
+    box-shadow: 0 0.1em 0.3em #C0C0C0;
+    border-radius: 0 0 0.3em 0.3em;
+}
+
+.d-description {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    -o-transition: all 0.8s;
+    -moz-transition: all 0.8s;
+    -webkit-transition: all 0.8s;
+}
+
+.d-description p {
+    text-align: justify;
+    padding-left: 1em;
+    padding-right: 1em;
 }

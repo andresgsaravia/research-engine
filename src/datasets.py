@@ -193,6 +193,94 @@ class DataSetPage(DataPage):
         self.render("dataset_view.html", p_author = p_author, project = project, dataset = dataset, dataconcepts = dataconcepts)
 
 
+class EditDataSetPage(DataPage):
+    def get(self, username, projectid, dataset_id):
+        p_author = self.get_user_by_username(username)
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = "User not found. ")
+            return
+        project = self.get_project(p_author, projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = "Project not found. ")
+            return
+        dataset = self.get_dataset(project, dataset_id)
+        if not dataset:
+            self.error(404)
+            self.render("404.html", info = "Dataset not found.")
+            return
+        base_url = "/%s/%s/datasets" % (username, projectid)
+        kw = {"title" : "Edit dataset",
+              "name_placeholder" : "Title of the dataset",
+              "content_placeholder" : "Description of the dataset",
+              "submit_button_text" : "Save changes",
+              "markdown_p": True,
+              "cancel_url" : base_url + "/" + dataset_id,
+              "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
+              "more_head" : "<style>.datasets-tab {background: white;}</style>",
+              "name_value" : dataset.name,
+              "content_value" : dataset.description}
+        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+
+    def post(self, username, projectid, dataset_id):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + username + '/' + projectid + '/datasets/new'
+            self.redirect("/login?goback=%s" % goback)
+            return
+        p_author = self.get_user_by_username(username)
+        if not p_author:
+            self.error(404)
+            self.render("404.html", info = "User not found. ")
+            return
+        project = self.get_project(p_author, projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = "Project not found. ")
+            return
+        dataset = self.get_dataset(project, dataset_id)
+        if not dataset:
+            self.error(404)
+            self.render("404.html", info = "Dataset not found.")
+            return
+        have_error = False
+        error_message = ''
+        if not project.user_is_author(user):
+            have_error = True
+            error_message = "You are not an author of this project. "
+        d_name = self.request.get("name")
+        d_description = self.request.get("content")
+        if not d_name:
+            have_error = True
+            error_message = "You must provide a name for your dataset. "
+        if not d_description:
+            have_error = True
+            error_message += "Please provide a description of this dataset. "
+        if have_error:
+            base_url = "/%s/%s/datasets" % (username, projectid)
+            kw = {"title" : "Edit dataset",
+                  "name_placeholder" : "Title of the dataset",
+                  "content_placeholder" : "Description of the dataset",
+                  "submit_button_text" : "Save changes",
+                  "markdown_p": True,
+                  "cancel_url" : base_url + '/' + dataset_id,
+                  "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
+                  "more_head" : "<style>.datasets-tab {background: white;}</style>",
+                  "name_value" : d_name,
+                  "content_value" : d_description,
+                  "error_message" : error_message}
+            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+        else:
+            if (d_name != dataset.name) or (d_description != d_description):
+                dataset.name = d_name
+                dataset.description = d_description
+                self.log_and_put(dataset)
+                self.log_and_put(project, "Updating last_updated property. ")
+            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key.integer_id(), dataset.key.integer_id()))
+
+
+
 class NewDataConceptPage(DataPage):
     def get(self, username, projectid, dataset_id):
         p_author = self.get_user_by_username(username)

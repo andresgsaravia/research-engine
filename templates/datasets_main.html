@@ -23,10 +23,12 @@
 
 {% for d in datasets %}
 <div class="d-wrapper">
-  <div class="d-last-updated">Last updated: {{d.last_updated.strftime("%d-%b-%Y")}}</div>
   <a class="info-link" href="#">Description</a>
   <div class="d-name"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{d.key.integer_id()}}">{{d.name}}</a></div>
-  <div class="d-description">{{d.description | md | safe}}</div>
+  <div class="d-description">
+    <div class="d-last-updated">Last updated: {{d.last_updated.strftime("%d-%b-%Y")}}</div>
+    <p>{{d.description | md | safe}}</p>
+  </div>
 </div>
 {% endfor %}
 
