@@ -272,7 +272,7 @@ class EditDataSetPage(DataPage):
                   "error_message" : error_message}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
-            if (d_name != dataset.name) or (d_description != d_description):
+            if (d_name != dataset.name) or (d_description != dataset.description):
                 dataset.name = d_name
                 dataset.description = d_description
                 self.log_and_put(dataset)
