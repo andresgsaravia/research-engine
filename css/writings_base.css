@@ -13,7 +13,7 @@
 .w-head {
     color: black;
     display: block;
-    height: 2.5em;
+    min-height: 2.5em;
     padding-left: 1em;
     padding-right: 1em;
     padding-top: 0.5em;
