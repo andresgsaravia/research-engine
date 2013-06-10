@@ -194,6 +194,7 @@ class ViewWritingPage(WritingPage):
 
 class EditWritingPage(WritingPage):
     def get(self, username, projectid, writing_id):
+        user = self.get_login_user()
         p_author = self.get_user_by_username(username)
         if not p_author:
             self.error(404)
@@ -214,7 +215,15 @@ class EditWritingPage(WritingPage):
             content = last_revision.content
         else:
             content = ''
-        self.render("writings_edit.html", p_author = p_author, project = project, writing = writing, content = content, status = writing.status)
+        if not user:
+            link = "/%s/%s/writings/%s/edit" % (username, projectid, writing_id)
+            edit_warning = 'You need to <a href="/login?goback=%s">login</a> first to save your changes' % link
+        elif not project.user_is_author(user):
+            edit_warning = "You are not an author for this project, you will not be able to save your changes." 
+        else:
+            edit_warning = ''
+        self.render("writings_edit.html", p_author = p_author, project = project, writing = writing, 
+                    content = content, status = writing.status, edit_warning = edit_warning)
 
     def post(self, username, projectid, writing_id):
         user = self.get_login_user()

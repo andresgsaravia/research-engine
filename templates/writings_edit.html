@@ -8,6 +8,7 @@
     
 {% block w_content %}
 
+  <div class="error">{{edit_warning | safe}}</div>
   <form method="post">
     <textarea name="content">{{content}}</textarea>
     <div class="w-form-entry"><div class="w-form-label">Status:</div><input type="text" name="status" value="{{status}}" placeholder="Status of the writing (optional)" /></div>
