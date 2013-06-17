@@ -15,11 +15,16 @@
 
 <div class="p-wrapper">
 <div class="projects-title">Your projects</div>
-{% for p in projects %}
+{% if projects %}
+  {% for p in projects %}
   <div class="project">
     <a href="/{{user.username}}/{{p.key.integer_id()}}">&rarr; {{p.name}}</a>
   </div>
-{% endfor %}
+  {% endfor %}
+{% else %}
+  <div id="no-projects">You don't have any projects.</div>
+  <div class="button1"><a href="/{{user.username}}/new_project">Create new project</a></div>
+{% endif %}
 
 
 </div>
