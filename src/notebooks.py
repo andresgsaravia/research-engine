@@ -82,69 +82,58 @@ class NotebookPage(projects.ProjectPage):
 
 
 class NotebooksListPage(NotebookPage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebooks = self.get_notebooks_list(project)
-        self.render("notebooks_list.html", p_author = p_author, project = project, 
+        self.render("notebooks_list.html", project = project, 
                     notebooks = notebooks, n_len = len(notebooks))
 
 
 class NewNotebookPage(NotebookPage):
-    def get(self, username, projectid):
+    def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/notebooks/new'
+            goback = '/' + projectid + '/notebooks/new'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found.' % username)
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        visitor_p = False if project.user_is_author(user) else True
         kw = {"title" : "New notebook",
               "name_placeholder" : "Title of the new notebook",
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
-              "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key.integer_id()),
-              "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key.integer_id()),
-              "more_head" : "<style>.notebooks-tab {background: white;}</style>"}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
+              "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
+              "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid):
+    def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/notebooks/new'
+            goback = '/' + projectid + '/notebooks/new'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found.' % username)
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         have_error = False
         error_message = ''
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
-            error_message = "You are not an author of this project. "
+            error_message = "You are not an author in this project. "
         n_name = self.request.get("name")
         n_description = self.request.get("content")
         if not n_name:
@@ -158,13 +147,15 @@ class NewNotebookPage(NotebookPage):
                   "name_placeholder" : "Title of the new notebook",
                   "content_placeholder" : "Description of the new notebook",
                   "submit_button_text" : "Create notebook",
-                  "cancel_url" : "/%s/%s/notebooks" % (p_author.username, project.key.integer_id()),
-                  "title_bar_extra" : '/ <a href="/%s/%s/notebooks">Notebooks</a>' % (username, project.key.integer_id()),
+                  "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
+                  "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "name_value" : n_name,
                   "content_value" : n_description,
-                  "error_message" : error_message}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "error_message" : error_message,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             new_notebook = Notebooks(owner = user.key, 
                                      name = n_name, 
@@ -172,94 +163,88 @@ class NewNotebookPage(NotebookPage):
                                      parent  = project.key)
             self.log_and_put(new_notebook)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s" % (user.username, project.key.integer_id(), new_notebook.key.id()))
+            self.redirect("/%s/notebooks/%s" % (project.key.integer_id(), new_notebook.key.id()))
 
 
 class NotebookMainPage(NotebookPage):
-    def get(self, username, projectid, nbid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, nbid):
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         notes = self.get_notes_list(notebook)
-        self.render("notebook_main.html", p_author = p_author, project = project, notebook = notebook, notes = notes)
+        self.render("notebook_main.html", project = project, notebook = notebook, notes = notes)
 
 
 class NewNotePage(NotebookPage):
-    def get(self, username, projectid, nbid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
+    def get(self, projectid, nbid):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + projectid + '/notebooks/' + nbid + "/new_note"
+            self.redirect("/login?goback=%s" % goback)
             return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        parent_url = "/%s/%s/notebooks" % (p_author.username, project.key.integer_id())
+        visitor_p = False if notebook.owner.get().key == user.key else True
+        parent_url = "/%s/notebooks" % project.key.integer_id()
         kw = {"title" : "New note",
               "name_placeholder" : "Title of the new note",
               "content_placeholder" : "Content of the note",
               "submit_button_text" : "Create note",
-              "cancel_url" : "%s/%s" % (parent_url ,notebook.key.integer_id()),
+              "cancel_url" : "%s/%s" % (parent_url, nbid),
               "markdown_p" : True,
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name)}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid, nbid):
+    def post(self, projectid, nbid):
         user = self.get_login_user()
         if not user:
             goback = '/' + username + '/' + projectid + '/notebooks/' + nbname + '/new_note'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         have_error = False
         error_message = ''
+        visitor_p = False if notebook.owner.get().key == user.key else True
         n_title = self.request.get("name")
         n_content = self.request.get("content")
+        if visitor_p:
+            have_error = True
+            error_message = "You are not the owner of this notebook. "
         if not n_title:
             have_error = True
             error_message = "Please provide a title for this note. "
         if not n_content:
             have_error = True
             error_message += "You need to write some content before saving this note. "
-        if not notebook.owner.get().key == user.key:
-            have_error = True
-            error_message = "You are not the owner of this notebook. "
         if have_error:
-            parent_url = "/%s/%s/notebooks" % (p_author.username, project.key.integer_id())
+            parent_url = "/%s/notebooks" % (project.key.integer_id())
             kw = {"title" : "New note",
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
@@ -268,8 +253,10 @@ class NewNotePage(NotebookPage):
                   "markdown_p" : True,
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
-                  "name_value": n_title, "content_value": n_content, "error_message" : error_message}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "name_value": n_title, "content_value": n_content, "error_message" : error_message,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key)
             self.log_and_put(new_note)
@@ -280,67 +267,65 @@ class NewNotePage(NotebookPage):
                                    html = html, txt = txt)
             self.log_and_put(notebook, "Updating last_updated property. ")
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/notebooks/%s/%s" % (username, projectid, nbid, new_note.key.integer_id()))
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, new_note.key.integer_id()))
 
 
 class NotePage(NotebookPage):
-    def get(self, username, projectid, nbid, note_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, nbid, note_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         note = self.get_note(notebook, note_id)
         if not note:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
         comments = self.get_comments_list(note)
-        self.render("notebook_note.html", p_author = p_author, project = project, 
+        visitor_p = True if not (user and project.user_is_author(user)) else False
+        error_message = ''
+        if visitor_p and not user:
+            error_message = "You must log in first to make a comment."
+        elif visitor_p and not project.user_is_author(user):
+            error_message = "You are not an author in this project."
+        self.render("notebook_note.html", project = project, visitor_p = visitor_p, error_message = error_message,
                     notebook = notebook, note = note, comments = comments)
 
-    def post(self, username, projectid, nbid, note_id):
+    def post(self, projectid, nbid, note_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/notebooks/' + nbid + '/' + note_id
+            goback = '/' + projectid + '/notebooks/' + nbid + '/' + note_id
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         note = self.get_note(notebook, note_id)
         if not note:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
         have_error = False
         error_message = ''
-        comment = self.request.get("comment")
-        if not project.user_is_author(user):
+        visitor_p = True if not project.user_is_author(user) else False
+        if visitor_p:
             have_error = True
-            error_message = "You are not an author in this project. "
+            error_message = "You are not an author in this project."
+        comment = self.request.get("comment")
         if not comment:
             have_error = True
             error_message = "You can't submit an empty comment. "
@@ -356,67 +341,66 @@ class NotePage(NotebookPage):
             self.log_and_put(project, "Updating its last_updated property. ")
             comment = ''
         comments = self.get_comments_list(note)
-        self.render("notebook_note.html", p_author = p_author, project = project, 
+        self.render("notebook_note.html", project = project, visitor_p = visitor_p,
                     notebook = notebook, note = note, comments = comments, 
                     comment = comment, error_message = error_message)
 
 
 class EditNotebookPage(NotebookPage):
-    def get(self, username, projectid, nbid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
+    def get(self, projectid, nbid):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + projectid + '/notebooks/' + ndid + '/edit'
+            self.redirect("login?goback=%s" % goback)
             return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        nbs_url = "/%s/%s/notebooks" % (p_author.username, projectid)
+        visitor_p = False if notebook.owner.get().key == user.key else True
+        nbs_url = "/%s/notebooks" % projectid
         nb_url = nbs_url + "/" + nbid
         kw = {"title" : "Edit notebook: %s" % notebook.name,
               "name_placeholder" : "Title of the notebook",
               "content_placeholder" : "Description of the notebook",
               "submit_button_text" : "Save Changes",
-              "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, projectid, nbid),
+              "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
               % (nbs_url, nb_url, notebook.name),
               "name_value" : notebook.name,
               "content_value" : notebook.description,
-              "markdown_p" : True}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "markdown_p" : True,
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid, nbid):
+    def post(self, projectid, nbid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/notebooks/' + nbname + '/edit'
+            goback = '/' + projectid + '/notebooks/' + nbname + '/edit'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         have_error = False
         error_message = ''
-        if not notebook.owner.get().key == user.key:
+        visitor_p = False if notebook.owner.get().key == user.key else True
+        if visitor_p:
             have_error = True
             error_message = "You are not the owner of this notebook. "
         n_name = self.request.get("name")
@@ -424,55 +408,58 @@ class EditNotebookPage(NotebookPage):
         if not n_name:
             have_error = True
             error_message = "You must provide a name for the notebook. "
-        if len(n_description) == 0:
+        if (not n_description) or (len(n_description.strip()) == 0):
             have_error = True
             error_message += "Please provide a description of this notebook. "
         if have_error:
-            nbs_url = "/%s/%s/notebooks" % (p_author.username, projectid)
+            nbs_url = "/%s/notebooks" % (projectid)
             nb_url = nbs_url + "/" + nbid
             kw = {"title" : "Edit notebook: %s" % notebook.name,
                   "name_placeholder" : "Title of the notebook",
                   "content_placeholder" : "Description of the notebook",
                   "submit_button_text" : "Save Changes",
-                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, projectid, nbid),
+                  "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
                   "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
                   % (nbs_url, nb_url, notebook.name),
                   "name_value" : n_name,
                   "content_value" : n_description,
                   "error_message" : error_message,
-                  "markdown_p" : True}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "markdown_p" : True,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             notebook.name = n_name
             notebook.description = n_description
             self.log_and_put(notebook)
-            self.redirect("/%s/%s/notebooks/%s" % (user.username, projectid, nbid))
+            self.redirect("/%s/notebooks/%s" % (projectid, nbid))
 
 
 class EditNotePage(NotebookPage):
-    def get(self, username, projectid, nbid, note_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
+    def get(self, projectid, nbid, note_id):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + projectid + "/notebooks/" + nbid + '/' + note_id + '/edit'
+            self.redirect("login?goback=%s" % goback)
             return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         note = self.get_note(notebook, note_id)
         if not note:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
-        nbs_url = "/%s/%s/notebooks" % (p_author.username, projectid)
+        visitor_p = False if notebook.owner.get().key == user.key else True
+        nbs_url = "/%s/notebooks" % projectid
         nb_url = nbs_url + "/" + nbid
         note_url = nb_url + "/" + note_id
         kw = {"title" : "Edit note",
@@ -484,37 +471,38 @@ class EditNotePage(NotebookPage):
               "more_head" : "<style>.notebooks-tab {background: white;}</style>",
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a> / <a href="%s">%s</a>' 
               % (nbs_url, nb_url, notebook.name, note_url, note.title),
-              "name_value" : note.title, "content_value" : note.content}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "name_value" : note.title, "content_value" : note.content,
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid, nbid, note_id):
+    def post(self, projectid, nbid, note_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/notebooks/' + nbid + '/' + note_id + '/edit'
+            goback = '/' + projectid + '/notebooks/' + nbid + '/' + note_id + '/edit'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         note = self.get_note(notebook, note_id)
         if not note:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
         have_error = False
         error_message = ''
+        visitor_p = False if notebook.owner.get().key == user.key else True
+        if visitor_p:
+            have_error = True
+            error_message = "You are not the owner of this notebook. "
         n_title = self.request.get("name")
         n_content = self.request.get("content")
         if not n_title:
@@ -523,22 +511,21 @@ class EditNotePage(NotebookPage):
         if not n_content:
             have_error = True
             error_message += "You need to write some content before saving this note. "
-        if not notebook.owner.get().key == user.key:
-            have_error = True
-            error_message = "You are not the owner of this notebook. "
         if have_error:
             kw = {"title" : "New note",
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
-                  "cancel_url" : "/%s/%s/notebooks/%s" % (p_author.username, projectid, nbid),
+                  "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
                   "more_head" : "<style>.notebooks-tab {background: white;}</style>",
-                  "name_value": n_title, "content_value": n_content, "error_message" : error_message}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "name_value": n_title, "content_value": n_content, "error_message" : error_message,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             if (note.title != n_title) or (note.content != n_content):
                 note.title = n_title
                 note.content = n_content
                 self.log_and_put(note)
-            self.redirect("/%s/%s/notebooks/%s/%s" % (user.username, projectid, nbid, note_id))
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, note_id))
 

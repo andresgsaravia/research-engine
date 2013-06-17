@@ -19,15 +19,15 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                # Cron jobs
                                ('/cron/send_email_notifications', email_messages.SendNotifications),
                                
-                               ('/new_project', projects.NewProjectPage),                         # Argument is username
+                               ('/new_project', projects.NewProjectPage),
                                # Notebooks
-                               ('/(.+)/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projects' id
-                               ('/(.+)/([0-9]+)/notebooks/new', notebooks.NewNotebookPage),
-                               ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's id
-                               ('/(.+)/([0-9]+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
-                               ('/(.+)/([0-9]+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook id
-                               ('/(.+)/([0-9]+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
-                               ('/(.+)/([0-9]+)/notebooks/(.+)', notebooks.NotebookMainPage),
+                               ('/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Argument is projects' integer id
+                               ('/([0-9]+)/notebooks/new', notebooks.NewNotebookPage),
+                               ('/([0-9]+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's integer id
+                               ('/([0-9]+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
+                               ('/([0-9]+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook's integer id
+                               ('/([0-9]+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
+                               ('/([0-9]+)/notebooks/(.+)', notebooks.NotebookMainPage),
                                # Collaborative writings
                                ('/(.+)/([0-9]+)/writings', collab_writing.WritingsListPage),
                                ('/(.+)/([0-9]+)/writings/new', collab_writing.NewWritingPage),

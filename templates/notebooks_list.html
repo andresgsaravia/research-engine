@@ -7,19 +7,19 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks">Notebooks</a>
+/  <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a>
 {% endblock %}
 
 
 {% block p_content %}
   
-<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/notebooks/new">New notebook</a></div>
+<div class="button1"><a href="/{{project.key.integer_id()}}/notebooks/new">New notebook</a></div>
 <h2>Notebooks</h2>
 
 {% for n in notebooks %}
 <div class="n-wrapper">
   <a class="info-link" href="#">Description</a>
-  <div class="n-name"><a href="/{{n.owner.get().username}}/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name}}</a></div>
+  <div class="n-name"><a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name}}</a></div>
   <div class="n-description">
     <div class="n-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
     <p>{{n.description | md | safe}}</p>
