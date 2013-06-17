@@ -63,8 +63,8 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                ('/(.+)/([0-9]+)/code/new', code.NewCodePage),
                                ('/(.+)/([0-9]+)/code/([0-9]+)', code.ViewCodePage),
                                # Admin projects
-                               ('/(.+)/([0-9]+)/admin', projects.AdminPage),
-                               ('/(.+)/([0-9]+)/invite', projects.InvitePage),
+                               ('/([0-9]+)/admin', projects.AdminPage),
+                               ('/([0-9]+)/invite', projects.InvitePage),
                                ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
 
                                ('/([0-9]+)', projects.OverviewPage),

@@ -139,34 +139,27 @@ class NewProjectPage(GenericPage):
 
 
 class AdminPage(ProjectPage):
-    def get(self, username, projectid):
+    def get(self, projectid):
         user = self.get_login_user()
         h = self.request.get("h")           # This will be present if a new user is invited to the project.
         if not user:
-            goback = '/' + username + '/' + projectid + '/admin'
+            goback = '/' + projectid + '/admin'
             if h: goback += "?h=" + h
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
         # New user here?
-        if h and (hash_str(username + user.username + str(project.key)) == h):
+        if h and (hash_str(user.salt + str(project.key)) == h):
             project.add_author(self, user)
-            self.redirect("/%s/%s/admin" % (user.username, projectid))
+            self.redirect("%s/admin" % projectid)
             return
+        visitor_p = False
         if not project.user_is_author(user):
-            self.write("You are not a member of this project.")
-            return
-        if not user.key == p_author.key:
-            self.redirect("/%s/%s/admin" % (user.username, projectid))
-            return
+            visitor_p = True
         kw = {"wiki_p"          : "checked" if user.key in project.wiki_notifications_list else "",
               "notebooks_p"     : "checked" if user.key in project.nb_notifications_list else "",
               "writings_p"      : "checked" if user.key in project.writings_notifications_list else "",
@@ -176,24 +169,19 @@ class AdminPage(ProjectPage):
               "forum_posts_p"   : "checked" if user.key in project.forum_posts_notifications_list else "",
               "p_description"   : project.description,
               "authors"         : project.list_of_authors(self)}
-        self.render('project_admin.html', p_author = p_author, project = project, **kw)
+        self.render('project_admin.html', visitor_p = visitor_p, project = project, **kw)
 
-    def post(self, username, projectid):
+    def post(self, projectid):
         user = self.get_login_user()
         if not user:
             goback = '/' + username + '/' + projectid + '/admin'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
-
         kw = {"wiki_p"          : self.request.get("wiki_p"),
               "notebooks_p"     : self.request.get('notebooks_p'),
               "writings_p"      : self.request.get('writings_p'),
@@ -204,7 +192,6 @@ class AdminPage(ProjectPage):
               "p_description"   : self.request.get('p_description'),
               "p_name"          : self.request.get('p_name'),
               "authors"         : project.list_of_authors(self)}
-
         have_error = False
         kw["error"] = ''
         if not project.user_is_author(user):
@@ -258,24 +245,20 @@ class AdminPage(ProjectPage):
         if not have_error:
             self.log_and_put(project, "Updating email notifications and/or description. ")
             kw["info_message"] = "Changes saved"
-        self.render('project_admin.html', p_author = p_author, project = project, **kw)
+        self.render('project_admin.html', project = project, **kw)
         
 
 class InvitePage(ProjectPage):
-    def get(self, username, projectid):
+    def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/invite'
+            goback = '/' + projectid + '/invite'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
         if not project.user_is_author(user):
             self.write("You are not a member of this project.")
@@ -285,25 +268,21 @@ class InvitePage(ProjectPage):
               "name_placeholder" : "Write here the name of the user you want to invite.",
               "content_placeholder" : "Write here a brief invitation message.",
               "submit_button_text" : "Send invitation",
-              "cancel_url" : "/%s/%s/admin" % (username, projectid),
-              "title_bar_extra" : '/ <a href="/%s/%s/admin">Admin</a>' % (username, projectid),
+              "cancel_url" : "/%s/admin" % projectid,
+              "title_bar_extra" : '/ <a href="/%s/admin">Admin</a>' % projectid,
               "more_head" : "<style>.admin-tab {background: white;}</style>"}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid):
+    def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/invite'
+            goback = '/' + projectid + '/invite'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
         if not project.user_is_author(user):
             self.write("You are not a member of this project.")
@@ -313,8 +292,8 @@ class InvitePage(ProjectPage):
               "name_placeholder" : "Write here the name of the user you want to invite.",
               "content_placeholder" : "Write here a brief invitation message.",
               "submit_button_text" : "Send invitation",
-              "cancel_url" : "/%s/%s/admin" % (username, projectid),
-              "title_bar_extra" : '/ <a href="/%s/%s/admin">Admin</a>' % (username, projectid),
+              "cancel_url" : "/%s/admin" % projectid,
+              "title_bar_extra" : '/ <a href="/%s/admin">Admin</a>' % projectid,
               "more_head" : "<style>.admin-tab {background: white;}</style>"}
         have_error = False
         kw["name_value"] = self.request.get("name")
@@ -332,4 +311,4 @@ class InvitePage(ProjectPage):
         if not have_error:
             email_messages.send_invitation_to_project(project = project, inviting = user, invited = i_user)
             kw["info_message"] = "Invitation sent"
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+        self.render("project_form_2.html", project = project, **kw)
