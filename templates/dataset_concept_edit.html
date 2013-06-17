@@ -11,12 +11,13 @@
   <h3>Edit data concept information</h3>
 
   <form method="post">
-    <input type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus />
-    <textarea name="description" placeholder="Description of the dataset">{{description}}</textarea>
+    <input type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus {% if disabled_p %}disabled{% endif %}/>
+    <textarea name="description" placeholder="Description of the dataset" {% if disabled_p %}disabled{% endif %}>{{description}}</textarea>
     <div  class="bottom-buttons">
-      <input type="submit" value="Save changes" />
+      <input type="submit" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
       <input type="button" value="Cancel" 
-	     onClick="window.location = '/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'" />
+	     onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'" 
+	     {% if disabled_p %}disabled{% endif %}/>
     </div>
   </form>
 

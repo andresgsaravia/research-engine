@@ -84,133 +84,122 @@ class DataPage(projects.ProjectPage):
 
 
 class MainPage(DataPage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         datasets = self.get_datasets(project)
-        self.render("datasets_main.html", p_author = p_author, project = project, datasets = datasets)
+        self.render("datasets_main.html", project = project, datasets = datasets)
 
 
 class NewDataSetPage(DataPage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + projectid + '/datasets/new'
+            self.redirect("/login?goback=%s" % goback)
+            return        
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        visitor_p = False if project.user_is_author(user) else True
         kw = {"title" : "New dataset",
               "name_placeholder" : "Title of the new dataset",
               "content_placeholder" : "Description of the new dataset",
               "submit_button_text" : "Create dataset",
               "markdown_p": True,
-              "cancel_url" : "/%s/%s/datasets" % (username, projectid),
-              "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, projectid),
-              "more_head" : "<style>.datasets-tab {background: white;}</style>"}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "cancel_url" : "/%s/datasets" % projectid,
+              "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a>' % projectid,
+              "more_head" : "<style>.datasets-tab {background: white;}</style>",
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid):
+    def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/datasets/new'
+            goback = '/' + projectid + '/datasets/new'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         have_error = False
         error_message = ''
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
             error_message = "You are not an author of this project. "
-        d_name = self.request.get("name")
-        d_description = self.request.get("content")
-        if not d_name:
-            have_error = True
-            error_message = "You must provide a name for your new dataset. "
-        if not d_description:
-            have_error = True
-            error_message += "Please provide a description of this dataset. "
+        else:
+            d_name = self.request.get("name")
+            d_description = self.request.get("content")
+            if not d_name:
+                have_error = True
+                error_message = "You must provide a name for your new dataset. "
+                if not d_description:
+                    have_error = True
+                    error_message += "Please provide a description of this dataset. "
         if have_error:
             kw = {"title" : "New dataset",
                   "name_placeholder" : "Title of the new dataset",
                   "content_placeholder" : "Description of the new dataset",
                   "submit_button_text" : "Create dataset",
                   "markdown_p": True,
-                  "cancel_url" : "/%s/%s/datasets" % (username, projectid),
-                  "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a>' % (username, projectid),
+                  "cancel_url" : "/%s/datasets" % projectid,
+                  "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a>' % projectid,
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
-                  "error_message" : error_message}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "error_message" : error_message,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             new_dataset = DataSets(name = d_name,
                                    description = d_description,
                                    parent  = project.key)
             self.log_and_put(new_dataset)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key.integer_id(), new_dataset.key.integer_id()))
+            self.redirect("/%s/datasets/%s" % (project.key.integer_id(), new_dataset.key.integer_id()))
 
 
 class DataSetPage(DataPage):
-    def get(self, username, projectid, dataset_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id):
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         dataconcepts = self.get_dataconcepts(dataset)
-        self.render("dataset_view.html", p_author = p_author, project = project, dataset = dataset, dataconcepts = dataconcepts)
+        self.render("dataset_view.html", project = project, dataset = dataset, dataconcepts = dataconcepts)
 
 
 class EditDataSetPage(DataPage):
-    def get(self, username, projectid, dataset_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found.")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
-        base_url = "/%s/%s/datasets" % (username, projectid)
+        visitor_p = False if (user and project.user_is_author(user)) else True
+        base_url = "/%s/datasets" % projectid
         kw = {"title" : "Edit dataset",
               "name_placeholder" : "Title of the dataset",
               "content_placeholder" : "Description of the dataset",
@@ -220,45 +209,44 @@ class EditDataSetPage(DataPage):
               "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
               "more_head" : "<style>.datasets-tab {background: white;}</style>",
               "name_value" : dataset.name,
-              "content_value" : dataset.description}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "content_value" : dataset.description,
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid, dataset_id):
+    def post(self, projectid, dataset_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/datasets/new'
+            goback = '/' + projectid + '/datasets/new'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found.")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         have_error = False
         error_message = ''
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
             error_message = "You are not an author of this project. "
-        d_name = self.request.get("name")
-        d_description = self.request.get("content")
-        if not d_name:
-            have_error = True
-            error_message = "You must provide a name for your dataset. "
-        if not d_description:
-            have_error = True
-            error_message += "Please provide a description of this dataset. "
+        else:
+            d_name = self.request.get("name")
+            d_description = self.request.get("content")
+            if not d_name:
+                have_error = True
+                error_message = "You must provide a name for your dataset. "
+            if not d_description:
+                have_error = True
+                error_message += "Please provide a description of this dataset. "
         if have_error:
-            base_url = "/%s/%s/datasets" % (username, projectid)
+            base_url = "/%s/datasets" % projectid
             kw = {"title" : "Edit dataset",
                   "name_placeholder" : "Title of the dataset",
                   "content_placeholder" : "Description of the dataset",
@@ -269,7 +257,9 @@ class EditDataSetPage(DataPage):
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
-                  "error_message" : error_message}
+                  "error_message" : error_message,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
             self.render("project_form_2.html", p_author = p_author, project = project, **kw)
         else:
             if (d_name != dataset.name) or (d_description != dataset.description):
@@ -277,266 +267,249 @@ class EditDataSetPage(DataPage):
                 dataset.description = d_description
                 self.log_and_put(dataset)
                 self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s" % (user.username, project.key.integer_id(), dataset.key.integer_id()))
+            self.redirect("/%s/datasets/%s" % (project.key.integer_id(), dataset.key.integer_id()))
 
 
 
 class NewDataConceptPage(DataPage):
-    def get(self, username, projectid, dataset_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
+        visitor_p = False if (user and project.user_is_author(user)) else True
         kw = {"title" : "New data concept",
               "name_placeholder" : "Title of the new data concept",
               "content_placeholder" : "Description of the new data concept",
               "submit_button_text" : "Create data concept",
               "markdown_p": True,
-              "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset_id),
-              "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a> / <a href="/%s/%s/datasets/%s">%s</a>' 
-              % (username, projectid, username, projectid, dataset_id, dataset.name),
-              "more_head" : "<style>.datasets-tab {background: white;}</style>"}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "cancel_url" : "/%s/datasets/%s" % (projectid, dataset_id),
+              "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a> / <a href="/%s/datasets/%s">%s</a>' 
+              % (projectid, projectid, dataset_id, dataset.name),
+              "more_head" : "<style>.datasets-tab {background: white;}</style>",
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid, dataset_id):
+    def post(self, projectid, dataset_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/datasets/new'
+            goback = '/' + projectid + '/datasets/new'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         have_error = False
         error_message = ''
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
             error_message = "You are not an author of this project. "
-        d_name = self.request.get("name")
-        d_description = self.request.get("content")
-        if not d_name:
-            have_error = True
-            error_message = "You must provide a name for your new data concept. "
-        if not d_description:
-            have_error = True
-            error_message += "Please provide a description of this data concept. "
+        else:
+            d_name = self.request.get("name")
+            d_description = self.request.get("content")
+            if not d_name:
+                have_error = True
+                error_message = "You must provide a name for your new data concept. "
+            if not d_description:
+                have_error = True
+                error_message += "Please provide a description of this data concept. "
         if have_error:
             kw = {"title" : "New data concept",
                   "name_placeholder" : "Title of the new data concept",
                   "content_placeholder" : "Description of the new data concept",
                   "submit_button_text" : "Create data concept",
                   "markdown_p": True,
-                  "cancel_url" : "/%s/%s/datasets/%s" % (username, projectid, dataset_id),
-                  "title_bar_extra" : '/ <a href="/%s/%s/datasets">Datasets</a> / <a href="/%s/%s/datasets/%s">%s</a>' 
-                  % (username, projectid, username, projectid, dataset_id, dataset.name),
+                  "cancel_url" : "/%s/datasets/%s" % (projectid, dataset_id),
+                  "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a> / <a href="/%s/datasets/%s">%s</a>' 
+                  % (projectid, projectid, dataset_id, dataset.name),
                   "more_head" : "<style>.datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
-                  "error_message" : error_message}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "error_message" : error_message,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             new_dataconcept = DataConcepts(name = d_name, 
                                            description = d_description, 
                                            parent  = dataset.key)
             self.log_and_put(new_dataconcept)
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s/%s" % (user.username, projectid, dataset_id, new_dataconcept.key.integer_id()))
+            self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, new_dataconcept.key.integer_id()))
 
 
 class DataConceptPage(DataPage):
-    def get(self, username, projectid, dataset_id, datac_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id, datac_id):
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         revisions = self.get_revisions(datac)
-        self.render("dataset_concept_view.html", p_author = p_author, project = project, 
+        self.render("dataset_concept_view.html", project = project, 
                     dataset = dataset, datac = datac, revisions = revisions)
 
 
 class EditConceptPage(DataPage):
-    def get(self, username, projectid, dataset_id, datac_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id, datac_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
-        self.render("dataset_concept_edit.html", p_author = p_author, project = project, 
+        visitor_p = False if (user and project.user_is_author(user)) else True
+        self.render("dataset_concept_edit.html", project = project, disabled_p = visitor_p,
                     dataset = dataset, datac = datac, description = datac.description, name = datac.name)
 
-    def post(self, username, projectid, dataset_id, datac_id):
+    def post(self, projectid, dataset_id, datac_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/datasets/' + dataset_id + '/' + datac_id + '/edit'
+            goback = '/' + projectid + '/datasets/' + dataset_id + '/' + datac_id + '/edit'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         d_name = self.request.get("title")
         d_description = self.request.get("description")
         have_error = False
         error_message = ''
-        if not d_name:
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
-            error_message = "You must provide a name for your new data concept. "
-        if not d_description:
-            have_error = True
-            error_message += "Please provide a description of this data concept. "
+            error_message = "You are not an author of this project."
+        else:
+            if not d_name:
+                have_error = True
+                error_message = "You must provide a name for your new data concept. "
+            if not d_description:
+                have_error = True
+                error_message += "Please provide a description of this data concept. "
         if have_error:
-            self.render("dataset_concept_edit.html", p_author = p_author, project = project, 
+            self.render("dataset_concept_edit.html", project = project, disabled_p = visitor_p,
                         dataset = dataset, datac = datac, name = d_name, description = d_description,
                         error_message = error_message)
         else:
             datac.name = d_name
             datac.description = d_description
             self.log_and_put(datac)
-            self.redirect("/%s/%s/datasets/%s/%s" % (username, projectid, dataset_id, datac_id) )
+            self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))
 
 
 class NewDataRevisionPage(DataPage):
-    def get(self, username, projectid, dataset_id, datac_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id, datac_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
-        upload_url = blobstore.create_upload_url("/%s/%s/datasets/%s/%s/upload" % (p_author.username, projectid, dataset_id, datac_id))
-        self.render("dataset_concept_new_revision.html", p_author = p_author, project = project, 
+        visitor_p = False if (user and project.user_is_author(user)) else True
+        upload_url = blobstore.create_upload_url("/%s/datasets/%s/%s/upload" 
+                                                 % (projectid, dataset_id, datac_id)) if not visitor_p else ''
+        self.render("dataset_concept_new_revision.html", project = project, disabled_p = visitor_p,
                     dataset = dataset, datac = datac, upload_url = upload_url, error_message = self.request.get("error_message"))
 
 
 class EditRevisionPage(DataPage):
-    def get(self, username, projectid, dataset_id, datac_id, rev_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, dataset_id, datac_id, rev_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         rev = self.get_revision(datac, rev_id)
         if not rev:
             self.error(404)
-            self.render("404.html", info = "Revision %s not found" % rev_id)
+            self.render("404.html", info = 'Data revision with key <em>%s</em> not found' % rev_id)
             return
+        visitor_p = False if (user and project.user_is_author(user)) else True
         blob_info = blobstore.BlobInfo.get(rev.datafile)
         size = blob_info.size / 1024.0
-        cancel_url = '/%s/%s/datasets/%s/%s' % (username, projectid, dataset.key.integer_id(), datac.key.integer_id())
-        upload_url = blobstore.create_upload_url("/%s/%s/datasets/%s/%s/update/%s" % (p_author.username, projectid, dataset_id, datac_id, rev_id))
-        self.render("dataset_revision_edit.html", p_author = p_author, project = project,
+        cancel_url = '/%s/datasets/%s/%s' % (projectid, dataset.key.integer_id(), datac.key.integer_id())
+        upload_url = blobstore.create_upload_url("/%s/datasets/%s/%s/update/%s"
+                                                 % (projectid, dataset_id, datac_id, rev_id)) if not visitor_p else ''
+        self.render("dataset_revision_edit.html", project = project, disabled_p = visitor_p,
                     dataset = dataset, datac = datac, rev = rev, blob_info = blob_info, size = size,
                     cancel_url = cancel_url, upload_url = upload_url,
                     error_message = self.request.get("error_message"))
 
 
 class DataSetBlobstoreUpload(GenericBlobstoreUpload):
-    def get_project(self, p_author, projectid, log_message = ''):
+    def get_project(self, projectid, log_message = ''):
         self.log_read(projects.Projects, log_message)
         project = projects.Projects.get_by_id(int(projectid))
-        if project.user_is_author(p_author): 
-            return project
-        else:
-            return False
+        return project
 
     def get_dataset(self, project, dataset_id, log_message = ''):
         self.log_read(DataSets, log_message)
@@ -553,31 +526,26 @@ class DataSetBlobstoreUpload(GenericBlobstoreUpload):
 
 
 class UploadDataRevisionHandler(DataSetBlobstoreUpload):
-    def post(self, username, projectid, dataset_id, datac_id):
+    def post(self, projectid, dataset_id, datac_id):
         user = self.get_login_user()
         if not user: 
-            goback = '/' + username + '/' + projectid + '/datasets/' + dataset_id + '/' + datac_id + '/new'
+            goback = '/' + projectid + '/datasets/' + dataset_id + '/' + datac_id + '/new'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         meta = self.request.get("meta")
         datafile = self.get_uploads("file")
@@ -589,7 +557,7 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
             have_error = True
             error_message = "You must select a file to upload."
         if have_error:
-            self.redirect("/%s/%s/datasets/%s/%s/new?error_message=%s" % (username, projectid, dataset_id, datac_id, error_message))
+            self.redirect("/%s/datasets/%s/%s/new?error_message=%s" % (projectid, dataset_id, datac_id, error_message))
         else:
             new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac.key)
             self.log_and_put(new_revision)
@@ -601,7 +569,7 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
             self.log_and_put(dataset, "Updating last_updated property. ")
             self.log_and_put(datac, "Updating last_updated property. ")
             self.log_and_put(project, "Updating last_updated property. ")
-            self.redirect("/%s/%s/datasets/%s/%s" % (username, projectid, dataset_id, datac_id))
+            self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))
 
 
 class DownloadDataRevisionHandler(blobstore_handlers.BlobstoreDownloadHandler):
@@ -614,42 +582,37 @@ class DownloadDataRevisionHandler(blobstore_handlers.BlobstoreDownloadHandler):
 
 
 class UpdateDataRevisionHandler(DataSetBlobstoreUpload):
-    def post(self, username, projectid, dataset_id, datac_id, rev_id):
+    def post(self, projectid, dataset_id, datac_id, rev_id):
         user = self.get_login_user()
         if not user: 
-            goback = '/' + username + '/' + projectid + '/datasets/' + dataset_id + '/' + datac_id + '/edit/' + rev_id
+            goback = '/' + projectid + '/datasets/' + dataset_id + '/' + datac_id + '/edit/' + rev_id
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = "User not found. ")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = "Project not found. ")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
-            self.render("404.html", info = "Dataset not found. ")
+            self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         datac = self.get_dataconcept(dataset, datac_id)
         if not datac:
             self.error(404)
-            self.render("404.html", info = "Data concept not found. ")
+            self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         rev = self.get_datarevision(datac, rev_id)
         if not rev:
             self.error(404)
-            self.render("404.html", info = "Revision not found")
+            self.render("404.html", info = 'Data revision with key <em>%s</em> not found' % datac_id)
         meta = self.request.get("meta")
         datafile = self.get_uploads("file")
         if not project.user_is_author(user):
             have_error = True
             error_message = "You are not an author for this project. "
-            self.redirect("/%s/%s/datasets/%s/%s/new?error_message=%s" % (username, projectid, dataset_id, datac_id, error_message))
+            self.redirect("/%s/datasets/%s/%s/new?error_message=%s" % (projectid, dataset_id, datac_id, error_message))
         else:
             # Delete previous blob and reference the new one if necessary
             if datafile:
@@ -657,4 +620,4 @@ class UpdateDataRevisionHandler(DataSetBlobstoreUpload):
                 rev.datafile = datafile[0].key()
             if meta != rev.meta: rev.meta = meta
             rev.put()
-            self.redirect("/%s/%s/datasets/%s/%s" % (username, projectid, dataset_id, datac_id))
+            self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))

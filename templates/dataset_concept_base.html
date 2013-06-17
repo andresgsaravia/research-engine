@@ -9,9 +9,9 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets">Datasets</a>
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name}}</a>
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">{{datac.name[0:80]}}</a> 
+/  <a href="/{{project.key.integer_id()}}/datasets">Datasets</a>
+/  <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name}}</a>
+/  <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">{{datac.name[0:80]}}</a> 
 {% endblock %}
 
 
@@ -22,9 +22,9 @@
   </div>
   
   <div class="dr-navbar">
-    <a class="dr-revisions-tab" href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a>
-    <a class="dr-new-tab" href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">Upload new revision</a>
-    <a class="dr-info-tab" href="/{{p_author.username}}/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit">Edit info</a>
+    <a class="dr-revisions-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a>
+    <a class="dr-new-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">Upload new revision</a>
+    <a class="dr-info-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit">Edit info</a>
   </div>
     
   {% block dv_content %}

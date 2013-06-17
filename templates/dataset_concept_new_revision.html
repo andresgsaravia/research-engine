@@ -10,9 +10,9 @@
 
 <div class="dv-content">
   <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
-    <textarea name="meta" placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used.">{{meta}}</textarea><br/>
-    <div class="an-input">Data file: <input type="file" name="file" /></div>
-    <div class="an-input"><input type="submit" value="Upload data" /></div>
+    <textarea name="meta" placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{meta}}</textarea><br/>
+    <div class="an-input">Data file: <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
+    <div class="an-input"><input type="submit" value="Upload data" {% if disabled_p %}disabled{% endif %}/></div>
   </form>
 </div>
  
