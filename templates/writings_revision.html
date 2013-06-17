@@ -16,6 +16,7 @@
 {% block w_content %}
 
  <div class="w-content">
+   <div class="top-notice">Revision from day: {{revision.date.strftime("%d-%b-%Y")}}</div>
      {{revision.content | md | safe}}
 </div>
 

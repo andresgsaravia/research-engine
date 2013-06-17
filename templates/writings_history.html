@@ -15,7 +15,7 @@
       <div class="rev-author">Author: <a href="/{{rev.author.get().username}}">{{rev.author.get().username.capitalize()}}</a></div>
     </div>
     <div class="rev-summary">
-      <a href="/{{p_author.username}}/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/rev/{{rev.key.integer_id()}}">
+      <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/rev/{{rev.key.integer_id()}}">
 	{% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
       </a>
     </div>

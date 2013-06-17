@@ -14,11 +14,11 @@
 {% block w_content %}
 
 <form method="post">
-  <textarea name="comment" placeholder="Write a new comment here.">{{comment}}</textarea>
+  <textarea name="comment" placeholder="Write a new comment here." {% if disabled_p %}disabled{% endif %}>{{comment}}</textarea>
   <div class="help">
     <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
   </div>
-  <input type="submit" value="Comment" />
+  <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
 </form>
 
 <div class="error">{{error_message}}</div>
