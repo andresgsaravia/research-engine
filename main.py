@@ -38,9 +38,9 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                ('/([0-9]+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
                                ('/([0-9]+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
                                # Forum
-                               ('/(.+)/([0-9]+)/forum', forum.MainPage),
-                               ('/(.+)/([0-9]+)/forum/new_thread', forum.NewThreadPage),
-                               ('/(.+)/([0-9]+)/forum/([0-9]+)', forum.ThreadPage),
+                               ('/([0-9]+)/forum', forum.MainPage),
+                               ('/([0-9]+)/forum/new_thread', forum.NewThreadPage),
+                               ('/([0-9]+)/forum/([0-9]+)', forum.ThreadPage),
                                # Wiki
                                ('/(.+)/([0-9]+)/wiki/page/(.+)', wiki.ViewWikiPage),
                                ('/(.+)/([0-9]+)/wiki/edit/(.+)', wiki.EditWikiPage),

@@ -65,83 +65,80 @@ class ForumPage(projects.ProjectPage):
 
 
 class MainPage(ForumPage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found.' % username)
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found.' % projectid.replace("_"," ").title())
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         threads = self.get_threads(project)
-        self.render("forum_main.html", p_author = p_author, project = project, threads = threads)
+        self.render("forum_main.html", project = project, threads = threads)
 
 
 class NewThreadPage(ForumPage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
+    def get(self, projectid):
+        user = self.get_login_user()
+        if not user:
+            goback = '/' + projectid + '/forum/new_thread'
+            self.redirect("/login?goback=%s" % goback)
             return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        visitor_p = False if project.user_is_author(user) else True
         kw = {"title" : "New forum thread",
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
               "submit_button_text" : "Create thread",
-              "cancel_url" : "/%s/%s/forum" % (username, projectid),
+              "cancel_url" : "/%s/forum" % projectid,
               "more_head" : "<style>.forum-tab {background: white;}</style>",
               "markdown_p" : True,
-              "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "title_bar_extra" : '/ <a href="/%s/forum">Forum</a>' % projectid,
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid):
+    def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/forum/new_thread'
+            goback = '/' + projectid + '/forum/new_thread'
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         have_error = False
         error_message = ''
         t_title = self.request.get("name")
         t_content = self.request.get("content")
-        if not t_title:
-            have_error = True
-            error_message = "Please provide a brief description for this thread. "
-        if not t_content:
-            have_error = True
-            error_message += "You need to write some content before publishing this forum thread. "
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else False
+        if visitor_p:
             have_error = True
             error_message = "You are not an author for this project. "
+        else:
+            if not t_title:
+                have_error = True
+                error_message = "Please provide a brief description for this thread. "
+            if not t_content:
+                have_error = True
+                error_message += "You need to write some content before publishing this forum thread. "
         if have_error:
             kw = {"title" : "New forum thread",
                   "name_placeholder" : "Brief description of the thread. ",
                   "content_placeholder" : "Content of the thread",
                   "submit_button_text" : "Create thread",
                   "markdown_p" : True,
-                  "cancel_url" : "/%s/%s/forum" % (username, projectid),
+                  "cancel_url" : "/%s/forum" % projectid,
                   "more_head" : "<style>.forum-tab {background: white;}</style>",
                   "name_value": t_title, "content_value": t_content, "error_message" : error_message,
-                  "title_bar_extra" : '/ <a href="/%s/%s/forum">Forum</a>' % (username, projectid)}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "title_bar_extra" : '/ <a href="/%s/forum">Forum</a>' % projectid,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
             self.log_and_put(new_thread)
@@ -151,54 +148,47 @@ class NewThreadPage(ForumPage):
                                    users_to_notify = project.forum_threads_notifications_list,
                                    html = html, txt = txt)
             self.log_and_put(project,  "Updating last_updated property. ")
-            self.redirect("/%s/%s/forum/%s" % (user.username, projectid, new_thread.key.integer_id()))
+            self.redirect("/%s/forum/%s" % (projectid, new_thread.key.integer_id()))
 
 
 class ThreadPage(ForumPage):
-    def get(self, username, projectid, thread_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, thread_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         thread = self.get_thread(project, thread_id)
         if not thread:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
             return
         comments = self.get_comments(thread)
-        self.render("forum_thread.html", p_author = p_author, project = project, thread = thread, comments = comments)
+        visitor_p = False if (user and project.user_is_author(user)) else True
+        self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p)
 
-    def post(self, username, projectid, thread_id):
+    def post(self, projectid, thread_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/forum/' + thread_id
+            goback = '/' + projectid + '/forum/' + thread_id
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html")
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         thread = self.get_thread(project, thread_id)
         if not thread:
             self.error(404)
-            self.render("404.html")
+            self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
             return
         have_error = False
         error_message = ''
         comment = self.request.get("comment")
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
             erro_message = "You are not an author in this project. "
         if not comment:
@@ -216,5 +206,5 @@ class ThreadPage(ForumPage):
             self.log_and_put(project, "Updating it's last_updated property. ")
             comment = ''
         comments = self.get_comments(thread)
-        self.render("forum_thread.html", p_author = p_author, project = project, thread = thread, comments = comments,
+        self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p,
                     comment = comment, error_message = error_message)
