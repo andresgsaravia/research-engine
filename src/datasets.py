@@ -39,7 +39,7 @@ class DataRevisions(ndb.Model):
         kw = {"author" : author, "project" : project, "dataset" : dataset,
               "datac" : datac, "rev" : self, 
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
         kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key.integer_id())
         kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key.integer_id())
         return (render_str("emails/datarev.html", **kw), render_str("emails/datarev.txt", **kw))

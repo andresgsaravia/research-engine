@@ -26,7 +26,7 @@ class WritingRevisions(ndb.Model):
     def notification_html_and_txt(self, author, project, writing):
         kw = {"author" : author, "project" : project, "writing" : writing, "revision" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
         kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key.integer_id())
         kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key.integer_id())
         return (render_str("emails/writing.html", **kw), render_str("emails/writing.txt", **kw))

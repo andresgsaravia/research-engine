@@ -40,7 +40,7 @@ def send_notifications(notifications_list, user):
     notifs = classify_notifications(notifications_list)
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = user.email,
-                                subject = "Recent activity in your projects.",
+                                subject = "Recent activity in your projects",
                                 body = render_str("emails/notification_email.txt", **notifs),
                                 html = render_str("emails/notification_email.html", **notifs))
     logging.debug("EMAIL: Sending an email with notifications to user %s" % user.username)
@@ -107,7 +107,7 @@ If you didn't made this request, please ignore this email.
     html += SIGNATURE_HTML
 
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
-                                subject = "Email verification.",
+                                subject = "Email verification",
                                 body = body,
                                 html = html)
     return message

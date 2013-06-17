@@ -47,7 +47,7 @@ class WikiRevisions(ndb.Model):
     def notification_html_and_txt(self, author, project, wikipage):
         kw = {"author" : author, "project" : project, "wikipage" : wikipage, "revision" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
         kw["wikipage_absolute_link"] = kw["project_absolute_link"] + "/wiki/page/" + wikipage.url
         return (render_str("emails/wiki.html", **kw), render_str("emails/wiki.txt", **kw))
 
