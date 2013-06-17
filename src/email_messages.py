@@ -62,12 +62,12 @@ def send_verify_email(user):
 
 
 def send_invitation_to_project(project, inviting, invited):
-    h = hash_str(inviting.username + invited.username + str(project.key))
+    h = hash_str(invited.salt + str(project.key))
     kw = {"project" : project,
           "inviting" : inviting,
           "invited" : invited,
           "DOMAIN_PREFIX" : DOMAIN_PREFIX,
-          "accept_link" : "%s/%s/%s/admin?h=%s" % (DOMAIN_PREFIX, inviting.username, project.key.integer_id(), h)}
+          "accept_link" : "%s/%s/admin?h=%s" % (DOMAIN_PREFIX, project.key.integer_id(), h)}
     message = mail.EmailMessage(sender = ADMIN_EMAIL,
                                 to = invited.email,
                                 subject = "%s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name),

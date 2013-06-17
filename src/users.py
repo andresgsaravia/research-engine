@@ -39,9 +39,9 @@ class LoginPage(GenericPage):
         if have_error:
             self.render("login.html", **kw)
         else:
-            u.salt = make_salt()
-            u.password_hash = hash_str(password + u.salt)
-            self.log_and_put(u, "Making new salt. ")
+#            u.salt = make_salt()
+#            u.password_hash = hash_str(password + u.salt)
+#            self.log_and_put(u, "Making new salt. ")
             self.set_cookie("username", u.username, u.salt, max_age = LOGIN_COOKIE_MAXAGE)
             if kw['goback']: 
                 self.redirect(kw['goback'])

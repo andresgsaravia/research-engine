@@ -155,7 +155,7 @@ class AdminPage(ProjectPage):
         # New user here?
         if h and (hash_str(user.salt + str(project.key)) == h):
             project.add_author(self, user)
-            self.redirect("%s/admin" % projectid)
+            self.redirect("/%s/admin" % projectid)
             return
         visitor_p = False
         if not project.user_is_author(user):
