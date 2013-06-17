@@ -70,13 +70,10 @@ class Projects(ndb.Model):
 ######################
 
 class ProjectPage(GenericPage):
-    def get_project(self, p_author, projectid, log_message = ''):
+    def get_project(self, projectid, log_message = ''):
         self.log_read(Projects, log_message)
         project = Projects.get_by_id(int(projectid))
-        if project.user_is_author(p_author): 
-            return project
-        else:
-            return False
+        return project
 
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
@@ -87,40 +84,30 @@ class ProjectPage(GenericPage):
 
 
 class OverviewPage(ProjectPage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found' % username)
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project with key "%s" not found' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        self.render("project_overview.html", p_author = p_author, project = project, authors = project.list_of_authors(self))
+        self.render("project_overview.html", project = project, authors = project.list_of_authors(self))
 
 
 class NewProjectPage(GenericPage):
-    def get(self, username):
+    def get(self):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/new_project'
+            goback = '/new_project'
             self.redirect("/login?goback=%s" % goback)
-            return
-        if not username.lower() == user.username:
-            self.redirect("/%s/new_project" % user.username)
             return
         self.render("project_new.html", user = user)
 
-    def post(self, username):
+    def post(self):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/new_project'
+            goback = '/new_project'
             self.redirect("/login?goback=%s" % goback)
             return
-        if not username.lower() == user.username:
-            self.redirect("/%s/new_project" % user.username)
         have_error = False
         error_message = ''
         p_name = self.request.get('p_name').strip()
@@ -148,7 +135,7 @@ class NewProjectPage(GenericPage):
             self.log_and_put(new_project, "Creating a new project. ")
             user.my_projects.append(new_project.key)
             self.log_and_put(user, "Appending a project to a RegisteredUser's my_projects list ")
-            self.redirect("/%s/%s" % (user.username, new_project.key.integer_id()))
+            self.redirect("/%s" % new_project.key.integer_id())
 
 
 class AdminPage(ProjectPage):

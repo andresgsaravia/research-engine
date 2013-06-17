@@ -19,7 +19,7 @@
       {% if user %}<li><a href="/{{user.username}}">Projects</a>
 	<ul class="projects-list">
 	  {% for p in user.list_of_projects()[:3] %}
-	  <li><a href="/{{user.username}}/{{p.key.integer_id()}}">{{p.name[:30]}}</a></li>
+	  <li><a href="/{{p.key.integer_id()}}">{{p.name[:30]}}</a></li>
 	  {% endfor %}
 	  <li><a href="/{{user.username}}"><em>More...</em></a></li>
 	</ul>

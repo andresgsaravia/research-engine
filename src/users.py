@@ -6,10 +6,10 @@ import email_messages
 
 LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
-USERNAME_RE = r'^[a-zA-Z0-9_-]{3,20}$'
+USERNAME_RE = r'^[a-zA-Z][a-zA-Z0-9_-]{2,20}$'
 PASSWORD_RE = r'^.{3,20}$'
 FORBIDDEN_USERNAMES = ["login", "logout", "signup", "settings","recover_password","verify_email",
-                       "file", "cron"]
+                       "cron", "new_project", "file"]
 
 class LoginPage(GenericPage):
     def get(self):
@@ -67,7 +67,7 @@ class UserPage(GenericPage):
         if user and user.key == page_user.key:
             kw = {"self_user_p" : True,
                   "button_text" : "Create new project",
-                  "button_link" : "/%s/new_project" % username}
+                  "button_link" : "/new_project"}
         else: kw = {}
         self.render("user.html", page_user = page_user, projects = projects, **kw)
 
@@ -91,7 +91,7 @@ class SignupPage(GenericPage):
             have_error = True
         if not re.match(USERNAME_RE, usern):
             kw['error_username'] = "*"
-            kw['error'] += "That's not a valid username, it must be from 3 to 20 characters long and contain only letters, numbers, dashes and underscores. "
+            kw['error'] += "That's not a valid username, it must be from 3 to 20 characters long, start with a letter and contain only letters, numbers, dashes and underscores. "
             have_error = True
         if not re.match(EMAIL_RE, email):
             kw['error_email'] = "*"

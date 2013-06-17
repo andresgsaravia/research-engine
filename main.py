@@ -19,7 +19,7 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                # Cron jobs
                                ('/cron/send_email_notifications', email_messages.SendNotifications),
                                
-                               ('/(.+)/new_project', projects.NewProjectPage),                         # Argument is username
+                               ('/new_project', projects.NewProjectPage),                         # Argument is username
                                # Notebooks
                                ('/(.+)/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Arguments are username and projects' id
                                ('/(.+)/([0-9]+)/notebooks/new', notebooks.NewNotebookPage),
@@ -67,7 +67,7 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                ('/(.+)/([0-9]+)/invite', projects.InvitePage),
                                ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
 
-                               ('/(.+)/([0-9]+)', projects.OverviewPage),
+                               ('/([0-9]+)', projects.OverviewPage),
                                ('/(.+)', users.UserPage)],
                               debug = True)
 

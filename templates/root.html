@@ -18,12 +18,12 @@
 {% if projects %}
   {% for p in projects %}
   <div class="project">
-    <a href="/{{user.username}}/{{p.key.integer_id()}}">&rarr; {{p.name}}</a>
+    <a href="/{{p.key.integer_id()}}">&rarr; {{p.name}}</a>
   </div>
   {% endfor %}
 {% else %}
   <div id="no-projects">You don't have any projects.</div>
-  <div class="button1"><a href="/{{user.username}}/new_project">Create new project</a></div>
+  <div class="button1"><a href="/new_project">Create new project</a></div>
 {% endif %}
 
 
