@@ -39,7 +39,7 @@ class CodeComments(ndb.Model):
     def notification_html_and_txt(self, author, project, code):
         kw = {"author" : author, "project" : project, "code" : code, "comment" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
         kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(code.key.integer_id())
         return (render_str("emails/code_comment.html", **kw), render_str("emails/code_comment.txt", **kw))
 
@@ -68,36 +68,27 @@ class CodePage(projects.ProjectPage):
         return comments
 
 
-
 class CodesListPage(CodePage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found' % username)
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         codes = self.get_codes_list(project)
-        self.render("code_list.html", p_author = p_author, project = project, codes = codes)
+        self.render("code_list.html", project = project, codes = codes)
 
 
 class NewCodePage(CodePage):
-    def get(self, username, projectid):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found' % username)
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        kw = {"title_bar_extra" : '/ <a href="/%s/%s/code">Source code</a>' % (username, projectid),
+        visitor_p = False if (user and project.user_is_author(user)) else True
+        kw = {"title_bar_extra" : '/ <a href="/%s/code">Source code</a>' % projectid,
               "more_head" : "<style>.code-tab {background: white;}</style>",
               "title" : "Add a source code repository",
               "pre_form_message" : 'Here you can add an existing <a href="https://github.com">GitHub</a> repository to your project so you can keep track of it and start a discussion.',
@@ -105,49 +96,52 @@ class NewCodePage(CodePage):
               "content_placeholder" : "Briefly describe how this repository is related to the project.",
               "submit_button_text" : "Add repository",
               "markdown_p" : True,
-              "cancel_url" : "/%s/%s/code" % (username, projectid)}
-        self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+              "cancel_url" : "/%s/code" % projectid,
+              "disabled_p" : True if visitor_p else False,
+              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+        self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, username, projectid):
+    def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            self.redirect("\login?goback=%s/%s" % (username, projectid))
+            self.redirect("\login?goback=/%s" % projectid)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found' % username)
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         link = self.request.get("name").strip()
         description = self.request.get("content")
         have_error = False
         error_message = ''
-        if not link:
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
-            error_message = "Please provide a link to the repository you want to add. "
-        elif not re.match(GITHUB_REPO_RE, link):
-            have_error = True
-            error_message = "That doesn't look like a valid GitHub url to me. Please make sure it has the form https://github.com/<em>author-name</em>/<em>repo-name</em>"
-        if not description:
-            have_error = True
-            error_message += "Please provide a brief description of the relationship of this repository to the project. "
+            error_message = "You are not an author in this project. "
+        else:
+            if not link:
+                have_error = True
+                error_message = "Please provide a link to the repository you want to add. "
+            elif not re.match(GITHUB_REPO_RE, link):
+                have_error = True
+                error_message = "That doesn't look like a valid GitHub url to me. Please make sure it has the form https://github.com/<em>author-name</em>/<em>repo-name</em>. "
+            if not description:
+                have_error = True
+                error_message += "Please provide a brief description of the relationship of this repository to the project. "
         # Fetch the repo
-        repo_api_url = GITHUB_API_PREFIX + re.split(GITHUB_PREFIX, link)[1]
-        repo_fetch = urlfetch.fetch(url = repo_api_url, method = urlfetch.GET, follow_redirects = True)
-        if not repo_fetch.status_code == 200:
-            have_error = True
-            error_message = "Could not retrieve url <em>%s</em><br/> Please check the url is correct" % link
-        # Check for duplicated
-        elif CodeRepositories.query(CodeRepositories.link == str(link), ancestor = project.key).get():
-            have_error = True
-            error_message = "It seems that repository is already in your project. "
+        if not have_error:
+            repo_api_url = GITHUB_API_PREFIX + re.split(GITHUB_PREFIX, link)[1]
+            repo_fetch = urlfetch.fetch(url = repo_api_url, method = urlfetch.GET, follow_redirects = True)
+            if not repo_fetch.status_code == 200:
+                have_error = True
+                error_message = "Could not retrieve url <em>%s</em><br/> Please check the url is correct" % link
+            # Check for duplicated
+            elif CodeRepositories.query(CodeRepositories.link == str(link), ancestor = project.key).get():
+                have_error = True
+                error_message = "It seems that repository is already in your project. "
         if have_error:
-            kw = {"title_bar_extra" : '/ <a href="/%s/%s/code">Source code</a>' % (username, projectid),
+            kw = {"title_bar_extra" : '/ <a href="/%s/code">Source code</a>' % projectid,
                   "more_head" : "<style>.code-tab {background: white;}</style>",
                   "title" : "Add a source code repository",
                   "pre_form_message" : 'Here you can add an existing <a href="https://github.com">GitHub</a> repository to your project so you can keep track of it and start a discussion.',
@@ -155,11 +149,13 @@ class NewCodePage(CodePage):
                   "content_placeholder" : "Briefly describe how this repository is related to the project.",
                   "submit_button_text" : "Add repository",
                   "markdown_p" : True,
-                  "cancel_url" : "/%s/%s/code" % (username, projectid),
+                  "cancel_url" : "/%s/code" % projectid,
                   "error_message" : error_message,
                   "name_value" : link,
-                  "content_value" : description}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+                  "content_value" : description,
+                  "disabled_p" : True if visitor_p else False,
+                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            self.render("project_form_2.html", project = project, **kw)
         else:
             repo_json = json.loads(repo_fetch.content)
             new_repo = CodeRepositories(link = link, description = description, parent = project.key,
@@ -171,58 +167,51 @@ class NewCodePage(CodePage):
                                    users_to_notify = project.code_notifications_list,
                                    html = html, txt = txt)
             self.log_and_put(project, "Updating last_updated property")
-            self.redirect("/%s/%s/code/%s" 
-                          % (username, projectid, new_repo.key.integer_id()))
+            self.redirect("/%s/code/%s" 
+                          % (projectid, new_repo.key.integer_id()))
 
 
 class ViewCodePage(CodePage):
-    def get(self, username, projectid, code_id):
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found' % username)
-            return
-        project = self.get_project(p_author, projectid)
+    def get(self, projectid, code_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
         if not project:
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         code = self.get_code(project, code_id)
         if not code:
             self.error(404)
-            self.render("404.html", info = 'Code "%s" not found' % code_id)
+            self.render("404.html", info = 'Code with key <em>%s</em> not found' % code_id)
             return
+        visitor_p = False if (user and project.user_is_author(user)) else True
         comments = self.get_comments(code)
-        self.render("code_view.html", p_author = p_author, project = project, code = code, comments = comments)
+        self.render("code_view.html", project = project, code = code, comments = comments, disabled_p = visitor_p)
 
-    def post(self, username, projectid, code_id):
+    def post(self, projectid, code_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + username + '/' + projectid + '/forum/' + thread_id
+            goback = '/' + projectid + '/forum/' + thread_id
             self.redirect("/login?goback=%s" % goback)
             return
-        p_author = self.get_user_by_username(username)
-        if not p_author:
-            self.error(404)
-            self.render("404.html", info = 'User "%s" not found' % username)
-            return
-        project = self.get_project(p_author, projectid)
+        project = self.get_project(projectid)
         if not project: 
             self.error(404)
-            self.render("404.html", info = 'Project "%s" not found' % projectid)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         code = self.get_code(project, code_id)
         if not code:
             self.error(404)
-            self.render("404.html", info = 'Code "%s" not found' % code_id)
+            self.render("404.html", info = 'Code with key <em>%s</em> not found' % code_id)
             return
         have_error = False
         error_message = ''
         comment = self.request.get("comment")
-        if not project.user_is_author(user):
+        visitor_p = False if project.user_is_author(user) else True
+        if visitor_p:
             have_error = True
             erro_message = "You are not an author in this project. "
-        if not comment:
+        elif not comment:
             have_error = True
             error_message = "You can't submit an empty comment. "
         if not have_error:
@@ -237,5 +226,5 @@ class ViewCodePage(CodePage):
             self.log_and_put(project, "Updating it's last_updated property. ")
             comment = ''
         comments = self.get_comments(code)
-        self.render("code_view.html", p_author = p_author, project = project, code = code, comments = comments,
+        self.render("code_view.html", project = project, code = code, comments = comments,
                     comment = comment, error_message = error_message)

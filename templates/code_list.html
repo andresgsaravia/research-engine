@@ -7,19 +7,19 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/code">Source code</a>
+/  <a href="/{{project.key.integer_id()}}/code">Source code</a>
 {% endblock %}
 
 
 {% block p_content %}
   
-<div class="button1"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/code/new">New source code repository</a></div>
+<div class="button1"><a href="/{{project.key.integer_id()}}/code/new">New source code repository</a></div>
 <h2>Source code</h2>
 
 {% for c in codes %}
 <div class="c-wrapper">
   <div class="c-last-updated">Last updated: {{c.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="c-name"><a href="/{{p_author.username}}/{{project.key.integer_id()}}/code/{{c.key.integer_id()}}">{{c.name}}</a></div>
+  <div class="c-name"><a href="/{{project.key.integer_id()}}/code/{{c.key.integer_id()}}">{{c.name}}</a></div>
   <div class="c-link"><a href="{{c.link}}">External link</a></div>
   <div class="c-description">{{c.description | md | safe}}</div>
 </div>

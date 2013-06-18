@@ -13,8 +13,8 @@
 
 
 {% block title_bar_extra %}
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/code">Source code</a>
-/  <a href="/{{p_author.username}}/{{project.key.integer_id()}}/code/{{code.key.integer_id()}}">{{code.name}}</a>
+/  <a href="/{{project.key.integer_id()}}/code">Source code</a>
+/  <a href="/{{project.key.integer_id()}}/code/{{code.key.integer_id()}}">{{code.name}}</a>
 {% endblock %}
 
 
@@ -42,8 +42,8 @@
 
 <div class="comment-form">
   <form method="post">
-    <textarea name="comment">{{comment_value}}</textarea>
-    <input type="submit" value="Comment" />
+    <textarea name="comment" {% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
+    <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
   </form>
 </div>
 
