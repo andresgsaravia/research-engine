@@ -35,7 +35,7 @@ class ForumComments(ndb.Model):
     def notification_html_and_txt(self, author, project, thread):
         kw = {"author" : author, "project" : project, "thread" : thread, "comment" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
         kw["thread_absolute_link"] = kw["project_absolute_link"] + "/forum/" + str(self.key.integer_id())
         return (render_str("emails/forum_comment.html", **kw), render_str("emails/forum_comment.txt", **kw))
 

@@ -25,7 +25,7 @@ class CodeRepositories(ndb.Model):
     def notification_html_and_txt(self, author, project):
         kw = {"author" : author, "project" : project, "code" : self,
               "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = kw["author_absolute_link"] + "/" + str(project.key.integer_id())
+        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
         kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(self.key.integer_id())
         return (render_str("emails/code.html", **kw), render_str("emails/code.txt", **kw))
 
