@@ -15,9 +15,10 @@ WIKILINKS_RE = r'\[\[([^\|\]]+\|)?([^\]]+)\]\]'
 def link_and_text(mobject, link_prefix):
     text = mobject.groups()[1].strip()
     if mobject.groups()[0]:
-        link_posfix = mobject.groups()[0][:-1].strip().replace(" ","_").capitalize()
+        link_posfix = mobject.groups()[0][:-1].strip().replace(" ","_")
     else:
-        link_posfix = text.replace(" ", "_").capitalize()
+        link_posfix = text.replace(" ", "_")
+    link_posfix = link_posfix[:1].upper() + link_posfix[1:]
     return (link_prefix + link_posfix, text)
 
 # Returns a function suitable to use inside a re.sub(...) call to generate
