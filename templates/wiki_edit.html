@@ -3,6 +3,60 @@
 
 {% block w_head %}
   <link href="/css/wiki_edit.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+        TeX: {equationNumbers: {autoNumber: "AMS"} }
+    });
+  </script>
+  <script type="text/javascript">
+  function doPreview(mode) {
+    var textAreaId = 'text';
+    var previewAreaId = 'preview';
+    
+    if (!getElementPreview(textAreaId) || !getElementPreview(previewAreaId)) {
+      return;
+    } else if (mode == 'init') {
+      getElementPreview(previewAreaId).innerHTML = 'Preview Area';
+      return;
+    }
+    
+    var s = getStringPreview(textAreaId);
+    
+    if (getElementPreview(previewAreaId)) {
+      getElementPreview(previewAreaId).innerHTML = s;
+    }
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub],previewAreaId);
+  }
+  
+  function getStringPreview(e) {
+    var s = '';
+    s = getElementPreview(e).value;
+    s = s.split('&').join('&amp;');
+    s = s.split('<').join('&lt;');
+    s = s.split('>').join('&gt;');
+    s = s.split('\n').join('<br>');
+    s = s.split('\'').join('&#92;');
+    return s;
+  }
+  
+  function getElementPreview(e, f) {
+    var l = (document.layers) ? 1 : 0;
+    if(l) {
+      f=(f) ? f : self;
+      var a = f.document.layers;
+      if (a[e]) return a[e];
+        for (var w = 0; w < a.length;) {
+        return getElementPreview(e, a[w++]);
+      }
+    }
+    if (document.all) return document.all[e];
+    return document.getElementById(e);
+  }
+  
+  doPreview('init');
+  </script>
 {% endblock %}
 
     
@@ -11,7 +65,7 @@
   <div class="w-title">Editing {{wikiurl.replace("_"," ")}}</div>
 
   <form method="post">
-    <textarea name="content" placeholder="Write the content of this page here." autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
+    <textarea name="content" id="text" onkeyup="doPreview()" onblur="doPreview()" placeholder="Write the content of this page here." autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
     <input type="text" name="summary" placeholder="Summary of changes (optional)" maxlength="160" {% if disabled_p %}disabled{% endif %}/>
     <input type="submit" class="bottom-buttons" value="Save" {% if disabled_p %}disabled{% endif %}/>
     <input type="button" class="bottom-buttons" value="Cancel" 
@@ -27,6 +81,10 @@
       <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some more editing help (opens in a new window).</p> 
     </div>
   </div>
+  
+  <div class="preview-title">Preview math</div>
+  <div class="preview-subtitle">This is a preview of only the math (for now), the markdown will be renderer when you save the page.</div>
+  <div id="preview"></div>
 
 
 {% endblock %}
