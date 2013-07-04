@@ -4,6 +4,8 @@
 {% block p_head %}
   <link href="/css/forum_thread.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript" src="/js/showdown.js"></script>
+  <script type="text/javascript" src="/js/preview.js"></script>
   <script type="text/javascript">
     MathJax.Hub.Config({
         "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true }
@@ -42,7 +44,7 @@
 
 <div class="comment-form">
   <form method="post">
-    <textarea name="comment" {% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
+    <textarea name="comment" id="commentText" onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
     <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
   </form>
 </div>
@@ -52,5 +54,8 @@
 <div class="help">
   <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
 </div>
+
+<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
 
 {% endblock %}
