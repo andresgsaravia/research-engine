@@ -2,6 +2,17 @@
 
 {% block p_head %}
   <link href="/css/project_form_2.css" rel="stylesheet" type="text/css" />
+  {% if markdown_p %}
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript" src="/js/showdown.js"></script>
+  <script type="text/javascript" src="/js/preview.js"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+        TeX: {equationNumbers: {autoNumber: "AMS"} }
+    });
+  </script>
+  {% endif %}
   {{more_head | safe}}
 {% endblock %}
 
@@ -16,7 +27,8 @@
 
   <form method="post">
     <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
-    <textarea name="content" placeholder="{{content_placeholder}}" {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
+    <textarea name="content" id="inputText" placeholder="{{content_placeholder}}"{% if markdown_p %} onkeyup="Preview('inputText','previewArea')"{% endif %}
+	      {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
     <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" {% if disabled_p %}disabled{% endif %}/>
     <input type="button" value="Cancel" class="bottom-buttons" onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}"/>
   </form>
@@ -25,8 +37,11 @@
   <div class="error">{{error_message | safe}}</div>
   <div class="info">{{info_message | safe}}</div>
 
-{% if markdown_p %}<div class="help">
-  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
-</div>{% endif %}
+  {% if markdown_p %}
+  <div class="help"><p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p></div>
+  <div class="preview-title">Preview</div>
+  <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div id="previewArea"><em>Start typing above to see the preview here.</em></div>
+  {% endif %}
 
 {% endblock %}

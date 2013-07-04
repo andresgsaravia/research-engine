@@ -42,3 +42,29 @@ textarea {
     font-size: 0.9em;
     margin-left: 5%;
 }
+
+.preview-title {
+    margin-left: 0.5em;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.preview-subtitle {
+    margin-left: 0.8em;
+    font-size: 0.8em;
+    color: #777777;
+}
+
+#previewArea {
+    font-family: Helvetica, Arial, sans-serif;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 0.5em;
+    height: 30em;
+    width: 90%;
+    resize: both;
+    overflow: auto;
+    border: 1px solid #AAAAAA;
+}
