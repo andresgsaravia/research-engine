@@ -36,3 +36,19 @@ input[type=file] {
     font-size: 0.9em;
     margin-top: 0.5em;
 }
+
+.preview-subtitle {
+    margin-left: 0.8em;
+    font-size: 0.8em;
+    color: #777777;
+}
+
+#previewArea {
+    margin: 1%;
+    padding: 0.5em;
+
+    width: 80%;
+    resize: both;
+    overflow: auto;
+    border: 1px solid #AAAAAA;
+}

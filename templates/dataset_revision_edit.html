@@ -2,7 +2,15 @@
 
 
 {% block dv_head %}
-<link href="/css/dataset_revision_edit.css" rel="stylesheet" type="text/css" />
+  <link href="/css/dataset_revision_edit.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript" src="/js/showdown.js"></script>
+  <script type="text/javascript" src="/js/preview.js"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true }
+    });
+  </script>
 {% endblock %}
 
     
@@ -11,7 +19,8 @@
 <div class="dv-content">
   <h3>Edit revision</h3>
   <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
-    <textarea name="meta" placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea><br/>
+    <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');"
+	      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea><br/>
     <div class="an-input">Data File: <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
     <div class="an-input">New file (optional): <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
     <div class="warning">WARNING: If you upload a new file, the previous file will be lost.</div>
@@ -27,4 +36,8 @@
 <div class="help">
   <p>The text will be processed as markdown syntax, click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
 </div>
+
+<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
+
 {% endblock %}
