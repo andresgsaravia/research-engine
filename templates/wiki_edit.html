@@ -21,7 +21,7 @@
   <div class="w-title">Editing {{wikiurl.replace("_"," ")}}</div>
 
   <form method="post">
-    <textarea name="content" id="inputText" onkeyup="Preview('inputText', 'previewArea');" placeholder="Write the content of this page here." autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
+    <textarea name="content" id="inputText" placeholder="Write the content of this page here." autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
     <input type="text" name="summary" placeholder="Summary of changes (optional)" maxlength="160" {% if disabled_p %}disabled{% endif %}/>
     <input type="submit" class="bottom-buttons" value="Save" {% if disabled_p %}disabled{% endif %}/>
     <input type="button" class="bottom-buttons" value="Cancel" 
@@ -38,8 +38,8 @@
     </div>
   </div>
   
-  <div class="preview-title">Preview</div>
+  <input type="button" class="bottom-buttons" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
   <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-  <div id="previewArea"><em>Start typing above to see the preview here.</em></div>
+  <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
 
 {% endblock %}

@@ -19,7 +19,7 @@
 
   <div class="error">{{edit_warning | safe}}</div>
   <form method="post">
-    <textarea name="content" id="inputText" onkeyup="Preview('inputText', 'previewArea');" {% if disabled_p %}disabled{% endif %}>{{content}}</textarea>
+    <textarea name="content" id="inputText" {% if disabled_p %}disabled{% endif %}>{{content}}</textarea>
     <div class="w-form-entry"><div class="w-form-label">Status:</div><input type="text" name="status" value="{{status}}" placeholder="Status of the writing (optional)" {% if disabled_p %}disabled{% endif %}/></div>
     <div class="w-form-entry"><div class="w-form-label">Changes:</div><input type="text" name="summary" value="{{summary}}" placeholder="Summary of changes (optional)" {% if disabled_p %}disabled{% endif %}/></div>
     
@@ -34,9 +34,9 @@
   <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
 </div>
 
-<div class="preview-title">Preview</div>
+<input type="button" class="bottom-buttons" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
 <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea">Start typing above to see the preview here.</div>
+<div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
 
 
 {% endblock %}

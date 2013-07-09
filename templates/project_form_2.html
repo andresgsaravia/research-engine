@@ -27,7 +27,7 @@
 
   <form method="post">
     <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
-    <textarea name="content" id="inputText" placeholder="{{content_placeholder}}"{% if markdown_p %} onkeyup="Preview('inputText','previewArea')"{% endif %}
+    <textarea name="content" id="inputText" placeholder="{{content_placeholder}}"
 	      {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
     <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" {% if disabled_p %}disabled{% endif %}/>
     <input type="button" value="Cancel" class="bottom-buttons" onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}"/>
@@ -39,9 +39,9 @@
 
   {% if markdown_p %}
   <div class="help"><p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p></div>
-  <div class="preview-title">Preview</div>
+  <input type="button" class="bottom-buttons" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
   <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-  <div id="previewArea"><em>Start typing above to see the preview here.</em></div>
+  <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
   {% endif %}
 
 {% endblock %}
