@@ -351,7 +351,7 @@ class EditNotebookPage(NotebookPage):
         user = self.get_login_user()
         if not user:
             goback = '/' + projectid + '/notebooks/' + ndid + '/edit'
-            self.redirect("login?goback=%s" % goback)
+            self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
         if not project:
@@ -441,7 +441,7 @@ class EditNotePage(NotebookPage):
         user = self.get_login_user()
         if not user:
             goback = '/' + projectid + "/notebooks/" + nbid + '/' + note_id + '/edit'
-            self.redirect("login?goback=%s" % goback)
+            self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
         if not project:
