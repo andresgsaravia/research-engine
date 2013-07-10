@@ -59,3 +59,12 @@
 #no-projects {
     border-top: 1px solid black;
     padding: 0.5em;
+}
+
+.welcome-message {
+    padding: 1em;
+    margin-top: 3em;
+    border: 1px solid #CCCCCC;
+    border-radius: 1em 1em 1em 1em;
+    background: #F5F5F5;
+}

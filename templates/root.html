@@ -26,20 +26,28 @@
   <div class="button1"><a href="/new_project">Create new project</a></div>
 {% endif %}
 
-
 </div>
+
 {% else %}
-<p>You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
+<p style="text-align:right; font-size:0.9em; ">You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
+
+{% endif %}
+
+
+<div class="welcome-message"><p>Welcome to <strong>Research Engine</strong>! My name is Andr&eacute;s <a href="https://plus.google.com/117908036374671367769/posts">(G+)</a>, I'm a Physics PhD student and this place is a platform I'm making to help move science forward in a more open and intelligent way. Feel free to see how I'm using this place for <a href="https://research-engine.appspot.com/37001">my PhD project</a> or <a href="/signup">create your own account</a>.</p>
+
+<p>I'm a strong advocate of <em>Open Science</em> and I think we need to develop better tools to enhance our cognitive capabilites. This place is my first attempt to make such a tool. I'm developing this site acording to my particular needs while I work on <a href="https://research-engine.appspot.com/37001">my PhD project</a> however I would like this place to be useful for all kinds of researchers out there so, if you have a suggestion, a criticism or simple a bug-report, please let me know in the <a href="https://github.com/andresgsaravia/research-engine/issues?state=open">issues page</a> for this project's <a href="https://github.com/andresgsaravia/research-engine/">GitHub repository</a>. Bear in mind that <em>Research Engine</em> it's still in an early alpha phase so there's likely to be some bugs and features missing but I'm working hard on it and I'd love to have feedback on how to make it more useful.</p>
+
+<p>I'm still lacking a complete <em>User's guide</em> but I described some of my ideas and design goals in the <em>README</em> file from <a href="https://github.com/andresgsaravia/research-engine/">this project's repository</a>. I reproduce some of it here:
+
 <hr/>
 
-<p> I will fully describe here the purpose of this project. Meanwhile let me give you an excerpt from the <em>README</em> file from <a href="https://github.com/andresgsaravia/research-engine">its repository</a> or you can look at <a href="https://research-engine.appspot.com/37001">my PhD's project page in here</a>.
-
-<br/><br/><br/><em>From <a href="https://github.com/andresgsaravia/research-engine/blob/master/README.md">README.md</a>:</em><br/><br/>
+<br/><em>Excerpt from this project's <a href="https://github.com/andresgsaravia/research-engine/blob/master/README.md">README.md</a> file:</em><br/><br/>
 
 <blockquote>
-<p><em>I believe that the process of science - how discoveries are made - will change more in the next twenty years than it has in the past 300 years.</em> Michael Nielsen. <em>Reinventing Discovery</em> (2012).</p>
+<p><em>I believe that the process of science - how discoveries are made - will change more in the next twenty years than it has in the past 300 years.</em> Michael Nielsen. <a href="http://www.amazon.com/Reinventing-Discovery-The-Networked-Science/dp/0691148902/">Reinventing Discovery</a> (2012).</p>
 
-<p><em>Rather, knowledge is becoming inextricable from - literally unthinkable without - the network that enables it. Our task is to learn how to build smart rooms - that is, how to build networks that make us smarter, especially since, when done badly, networks can make us distressingly stupider.</em> David Weinberger. <em>Too Big To Know</em> (2012).</p>
+<p><em>Rather, knowledge is becoming inextricable from - literally unthinkable without - the network that enables it. Our task is to learn how to build smart rooms - that is, how to build networks that make us smarter, especially since, when done badly, networks can make us distressingly stupider.</em> David Weinberger. <a href="http://www.amazon.com/Too-Big-Know-Rethinking-Everywhere/dp/0465021425/">Too Big To Know</a> (2012).</p>
 </blockquote>
 
 <h2>
@@ -91,8 +99,7 @@ concepts related to your interests but not a description of your journey through
 <strong>Forum</strong>: This is pretty straightforward, I just want a place to engage in lively discussions around any issue related to the project. Of course, it's also important to keep a record of there conversations.</li>
 </ul><p>This project is based on <a href="https://developers.google.com/appengine">Google's App Engine</a> so it should be relatively easy to escalate and improve. I assume most of the improvements will be made by researchers so they need to be able to make changes easily and return to their science production as fast as possible.</p>
 
-<h1>
-<a name="to-do" href="#to-do"></a>To do</h1>
+<h1><a name="to-do" href="#to-do"></a>To do</h1>
 
 <p>You can have a look at the features I'm planing to implement and the bugs I've found in the <a href="https://github.com/andresgsaravia/research-engine/issues?state=open">issues tab</a> of this GitHub repository. Besides those ideas I also want to do the following:</p>
 
@@ -107,8 +114,8 @@ concepts related to your interests but not a description of your journey through
 <strong>Improve the site</strong>: By getting professional programmers (not amateurs like me) and some graphic designers so this place looks and feels really professional.</li>
 <li>
 <strong>Provide the world with ubiquitous WiFi</strong>: Or, maybe, find some way to be able to work on Research Engine wihtout having an active Internet conection.</li>
-</ul><h1>
+</ul><h1><br/>
+</div>
 
 
-{% endif %}
 {% endblock %}
