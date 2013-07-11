@@ -100,10 +100,6 @@ a:hover {
     font-weight: bold;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 0.8em;
-    -webkit-transition: color .2s ease-in-out;
-    -o-transition: color.2s ease-in-out;
-    -ms-transition: color .2s ease-in-out;
-    transition: color .2s ease-in-out;
 }
 
 .menu li:hover {
@@ -121,15 +117,8 @@ a:hover {
 
     opacity: 0;
     background: white;
-    box-shadow: 0.3em 0.3em 0.5em #C0C0C0;
-
-    border-radius: 0 0 5px 5px;
-
-    -webkit-transition: opacity .25s ease .1s;
-    -o-transition: opacity .25s ease .1s;
-    -ms-transition: opacity .25s ease .1s;
-    -moz-transition: opacity .25s ease .1s;
-    transition: opacity .25s ease .1s;
+    
+    border: 1px solid #808080;
 }
 
 .menu li:hover > ul {
@@ -140,14 +129,6 @@ a:hover {
     height: 0;
     overflow: hidden;
     padding: 0;
-    -webkit-transition: height .25s ease .1s;
-    -o-transition: height .25s ease .1s;
-    -ms-transition: height .25s ease .1s;
-    transition: height .25s ease .1s;
-}
-
-.menu ul li:last-child {
-    border-radius: 0 0 5px 5px;
 }
 
 .menu li:hover > ul li {
@@ -161,7 +142,7 @@ a:hover {
     padding: 1em 0 1em 2.5em;
     margin: 0;
     border: none;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #CCCCCC;
 }
 
 
