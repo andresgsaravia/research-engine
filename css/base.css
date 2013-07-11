@@ -5,6 +5,8 @@ Color Scheme:
 http://colorschemedesigner.com/#3L61TlRK-w0w0
 */
 
+@import url(http://fonts.googleapis.com/css?family=Noto+Serif);
+
 html {
     height: 100%;
     width: 100%;
@@ -15,6 +17,7 @@ body {
     padding: 0;
     height: 100%;
     width: 100%;
+    font-family: 'Noto Serif', serif;
 }
 
 a {
