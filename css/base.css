@@ -114,11 +114,9 @@ a:hover {
     position: absolute;
     top: 2.5em;
     left: 0px;
-
     opacity: 0;
     background: white;
-    
-    border: 1px solid #808080;
+    border: 1px solid #CCCCCC;
 }
 
 .menu li:hover > ul {
