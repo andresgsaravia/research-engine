@@ -4,7 +4,7 @@
     width: 80%;
     margin-left: 10%;
     margin-top: 2em;
-    min-height: 30em;
+    min-height: 33em;
     background: white;
     box-shadow: 0 0.1em 0.3em #C0C0C0;
     padding-left: 3em;
@@ -16,11 +16,12 @@
     position: relative;
     float: right;
     width: 25%;
+    text-align: center;
 }
 
 .u-name {
     text-align: center;
-    font-size: 2.5em;
+    font-size: 2.2em;
 }
 
 .u-settings {
@@ -29,9 +30,7 @@
 }
 
 .u-about {
-    text-align: justify;
-    margin-bottom: 1em;
-    margin-right: 1em;
+    margin: 1em;
     max-height: 20em;
     overflow: auto;
 }
@@ -59,9 +58,6 @@
     padding-left: 1em;
     padding-right: 1em;
     background-color: #F0F0F0;
-    /* background-image: linear-gradient(#F8FBFC, #B5BCBE); */
-    /* background-image: -webkit-linear-gradient(#F8FBFC, #B5BCBE); */
-    /* background-repeat: repeat-x; */
     color: black;
     font-size: 1em;
     font-family: Helvetica, Arial, sans-serif;
