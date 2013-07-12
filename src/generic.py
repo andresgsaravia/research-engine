@@ -67,6 +67,7 @@ class RegisteredUsers(ndb.Model):
     email = ndb.StringProperty(required = False)
     about_me = ndb.TextProperty(required = False)
     my_projects = ndb.KeyProperty(repeated = True)                   # keys to Projects (defined in projects.py)
+    profile_url = ndb.StringProperty(required = False, default="https://secure.gravatar.com/avatar/00000000000000000000000000000000")
 
     def list_of_projects(self):
         projects_list = []
@@ -81,6 +82,11 @@ class RegisteredUsers(ndb.Model):
             projects_list.sort(key=lambda p: p.last_updated, reverse=True)
         return projects_list
 
+    def get_profile_url(self, size = 0):
+        assert type(size) == int
+        url = self.profile_url
+        if size > 0: url += "?s=" + str(size)
+        return url
 
 # Each Notification should have as parent a RegisteredUser, this parent is the one who will receive the notification
 class EmailNotifications(ndb.Model):

@@ -3,6 +3,7 @@
 
 from generic import *
 import email_messages
+import hashlib
 
 LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
@@ -149,7 +150,7 @@ class SettingsPage(GenericPage):
             return
         kw = {"usern": user.username, "email" : user.email}
         if user.about_me: kw["about_me"] = user.about_me
-        self.render("settings.html", **kw)
+        self.render("settings.html", user = user, **kw)
 
     def post(self):
         user = self.get_login_user()
@@ -183,6 +184,7 @@ class SettingsPage(GenericPage):
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
+            user.profile_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(user.email.strip().lower()).hexdigest()
             self.log_and_put(user, "Updating settings.")
             kw["info"] = "Changes saved"
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
