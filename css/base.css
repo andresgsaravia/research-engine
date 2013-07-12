@@ -5,6 +5,8 @@ Color Scheme:
 http://colorschemedesigner.com/#3L61TlRK-w0w0
 */
 
+@import url(http://fonts.googleapis.com/css?family=Noto+Serif);
+
 html {
     height: 100%;
     width: 100%;
@@ -15,6 +17,7 @@ body {
     padding: 0;
     height: 100%;
     width: 100%;
+    font-family: 'Noto Serif', serif;
 }
 
 a {
@@ -185,14 +188,13 @@ a:hover {
 
 /* Other */
 
-.button1 a {
+.button1 a, input[type=submit], button {
     display: block;
     background-color: rgb(234, 234, 234);
     background-image: linear-gradient(rgb(250, 250, 250), rgb(234, 234, 234));
     background-repeat: repeat-x;
     color: rgb(51, 51, 51);
     position: relative;
-    float: right;
     margin-top: 0.2em;
     margin-right: 2em;
     padding: 0.3em;
@@ -203,11 +205,15 @@ a:hover {
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.075);
 }
 
-.button1 a:hover {
+.button1 a:hover, input[type=submit]:hover, button:hover {
     text-decoration: none;
     color: rgb(255, 255, 255);
     background-color: rgb(48, 114, 179);
     background-image: linear-gradient(rgb(89, 155, 205), rgb(48, 114, 179));
     background-repeat: repeat-x;
     border-color: rgb(42, 101, 160);
+}
+
+.button1 a {
+    float: right;
 }
