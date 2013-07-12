@@ -212,7 +212,8 @@ class VerifyEmailPage(GenericPage):
                                        salt = u.salt,
                                        email = u.email,
                                        about_me = '',
-                                       my_projects = [])
+                                       my_projects = [],
+                                       profile_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(u.email.strip().lower()).hexdigest())
             self.log_and_put(new_user)
             self.log_and_delete(u)
             self.set_cookie("username", new_user.username, new_user.salt, max_age = LOGIN_COOKIE_MAXAGE)
