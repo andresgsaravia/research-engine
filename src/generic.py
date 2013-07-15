@@ -15,9 +15,14 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 
 DEBUG = True             # Debug messages using logging.debug
 SALT_LENGTH = 16
-DOMAIN_PREFIX = "http://research-engine.appspot.com"
 
 jinja_env.filters['md'] = filters.md
+
+# You should change these if you are registering your own app on App Engine
+APP_NAME = "Research Engine"
+APP_URL = "http://research-engine.appspot.com"
+ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
+APP_REPO = "https://github.com/andresgsaravia/research-engine"
 
 
 ##########################
@@ -180,6 +185,9 @@ class GenericPage(webapp2.RequestHandler):
         return render_str(template, **params)
 
     def render(self, template, **kw):
+        kw["APP_NAME"] = APP_NAME
+        kw["APP_URL"] = APP_URL
+        kw["APP_REPO"] = APP_REPO
         kw['user'] = self.get_login_user()
         if kw['user'] is None:
             kw['login_message'] = ('<a href="/login">Login</a> <ul><li><a href="/signup">Signup</a></li></ul>')

@@ -1,4 +1,4 @@
-There has been some activity in your projects at Research Engine <https://research-engine.appspot.com>
+There has been some activity in your projects at {{APP_NAME}} <{{APP_URL}}>
 
 {% if NotebookNotes %}- Notebook Notes ({{NotebookNotes | count}})
 {% endif %}{% if NoteComments %}- Comments in Notebooks' Notes ({{NoteComments | count}})

@@ -62,10 +62,15 @@ You can have a look at the features I'm planing to implement and the bugs I've f
 - **Provide the world with ubiquitous WiFi**: Or, maybe, find some way to be able to work on Research Engine wihtout having an active Internet conection.
 
 
-Installation
-============
+Hacking
+=======
 
-If you want to play around with the code you will need [Google's App Engine][], please look into their documentation for instructions on how to get an instance working on your machine. If you want to make it public you will also need to register an app with them and change some basic settings in the `app.yaml` file as well as some (very few) hard-coded places in the source code and template files. For now, the best way to do this is make a `grep research-engine` and `grep "Research Engine"` into the entire source tree and change where appropiate. I promise I will provide clear instructions and locations to make your own intallation in the near future.
+If you want to play around with the code you will need [Google's App Engine][], please look into their documentation for instructions on how to get an instance working on your machine. If you want to make it public you will also need to register an app with them and change some basic settings:
+
+- In the `app.yaml` file change `application: research-engine` to your own app name.
+- In the `mail.py` file change the `ADMIN_EMAIL = "admin@research-engine.appspotmail.com"` parameter.
+- In the `generic.py` file change the parameters `APP_URL`, `ADMIN_EMAIL` and `APP_REPO`. Be sure that you use `ADMIN_EMAIL` consistently.
+- Optionally you may want to change the few instances in which *Research Engine* is mentioned in the `templates/root.html` and `static/edit_help.html` files.
 
 
 License
