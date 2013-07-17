@@ -9,6 +9,7 @@ import webapp2
 from src import *
 
 app = webapp2.WSGIApplication([('/', frontend.RootPage),
+                               ('/(.+)/', frontend.RemoveTrailingSlash),
                                # Users
                                ('/login', users.LoginPage),
                                ('/logout', users.LogoutPage),
