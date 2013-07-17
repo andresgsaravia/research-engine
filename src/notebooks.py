@@ -25,8 +25,8 @@ class NotebookNotes(ndb.Model):
 
     def notification_html_and_txt(self, author, project, notebook):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
-              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
+              "author_absolute_link" : APP_URL + "/" + author.username}
+        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + str(notebook.key.integer_id())
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key.integer_id())
         return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
@@ -39,8 +39,8 @@ class NoteComments(ndb.Model):
 
     def notification_html_and_txt(self, author, project, notebook, note):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : note, "comment" : self,
-              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
+              "author_absolute_link" : APP_URL + "/" + author.username}
+        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + str(notebook.key.integer_id())
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key.integer_id())
         return (render_str("emails/note_comment.html", **kw), render_str("emails/note_comment.txt", **kw))

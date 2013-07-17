@@ -38,8 +38,8 @@ class DataRevisions(ndb.Model):
     def notification_html_and_txt(self, author, project, dataset, datac):
         kw = {"author" : author, "project" : project, "dataset" : dataset,
               "datac" : datac, "rev" : self, 
-              "author_absolute_link" : DOMAIN_PREFIX + "/" + author.username}
-        kw["project_absolute_link"] = DOMAIN_PREFIX + "/" + str(project.key.integer_id())
+              "author_absolute_link" : APP_URL + "/" + author.username}
+        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
         kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key.integer_id())
         kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key.integer_id())
         return (render_str("emails/datarev.html", **kw), render_str("emails/datarev.txt", **kw))
