@@ -184,7 +184,7 @@ class SettingsPage(GenericPage):
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
-            user.profile_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(user.email.strip().lower()).hexdigest()
+            user.profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(user.email.strip().lower()).hexdigest()
             self.log_and_put(user, "Updating settings.")
             kw["info"] = "Changes saved"
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
@@ -213,7 +213,7 @@ class VerifyEmailPage(GenericPage):
                                        email = u.email,
                                        about_me = '',
                                        my_projects = [],
-                                       profile_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(u.email.strip().lower()).hexdigest())
+                                       profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(u.email.strip().lower()).hexdigest())
             self.log_and_put(new_user)
             self.log_and_delete(u)
             self.set_cookie("username", new_user.username, new_user.salt, max_age = LOGIN_COOKIE_MAXAGE)

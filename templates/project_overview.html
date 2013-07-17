@@ -13,7 +13,7 @@
   <h3>Authors:</h3>
   <div class="authors-list">
   {% for a in authors %}
-    <div class="p-author"><a href="/{{a.username}}">{{a.username.capitalize()}}</a></div>
+    <div class="p-author"><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}"/> {{a.username.capitalize()}}</a></div>
   {% endfor %}
 
 </div>

@@ -10,7 +10,7 @@
 
 <div class="u-info">
   <div class="u-name">{{page_user.username.capitalize()}}</div>
-  <img src="{{page_user.get_profile_url(120)}}">
+  <img src="{{page_user.get_profile_image(120)}}">
   <div class="u-about">{% if page_user.about_me %}{{page_user.about_me.replace("\n", "<br/>") | safe}}{% endif %}</div>
   {% if self_user_p %}<div class="u-settings"><a href="/settings">Account settings</a></div>{% endif %}
 </div>

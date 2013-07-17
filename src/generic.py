@@ -72,7 +72,7 @@ class RegisteredUsers(ndb.Model):
     email = ndb.StringProperty(required = False)
     about_me = ndb.TextProperty(required = False)
     my_projects = ndb.KeyProperty(repeated = True)                   # keys to Projects (defined in projects.py)
-    profile_url = ndb.StringProperty(required = False, default="https://secure.gravatar.com/avatar/00000000000000000000000000000000")
+    profile_image_url = ndb.StringProperty(required = False)
 
     def list_of_projects(self):
         projects_list = []
@@ -87,9 +87,13 @@ class RegisteredUsers(ndb.Model):
             projects_list.sort(key=lambda p: p.last_updated, reverse=True)
         return projects_list
 
-    def get_profile_url(self, size = 0):
+    def get_profile_image(self, size = 0):
         assert type(size) == int
-        url = self.profile_url
+        if not self.profile_image_url:
+            self.profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(self.email.strip().lower()).hexdigest()
+            if DEBUG: logging.debug("DB WRITE: Updating a user's profile_image_url attribute")
+            self.put()
+        url = self.profile_image_url
         if size > 0: url += "?s=" + str(size)
         return url
 
