@@ -1,0 +1,36 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/biblio_new.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+{% endblock %}
+
+
+{% block p_content %}
+ 
+<h2>Bibliography</h2>
+<h3>Add new</h3>
+
+<form method="post">
+  <table>
+    <tr>
+      <td>
+	DOI:
+      </td>
+      <td>
+	<input type="text" name="doi" value="{{doi}}" placeholder="Enter the DOI of the article" autofocus 
+	       {% if disabled_p %}disabled{% endif %}>
+      </td>
+    </tr>
+  </table>
+  
+  <input type="submit" value="Search" class="button1">
+</form>
+
+<div class="error">{{error_message}}</div>
+
+{% endblock %}
