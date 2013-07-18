@@ -1,0 +1,18 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/biblio_main.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+{% endblock %}
+
+
+{% block p_content %}
+ 
+<div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New item</a></div>
+<h2>Bibliography</h2>
+
+{% endblock %}
