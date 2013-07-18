@@ -16,8 +16,14 @@
 <h2>Bibliography</h2>
 
 {% for i in items %}
-  <div class="item-wrapper">
-    <a class="title" href="{{i.link}}">{{i.title}}</a>
+  <div class="item">
+    <a class="title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">{{i.title}}</a>
+    <div class="metadata">
+      {% for a in i.metadata["authors"] %}
+      <span class="author">{{a[1]}}, {{a[0]}}</span>
+      {% endfor %}
+      <span class="year">({{i.metadata["year"]}})</span>
+    </div>
   </div>
 {% endfor %}
 

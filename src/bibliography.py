@@ -43,7 +43,7 @@ class BiblioItems(ndb.Model):
     metadata = ndb.JsonProperty(required = True)
 
 # Each BiblioComment should have a BiblioItem as parent
-class BiblioComment(ndb.Model):
+class BiblioComments(ndb.Model):
     content = ndb.TextProperty(required = True)
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
@@ -59,6 +59,17 @@ class BiblioPage(projects.ProjectPage):
             self.log_read(BiblioItems, log_message)
             items.append(i)
         return items
+
+    def get_item(self, project, itemid, log_message = ''):
+        self.log_read(BiblioItems, log_message)
+        return BiblioItems.get_by_id(int(itemid), parent = project.key)
+
+    def get_comments_list(self, bibitem, log_message = ''):
+        comments = []
+        for c in BiblioComments.query(ancestor = bibitem.key).order(-BiblioComments.date).iter():
+            self.log_read(BiblioComments, log_message)
+            comments.append(c)
+        return comments
 
 
 class MainPage(BiblioPage):
@@ -139,3 +150,59 @@ class NewItemPage(BiblioPage):
                 self.log_and_put(new_item)
                 self.log_and_put(project, "Updating last_updated property. ")
                 self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))
+
+
+class ItemPage(BiblioPage):
+    def get(self, projectid, itemid):
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = "Project with key <em>%s</em> not found. " % projectid)
+            return
+        item = self.get_item(project, itemid)
+        if not item:
+            self.error(404)
+            self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
+            return
+        user = self.get_login_user()
+        self.render("biblio_item.html", project = project, item = item, 
+                    disabled_p = not (user and  project.user_is_author(user)),
+                    comments = self.get_comments_list(item))
+
+    def post(self, projectid, itemid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=" + "/" + projectid + "/bibliography/" + itemid)
+            return
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = "Project with key <em>%s</em> not found. " % projectid)
+            return
+        item = self.get_item(project, itemid)
+        if not item:
+            self.error(404)
+            self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
+            return
+        have_error = False
+        error_message = ''
+        if not project.user_is_author(user):
+            have_error = True
+            error_message = "You are not a member of this project. "
+        comment = self.request.get("comment").strip()
+        if not comment:
+            have_error = True
+            error_message = "You can not make an empty comment."
+        if have_error:
+            self.render("biblio_item.html", project = project, item = item,
+                        disabled_p = not (user and project.user_is_author(user)),
+                        comment = self.get_comments_list(item),
+                        error_message = error_message)
+        else:
+            new_comment = BiblioComments(author = user.key,
+                                         content = comment,
+                                         parent = item.key)
+            self.log_and_put(new_comment)
+            self.log_and_put(item, "Updating last_updated property. ")
+            self.log_and_put(project, "Updating last_updated property. ")
+            self.redirect("/%s/bibliography/%s" % (projectid, itemid))

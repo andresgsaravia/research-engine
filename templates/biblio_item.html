@@ -1,0 +1,64 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/biblio_item.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript" src="/js/showdown.js"></script>
+  <script type="text/javascript" src="/js/preview.js"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+        TeX: {equationNumbers: {autoNumber: "AMS"} }
+    });
+  </script>
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+/  <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title[:20]}}...</a> 
+{% endblock %}
+
+
+{% block p_content %}
+ 
+<h2>{{item.title}}</h2>
+
+<div class="item-info">
+  <span class="item-last-updated">{{item.last_updated.strftime("%d-%b-%Y")}}</span>
+
+  {% if item.kind == "article" %}
+  <p>Year of publication: {{item.metadata["year"]}}</p>
+  <p>Journal: {{item.metadata["journal"]}}</p>
+  <p>Authors: {% for a in item.metadata["authors"] %}
+    <span class="item-author">{{a[1]}}, {{a[0]}}</span>{% endfor %}</p>
+  <p>DOI: <a href="http://dx.doi.org/{{item.identifier}}">{{item.identifier}} (link to source)</a></p>
+  {% endif %}
+</div>
+
+<h3>Comments</h3>
+
+<div class="comments">
+  {% for c in comments %}
+  <div class="comment">
+    <div class="comment-title">
+      <span class="comment-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a></span>
+      <span class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</span>
+    </div>
+    <div class="comment-content">{{c.content | md | safe}}</div>
+  </div>
+  {% endfor %}
+</div>
+    
+<form method="post">
+  <textarea name="comment" id="inputText" 
+	    placeholder="What do you think about this {% if item.kind=='article' %}article{% endif %}?"
+	    {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
+  <div class="help"><p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help
+  <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %} />
+  <div class="error">{{error_message}}</div>
+</form>
+  <input type="button" class="button1" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
+  <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
+{% endblock %}
