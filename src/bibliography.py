@@ -17,8 +17,14 @@ def parse_xml(dom, kind):
         res["year"] = dom.getElementsByTagName("journal_issue")[0].getElementsByTagName("year")[0].childNodes[0].nodeValue
         res["authors"] = []
         for a in dom.getElementsByTagName("journal_article")[0].getElementsByTagName("contributors")[0].getElementsByTagName("person_name"):
-            given_name = a.getElementsByTagName("given_name")[0].childNodes[0].nodeValue
-            surname = a.getElementsByTagName("surname")[0].childNodes[0].nodeValue
+            try:
+                given_name = a.getElementsByTagName("given_name")[0].childNodes[0].nodeValue
+            except IndexError:
+                given_name = ''
+            try:
+                surname = a.getElementsByTagName("surname")[0].childNodes[0].nodeValue
+            except IndexError:
+                surname = ''
             res["authors"].append([given_name, surname])
     return res
 
@@ -47,7 +53,12 @@ class BiblioComment(ndb.Model):
 ######################
 
 class BiblioPage(projects.ProjectPage):
-    pass
+    def get_BiblioItems_list(self, project, log_message = ''):
+        items = []
+        for i in BiblioItems.query(ancestor = project.key).order(-BiblioItems.last_updated).iter():
+            self.log_read(BiblioItems, log_message)
+            items.append(i)
+        return items
 
 
 class MainPage(BiblioPage):
@@ -57,7 +68,7 @@ class MainPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found." % projectid)
             return
-        self.render("biblio_main.html", project = project)
+        self.render("biblio_main.html", project = project, items = self.get_BiblioItems_list(project))
 
 
 class NewItemPage(BiblioPage):
@@ -123,7 +134,8 @@ class NewItemPage(BiblioPage):
                                        link = "http://dx.doi.org/%s" % doi,
                                        kind = "article",
                                        identifier = doi,
-                                       metadata = metadata)
+                                       metadata = metadata,
+                                       parent = project.key)
                 self.log_and_put(new_item)
                 self.log_and_put(project, "Updating last_updated property. ")
                 self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))

@@ -15,4 +15,10 @@
 <div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New item</a></div>
 <h2>Bibliography</h2>
 
+{% for i in items %}
+  <div class="item-wrapper">
+    <a class="title" href="{{i.link}}">{{i.title}}</a>
+  </div>
+{% endfor %}
+
 {% endblock %}

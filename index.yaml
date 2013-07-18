@@ -10,6 +10,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: BiblioItems
+  ancestor: yes
+  properties:
+  - name: last_updated
+    direction: desc
+
 - kind: CodeComments
   ancestor: yes
   properties:
