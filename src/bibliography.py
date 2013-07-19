@@ -7,10 +7,36 @@ import urllib2
 from xml.dom import minidom
 
 CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=" + ADMIN_EMAIL + "&format=unixsd&id="
+ARXIV_QUERY_URL = "http://export.arxiv.org/api/query?id_list="
+
+def get_dom(identifier, kind):
+    error_message = ''
+    page = False
+    if kind == "article":
+        query_url = CROSSREF_QUERY_URL + urllib2.quote(identifier, '')
+    elif kind == "arXiv":
+        query_url = ARXIV_QUERY_URL + identifier
+    else:
+        return
+    # Fetch the page
+    try: 
+        page = urllib2.urlopen(query_url)
+    except urllib2.URLError, e:
+        error_message = e
+    except:
+        error_message = "There was an unexpected error while fetching the metadata. "
+    # Parse the XML with minidom
+    if page:
+        try:
+            dom = minidom.parse(page)
+        except:
+            error_message = "There was an error parsing the metadata results. "
+    return dom, error_message
 
 def parse_xml(dom, kind):
     "Returns a dict with the appropiate metadata extracted from the input dom."
     res = {}
+    # Published article retrieved by DOI using CrossRef
     if kind == "article":
         res["title"] = dom.getElementsByTagName("journal_article")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
         res["journal"] = dom.getElementsByTagName("journal_metadata")[0].getElementsByTagName("full_title")[0].childNodes[0].nodeValue
@@ -26,6 +52,10 @@ def parse_xml(dom, kind):
             except IndexError:
                 surname = ''
             res["authors"].append([given_name, surname])
+
+    # arXiv preprint retrived by its ID using the arXiv's API
+    elif kind == "arXiv":
+        pass
     return res
 
 def make_link(identifier, kind):
@@ -128,27 +158,16 @@ class NewItemPage(BiblioPage):
             if previous:
                 have_error = True
                 error_message = "That item has been already added."
-            # Query for the metadata
-            # If it's a published article
-            if kind == "article":
-                query_url = CROSSREF_QUERY_URL + urllib2.quote(identifier, '')
-                try:
-                    result = urllib2.urlopen(query_url)
-                except urllib2.URLError, e:
+            else:
+                item_dom, error_message = get_dom(identifier, kind)
+                if error_message: 
                     have_error = True
-                    error_message = e
-                try:
-                    result_dom = minidom.parse(result)
-                except:
-                    have_error = True
-                    error_message = "There was an error parsing the response metadata."
-            elif kind == "arXiv":
-                pass
+                else:
+                    metadata = parse_xml(item_dom, kind)
             # Add to the library
             if have_error:
                 self.render("biblio_new.html", project = project, error_message = error_message, doi = doi)
             else:
-                metadata = parse_xml(result_dom, kind)
                 new_item = BiblioItems(title = metadata["title"],
                                        link = make_link(identifier, kind),
                                        kind = "article",
