@@ -39,8 +39,8 @@ def parse_xml(dom, kind):
     # Published article retrieved by DOI using CrossRef
     if kind == "article":
         res["title"] = dom.getElementsByTagName("journal_article")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-        res["journal"] = dom.getElementsByTagName("journal_metadata")[0].getElementsByTagName("full_title")[0].childNodes[0].nodeValue
-        res["year"] = dom.getElementsByTagName("journal_issue")[0].getElementsByTagName("year")[0].childNodes[0].nodeValue
+        res["publication"] = dom.getElementsByTagName("journal_metadata")[0].getElementsByTagName("full_title")[0].childNodes[0].nodeValue
+        res["date"] = dom.getElementsByTagName("journal_issue")[0].getElementsByTagName("year")[0].childNodes[0].nodeValue
         res["authors"] = []
         for a in dom.getElementsByTagName("journal_article")[0].getElementsByTagName("contributors")[0].getElementsByTagName("person_name"):
             try:
@@ -51,16 +51,22 @@ def parse_xml(dom, kind):
                 surname = a.getElementsByTagName("surname")[0].childNodes[0].nodeValue
             except IndexError:
                 surname = ''
-            res["authors"].append([given_name, surname])
-
+            res["authors"].append(given_name + " " + surname)
     # arXiv preprint retrived by its ID using the arXiv's API
     elif kind == "arXiv":
-        pass
+        res["publication"] = "arXiv"
+        res["title"] = dom.getElementsByTagName("entry")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+        res["date"]  = dom.getElementsByTagName("entry")[0].getElementsByTagName("published")[0].childNodes[0].nodeValue
+        res["authors"] = []
+        for a in dom.getElementsByTagName("entry")[0].getElementsByTagName("author"):
+            res["authors"].append(a.getElementsByTagName("name")[0].childNodes[0].nodeValue)
     return res
 
 def make_link(identifier, kind):
     if kind == "article":
-        return "http://dx.doi.org/%s" % identifier
+        return "http://dx.doi.org/" + identifier
+    elif kind == "arXiv":
+        return "http://arxiv.org/abs/" + identifier
 
 ###########################
 ##   Datastore Objects   ##

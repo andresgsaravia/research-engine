@@ -29,9 +29,9 @@
 
   {% if item.kind == "article" %}
   <p>Year of publication: {{item.metadata["year"]}}</p>
-  <p>Journal: {{item.metadata["journal"]}}</p>
+  <p>Journal: {{item.metadata["publication"]}}</p>
   <p>Authors: {% for a in item.metadata["authors"] %}
-    <span class="item-author">{{a[1]}}, {{a[0]}}</span>{% endfor %}</p>
+    <span class="item-author">{{a}}</span>{% endfor %}</p>
   <p>DOI: <a href="http://dx.doi.org/{{item.identifier}}">{{item.identifier}} (link to source)</a></p>
   {% endif %}
 </div>
