@@ -15,6 +15,7 @@
 <div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New entry</a></div>
 <h2>Bibliography</h2>
 
+<div class="items-wrapper">
 {% for i in items %}
   <div class="item">
     <a class="title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">{{i.title}}</a>
@@ -26,5 +27,6 @@
     </div>
   </div>
 {% endfor %}
+</div>
 
 {% endblock %}

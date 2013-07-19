@@ -21,10 +21,8 @@
 
 
 {% block p_content %}
- 
-<h2>{{item.title}}</h2>
-
 <div class="item-info">
+  <h2>{{item.title}}</h2>
   <span class="item-last-updated">{{item.last_updated.strftime("%d-%b-%Y")}}</span>
 
   {% if item.kind == "article" %}
@@ -36,13 +34,13 @@
   {% endif %}
 </div>
 
-<h3>Comments</h3>
+<h3>Comments:</h3>
 
 <div class="comments">
   {% for c in comments %}
   <div class="comment">
     <div class="comment-title">
-      <span class="comment-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a></span>
+      <span class="comment-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a> wrote:</span>
       <span class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</span>
     </div>
     <div class="comment-content">{{c.content | md | safe}}</div>
@@ -59,6 +57,6 @@
   <div class="error">{{error_message}}</div>
 </form>
   <input type="button" class="button1" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
-  <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div class="preview-subtitle">Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
   <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
 {% endblock %}

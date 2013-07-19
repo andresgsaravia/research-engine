@@ -3,3 +3,55 @@
 .bibliography-tab {
     background: white;
 }
+
+.item-info {
+    padding: 0.5em;
+    box-shadow: 0em 0.1em 0.3em #C0C0C0;
+}
+
+.comment {
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0.8em;
+    border: 1px solid #C0C0C0;
+}
+
+.comment-title {
+    background: #F5F5F5;
+    padding: 1em;
+}
+
+.comment-date {
+    float: right;
+    color: #555555;
+}
+
+.comment-content {
+    padding-left: 1em;
+    padding-right: 1em;
+    text-align: justify;
+}
+
+.preview-subtitle {
+    color: gray;
+    font-size: 0.8em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+#inputText {
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-right: 1em;
+    width: 96%;
+    height: 20em;
+    padding: 0.5em;
+}
+
+#previewArea {
+    width: 95%;
+    min-height: 8em;
+    background: #FCFCFC;
+    border: 1px solid #C0C0C0;
+    padding: 0.5em;
+}
