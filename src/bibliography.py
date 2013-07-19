@@ -189,7 +189,7 @@ class NewItemPage(BiblioPage):
         else:
             new_item = BiblioItems(title = metadata["title"],
                                    link = make_link(identifier, kind),
-                                   kind = "article",
+                                   kind = kind,
                                    identifier = identifier,
                                    metadata = metadata,
                                    parent = project.key)
