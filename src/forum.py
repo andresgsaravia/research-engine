@@ -87,7 +87,7 @@ class NewThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        visitor_p = False if project.user_is_author(user) else True
+        visitor_p = not project.user_is_author(user)
         kw = {"title" : "New forum thread",
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
@@ -96,7 +96,7 @@ class NewThreadPage(ForumPage):
               "more_head" : "<style>.forum-tab {background: white;}</style>",
               "markdown_p" : True,
               "title_bar_extra" : '/ <a href="/%s/forum">Forum</a>' % projectid,
-              "disabled_p" : True if visitor_p else False,
+              "disabled_p" : visitor_p,
               "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
@@ -115,7 +115,7 @@ class NewThreadPage(ForumPage):
         error_message = ''
         t_title = self.request.get("name")
         t_content = self.request.get("content")
-        visitor_p = False if project.user_is_author(user) else False
+        visitor_p = not project.user_is_author(user)
         if visitor_p:
             have_error = True
             error_message = "You are not an author for this project. "
@@ -202,8 +202,8 @@ class ThreadPage(ForumPage):
                                    author = user,
                                    users_to_notify = project.forum_posts_notifications_list,
                                    html = html, txt = txt)
-            self.log_and_put(thread, "Updating it's last_updated property. ")
-            self.log_and_put(project, "Updating it's last_updated property. ")
+            self.log_and_put(thread, "Updating last_updated property. ")
+            self.log_and_put(project, "Updating last_updated property. ")
             comment = ''
         comments = self.get_comments(thread)
         self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p,

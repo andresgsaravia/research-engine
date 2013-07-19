@@ -321,7 +321,7 @@ class NotePage(NotebookPage):
             return
         have_error = False
         error_message = ''
-        visitor_p = True if not project.user_is_author(user) else False
+        visitor_p = not project.user_is_author(user)
         if visitor_p:
             have_error = True
             error_message = "You are not an author in this project."

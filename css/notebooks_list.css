@@ -29,7 +29,7 @@ h2 {
 
 .n-name a:hover {
     text-decoration: none;
-    background-color: DDE8EB;
+    background-color: #DDE8EB;
     background-image: linear-gradient(#FCFCF8, #F1EEB9);
     background-image: -webkit-linear-gradient(#FCFCF8, #F1EEB9);
     background-repeat: repeat-x;
