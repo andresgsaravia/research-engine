@@ -138,7 +138,7 @@ class NewItemPage(BiblioPage):
     def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = "/" + projectid + "/bibliographt/new_item"
+            goback = "/" + projectid + "/bibliography/new_item"
             self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
