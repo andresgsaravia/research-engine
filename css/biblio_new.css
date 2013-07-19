@@ -3,3 +3,15 @@
 .bibliography-tab {
     background: white;
 }
+
+input[type=text] {
+    min-width: 20em;
+}
+
+input[type=submit] {
+    margin-top: 1em;
+}
+
+.error {
+    margin-top: 0.5em;
+}

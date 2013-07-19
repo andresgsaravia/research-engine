@@ -30,22 +30,14 @@
 <h3>Add new</h3>
 
 <form method="post">
-  <table>
-    <tr>
-      <td>
-	<select name="kind" id="selectBox" onChange="changeIdName();">
-	  <option value="article">Published article</option>
-	  <option value="arXiv" {% if kind=="arXiv" %}selected{% endif %}>arXiv preprint</option>
-	</select>
-      </td>
-      <td>
-	<input type="text" name="identifier" value="{{identifier}}" id="inputId"
-	       placeholder="Enter the DOI of the article" autofocus 
-	       {% if disabled_p %}disabled{% endif %}>
-      </td>
-    </tr>
-  </table>
-  
+  <select name="kind" id="selectBox" onChange="changeIdName();">
+    <option value="article">Published article</option>
+    <option value="arXiv" {% if kind=="arXiv" %}selected{% endif %}>arXiv preprint</option>
+  </select>
+  <input type="text" name="identifier" value="{{identifier}}" id="inputId"
+	 placeholder="Enter the DOI of the article" autofocus 
+	 {% if disabled_p %}disabled{% endif %}>
+
   <input type="submit" value="Search and add" class="button1">
 </form>
 
