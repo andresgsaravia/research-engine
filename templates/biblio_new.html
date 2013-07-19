@@ -2,6 +2,20 @@
 
 {% block p_head %}
   <link href="/css/biblio_new.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    var changeIdName = function () {
+      var selectBox = document.getElementById("selectBox");
+      var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+      var d = document.getElementById("inputId");
+      if (selectedValue === "article") {
+        d.placeholder = "Enter the DOI of the article";
+      } else if (selectedValue === "arXiv") {
+        d.placeholder = "Enter the arXiv id of the preprint";
+      } else {
+        d.placeholder = "";
+      }
+    };
+  </script>
 {% endblock %}
 
 
@@ -19,10 +33,14 @@
   <table>
     <tr>
       <td>
-	DOI:
+	<select name="kind" id="selectBox" onChange="changeIdName();">
+	  <option value="article">Published article</option>
+	  <option value="arXiv">arXiv preprint</option>
+	</select>
       </td>
       <td>
-	<input type="text" name="doi" value="{{doi}}" placeholder="Enter the DOI of the article" autofocus 
+	<input type="text" name="identifier" value="{{identifier}}" id="inputId"
+	       placeholder="Enter the DOI of the article" autofocus 
 	       {% if disabled_p %}disabled{% endif %}>
       </td>
     </tr>

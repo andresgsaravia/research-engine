@@ -28,6 +28,10 @@ def parse_xml(dom, kind):
             res["authors"].append([given_name, surname])
     return res
 
+def make_link(identifier, kind):
+    if kind == "article":
+        return "http://dx.doi.org/%s" % identifier
+
 ###########################
 ##   Datastore Objects   ##
 ###########################
@@ -110,41 +114,45 @@ class NewItemPage(BiblioPage):
             return
         have_error = False
         visitor_p = not project.user_is_author(user)
-        doi = self.request.get("doi").strip()
+        identifier = self.request.get("identifier").strip()
+        kind = self.request.get("kind")
         error_message = ''
         if visitor_p:
             have_error = True
             error_message = 'You are not a member of this project.'
-        elif not doi:
+        elif not identifier:
             have_error = True
-            error_message = "Please provide a valid DOI."
         else:
             # Check if already present
-            previous = BiblioItems.query(BiblioItems.kind == "article", BiblioItems.identifier == doi).get()
+            previous = BiblioItems.query(BiblioItems.kind == kind, BiblioItems.identifier == identifier).get()
             if previous:
                 have_error = True
                 error_message = "That item has been already added."
             # Query for the metadata
-            query_url = CROSSREF_QUERY_URL + urllib2.quote(doi, '')
-            try:
-                result = urllib2.urlopen(query_url)
-            except urllib2.URLError, e:
-                have_error = True
-                error_message = e
-            try:
-                result_dom = minidom.parse(result)
-            except:
-                have_error = True
-                error_message = "There was an error parsing the response metadata."
+            # If it's a published article
+            if kind == "article":
+                query_url = CROSSREF_QUERY_URL + urllib2.quote(identifier, '')
+                try:
+                    result = urllib2.urlopen(query_url)
+                except urllib2.URLError, e:
+                    have_error = True
+                    error_message = e
+                try:
+                    result_dom = minidom.parse(result)
+                except:
+                    have_error = True
+                    error_message = "There was an error parsing the response metadata."
+            elif kind == "arXiv":
+                pass
             # Add to the library
             if have_error:
                 self.render("biblio_new.html", project = project, error_message = error_message, doi = doi)
             else:
-                metadata = parse_xml(result_dom, "article")
+                metadata = parse_xml(result_dom, kind)
                 new_item = BiblioItems(title = metadata["title"],
-                                       link = "http://dx.doi.org/%s" % doi,
+                                       link = make_link(identifier, kind),
                                        kind = "article",
-                                       identifier = doi,
+                                       identifier = identifier,
                                        metadata = metadata,
                                        parent = project.key)
                 self.log_and_put(new_item)
