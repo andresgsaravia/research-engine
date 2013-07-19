@@ -12,6 +12,7 @@ ARXIV_QUERY_URL = "http://export.arxiv.org/api/query?id_list="
 def get_dom(identifier, kind):
     error_message = ''
     page = False
+    dom = False
     if kind == "article":
         query_url = CROSSREF_QUERY_URL + urllib2.quote(identifier, '')
     elif kind == "arXiv":
@@ -26,12 +27,22 @@ def get_dom(identifier, kind):
     except:
         error_message = "There was an unexpected error while fetching the metadata. "
     # Parse the XML with minidom
-    if page:
+    if page and not error_message:
         try:
             dom = minidom.parse(page)
         except:
             error_message = "There was an error parsing the metadata results. "
+    # Check if the query resolved correctly
+    if not error_message:
+        if kind == "article":
+            status = dom.getElementsByTagName("query")[0].getAttribute("status")
+            if status != "resolved":
+                error_message = "DOI not found on CrossRef. "
+        elif kind == "arXiv":
+            if len(dom.getElementsByTagName("entry")[0].getElementsByTagName("title")) == 0:
+                error_message = "Entry not found on arXiv."
     return dom, error_message
+
 
 def parse_xml(dom, kind):
     "Returns a dict with the appropiate metadata extracted from the input dom."
@@ -61,6 +72,7 @@ def parse_xml(dom, kind):
         for a in dom.getElementsByTagName("entry")[0].getElementsByTagName("author"):
             res["authors"].append(a.getElementsByTagName("name")[0].childNodes[0].nodeValue)
     return res
+
 
 def make_link(identifier, kind):
     if kind == "article":
@@ -158,6 +170,7 @@ class NewItemPage(BiblioPage):
             error_message = 'You are not a member of this project.'
         elif not identifier:
             have_error = True
+            error_message = "Please write an appropiate value on the seach field. "
         else:
             # Check if already present
             previous = BiblioItems.query(BiblioItems.kind == kind, BiblioItems.identifier == identifier).get()
@@ -170,19 +183,19 @@ class NewItemPage(BiblioPage):
                     have_error = True
                 else:
                     metadata = parse_xml(item_dom, kind)
-            # Add to the library
-            if have_error:
-                self.render("biblio_new.html", project = project, error_message = error_message, doi = doi)
-            else:
-                new_item = BiblioItems(title = metadata["title"],
-                                       link = make_link(identifier, kind),
-                                       kind = "article",
-                                       identifier = identifier,
-                                       metadata = metadata,
-                                       parent = project.key)
-                self.log_and_put(new_item)
-                self.log_and_put(project, "Updating last_updated property. ")
-                self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))
+        # Add to the library
+        if have_error:
+            self.render("biblio_new.html", project = project, error_message = error_message, identifier = identifier, kind = kind)
+        else:
+            new_item = BiblioItems(title = metadata["title"],
+                                   link = make_link(identifier, kind),
+                                   kind = "article",
+                                   identifier = identifier,
+                                   metadata = metadata,
+                                   parent = project.key)
+            self.log_and_put(new_item)
+            self.log_and_put(project, "Updating last_updated property. ")
+            self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))
 
 
 class ItemPage(BiblioPage):

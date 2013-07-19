@@ -35,7 +35,7 @@
       <td>
 	<select name="kind" id="selectBox" onChange="changeIdName();">
 	  <option value="article">Published article</option>
-	  <option value="arXiv">arXiv preprint</option>
+	  <option value="arXiv" {% if kind=="arXiv" %}selected{% endif %}>arXiv preprint</option>
 	</select>
       </td>
       <td>
@@ -46,7 +46,7 @@
     </tr>
   </table>
   
-  <input type="submit" value="Search" class="button1">
+  <input type="submit" value="Search and add" class="button1">
 </form>
 
 <div class="error">{{error_message}}</div>
