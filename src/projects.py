@@ -5,7 +5,7 @@ from generic import *
 import email_messages
 
 SHORT_DESCRIPTION_LENGTH = 150
-UPDATES_TO_DISPLAY = 15           # number of updates to display in the Overview tab
+UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview tab
 
 ###########################
 ##   Datastore Objects   ##
@@ -88,6 +88,15 @@ class ProjectUpdates(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     item = ndb.KeyProperty(required = True)
+    description_html = ndb.TextProperty(required = False, default = None)
+
+    def get_description_html(self, project):
+        if self.description_html:
+            return self.description_html
+        else:
+            self.description_html = render_str("project_update.html", item = self.item.get(), author = self.author.get(), project = project)
+            self.put()
+            return self.description_html
 
 
 ######################
