@@ -35,7 +35,8 @@ h3 {
     margin-top: 1em;
 }
 
-.p-latest-activity .p-updated {
+.p-updated {
+    float:right;
     font-size: 0.8em;
     color: #888888;
     margin-left: 3em;
@@ -44,4 +45,43 @@ h3 {
 .p-latest-activity .p-updates {
     margin-top: 1em;
     margin-left: 2em;
+}
+
+.updates {
+    border: 1px solid #C0C0C0;
+}
+
+.update {
+    overflow: auto;
+    padding-right: 1em;
+}
+
+.update + .update {
+    border-top: 1px solid #C0C0C0;
+}
+
+.update-date {
+    color: #808080;
+    font-style: italic;
+    font-size: 0.8em;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+.update-extra-info {
+    float: left;
+    margin-top: 1em;
+    width: 5em;
+    padding-right: 1em;
+}
+
+.update-extra-info img {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 0.2em;
+}
+
+.update-description {
+    padding-top: 1em;
 }

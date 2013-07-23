@@ -1,5 +1,7 @@
-<span class="update-author"><a href="/{{author.username}}"><img src="{{author.get_profile_image(30)}}" />{{author.username.capitalize()}}</a></span>
-<span class="update-description">
+<div class="update-extra-info"><a href="/{{author.username}}"><img src="{{author.get_profile_image(30)}}" /></a><span class="update-date">{{update.date.strftime("%d-%b-%Y (%H:%M)")}}</span></div>
+<div class="update-description">
+  <span class="update-author"><a href="/{{author.username}}">{{author.username.capitalize()}}</a></span>
+
   {% if item.__class__.__name__ == "Notebooks" %}
     started a new notebook: <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.integer_id()}}">{{item.name}}</a>
 
@@ -68,5 +70,6 @@
     <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
 
   {% endif %}
-</span>
+</div>
+
 

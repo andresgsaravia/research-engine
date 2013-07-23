@@ -19,12 +19,12 @@
 </div>
 
 <div class="p-latest-activity">
-  <div class="p-updated">Last updated: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
+  <div class="p-updated">Last update: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
   <h3>Latest activity</h3>
   <div class="updates">
     {% for u in updates %}
     <div class="update">
-      <span class="u-description">{{u.get_description_html(project) | safe}}</span> ({{u.item.get().__class__.__name__}})
+      {{u.get_description_html(project) | safe}}
     </div>
     {% endfor %}
   </div>

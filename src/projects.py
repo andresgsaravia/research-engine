@@ -91,12 +91,10 @@ class ProjectUpdates(ndb.Model):
     description_html = ndb.TextProperty(required = False, default = None)
 
     def get_description_html(self, project):
-        if self.description_html:
-            return self.description_html
-        else:
-            self.description_html = render_str("project_update.html", item = self.item.get(), author = self.author.get(), project = project)
+        if not self.description_html:
+            self.description_html = render_str("project_update.html", update = self, item = self.item.get(), author = self.author.get(), project = project)
             self.put()
-            return self.description_html
+        return self.description_html
 
 
 ######################
