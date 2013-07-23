@@ -141,13 +141,12 @@ class NewThreadPage(ForumPage):
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
-            self.log_and_put(new_thread)
+            project.put_and_notify(self, new_thread, user)
             html, txt = new_thread.notification_html_and_txt(user, project)
             self.add_notifications(category = new_thread.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.forum_threads_notifications_list,
                                    html = html, txt = txt)
-            self.log_and_put(project,  "Updating last_updated property. ")
             self.redirect("/%s/forum/%s" % (projectid, new_thread.key.integer_id()))
 
 
@@ -196,15 +195,15 @@ class ThreadPage(ForumPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
-            self.log_and_put(new_comment)
+            project.put_and_notify(self, new_comment, user)
             html, txt = new_comment.notification_html_and_txt(user, project, thread)
             self.add_notifications(category = new_comment.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.forum_posts_notifications_list,
                                    html = html, txt = txt)
             self.log_and_put(thread, "Updating last_updated property. ")
-            self.log_and_put(project, "Updating last_updated property. ")
-            comment = ''
-        comments = self.get_comments(thread)
-        self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p,
-                    comment = comment, error_message = error_message)
+            self.redirect("/%s/forum/%s" % (projectid, thread_id))
+        else:
+            comments = self.get_comments(thread)
+            self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p,
+                        comment = comment, error_message = error_message)

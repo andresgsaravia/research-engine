@@ -161,8 +161,7 @@ class NewNotebookPage(NotebookPage):
                                      name = n_name, 
                                      description = n_description, 
                                      parent  = project.key)
-            self.log_and_put(new_notebook)
-            self.log_and_put(project, "Updating last_updated property. ")
+            project.put_and_notify(self, new_notebook, user)
             self.redirect("/%s/notebooks/%s" % (project.key.integer_id(), new_notebook.key.id()))
 
 
@@ -259,14 +258,13 @@ class NewNotePage(NotebookPage):
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key)
-            self.log_and_put(new_note)
+            project.put_and_notify(self, new_note, user)
             html, txt = new_note.notification_html_and_txt(user, project, notebook)
             self.add_notifications(category = new_note.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.nb_notifications_list,
                                    html = html, txt = txt)
             self.log_and_put(notebook, "Updating last_updated property. ")
-            self.log_and_put(project,  "Updating last_updated property. ")
             self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, new_note.key.integer_id()))
 
 
@@ -331,14 +329,13 @@ class NotePage(NotebookPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
-            self.log_and_put(new_comment)
+            project.put_and_notify(self, new_comment, user)
             html, txt = new_comment.notification_html_and_txt(user, project, notebook, note)
             self.add_notifications(category = new_comment.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.nb_notifications_list,
                                    html = html, txt = txt)
             self.log_and_put(notebook, "Updating its last_updated property. ")
-            self.log_and_put(project, "Updating its last_updated property. ")
             comment = ''
         comments = self.get_comments_list(note)
         self.render("notebook_note.html", project = project, visitor_p = visitor_p,

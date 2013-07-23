@@ -157,8 +157,7 @@ class NewWritingPage(WritingPage):
                                                 description = w_description,
                                                 status = "In progress",
                                                 parent = project.key)
-            self.log_and_put(new_writing)
-            self.log_and_put(project, "Updating last_updated property. ")
+            project.put_and_notify(self, new_writing, user)
             self.redirect("/%s/writings/%s" % (project.key.integer_id(), new_writing.key.integer_id()))
 
 
@@ -243,16 +242,14 @@ class EditWritingPage(WritingPage):
                         content = content, status = status, summary = summary, error_message = error_message)
         else:
             new_revision = WritingRevisions(author = user.key, content = content, summary = summary, parent = writing.key)
-            link = "/%s/writings/%s" % (projectid, writing_id)
-            self.log_and_put(new_revision)
+            project.put_and_notify(self, new_revision, user)
             html, txt = new_revision.notification_html_and_txt(user, project, writing)
             self.add_notifications(category = new_revision.__class__.__name__,
                                    author = user, html = html, txt = txt,
                                    users_to_notify = project.writings_notifications_list)
             if status: writing.status = status
             self.log_and_put(writing, "Updating its last_updated and status property. ")
-            self.log_and_put(project, "Updating its last_updated property. ")
-            self.redirect(link)
+            self.redirect("/%s/writings/%s" % (projectid, writing_id))
 
 
 class HistoryWritingPage(WritingPage):
@@ -338,12 +335,14 @@ class DiscussionPage(WritingPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
-            self.log_and_put(new_comment, "New comment. ")
-            comment = ''
-        comments = self.get_comments(writing)
-        self.render("writings_discussion.html", project = project, disabled_p = visitor_p,
-                    writing = writing, comments = comments, comment = comment,
-                    error_message = error_message)
+            project.put_and_notify(self, new_comment, user)
+            self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
+            return
+        else:
+            comments = self.get_comments(writing)
+            self.render("writings_discussion.html", project = project, disabled_p = visitor_p,
+                        writing = writing, comments = comments, comment = comment,
+                        error_message = error_message)
 
 
 class InfoPage(WritingPage):

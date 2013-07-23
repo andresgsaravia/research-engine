@@ -5,6 +5,7 @@ from generic import *
 import email_messages
 
 SHORT_DESCRIPTION_LENGTH = 150
+UPDATES_TO_DISPLAY = 15           # number of updates to display in the Overview tab
 
 ###########################
 ##   Datastore Objects   ##
@@ -65,6 +66,30 @@ class Projects(ndb.Model):
         requesting_handler.log_and_put(user, "Adding a new project to my_projects property")
         return True
 
+    def put_and_notify(self, handler, instance, author):
+        handler.log_and_put(instance)
+        new_update = ProjectUpdates(author = author.key, item = instance.key, parent = self.key)
+        handler.log_and_put(new_update)
+        handler.log_and_put(self, "Updating its last_updated property")
+
+    def list_updates(self, requesting_handler, n = UPDATES_TO_DISPLAY):
+        updates = []
+        count = 0
+        assert type(n) == int
+        assert n > 0
+        for u in ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch(n):
+            requesting_handler.log_read(ProjectUpdates)
+            updates.append(u)
+        return updates
+
+
+# Should have a Project as parent
+class ProjectUpdates(ndb.Model):
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    item = ndb.KeyProperty(required = True)
+
+
 ######################
 ##   Web Handlers   ##
 ######################
@@ -90,7 +115,9 @@ class OverviewPage(ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        self.render("project_overview.html", project = project, authors = project.list_of_authors(self))
+        self.render("project_overview.html", project = project, 
+                    authors = project.list_of_authors(self),
+                    updates = project.list_updates(self, UPDATES_TO_DISPLAY))
 
 
 class NewProjectPage(GenericPage):

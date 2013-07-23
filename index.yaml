@@ -96,6 +96,12 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: ProjectUpdates
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
 - kind: WikiRevisions
   ancestor: yes
   properties:

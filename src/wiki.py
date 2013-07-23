@@ -140,13 +140,12 @@ class EditWikiPage(GenericWikiPage):
                 self.log_and_put(wikipage, "Changing content." )
             new_revision = WikiRevisions(author = user.key, content = content, summary = summary,
                                          parent = wikipage.key)
-            self.log_and_put(new_revision)
+            project.put_and_notify(self, new_revision, user)
             html, txt = new_revision.notification_html_and_txt(user, project, wikipage)
             self.add_notifications(category = new_revision.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.wiki_notifications_list,
                                    html = html, txt = txt)
-            self.log_and_put(project, "Updating its last_updated property. ")
             self.redirect("/%s/wiki/page/%s" % (projectid, wikiurl))
         else:
             self.render("wiki_edit.html", project = project, wikipage = wikipage, disabled_p = visitor_p,

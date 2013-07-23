@@ -160,13 +160,12 @@ class NewCodePage(CodePage):
             repo_json = json.loads(repo_fetch.content)
             new_repo = CodeRepositories(link = link, description = description, parent = project.key,
                                         name = repo_json["full_name"], github_json = repo_json)
-            self.log_and_put(new_repo)
+            project.put_and_notify(self, new_repo, user)
             html, txt = new_repo.notification_html_and_txt(user, project)
             self.add_notifications(category = new_repo.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.code_notifications_list,
                                    html = html, txt = txt)
-            self.log_and_put(project, "Updating last_updated property")
             self.redirect("/%s/code/%s" 
                           % (projectid, new_repo.key.integer_id()))
 
@@ -216,14 +215,13 @@ class ViewCodePage(CodePage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = CodeComments(author = user.key, comment = comment, parent = code.key)
-            self.log_and_put(new_comment)
+            project.put_and_notify(self, new_comment, user)
             html, txt = new_comment.notification_html_and_txt(user, project, code)
             self.add_notifications(category = new_comment.__class__.__name__,
                                    author = user,
                                    users_to_notify = project.code_notifications_list,
                                    html = html, txt = txt)
             self.log_and_put(code, "Updating it's last_updated property. ")
-            self.log_and_put(project, "Updating it's last_updated property. ")
             comment = ''
         comments = self.get_comments(code)
         self.render("code_view.html", project = project, code = code, comments = comments,

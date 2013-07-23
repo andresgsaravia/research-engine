@@ -164,8 +164,7 @@ class NewDataSetPage(DataPage):
             new_dataset = DataSets(name = d_name,
                                    description = d_description,
                                    parent  = project.key)
-            self.log_and_put(new_dataset)
-            self.log_and_put(project, "Updating last_updated property. ")
+            project.put_and_notify(self, new_dataset, user)
             self.redirect("/%s/datasets/%s" % (project.key.integer_id(), new_dataset.key.integer_id()))
 
 
@@ -349,8 +348,7 @@ class NewDataConceptPage(DataPage):
             new_dataconcept = DataConcepts(name = d_name, 
                                            description = d_description, 
                                            parent  = dataset.key)
-            self.log_and_put(new_dataconcept)
-            self.log_and_put(project, "Updating last_updated property. ")
+            project.put_and_notify(self, new_dataconcept, user)
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, new_dataconcept.key.integer_id()))
 
 
@@ -560,7 +558,7 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
             self.redirect("/%s/datasets/%s/%s/new?error_message=%s" % (projectid, dataset_id, datac_id, error_message))
         else:
             new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac.key)
-            self.log_and_put(new_revision)
+            project.put_and_notify(self, new_revision, user)
             html, txt = new_revision.notification_html_and_txt(user, project, dataset, datac)
             self.add_notifications(category = new_revision.__class__.__name__,
                                    author = user,
@@ -568,7 +566,6 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
                                    html = html, txt = txt)
             self.log_and_put(dataset, "Updating last_updated property. ")
             self.log_and_put(datac, "Updating last_updated property. ")
-            self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))
 
 

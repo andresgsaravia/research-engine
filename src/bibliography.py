@@ -193,8 +193,7 @@ class NewItemPage(BiblioPage):
                                    identifier = identifier,
                                    metadata = metadata,
                                    parent = project.key)
-            self.log_and_put(new_item)
-            self.log_and_put(project, "Updating last_updated property. ")
+            project.put_and_notify(self, new_item, user)
             self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))
 
 
@@ -248,7 +247,6 @@ class ItemPage(BiblioPage):
             new_comment = BiblioComments(author = user.key,
                                          content = comment,
                                          parent = item.key)
-            self.log_and_put(new_comment)
+            project.put_and_notify(self, new_comment, user)
             self.log_and_put(item, "Updating last_updated property. ")
-            self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/%s/bibliography/%s" % (projectid, itemid))
