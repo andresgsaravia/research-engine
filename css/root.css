@@ -1,5 +1,9 @@
 /* For the welcome page (i.e. the root page) */
 
+#logo {
+    height: 1em;
+}
+
 .site-title {
     font-size: 2em;
     text-align: center;

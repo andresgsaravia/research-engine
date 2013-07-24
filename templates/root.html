@@ -7,7 +7,8 @@
 
 
 {% block content %}
-<div class="site-title">Research Engine</div>
+
+<div class="site-title"><img id="logo" src="/static/logo.png" /> Research Engine</div>
 
 {% if user %}
 <p>You are logged in as {{user.username}}. If you are not {{user.username}} you can <a href="/logout">logout here.</a></p>
