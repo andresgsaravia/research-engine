@@ -42,7 +42,7 @@
     <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.parent().get().key.integer_id()}}">{{item.key.parent().get().key.parent().get().name}}</a>
 
   {% elif item.__class__.__name__ == "WikiRevisions" %}
-    made a new revision to the wiki page: <a href="/{{project.key.integer_id()}}/wiki/{{item.key.parent().get().url}}">{{item.key.parent().get().url.replace("_", " ")}}</a>
+    made a new revision to the wiki page: <a href="/{{project.key.integer_id()}}/wiki/page/{{item.key.parent().get().url}}">{{item.key.parent().get().url.replace("_", " ")}}</a>
 
   {% elif item.__class__.__name__ == "CollaborativeWritings" %}
     started a new collaborative writing: <a href="/{{project.key.integer_id()}}/writings/{{item.key.integer_id()}}">{{item.title}}</a>
