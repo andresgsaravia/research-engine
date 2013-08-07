@@ -73,14 +73,10 @@ class Projects(ndb.Model):
         handler.log_and_put(self, "Updating its last_updated property")
 
     def list_updates(self, requesting_handler, n = UPDATES_TO_DISPLAY):
-        updates = []
-        count = 0
         assert type(n) == int
         assert n > 0
-        for u in ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch(n):
-            requesting_handler.log_read(ProjectUpdates)
-            updates.append(u)
-        return updates
+        requesting_handler.log_read(ProjectUpdates, "Requesting %s updates. " % n)
+        return ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch_page(n)[0]
 
 
 # Should have a Project as parent
