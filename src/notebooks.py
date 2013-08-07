@@ -4,6 +4,7 @@
 from generic import *
 import projects
 
+NOTES_PER_PAGE = 5   # Number of notes displayed in a single page while viewing a notebook. Perhaps later this will be user-customizable.
 
 ###########################
 ##   Datastore Objects   ##
@@ -62,12 +63,10 @@ class NotebookPage(projects.ProjectPage):
         self.log_read(Notebooks, log_message)
         return Notebooks.get_by_id(int(nbid), parent = project.key)
 
-    def get_notes_list(self, notebook, log_message = ''):
-        notes = []
-        for n in NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).iter():
-            self.log_read(NotebookNotes, log_message)
-            notes.append(n)
-        return notes
+    def get_notes_list(self, notebook, page = 0, log_message = ''):
+        assert type(page) == int
+        self.log_read(NotebookNotes, "Fetching a page with %s results. %s" % (NOTES_PER_PAGE, log_message))
+        return NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).fetch_page(NOTES_PER_PAGE, offset = NOTES_PER_PAGE * page)
 
     def get_note(self, notebook, note_id, log_message = ''):
         self.log_read(NotebookNotes, log_message)
@@ -177,8 +176,14 @@ class NotebookMainPage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        notes = self.get_notes_list(notebook)
-        self.render("notebook_main.html", project = project, notebook = notebook, notes = notes)
+        page = self.request.get("page")
+        try:
+            page = int(page)
+        except ValueError:
+            page = 0
+        notes, next_page_cursor, more_p = self.get_notes_list(notebook, page)
+        self.render("notebook_main.html", project = project, notebook = notebook, 
+                    notes = notes, page = page, more_p = more_p)
 
 
 class NewNotePage(NotebookPage):

@@ -33,4 +33,11 @@
 </div>
 {% endfor %}
 
+{% if page>0 or more_p %}
+<div id="browse-pages-links">
+{% if page>0 %}<a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">Previous page</a>{% endif %}
+{% if more_p %}<a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">Next page</a>{% endif %}
+</div>
+{% endif %}
+
 {% endblock %}

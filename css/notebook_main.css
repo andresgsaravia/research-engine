@@ -5,9 +5,7 @@
 }
 
 .p-content {
-    padding-top: 0;
-    padding-left: 0;
-    padding-right: 0em;
+    padding: 0;
 }
 
 .nb-heading {
@@ -65,4 +63,18 @@
     padding-bottom: 2em;
     padding-left: 2em;
     padding-right: 2em;
+}
+
+#browse-pages-links {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    overflow: auto;
+    border-top: 2px solid #AAAAAA;
+    background: #F0F0F0;
+}
+
+#next-link {
+    float: right;
 }
