@@ -18,6 +18,9 @@ class Notebooks(ndb.Model):
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
+    def get_number_of_notes(self):
+        return NotebookNotes.query(ancestor = self.key).count()
+
 # Each note should be a child of a Notebook.
 class NotebookNotes(ndb.Model):
     title = ndb.StringProperty(required = True)
@@ -31,6 +34,7 @@ class NotebookNotes(ndb.Model):
         kw["notebook_absolute_link"] = kw["project_absolute_link"] + "/notebooks/" + str(notebook.key.integer_id())
         kw["note_absolute_link"] = kw["notebook_absolute_link"] + "/" + str(self.key.integer_id())
         return (render_str("emails/note.html", **kw), render_str("emails/note.txt", **kw))
+
 
 # Each comment should be a child of a NotebookNote
 class NoteComments(ndb.Model):

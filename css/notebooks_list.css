@@ -1,90 +1,65 @@
 /* Overview of proejcts inside the projects tab */
 
-h2 {
-    padding-left: 1.5em;
-    padding-top: 0.3em;
-}
 
 .notebooks-tab {
     background: white;
 }
 
-.n-wrapper {
-    margin-left: 2em;
-    margin-right: 2em;
+#n-wrapper {
     box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.n-name a {
-    display: block;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    padding-left: 1em;
-    padding-right: 1em;
-    background-color: #DDE8EB;
-    background-image: linear-gradient(#F8FBFC, #CFDEE2);
-    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
-    background-repeat: repeat-x;
-}
-
-.n-name a:hover {
-    text-decoration: none;
-    background-color: #DDE8EB;
-    background-image: linear-gradient(#FCFCF8, #F1EEB9);
-    background-image: -webkit-linear-gradient(#FCFCF8, #F1EEB9);
-    background-repeat: repeat-x;
-}
-
-.info-link {
-    position: relative;
+.n-description-link {
     float: right;
-    padding-top: 1em;
-    margin-right: 1em;
-    font-size: 0.8em;
+    font-size: 0.9em;
+    padding-top: 0.1em;
 }
 
-.info-link:focus + .n-name + .n-description {
-    opacity: 1;
-    height: auto;
-    overflow: auto;
+.notebook + .notebook {
+    border-top: 1px solid #C0C0C0;
 }
 
-.n-last-updated {
-    position: relative;
-    float: right;
-    padding-top: 0.5em;
-    padding-right: 0.2em;
-    padding-left: 0.2em;
-    margin-left: 0.5em;
-    font-size: 0.8em;
-    color: #888888;
-    box-shadow: 0 0.1em 0.3em #C0C0C0;
-    border-radius: 0 0 0.3em 0.3em;
-
+.n-head {
+    background: #CFDEE2;
+    padding: 0.3em;
 }
 
-.n-description {
-    height: 0;
-    opacity: 0;
+.n-head:hover {
+    background: #daebef;
+}
+
+.n-info {
     overflow: hidden;
+    max-height: 0;
     -o-transition: all 0.8s;
     -moz-transition: all 0.8s;
     -webkit-transition: all 0.8s;
 }
 
-.n-description p {
-    text-align: justify;
-    padding-left: 1em;
-    padding-right: 1em;
+.n-description {
+    padding: 0.6em;
+}
+
+.n-last-updated {
+    float: right;
+    color: #555555;
+    font-size: 0.8em;
+    margin: 0.5em;
 }
 
 .n-owner {
-    margin-left: 1em;
-    margin-top: 0.5em;
-    padding-bottom: 1em;
-    font-size: 0.9em;
+    font-style: italic;
+    padding-left: 1em;
+    padding-bottom: 0.2em;
 }
 
-.n-owner a {
-    color: black;
+.n-notes {
+    display: block;
+    float: left;
+    width: 4em;
+    font-size: 0.8em;
+}
+
+.n-notes::before {
+    content: url("/static/icons/16x16/page_white_text.png");
 }
