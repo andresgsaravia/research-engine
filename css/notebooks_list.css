@@ -12,7 +12,8 @@
 .n-description-link {
     float: right;
     font-size: 0.9em;
-    padding-top: 0.1em;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
 }
 
 .notebook + .notebook {
@@ -21,19 +22,27 @@
 
 .n-head {
     background: #CFDEE2;
+}
+
+.n-head:hover, .n-head:hover a {
+    background: #DAEBEF;
+}
+
+.n-title {
+    display: block;
     padding: 0.3em;
 }
 
-.n-head:hover {
-    background: #daebef;
+.n-title:hover {
+    text-decoration: none;
 }
 
 .n-info {
     overflow: hidden;
     max-height: 0;
-    -o-transition: all 0.8s;
-    -moz-transition: all 0.8s;
-    -webkit-transition: all 0.8s;
+    -o-transition-duration: 1s;
+    -moz-transition-duration: 1s;
+    -webkit-transition-duration: 1s;
 }
 
 .n-description {
@@ -44,7 +53,7 @@
     float: right;
     color: #555555;
     font-size: 0.8em;
-    margin: 0.5em;
+    padding: 0.5em;
 }
 
 .n-owner {
@@ -58,6 +67,7 @@
     float: left;
     width: 4em;
     font-size: 0.8em;
+    color: black;
 }
 
 .n-notes::before {
