@@ -2,6 +2,18 @@
 
 {% block p_head %}
   <link href="/css/biblio_main.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    var toggleVisibility = function (item) {
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('i-info')[0];
+      if (item.innerHTML.trim() == 'Show description') {
+        item.innerHTML = 'Hide description';
+        infoDiv.style.maxHeight = '20em';
+      } else {
+        item.innerHTML = 'Show description';
+        infoDiv.style.maxHeight = '0em';
+      }
+    };
+  </script>
 {% endblock %}
 
 
@@ -15,15 +27,24 @@
 <div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New entry</a></div>
 <h2>Bibliography</h2>
 
-<div class="items-wrapper">
+<div id="items-wrapper">
 {% for i in items %}
   <div class="item">
-    <a class="title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">{{i.title}}</a>
-    <div class="metadata">
-      {% for a in i.metadata["authors"] %}
-      <span class="author">{{a}}</span>
-      {% endfor %}
-      <span class="date">({{i.metadata["date"]}})</span>
+    <div class="i-head">
+      <a class="i-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="i-title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
+	<div class="i-comments" title="Number of comments on this item"> {{i.get_number_of_comments()}}</div>
+	{{i.title}}
+      </a>
+    </div>
+    <div class="i-info">
+      <div class="i-authors"> <em>Authors:</em>
+	{% for a in i.metadata["authors"] %}
+	<span class="i-author">{{a}}</span>
+	{% endfor %}
+      </div>
+      <div class="i-date"><em>Date of publication: </em>({{i.metadata["date"]}})</div>
+      <a class="i-link" href="{{i.link}}">Link to source</a>
     </div>
   </div>
 {% endfor %}

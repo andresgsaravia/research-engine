@@ -32,9 +32,7 @@
   {% for n in notebooks %}
   <div class="notebook">
     <div class="n-head">
-      <a class="n-description-link" href="#" onClick="toggleVisibility(this);">
-	Show description
-      </a>
+      <a class="n-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
       <a class="n-title" href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
 	<div class="n-notes" title="Number of notes in this notebook"> {{n.get_number_of_notes()}}</div>
 	{{n.name}}

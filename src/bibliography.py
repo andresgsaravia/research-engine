@@ -94,6 +94,9 @@ class BiblioItems(ndb.Model):
     last_updated = ndb.DateTimeProperty(auto_now = True)
     metadata = ndb.JsonProperty(required = True)
 
+    def get_number_of_comments(self):
+        return BiblioComments.query(ancestor = self.key).count()
+
 # Each BiblioComment should have a BiblioItem as parent
 class BiblioComments(ndb.Model):
     content = ndb.TextProperty(required = True)
