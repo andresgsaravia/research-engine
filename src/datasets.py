@@ -19,6 +19,9 @@ class DataSets(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
+    def get_number_of_concepts(self):
+        return DataConcepts.query(ancestor = self.key).count()
+
 
 # Should have a DataSet as parent
 class DataConcepts(ndb.Model):
@@ -90,8 +93,7 @@ class MainPage(DataPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        datasets = self.get_datasets(project)
-        self.render("datasets_main.html", project = project, datasets = datasets)
+        self.render("datasets_main.html", project = project, items = self.get_datasets(project))
 
 
 class NewDataSetPage(DataPage):

@@ -1,14 +1,28 @@
 {% extends "project_base.html" %}
 
-
 {% block p_head %}
-  <link href="/css/datasets_main.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
-    MathJax.Hub.Config({
-        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true }
-    });
+    var toggleVisibility = function (item) {
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
+      if (item.innerHTML.trim() == 'Show description') {
+        item.innerHTML = 'Hide description';
+        infoDiv.style.maxHeight = '20em';
+      } else {
+        item.innerHTML = 'Show description';
+        infoDiv.style.maxHeight = '0em';
+      }
+    };
   </script>
+  <style type="text/css">
+    .item-head {background: #D0B1B1;}
+    .item-head a {color: black;}
+    .item-head:hover, .item-head:hover a {background: #E8D3D3; color: black;}
+    .datasets-tab {background:white;}
+    .item + .item {border-top: 1px solid #AD9696}
+    .dataset-description {padding-left: 1em; padding-right: 1em;}
+    .dataset-last-updated {color: #888888; font-size: 0.9em; padding-left:1em;}
+  </style>
 {% endblock %}
 
 
@@ -18,19 +32,26 @@
 
 
 {% block p_content %}
+ 
 <div class="button1"><a href="/{{project.key.integer_id()}}/datasets/new">New dataset</a></div>
 <h2>Datasets</h2>
 
-{% for d in datasets %}
-<div class="d-wrapper">
-  <a class="info-link" href="#">Description</a>
-  <div class="d-name"><a href="/{{project.key.integer_id()}}/datasets/{{d.key.integer_id()}}">{{d.name}}</a></div>
-  <div class="d-description">
-    <div class="d-last-updated">Last updated: {{d.last_updated.strftime("%d-%b-%Y")}}</div>
-    <p>{{d.description | md | safe}}</p>
+<div id="list-wrapper">
+{% for i in items %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
+	<div class="item-count" title="Number of comments on this item"> {{i.get_number_of_concepts()}}</div>
+	{{i.name}}
+      </a>
+    </div>
+    <div class="item-description">
+      <div class="dataset-description">{{i.description | md | safe}}</div>
+      <div class="dataset-last-updated">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</div>
+    </div>
   </div>
-</div>
 {% endfor %}
-
+</div>
 
 {% endblock %}
