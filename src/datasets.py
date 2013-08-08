@@ -30,6 +30,9 @@ class DataConcepts(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
+    def get_number_of_revisions(self):
+        return DataRevisions.query(ancestor = self.key).count()
+
 
 # Should have a DataConcept as parent
 class DataRevisions(ndb.Model):
@@ -52,34 +55,25 @@ class DataRevisions(ndb.Model):
 ######################
 
 class DataPage(projects.ProjectPage):
-    def get_datasets(self, project, log_message = ''):
-        datasets = []
-        for d in DataSets.query(ancestor = project.key).order(-DataSets.last_updated).iter():
-            self.log_read(DataSets, log_message)
-            datasets.append(d)
-        return datasets
+    def get_datasets(self, project):
+        self.log_read(DataSets, "Fetching all DataSets for a project. ")
+        return DataSets.query(ancestor = project.key).order(-DataSets.last_updated).fetch()
 
     def get_dataset(self, project, dataset_id, log_message = ''):
         self.log_read(DataSets, log_message)
         return DataSets.get_by_id(int(dataset_id), parent = project.key)
 
-    def get_dataconcepts(self, dataset, log_message = ''):
-        dataconcepts = []
-        for d in DataConcepts.query(ancestor = dataset.key).order(-DataConcepts.date).iter():
-            self.log_read(DataConcepts, log_message)
-            dataconcepts.append(d)
-        return dataconcepts
+    def get_dataconcepts(self, dataset):        
+        self.log_read(DataConcepts, "Fetching all DataConcepts for a DataSet. ")
+        return DataConcepts.query(ancestor = dataset.key).order(-DataConcepts.date).fetch()
 
     def get_dataconcept(self, dataset, datac_id, log_message = ''):
         self.log_read(DataConcepts, log_message)
         return DataConcepts.get_by_id(int(datac_id), parent = dataset.key)
 
-    def get_revisions(self, datac, log_message = ''):
-        revisions = []
-        for r in DataRevisions.query(ancestor = datac.key).order(-DataRevisions.date).iter():
-            self.log_read(DataRevisions, log_message)
-            revisions.append(r)
-        return revisions
+    def get_revisions(self, datac):
+        self.log_read(DataRevisions, "Fetching all DataRevisions for a DataConcept")
+        return DataRevisions.query(ancestor = datac.key).order(-DataRevisions.date).fetch()
 
     def get_revision(self, datac, rev_id, log_message = ''):
         self.log_read(DataRevisions, log_message)
@@ -181,9 +175,9 @@ class DataSetPage(DataPage):
         if not dataset:
             self.error(404)
             self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
-            return
-        dataconcepts = self.get_dataconcepts(dataset)
-        self.render("dataset_view.html", project = project, dataset = dataset, dataconcepts = dataconcepts)
+            return        
+        self.render("dataset_view.html", project = project, dataset = dataset, 
+                    items = self.get_dataconcepts(dataset))
 
 
 class EditDataSetPage(DataPage):
