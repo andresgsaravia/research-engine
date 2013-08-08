@@ -1,10 +1,10 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-  <link href="/css/biblio_main.css" rel="stylesheet" type="text/css" />
+  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
     var toggleVisibility = function (item) {
-      var infoDiv = item.parentElement.parentElement.getElementsByClassName('i-info')[0];
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
       if (item.innerHTML.trim() == 'Show description') {
         item.innerHTML = 'Hide description';
         infoDiv.style.maxHeight = '20em';
@@ -14,6 +14,20 @@
       }
     };
   </script>
+  <style type="text/css">
+    .item-head {background: #E0E0E0;}
+    .item-head a {color: black;}
+    .item-head:hover, .item-head:hover a {background: #E8E8E8; color: black;}
+    .bibliography-tab {background:white;}
+    .item-authors {padding-top: 0.8em; padding-left: 1em;}
+    .item-date {padding-left: 1em;}
+    .item-author {font-style: italic}
+    .item-author::after {content: ", ";}
+    .item-author:last-child::after {content: ""}
+    .item-source {padding-left: 1em;}
+    .item-publication-kind {font-weight: bold;}
+    .item-identifier {display: block;}
+  </style>
 {% endblock %}
 
 
@@ -27,24 +41,32 @@
 <div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New entry</a></div>
 <h2>Bibliography</h2>
 
-<div id="items-wrapper">
+<div id="list-wrapper">
 {% for i in items %}
   <div class="item">
-    <div class="i-head">
-      <a class="i-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="i-title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
-	<div class="i-comments" title="Number of comments on this item"> {{i.get_number_of_comments()}}</div>
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
+	<div class="item-count" title="Number of comments on this item"> {{i.get_number_of_comments()}}</div>
 	{{i.title}}
       </a>
     </div>
-    <div class="i-info">
-      <div class="i-authors"> <em>Authors:</em>
+    <div class="item-description">
+      <div class="item-authors"> Authors:
 	{% for a in i.metadata["authors"] %}
-	<span class="i-author">{{a}}</span>
+	<span class="item-author">{{a}}</span>
 	{% endfor %}
       </div>
-      <div class="i-date"><em>Date of publication: </em>({{i.metadata["date"]}})</div>
-      <a class="i-link" href="{{i.link}}">Link to source</a>
+      <div class="item-source">
+	{% if i.kind == "article" %} 
+	<span class="item-publication-kind"> {{i.metadata["publication"]}}</span>
+	<a class="item-identifier" href="{{i.link}}">doi:{{i.identifier}}</a>
+	{% elif i.kind == "arXiv" %}
+	<span class="item-publication-kind">arXiv</span>
+	<a class="item-identifier" href="{{i.link}}">{{i.identifier}}</a>
+	{% endif %}	
+      </div>
+      <div class="item-date">Date of publication: ({{i.metadata["date"]}})</div>
     </div>
   </div>
 {% endfor %}

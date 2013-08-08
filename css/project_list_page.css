@@ -1,43 +1,31 @@
 /* Overview of proejcts inside the projects tab */
 
 
-.notebooks-tab {
-    background: white;
-}
-
-#n-wrapper {
+#list-wrapper {
     box-shadow: 0em 0.1em 0.3em #C0C0C0;
 }
 
-.n-description-link {
+.item-description-link {
     float: right;
     font-size: 0.9em;
     padding-top: 0.5em;
     padding-right: 0.5em;
 }
 
-.notebook + .notebook {
+.item + .item {
     border-top: 1px solid #C0C0C0;
 }
 
-.n-head {
-    background: #CFDEE2;
-}
-
-.n-head:hover, .n-head:hover a {
-    background: #DAEBEF;
-}
-
-.n-title {
+.item-title {
     display: block;
     padding: 0.3em;
 }
 
-.n-title:hover {
+.item-title:hover {
     text-decoration: none;
 }
 
-.n-info {
+.item-description {
     overflow: hidden;
     max-height: 0;
     -o-transition-duration: 1s;
@@ -45,24 +33,7 @@
     -webkit-transition-duration: 1s;
 }
 
-.n-description {
-    padding: 0.6em;
-}
-
-.n-last-updated {
-    float: right;
-    color: #555555;
-    font-size: 0.8em;
-    padding: 0.5em;
-}
-
-.n-owner {
-    font-style: italic;
-    padding-left: 1em;
-    padding-bottom: 0.2em;
-}
-
-.n-notes {
+.item-count {
     display: block;
     float: left;
     width: 4em;
@@ -70,6 +41,6 @@
     color: black;
 }
 
-.n-notes::before {
+.item-count::before {
     content: url("/static/icons/16x16/page_white_text.png");
 }
