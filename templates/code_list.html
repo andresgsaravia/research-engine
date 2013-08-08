@@ -1,28 +1,56 @@
 {% extends "project_base.html" %}
 
-
 {% block p_head %}
-  <link href="/css/code_list.css" rel="stylesheet" type="text/css" />
+  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    var toggleVisibility = function (item) {
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
+      if (item.innerHTML.trim() == 'Show description') {
+        item.innerHTML = 'Hide description';
+        infoDiv.style.maxHeight = '20em';
+      } else {
+        item.innerHTML = 'Show description';
+        infoDiv.style.maxHeight = '0em';
+      }
+    };
+  </script>
+  <style type="text/css">
+    .item-head {background: #F1D9B9;}
+    .item-head a {color: black;}
+    .item-head:hover, .item-head:hover a {background: #F7E9D7; color: black;}
+    .code-tab {background:white;}
+    .code-description {padding-left: 1em; padding-right: 1em;}
+    .code-last-updated {color: #888888; font-size: 0.9em; padding-left:1em;}
+  </style>
 {% endblock %}
 
 
 {% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/code">Source code</a>
+/  <a href="/{{project.key.integer_id()}}/code">Code</a>
 {% endblock %}
 
 
 {% block p_content %}
-  
-<div class="button1"><a href="/{{project.key.integer_id()}}/code/new">New source code repository</a></div>
-<h2>Source code</h2>
+ 
+<div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New code repository</a></div>
+<h2>Source Code</h2>
 
-{% for c in codes %}
-<div class="c-wrapper">
-  <div class="c-last-updated">Last updated: {{c.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="c-name"><a href="/{{project.key.integer_id()}}/code/{{c.key.integer_id()}}">{{c.name}}</a></div>
-  <div class="c-link"><a href="{{c.link}}">External link</a></div>
-  <div class="c-description">{{c.description | md | safe}}</div>
-</div>
+<div id="list-wrapper">
+{% for i in items %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/code/{{i.key.integer_id()}}">
+	<div class="item-count" title="Number of comments about this code"> {{i.get_number_of_comments()}}</div>
+	{{i.name}}
+      </a>
+    </div>
+    <div class="item-description">
+      <div class="code-description">{{i.description | md | safe }}</div>
+      <div class="code-last-updated">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</div>
+    </div>
+  </div>
 {% endfor %}
+</div>
 
 {% endblock %}

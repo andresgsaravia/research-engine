@@ -29,6 +29,9 @@ class CodeRepositories(ndb.Model):
         kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(self.key.integer_id())
         return (render_str("emails/code.html", **kw), render_str("emails/code.txt", **kw))
 
+    def get_number_of_comments(self):
+        return CodeComments.query(ancestor = self.key).count()
+
 
 # Each RepositoryComment should have a CodeRepository as parent
 class CodeComments(ndb.Model):
@@ -49,23 +52,17 @@ class CodeComments(ndb.Model):
 ######################
 
 class CodePage(projects.ProjectPage):
-    def get_codes_list(self, project, log_message = ''):
-        codes = []
-        for c in CodeRepositories.query(ancestor = project.key).order(-CodeRepositories.last_updated).iter():
-            self.log_read(CodeRepositories, log_message)
-            codes.append(c)
-        return codes
+    def get_codes_list(self, project):
+        self.log_read(CodeRepositories, "Fetching all the code reposirtories. ")
+        return CodeRepositories.query(ancestor = project.key).order(-CodeRepositories.last_updated).fetch()
 
     def get_code(self, project, code_id, log_message = ''):
         self.log_read(CodeRepositories, log_message)
         return CodeRepositories.get_by_id(int(code_id), parent = project.key)
 
-    def get_comments(self, code, log_message = ''):
-        comments = []
-        for c in CodeComments.query(ancestor = code.key).order(CodeComments.date).iter():
-            self.log_read(CodeComments, log_message)
-            comments.append(c)
-        return comments
+    def get_comments(self, code):
+        self.log_read(CodeComments, "Fetching all the comments for a code repository. ")
+        return CodeComments.query(ancestor = code.key).order(CodeComments.date).fetch()
 
 
 class CodesListPage(CodePage):
@@ -75,8 +72,7 @@ class CodesListPage(CodePage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        codes = self.get_codes_list(project)
-        self.render("code_list.html", project = project, codes = codes)
+        self.render("code_list.html", project = project, items = self.get_codes_list(project))
 
 
 class NewCodePage(CodePage):

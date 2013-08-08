@@ -56,12 +56,9 @@ class NoteComments(ndb.Model):
 ######################
 
 class NotebookPage(projects.ProjectPage):
-    def get_notebooks_list(self, project, log_message = ''):
-        notebooks = []
-        for n in Notebooks.query(ancestor = project.key).order(-Notebooks.last_updated).iter():
-            self.log_read(Notebooks, log_message)
-            notebooks.append(n)
-        return notebooks
+    def get_notebooks_list(self, project):
+        self.log_read(Notebooks, "Fetching all the notebooks for a project")
+        return Notebooks.query(ancestor = project.key).order(-Notebooks.last_updated).fetch()
 
     def get_notebook(self, project, nbid, log_message = ''):
         self.log_read(Notebooks, log_message)
@@ -76,12 +73,9 @@ class NotebookPage(projects.ProjectPage):
         self.log_read(NotebookNotes, log_message)
         return NotebookNotes.get_by_id(int(note_id), parent = notebook.key)
 
-    def get_comments_list(self, note, log_message = ''):
-        comments = []
-        for c in NoteComments.query(ancestor = note.key).order(NoteComments.date).iter():
-            self.log_read(NoteComments, log_message)
-            comments.append(c)
-        return comments
+    def get_comments_list(self, note):
+        self.log_read(NoteComments, "Fetching all the comments for a note in a notebook. ")
+        return  NoteComments.query(ancestor = note.key).order(NoteComments.date).fetch()
 
 
 class NotebooksListPage(NotebookPage):

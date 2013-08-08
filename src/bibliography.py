@@ -108,23 +108,17 @@ class BiblioComments(ndb.Model):
 ######################
 
 class BiblioPage(projects.ProjectPage):
-    def get_BiblioItems_list(self, project, log_message = ''):
-        items = []
-        for i in BiblioItems.query(ancestor = project.key).order(-BiblioItems.last_updated).iter():
-            self.log_read(BiblioItems, log_message)
-            items.append(i)
-        return items
+    def get_BiblioItems_list(self, project):
+        self.log_read(BiblioItems, "Fetching all bibliography items for a project. ")
+        return BiblioItems.query(ancestor = project.key).order(-BibioItems.last_updated).fetch()
 
     def get_item(self, project, itemid, log_message = ''):
         self.log_read(BiblioItems, log_message)
         return BiblioItems.get_by_id(int(itemid), parent = project.key)
 
-    def get_comments_list(self, bibitem, log_message = ''):
-        comments = []
-        for c in BiblioComments.query(ancestor = bibitem.key).order(-BiblioComments.date).iter():
-            self.log_read(BiblioComments, log_message)
-            comments.append(c)
-        return comments
+    def get_comments_list(self, bibitem):
+        self.log_read(BiblioComments, "Fetching all the comments for a bibliographic item. ")
+        return BiblioComments.query(ancestor = bibitem.key).order(-BiblioComments.date).fetch()
 
 
 class MainPage(BiblioPage):
