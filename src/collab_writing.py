@@ -85,8 +85,7 @@ class WritingsListPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writings = self.get_writings_list(project)
-        self.render("writings_list.html", project = project, writings = writings)
+        self.render("writings_list.html", project = project, items = self.get_writings_list(project))
 
 
 class NewWritingPage(WritingPage):

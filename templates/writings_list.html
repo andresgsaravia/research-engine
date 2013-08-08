@@ -2,14 +2,35 @@
 
 
 {% block p_head %}
-  <link href ="/css/writings_list.css" rel="stylesheet" type="text/css" />
+  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <script type="text/javascript">
     MathJax.Hub.Config({
         "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true }
     });
   </script>
-
+  <script type="text/javascript">
+    var toggleVisibility = function (item) {
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
+      if (item.innerHTML.trim() == 'Show description') {
+        item.innerHTML = 'Hide description';
+        infoDiv.style.maxHeight = '20em';
+      } else {
+        item.innerHTML = 'Show description';
+        infoDiv.style.maxHeight = '0em';
+      }
+    };
+  </script>
+  <style type="text/css">
+    .item-head {background: #C6E0C7;}
+    .item-head a {color: #152815}
+    .item-head:hover, .item-head:hover a {background: #D6F9D8; color: ##152815}
+    .item + .item {border-top: 1px solid #889B89;}
+    .writings-tab {background:white;}
+    .writing-description {padding-left: 1em; padding-right: 1em;}
+    .writing-status {color: #555555; padding-left: 1em;}
+    .writings-last-updated {color: #888888; font-style: italic; float:right; padding-right: 1em; }
+  </style>
 {% endblock %}
 
 
@@ -23,13 +44,23 @@
 <div class="button1"><a href="/{{project.key.integer_id()}}/writings/new">New collaborative writing</a></div>
 <h2>Collaborative Writings</h2>
 
-{% for w in writings %}
-<div class="w-wrapper">
-  <div class="w-last-updated">Last updated: {{w.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="w-title"><a href="/{{project.key.integer_id()}}/writings/{{w.key.integer_id()}}">{{w.title}}</a></div>
-  <div class="w-description">{{w.description | md | safe}}</div>
-  <div class="w-status">Status: <em>{{w.status}}</em></div>
-</div>
+
+<div id="list-wrapper">
+{% for i in items %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">
+	{{i.title}}
+      </a>
+    </div>
+    <div class="item-description">
+      <div class="writing-description">{{i.description | md | safe }}</div>
+      <div class="writings-last-updated">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</div>
+      <div class="writing-status">Status: {{i.status}}</div>
+    </div>
+  </div>
 {% endfor %}
+</div>
 
 {% endblock %}

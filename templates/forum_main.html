@@ -2,7 +2,29 @@
 
 
 {% block p_head %}
-  <link href="/css/forum_main.css" rel="stylesheet" type="text/css" />
+  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    var toggleVisibility = function (item) {
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
+      if (item.innerHTML.trim() == 'Show description') {
+        item.innerHTML = 'Hide description';
+        infoDiv.style.maxHeight = '20em';
+      } else {
+        item.innerHTML = 'Show description';
+        infoDiv.style.maxHeight = '0em';
+      }
+    };
+  </script>
+  <style type="text/css">
+    .item-head {background: #D6D6C7;}
+    .item-head a {color: black;}
+    .item-head:hover, .item-head:hover a {background: #E8E8DB; color: black;}
+    .item + .item {border-top: 1px solid #A5A591;}
+    .forum-tab {background:white;}
+    .thread-content {padding-left: 1em; padding-right: 1em;}
+    .thread-author {padding-left: 1em;}
+    .thread-last-updated {color: #888888; font-size: 0.9em; padding-right:1em; float: right;}
+  </style>
 {% endblock %}
 
 
@@ -16,12 +38,23 @@
 <div class="button1"><a href="/{{project.key.integer_id()}}/forum/new_thread">New thread</a></div>
 <h2>Forum</h2>
 
-{% for t in threads %}
-<div class="f-thread">
-  <div class="f-title"><a href="/{{project.key.integer_id()}}/forum/{{t.key.integer_id()}}">{{t.title[0:160]}}</a></div>
-  <div class="f-date">Last comment: {{t.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div class="f-author"><a href="/{{t.author.get().username}}">{{t.author.get().username.capitalize()}}</a></div>
-</div>
+<div id="list-wrapper">
+{% for i in items %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/forum/{{i.key.integer_id()}}">
+	<div class="item-count" title="Number of comments on this thread"> {{i.get_number_of_comments()}}</div>
+	{{i.title}}
+      </a>
+    </div>
+    <div class="item-description">
+      <div class="thread-content">{{i.content | md | safe }}</div>
+      <div class="thread-last-updated">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</div>
+      <div class="thread-author"><a href="/{{i.author.get().username}}">{{i.author.get().username.capitalize()}}</a></div>
+    </div>
+  </div>
 {% endfor %}
+</div>
 
 {% endblock %}

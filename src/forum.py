@@ -18,6 +18,9 @@ class ForumThreads(ndb.Model):
     date = ndb.DateTimeProperty(auto_now = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
+    def get_number_of_comments(self):
+        return ForumComments.query(ancestor = self.key).count()
+
     def notification_html_and_txt(self, author, project):
         kw = {"author" : author, "project" : project, "thread" : self,
               "author_absolute_link" : APP_URL + "/" + author.username}
@@ -70,9 +73,8 @@ class MainPage(ForumPage):
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
-            return
-        threads = self.get_threads(project)
-        self.render("forum_main.html", project = project, threads = threads)
+            return            
+        self.render("forum_main.html", project = project, items = self.get_threads(project))
 
 
 class NewThreadPage(ForumPage):
