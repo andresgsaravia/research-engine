@@ -19,6 +19,9 @@
     .item-head {background: #CFDEE2;}
     .item-head:hover, .item-head:hover a {background: #DAEBEF;}
     .notebooks-tab {background:white;}
+    .notebook-description {padding-left: 1em; padding-right: 1em;}
+    .notebook-last-updated {float: right; padding-right: 1em; color: #888888; font-size: 0.9em;}
+    .notebook-owner {padding-left: 1em;}
   </style>
 {% endblock %}
 
@@ -44,8 +47,8 @@
       </a>
     </div>
     <div class="item-description">
-      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
       <div class="notebook-description">{{n.description | md | safe}}</div>
+      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
       <div class="notebook-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
     </div>
   </div>
