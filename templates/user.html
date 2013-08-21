@@ -3,6 +3,20 @@
 {% block head %}
     <title>Research Engine | {{page_user.username.capitalize()}}</title>
     <link href="/css/user.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+      var toggleVisibility = function (item) {
+        var infoDiv = item.parentElement.getElementsByClassName('description')[0];
+        console.log(infoDiv);
+        if (item.innerHTML.trim() == 'Show description') {
+          item.innerHTML = 'Hide description';
+          infoDiv.style.maxHeight = '30em';
+        } else {
+          item.innerHTML = 'Show description';
+          infoDiv.style.maxHeight = '0em';
+        }
+      };
+  </script>
+
 {% endblock %}
 
 
@@ -22,9 +36,9 @@
   </div>
   {% for p in projects %} 
     <div class="u-project">
-      <a class="info-link" href="#">Description</a>
+      <a class="info-link" href="#" onClick="toggleVisibility(this);">Show description</a>
       <div class="name"><a href="/{{p.key.integer_id()}}">{{p.name}}</a></div>
-      <div class="description"><br/>{{p.description.replace("\n", "<br/>") | safe}}<div class="u-pupdated">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</div>
+      <div class="description"><br/>{{p.description | md | safe}}<div class="u-pupdated">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</div>
       </div>
     </div>
   {% endfor %}

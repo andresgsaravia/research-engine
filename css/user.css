@@ -83,18 +83,11 @@
 .description {
     padding-left: 1.5em;
     padding-right: 1.5em;
-    height: 0;
+    max-height: 0;
     overflow: hidden;
-    opacity: 0;
     -o-transition: all 0.8s;
     -moz-transition: all 0.8s;
     -webkit-transition: all 0.8s;
-}
-
-.info-link:focus + .name + .description {
-    opacity: 1;
-    height: auto;
-    overflow: auto;
 }
 
 .u-pupdated {
