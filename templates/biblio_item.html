@@ -7,7 +7,7 @@
   <script type="text/javascript" src="/js/preview.js"></script>
   <script type="text/javascript">
     MathJax.Hub.Config({
-        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+        "tex2jax": { inlineMath: [ [ '$', '$' ], [ '\\(', '\\)' ] ], processEscapes: true },
         TeX: {equationNumbers: {autoNumber: "AMS"} }
     });
   </script>
@@ -42,6 +42,7 @@
       <span class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</span>
     </div>
     <div class="comment-content">{{c.content | md | safe}}</div>
+    <a class="comment-link" href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}">Link</a>
   </div>
   {% endfor %}
 </div>

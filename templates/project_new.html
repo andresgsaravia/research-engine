@@ -15,7 +15,7 @@
   <h2>New project</h2>
 
   <form method="post">
-    <input type="text" name="p_name" value="{{p_name}}" placeholder="Name of the project" />
+    <input type="text" name="p_name" value="{{p_name}}" placeholder="Name of the project" autofocus/>
     <textarea name="p_description" placeholder="Description of the project">{{p_description}}</textarea>
     <input type="submit" value="Create new project" class="bottom-buttons" />
     <input type="button" value="Cancel" class="bottom-buttons" onClick="window.location = '/{{user.username}}'" />

@@ -120,7 +120,11 @@ class BiblioPage(projects.ProjectPage):
         self.log_read(BiblioComments, "Fetching all the comments for a bibliographic item. ")
         return BiblioComments.query(ancestor = bibitem.key).order(-BiblioComments.date).fetch()
 
+    def get_comment(self, bibitem, commentid):
+        self.log_read(BiblioComments)
+        return BiblioComments.get_by_id(int(commentid), parent = bibitem.key)
 
+        
 class MainPage(BiblioPage):
     def get(self, projectid):
         project = self.get_project(projectid)
@@ -247,3 +251,23 @@ class ItemPage(BiblioPage):
             project.put_and_notify(self, new_comment, user)
             self.log_and_put(item, "Updating last_updated property. ")
             self.redirect("/%s/bibliography/%s" % (projectid, itemid))
+
+class CommentPage(BiblioPage):
+    def get(self, projectid, itemid, commentid):
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = "Project with key <em>%s</em> not found." % projectid)
+            return
+        item = self.get_item(project, itemid)
+        if not item:
+            self.error(404)
+            self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
+            return
+        comment = self.get_comment(item, commentid)
+        if not comment:
+            self.error(404)
+            self.render("404.html", info = "Comment with key <em>%s</em> not found. " % commentid)
+            return
+        user = self.get_login_user()
+        self.render("biblio_comment.html", user = user, project = project, item = item, comment = comment)

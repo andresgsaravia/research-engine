@@ -1,0 +1,32 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+  <link href="/css/biblio_comment.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript">
+    MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ], [ '\\(', '\\)' ] ], processEscapes: true },
+        TeX: {equationNumbers: {autoNumber: "AMS"} }
+    });
+  </script>
+{% endblock %}
+
+
+{% block title_bar_extra %}
+/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+/  <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title[:20]}}...</a> 
+/  <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{comment.key.integer_id()}}">{{comment.key.integer_id()}}</a>
+{% endblock %}
+
+
+{% block p_content %}
+
+<div class="comment">
+  <div class="comment-title">
+    <span class="comment-author"><a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a> wrote:</span>
+    <span class="comment-date">{{comment.date.strftime("%d-%b-%Y")}}</span>
+  </div>
+  <div class="comment-content">{{comment.content | md | safe}}</div>
+</div>
+
+{% endblock %}
