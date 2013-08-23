@@ -37,12 +37,13 @@
 <div class="comments">
   {% for c in comments %}
   <div class="comment">
-    <div class="comment-title">
-      <span class="comment-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a> wrote:</span>
-      <span class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</span>
+    <div class="comment-head">
+      <div class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</div>
+      <div class="comment-title">
+	<a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}">{{c.author.get().username.capitalize()}} commented:</a>
+      </div>
     </div>
     <div class="comment-content">{{c.content | md | safe}}</div>
-    <a class="comment-link" href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}">Link</a>
   </div>
   {% endfor %}
 </div>

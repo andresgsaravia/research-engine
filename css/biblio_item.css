@@ -24,14 +24,23 @@
     border: 1px solid #C0C0C0;
 }
 
-.comment-title {
-    background: #F5F5F5;
-    padding: 1em;
+.comment-head a {
+    color: black;
+    display: block;
+    background: #F0F0F0;
+    padding: 0.5em;
 }
+
+.comment-head a:hover {
+    text-decoration: none;
+    background: #D0D0D0;
+}
+
 
 .comment-date {
     float: right;
     color: #555555;
+    padding: 0.5em;
 }
 
 .comment-content {

@@ -21,12 +21,13 @@
 
 {% block p_content %}
 
-<div class="comment">
-  <div class="comment-title">
-    <span class="comment-author"><a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a> wrote:</span>
-    <span class="comment-date">{{comment.date.strftime("%d-%b-%Y")}}</span>
+<div id="comment">
+  <div id="comment-head">
+    <div id="comment-date">{{comment.date.strftime("%d-%b-%Y")}}</div>
+    <div id="comment-author"><a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a> wrote:</div>
+    <div id="item-title"><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title}}</a></div>
   </div>
-  <div class="comment-content">{{comment.content | md | safe}}</div>
+  <div id="comment-content">{{comment.content | md | safe}}</div>
 </div>
 
 {% endblock %}

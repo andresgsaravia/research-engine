@@ -1,3 +1,26 @@
 .bibliography-tab {
     background: white;
 }
+
+#comment {
+    border: 1px solid #C0C0C0;
+}
+
+#comment-head {
+    background: #F0F0F0;
+    padding: 0.5em;
+}
+
+#comment-date {
+    float: right;
+    color: #555555;
+}
+
+#item-title a {
+    font-style: italic;
+}
+
+#comment-content {
+    padding-left: 1em;
+    padding-right: 1em;
+}
