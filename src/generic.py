@@ -20,7 +20,7 @@ jinja_env.filters['md'] = filters.md
 
 # You should change these if you are registering your own app on App Engine
 APP_NAME = "Research Engine"
-APP_URL = "http://research-engine.appspot.com"
+APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
 
