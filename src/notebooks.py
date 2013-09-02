@@ -27,6 +27,9 @@ class NotebookNotes(ndb.Model):
     content = ndb.TextProperty(required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
 
+    def get_number_of_comments(self):
+        return NoteComments.query(ancestor = self.key).count()
+
     def notification_html_and_txt(self, author, project, notebook):
         kw = {"author" : author, "project" : project, "notebook" : notebook, "note" : self,
               "author_absolute_link" : APP_URL + "/" + author.username}
@@ -297,7 +300,7 @@ class NotePage(NotebookPage):
         elif visitor_p and not project.user_is_author(user):
             error_message = "You are not an author in this project."
         self.render("notebook_note.html", project = project, visitor_p = visitor_p, error_message = error_message,
-                    notebook = notebook, note = note, comments = comments)
+                    notebook = notebook, note = note, comments = comments, new_comment = self.request.get("new_comment"))
 
     def post(self, projectid, nbid, note_id):
         user = self.get_login_user()

@@ -39,7 +39,7 @@
 
 .note-head a:hover {
     text-decoration: none;
-    background-color: DDE8EB;
+    background-color: #DDE8EB;
     background-image: linear-gradient(#FCFCF8, #F1EEB9);
     background-image: -webkit-linear-gradient(#FCFCF8, #F1EEB9);
     background-repeat: repeat-x;
@@ -56,6 +56,15 @@
     color: #888888;
     margin-top: 0.5em;
     margin-right: 0.5em;
+}
+
+.note-comments {
+    padding: 0.2em 0 0.2em 1em;
+    font-size: 1em;
+}
+
+a.note-comments:hover {
+    text-decoration: none;
 }
 
 .note-content {

@@ -27,9 +27,17 @@
 <div class="note">
   <div class="note-head">
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
-    <div class="note-title"><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">{{note.title}}</a></div>
+    <div class="note-title">
+      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">{{note.title}}</a>
+    </div>
   </div>
   <div class="note-content">{{note.content | md | safe}}</div>
+  <div class="note-comments">
+    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
+      <img src="/static/icons/16x16/comment.png" /> {{note.get_number_of_comments()}} comments</a>
+    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
+      <img src="/static/icons/16x16/comment_add.png"/> New comment</a>
+  </div>
 </div>
 {% endfor %}
 

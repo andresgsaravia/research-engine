@@ -28,7 +28,7 @@
   <div class="note-content">{{note.content | md | safe}}</div>
 
 
-<h3 class="c-heading">Comments</h3>
+<h3 class="c-heading" id="comments">Comments</h3>
 
 {% for c in comments %}
   <div class="n-comment">
@@ -40,9 +40,9 @@
   </div>
 {% endfor %}
 
-<div class="comment-form">
+<div id="comment-form">
   <form method="post">
-    <textarea id="commentText" name="comment" onKeyUp="Preview('commentText','previewArea');"{% if visitor_p %} disabled{% endif %}>{{comment_value}}</textarea>
+    <textarea id="commentText" name="comment" onKeyUp="Preview('commentText','previewArea');"{% if visitor_p %} disabled{% endif %}{% if new_comment %} autofocus{% endif %}>{{comment_value}}</textarea>
     <input type="submit" value="Comment" {% if visitor_p %}disabled{% endif %}/>
   </form>
 </div>
@@ -54,6 +54,6 @@
 </div>
 
 <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
+<div id="previewArea"><em>Start typing above to see the preview here.</em></div>
 
 {% endblock %}
