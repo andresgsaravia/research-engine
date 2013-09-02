@@ -40,7 +40,3 @@
     font-size: 0.8em;
     color: black;
 }
-
-.item-count::before {
-    content: url("/static/icons/16x16/page_white_text.png");
-}
