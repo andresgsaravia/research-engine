@@ -32,10 +32,10 @@
 
 {% block p_content %}
  
-<div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New code repository</a></div>
+<div class="button1"><a href="/{{project.key.integer_id()}}/code/new">New code repository</a></div>
 <h2>Source Code</h2>
 
-<div id="list-wrapper">
+<div class="list-wrapper">
 {% for i in items %}
   <div class="item">
     <div class="item-head">

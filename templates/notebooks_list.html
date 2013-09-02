@@ -34,9 +34,56 @@
 {% block p_content %}
   
 <div class="button1"><a href="/{{project.key.integer_id()}}/notebooks/new">New notebook</a></div>
+
+{% if user %}
+
+<h2>My notebooks</h2>
+
+<div class="list-wrapper">
+  {% for n in my_notebooks %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
+	<div class="item-count" title="Number of notes in this notebook"> {{n.get_number_of_notes()}}</div>
+	{{n.name}}
+      </a>
+    </div>
+    <div class="item-description">
+      <div class="notebook-description">{{n.description | md | safe}}</div>
+      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
+      <div class="notebook-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2>Other notebooks</h2>
+
+<div class="list-wrapper">
+  {% for n in other_notebooks %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
+	<div class="item-count" title="Number of notes in this notebook"> {{n.get_number_of_notes()}}</div>
+	{{n.name}}
+      </a>
+    </div>
+    <div class="item-description">
+      <div class="notebook-description">{{n.description | md | safe}}</div>
+      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
+      <div class="notebook-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% else %}
 <h2>Notebooks</h2>
 
-<div id="list-wrapper">
+<div class="list-wrapper">
   {% for n in notebooks %}
   <div class="item">
     <div class="item-head">
@@ -54,5 +101,7 @@
   </div>
   {% endfor %}
 </div>
+
+{% endif %}
 
 {% endblock %}

@@ -83,14 +83,23 @@ class NotebookPage(projects.ProjectPage):
 
 class NotebooksListPage(NotebookPage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         notebooks = self.get_notebooks_list(project)
-        self.render("notebooks_list.html", project = project, 
-                    notebooks = notebooks, n_len = len(notebooks))
+        my_notebooks = []
+        other_notebooks = []
+        if user:
+            for n in notebooks:
+                if n.owner == user.key:
+                    my_notebooks.append(n)
+                else:
+                    other_notebooks.append(n)
+        self.render("notebooks_list.html", project = project, user = user,
+                    notebooks = notebooks, my_notebooks = my_notebooks, other_notebooks = other_notebooks)
 
 
 class NewNotebookPage(NotebookPage):
