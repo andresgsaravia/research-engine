@@ -30,7 +30,7 @@ a:hover {
     text-decoration: underline;
 }
 
-.wrapper {
+#all-wrapper {
     position: relative;
     background-color: white;
     margin: 0 auto;
@@ -53,34 +53,34 @@ a:hover {
     color: #A6771A;
 }
 
-.content {
+#page-content {
     padding-bottom: 3em;
 }
 
 /* Menu */
 
-.menu,
-.menu ul,
-.menu li,
-.menu a {
+#top-menu,
+#top-menu ul,
+#top-menu li,
+#top-menu a {
     margin: 0 auto;
     padding: 0;
     border: none;
     outline: none;
 }
 
-.menu {
+#top-menu {
     height: 2.5em;
     background: white;
     box-shadow: 0em 0.1em 0.2em #C0C0C0;
 }
 
-.menu li {
+#top-menu li {
     list-style: none;
     z-index: 100;
 }
 
-.menu > li {
+#top-menu > li {
     position: relative;
     float: left;
     display: block;
@@ -88,13 +88,13 @@ a:hover {
     border-right: 1px solid #808080;
 }
 
-.menu > li:last-child {
+#top-menu > li:last-child {
     border-right: none;
     float: right;
     border-left: 1px solid #808080;
 }
 
-.menu li a {
+#top-menu li a {
     display: block;
     padding: 0 1em;
     margin: 1em 0;
@@ -105,15 +105,15 @@ a:hover {
     font-size: 0.8em;
 }
 
-.menu li:hover {
+#top-menu li:hover {
     background: #537AD5;
 }
 
-.menu li:hover > a {
+#top-menu li:hover > a {
     color: white;
 }
 
-.menu ul {
+#top-menu ul {
     position: absolute;
     top: 2.5em;
     left: 0px;
@@ -122,23 +122,23 @@ a:hover {
     border: 1px solid #CCCCCC;
 }
 
-.menu li:hover > ul {
+#top-menu li:hover > ul {
     opacity: 1;
 }
 
-.menu ul li {
+#top-menu ul li {
     height: 0;
     overflow: hidden;
     padding: 0;
 }
 
-.menu li:hover > ul li {
+#top-menu li:hover > ul li {
     height: 2.5em;
     overflow: visible;
     padding: 0;
 }
 
-.menu ul li a {
+#top-menu ul li a {
     width: 230px;
     padding: 1em 0 1em 2.5em;
     margin: 0;
@@ -147,18 +147,18 @@ a:hover {
 }
 
 
-.menu ul li:last-child a {
+#top-menu ul li:last-child a {
     border: none;
 }
 
-.menu li:last-child ul {
+#top-menu li:last-child ul {
     right: 0px;
     left: -100px;
 }
 
 /* Footer */
 
-.footer {
+#footer {
     width: 100%;
     min-height: 32px;
     height: 3em;
@@ -171,18 +171,18 @@ a:hover {
     padding-bottom: 0.5em;
 }
 
-.footer * {
+#footer * {
     margin: 0px;
     padding: 0px;
 }
 
-.footer .app-engine-image {
+#footer-app-engine-image {
     padding-top: 0.4em;
     position: relative;
     float:right;
 }
 
-.footer p {
+#footer p {
     padding-top: 0.4em;
 }
 
