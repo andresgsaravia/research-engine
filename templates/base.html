@@ -25,7 +25,15 @@
 	  </li>{% endif %}
 	  <!-- <li><a href="/classroom">Classroom</a></li> -->
 	  <!-- <li><a href="/blog">Blog</a></li> -->
-	  <li>{{login_message | safe}}</li>
+	  <!--<li>{{login_message | safe}}</li> -->
+	  <li>{% if user %}
+	    <a href="/{{user.username}}">{{user.username.capitalize()}}</a>
+	    <ul>
+	      <li><a href="/settings">Settings</a></li>
+	      <li><a href="/logout">Logout</a></li>
+	    </ul>{% else %}
+	    <a href="/login">Login</a> <ul><li><a href="/signup">Signup</a></li></ul>{% endif %}
+	  </li>
 	</div>
       </ul>
       
