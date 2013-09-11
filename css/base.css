@@ -1,10 +1,5 @@
 /* Released under a GPLv3 license */
 
-/* 
-Color Scheme:
-http://colorschemedesigner.com/#3L61TlRK-w0w0
-*/
-
 
 html {
     height: 100%;
@@ -31,6 +26,7 @@ a:hover {
 }
 
 #all-wrapper {
+    min-height: 100%;
     position: relative;
     background-color: white;
     margin: 0 auto;
@@ -160,7 +156,7 @@ a:hover {
 
 #top-menu li:last-child ul {
     right: 0px;
-    left: -100px;
+    left: -194px;
 }
 
 #home-logo {
@@ -198,34 +194,3 @@ a:hover {
 }
 
 /* Other */
-
-.button1 a, input[type=submit], button {
-    display: block;
-    background-color: rgb(234, 234, 234);
-    background-image: linear-gradient(rgb(250, 250, 250), rgb(234, 234, 234));
-    background-repeat: repeat-x;
-    color: rgb(51, 51, 51);
-    position: relative;
-    margin-top: 0.2em;
-    margin-right: 2em;
-    padding: 0.3em;
-    border-radius: 3px 3px 3px 3px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(221, 221, 221) rgb(221, 221, 221) rgb(197, 197, 197);
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.075);
-    cursor: pointer;
-}
-
-.button1 a:hover, input[type=submit]:hover, button:hover {
-    text-decoration: none;
-    color: rgb(255, 255, 255);
-    background-color: rgb(48, 114, 179);
-    background-image: linear-gradient(rgb(89, 155, 205), rgb(48, 114, 179));
-    background-repeat: repeat-x;
-    border-color: rgb(42, 101, 160);
-}
-
-.button1 a {
-    float: right;
-}
