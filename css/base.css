@@ -91,14 +91,14 @@ a:hover {
 }
 
 #top-menu-items > li:last-child {
-    border-right: none;
+    width: 10em;
     float: right;
 }
 
 #top-menu li a {
     display: block;
     padding: 0 1em;
-    margin: 1em 0;
+    padding-top: 1.2em;
     text-decoration: none;
     color: #444444;
     font-weight: bold;
@@ -117,7 +117,7 @@ a:hover {
 #top-menu ul {
     position: absolute;
     top: 2.5em;
-    left: 0px;
+    left: 0;
     opacity: 0;
     background: white;
     box-shadow: 0 0.1em 0.1em #C0C0C0;
@@ -140,18 +140,19 @@ a:hover {
 }
 
 #top-menu ul li a {
-    width: 230px;
+    width: 15em;
     padding: 1em 0 1em 2.5em;
     margin: 0;
 }
 
 #top-menu li:last-child ul {
-    right: 0px;
-    left: -194px;
+    right: 0;
+    left: -4em;
 }
 
 #home-logo {
     height: 2em;
+    padding: 0 0.5em;
 }
 
 /* Footer */
@@ -170,8 +171,8 @@ a:hover {
 }
 
 #footer * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #footer-app-engine-image {
