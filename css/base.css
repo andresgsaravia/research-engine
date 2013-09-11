@@ -30,7 +30,7 @@ a:hover {
     position: relative;
     background-color: white;
     margin: 0 auto;
-    min-width: 80em;
+    min-width: 70em;
     background: #F5F5F5;
 }
 
@@ -49,7 +49,7 @@ a:hover {
 
 #page-content {
     padding-bottom: 3em;
-    width: 80em;
+    width: 70em;
     margin-left: auto;
     margin-right: auto;
 }
@@ -73,7 +73,7 @@ a:hover {
 }
 
 #top-menu-items {
-    width: 80em;
+    width: 70em;
     margin-left: auto;
     margin-right: auto;
 }
@@ -93,6 +93,8 @@ a:hover {
 #top-menu-items > li:last-child {
     width: 10em;
     float: right;
+    text-align: right;
+    padding-right: 1em;
 }
 
 #top-menu li a {

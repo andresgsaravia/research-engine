@@ -28,7 +28,7 @@
 	  <!--<li>{{login_message | safe}}</li> -->
 	  <li>{% if user %}
 	    <a href="/{{user.username}}"><img src="{{user.get_profile_image(20)}}" 
-					      style="float: left; border-radius: 0.2em; margin-top: -0.5em; margin-right:0.5em;"/> {{user.username.capitalize()}}</a>
+					      style="border-radius: 0.2em; margin-top: -0.5em; margin-right:0.5em;"/> {{user.username.capitalize()}}</a>
 	    <ul>
 	      <li><a href="/settings">Settings</a></li>
 	      <li><a href="/logout">Logout</a></li>
