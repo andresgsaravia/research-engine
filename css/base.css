@@ -34,9 +34,7 @@ a:hover {
     position: relative;
     background-color: white;
     margin: 0 auto;
-    min-height: 100%;
-    min-width: 750px;
-    width: 100%;
+    min-width: 80em;
     background: #F5F5F5;
 }
 
@@ -55,6 +53,9 @@ a:hover {
 
 #page-content {
     padding-bottom: 3em;
+    width: 80em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Menu */
@@ -66,13 +67,19 @@ a:hover {
     margin: 0 auto;
     padding: 0;
     border: none;
-    outline: none;
+    outline: none;    
 }
 
 #top-menu {
     height: 2.5em;
     background: white;
-    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+    box-shadow: 0 0 0.2em #C0C0C0;
+}
+
+#top-menu-items {
+    width: 80em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #top-menu li {
@@ -80,7 +87,7 @@ a:hover {
     z-index: 100;
 }
 
-#top-menu > li {
+#top-menu-items > li {
     position: relative;
     float: left;
     display: block;
@@ -88,7 +95,7 @@ a:hover {
     border-right: 1px solid #808080;
 }
 
-#top-menu > li:last-child {
+#top-menu-items > li:last-child {
     border-right: none;
     float: right;
     border-left: 1px solid #808080;
@@ -154,6 +161,10 @@ a:hover {
 #top-menu li:last-child ul {
     right: 0px;
     left: -100px;
+}
+
+#home-logo {
+    height: 2em;
 }
 
 /* Footer */

@@ -12,19 +12,21 @@
 
       <!-- MENU  -->
       <ul id="top-menu">
-	<!-- <li><a href="/">Notifications</a></li> -->
-	<li><a href="/">Home</a></li>
-	{% if user %}<li><a href="/{{user.username}}">Projects</a>
-	  <ul>
-	    {% for p in user.list_of_projects()[:3] %}
-	    <li><a href="/{{p.key.integer_id()}}">{{p.name[:30]}}</a></li>
-	    {% endfor %}
-	    <li><a href="/{{user.username}}"><em>More...</em></a></li>
-	  </ul>
-	</li>{% endif %}
-	<!-- <li><a href="/classroom">Classroom</a></li> -->
-	<!-- <li><a href="/blog">Blog</a></li> -->
-	<li>{{login_message | safe}}</li>
+	<div id="top-menu-items">
+	  <!-- <li><a href="/">Notifications</a></li> -->
+	  <li><a href="/" style="margin: 0.5em 0;"><img id="home-logo" src="/static/logo.png"/></a></li>
+	  {% if user %}<li><a href="/{{user.username}}">Projects</a>
+	    <ul>
+	      {% for p in user.list_of_projects()[:3] %}
+	      <li><a href="/{{p.key.integer_id()}}">{{p.name[:30]}}</a></li>
+	      {% endfor %}
+	      <li><a href="/{{user.username}}"><em>More...</em></a></li>
+	    </ul>
+	  </li>{% endif %}
+	  <!-- <li><a href="/classroom">Classroom</a></li> -->
+	  <!-- <li><a href="/blog">Blog</a></li> -->
+	  <li>{{login_message | safe}}</li>
+	</div>
       </ul>
       
 
