@@ -63,7 +63,7 @@ a:hover {
     margin: 0 auto;
     padding: 0;
     border: none;
-    outline: none;    
+    outline: none;
 }
 
 #top-menu {
@@ -88,13 +88,11 @@ a:hover {
     float: left;
     display: block;
     height: 2.5em; 
-    border-right: 1px solid #808080;
 }
 
 #top-menu-items > li:last-child {
     border-right: none;
     float: right;
-    border-left: 1px solid #808080;
 }
 
 #top-menu li a {
@@ -122,7 +120,7 @@ a:hover {
     left: 0px;
     opacity: 0;
     background: white;
-    border: 1px solid #CCCCCC;
+    box-shadow: 0 0.1em 0.1em #C0C0C0;
 }
 
 #top-menu li:hover > ul {
@@ -145,13 +143,6 @@ a:hover {
     width: 230px;
     padding: 1em 0 1em 2.5em;
     margin: 0;
-    border: none;
-    border-bottom: 1px solid #CCCCCC;
-}
-
-
-#top-menu ul li:last-child a {
-    border: none;
 }
 
 #top-menu li:last-child ul {
