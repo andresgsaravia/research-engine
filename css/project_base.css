@@ -2,28 +2,24 @@
 
 /* menu */
 
-.p-menu-wrapper {
+#project-menu {
     position: absolute;
     float: left;
     width: 10em;
-    overflow: hidden;
-    display: block
+    margin-top: 4em;
+    padding: 0;
 }
 
-.p-menu-wrapper * {
+#project-menu * {
     margin: 0px;
     padding: 0px;
 }
 
-.p-menu {
-    padding-top: 4em;
-}
-
-.p-menu ul {
+#project-menu ul {
     margin-bottom: 1em;
 }
 
-.p-menu li {
+#project-menu li {
     list-style: none;
     height: 2.5em;
     font-size: 1em;
@@ -34,15 +30,15 @@
     border-bottom: 1px solid #AAAAAA;
 }
 
-.p-menu li:first-child {
+#project-menu li:first-child {
     border-top: 1px solid #AAAAAA;
 }
 
-.p-menu li:hover {
+#project-menu li:hover {
     background: #F8F8F8;
 }
 
-.p-menu li a {
+#project-menu li a {
     height: 2em;
     padding-top: 0.5em;
     display: block;
@@ -50,7 +46,7 @@
     color: #444444;
 }
 
-.p-menu li a:hover {
+#project-menu li a:hover {
     text-decoration: none;
     color: #648A9E;
 }
@@ -67,18 +63,17 @@ td, th {
 
 /* Other */
 
-.p-content {
+#project-content {
     margin-left: 10em;
     margin-right: 1em;
     margin-top: 1em;
-    padding: 1em;
     background: white;
     min-height: 30em;
     box-shadow: 0em 0.1em 0.2em #C0C0C0;
     overflow: auto
 }
 
-.p-title-bar {
+#project-title-bar {
     margin-top: 1em;
     margin-left: 10em;
     font-size: 1.1em;
