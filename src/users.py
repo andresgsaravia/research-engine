@@ -182,9 +182,8 @@ class SettingsPage(GenericPage):
             user.about_me = kw["about_me"]
             user.profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(user.email.strip().lower()).hexdigest()
             self.log_and_put(user, "Updating settings.")
-            kw["info"] = "Changes saved"
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
-            self.render("settings.html", **kw)
+            self.redirect("/%s" % user.username)
 
 
 class RecoverPasswordPage(GenericPage):
