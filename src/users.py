@@ -65,12 +65,8 @@ class UserPage(GenericPage):
             return
         user = self.get_login_user()
         projects = page_user.list_of_projects()
-        if user and user.key == page_user.key:
-            kw = {"self_user_p" : True,
-                  "button_text" : "Create new project",
-                  "button_link" : "/new_project"}
-        else: kw = {}
-        self.render("user.html", page_user = page_user, projects = projects, **kw)
+        self_user_p = True if (user and user.key == page_user.key) else False
+        self.render("user.html", page_user = page_user, projects = projects, self_user_p = self_user_p)
 
 
 class SignupPage(GenericPage):

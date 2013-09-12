@@ -7,13 +7,14 @@
     margin-top: 1em;
 }
 
+
 /* Your projects section */
 
 #projects-wrapper {
     width: 25em;
     position:relative;
     float: right;
-    margin: 1em 1em 0 0;
+    margin: 1em 0.5em 0 0;
     border: 1px solid #C0C0C0;
     border-radius: 0.5em 0.5em 0 0;
 }
@@ -39,7 +40,8 @@
     padding-right: 0.3em;
 }
 
-.project {
+.project a {
+    display: block;
     padding: 0.3em;
 }
 

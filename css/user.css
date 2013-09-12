@@ -1,50 +1,55 @@
-/* Stylesheet for the user_self.html template */
+/* Stylesheet for the user.html template */
 
-.content {
-    width: 80%;
-    margin-left: 10%;
+#page-content {
     margin-top: 2em;
     min-height: 33em;
     background: white;
     box-shadow: 0 0.1em 0.3em #C0C0C0;
-    padding-left: 3em;
-    padding-top: 1em;
-
+    padding: 1em 0.5em 5em 1em;
 }
 
-.u-info {
+#user-info-section {
     position: relative;
     float: right;
-    width: 25%;
+    width: 40%;
     text-align: center;
 }
 
-.u-name {
+#user-name {
     text-align: center;
     font-size: 2.2em;
 }
 
-.u-settings {
-    text-align: center;
-    font-size: 0.8em;
-}
-
-.u-about {
-    margin: 1em;
+#user-about {
     max-height: 20em;
     overflow: auto;
+    text-align: justify;
+    padding-right: 0.5em;
 }
 
-.u-pwrapper {
+#projects-wrapper {
     box-shadow: 0 0.1em 0.3em #C0C0C0;
     border-radius: 0.5em 0.5em 0 0;
-    width: 70%;
+    width: 55%;
     border: 1px solid #C0C0C0;
 }
 
-.u-phead {
+#projects-head {
     padding-left: 1em;
     padding-top: 0.5em;
+}
+
+#new-project-button {
+    width: 7em;
+    float: right;
+    margin: 0.5em 1em 0 0;
+}
+
+#user-edit {
+    width: 6em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
 }
 
 .u-project {
