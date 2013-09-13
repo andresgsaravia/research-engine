@@ -40,7 +40,8 @@
     padding-right: 0.3em;
 }
 
-.project a {
+.project a,
+#no-projects {
     display: block;
     padding: 0.3em;
 }
@@ -48,6 +49,7 @@
 .project + .project {
     border-top: 1px solid #C0C0C0;
 }
+
 
 /* Recent activity section */
 

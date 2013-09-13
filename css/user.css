@@ -40,9 +40,13 @@
 }
 
 #new-project-button {
-    width: 7em;
+    width: 8em;
     float: right;
     margin: 0.5em 1em 0 0;
+}
+
+#new-project-button > img {
+    height: 0.9em;
 }
 
 #user-edit {
