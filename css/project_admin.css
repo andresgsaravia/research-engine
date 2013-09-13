@@ -1,7 +1,15 @@
 /* Overview of proejcts inside the projects tab */
 
-.admin-tab {
+#admin-tab {
     background: white;
+}
+
+#project-content {
+    padding: 0 0.5em 0.5em 1em;
+}
+
+#save-button {
+    font-size: 0.9em;
 }
 
 input[type=submit] {
@@ -22,12 +30,15 @@ textarea {
     height: 20em;
 }
 
-.button1 {
-    margin-top: 1em;
-    float: left;
-}
-
-.help {
+#help {
     font-size: 0.9em;
     margin-top: 0.4em;
+}
+
+.bottom-buttons {
+    float: left;
+    width: 10em;
+    font-size: 0.9em;
+    margin-right: 0.5em;
+    margin-top: 1em;
 }
