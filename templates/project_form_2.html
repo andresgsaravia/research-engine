@@ -29,8 +29,8 @@
     <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
     <textarea name="content" id="inputText" placeholder="{{content_placeholder}}"
 	      {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
-    <input type="submit" value="{{submit_button_text}}" class="bottom-buttons" {% if disabled_p %}disabled{% endif %}/>
-    <input type="button" value="Cancel" class="bottom-buttons" onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}"/>
+    <input type="submit" value="{{submit_button_text}}" class="button1" {% if disabled_p %}disabled{% endif %}/>
+    <input type="button" value="Cancel" class="button1" onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}"/>
   </form>
 
   <br/>

@@ -1,41 +1,34 @@
 /* Stylesheet for the project_form_2.html template */
 
-h2 {
-    padding-left: 1em;
-    padding-top: 0.3em;
-}
-
-h3 { 
-    margin-left: 5%;
-}
-
-form, .pre-message, .error {
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
+#project-content {
+    padding: 0 0.5em;
+    overflow: auto;
 }
 
 input[type=text] {
-    width: 100%;
+    width: 98%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     height: 1.5em;
     margin-top: 1em;
     padding-left: 0.5em;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: serif, sans-serif;
     font-size: 1em;
 }
 
 textarea {
+    width: 98%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     margin-top: 0.5em;
-    font-family: Helvetica, Arial, sans-serif;
-    width: 100%;
+    font-family: serif, sans-serif;
     padding: 0.5em;
     height: 30em;
 }
 
-.bottom-buttons {
-    margin-top: 0.5em;
-    margin-right: 0.5em;
-    font-size: 1.2em;
+.button1 {
+    float: left;
+    margin: 1em 0.5em 1em 0;
 }
 
 .help {
@@ -73,3 +66,4 @@ textarea {
 .info {
     margin-left: 2.5em;
     padding-bottom: 1em;
+}
