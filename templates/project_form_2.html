@@ -33,14 +33,13 @@
     <input type="button" value="Cancel" class="button1" onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}"/>
   </form>
 
-  <br/>
-  <div class="error">{{error_message | safe}}</div>
-  <div class="info">{{info_message | safe}}</div>
+  <span class="error">{{error_message | safe}}</span>
+  <span class="info">{{info_message | safe}}</span>
 
   {% if markdown_p %}
-  <div class="help"><p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p></div>
-  <input type="button" class="bottom-buttons" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
-  <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <p id="help">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p>
+  <div id="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <input type="button" class="button1" id="render-button" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
   <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
   {% endif %}
 

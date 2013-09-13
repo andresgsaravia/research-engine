@@ -16,9 +16,11 @@
     };
   </script>
   <style type="text/css">
-    .item-head {background: #CFDEE2;}
-    .item-head:hover, .item-head:hover a {background: #DAEBEF;}
-    .notebooks-tab {background:white;}
+    #my-notebooks .item-head {background: #CFDEE2;}
+    #other-notebooks .item-head {background: #C4CCCE;}
+    #my-notebooks .item-head:hover a {background: #DAEBEF;}
+    #other-notebooks .item-head:hover a {background: #CFDEE2;}
+    #notebooks-tab {background:white;}
     .notebook-description {padding-left: 1em; padding-right: 1em;}
     .notebook-last-updated {float: right; padding-right: 1em; color: #888888; font-size: 0.9em;}
     .notebook-owner {padding-left: 1em;}
@@ -34,13 +36,13 @@
 
 {% block p_content %}
   
-<div class="button1"><a href="/{{project.key.integer_id()}}/notebooks/new">New notebook</a></div>
+<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/notebooks/new">New notebook</a>
 
 {% if user %}
 
 <h2>My notebooks</h2>
 
-<div class="list-wrapper">
+<div class="list-wrapper" id="my-notebooks">
   {% for n in my_notebooks %}
   <div class="item">
     <div class="item-head">
@@ -61,7 +63,7 @@
 
 <h2>Other notebooks</h2>
 
-<div class="list-wrapper">
+<div class="list-wrapper" id="other-notebooks">
   {% for n in other_notebooks %}
   <div class="item">
     <div class="item-head">

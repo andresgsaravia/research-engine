@@ -121,7 +121,8 @@ class NewNotebookPage(NotebookPage):
               "submit_button_text" : "Create notebook",
               "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
               "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
-              "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+              "markdown_p" : True,
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
@@ -158,7 +159,8 @@ class NewNotebookPage(NotebookPage):
                   "submit_button_text" : "Create notebook",
                   "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
                   "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
-                  "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+                  "markdown_p" : True,
                   "name_value" : n_name,
                   "content_value" : n_description,
                   "error_message" : error_message,
@@ -176,6 +178,7 @@ class NewNotebookPage(NotebookPage):
 
 class NotebookMainPage(NotebookPage):
     def get(self, projectid, nbid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -193,7 +196,9 @@ class NotebookMainPage(NotebookPage):
             page = 0
         notes, next_page_cursor, more_p = self.get_notes_list(notebook, page)
         self.render("notebook_main.html", project = project, notebook = notebook, 
-                    notes = notes, page = page, more_p = more_p)
+                    notes = notes, page = page, more_p = more_p,
+                    user_is_owner_p = True if (user and notebook.owner == user.key) else False,
+                    owner = notebook.owner.get())
 
 
 class NewNotePage(NotebookPage):
@@ -221,7 +226,7 @@ class NewNotePage(NotebookPage):
               "submit_button_text" : "Create note",
               "cancel_url" : "%s/%s" % (parent_url, nbid),
               "markdown_p" : True,
-              "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
@@ -265,7 +270,7 @@ class NewNotePage(NotebookPage):
                   "submit_button_text" : "Create note",
                   "cancel_url" : "%s/%s" % (parent_url ,notebook.key.integer_id()),
                   "markdown_p" : True,
-                  "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
                   "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
@@ -309,7 +314,8 @@ class NotePage(NotebookPage):
         elif visitor_p and not project.user_is_author(user):
             error_message = "You are not an author in this project."
         self.render("notebook_note.html", project = project, visitor_p = visitor_p, error_message = error_message,
-                    notebook = notebook, note = note, comments = comments, new_comment = self.request.get("new_comment"))
+                    notebook = notebook, note = note, comments = comments, new_comment = self.request.get("new_comment"),
+                    user_is_owner_p = True if (user and notebook.owner == user.key) else False)
 
     def post(self, projectid, nbid, note_id):
         user = self.get_login_user()
@@ -355,7 +361,8 @@ class NotePage(NotebookPage):
         comments = self.get_comments_list(note)
         self.render("notebook_note.html", project = project, visitor_p = visitor_p,
                     notebook = notebook, note = note, comments = comments, 
-                    comment = comment, error_message = error_message)
+                    comment = comment, error_message = error_message,
+                    user_is_owner_p = True if (user and notebook.owner == user.key) else False)
 
 
 class EditNotebookPage(NotebookPage):
@@ -383,7 +390,7 @@ class EditNotebookPage(NotebookPage):
               "content_placeholder" : "Description of the notebook",
               "submit_button_text" : "Save Changes",
               "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-              "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
               % (nbs_url, nb_url, notebook.name),
               "name_value" : notebook.name,
@@ -431,7 +438,7 @@ class EditNotebookPage(NotebookPage):
                   "content_placeholder" : "Description of the notebook",
                   "submit_button_text" : "Save Changes",
                   "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-                  "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
                   "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
                   % (nbs_url, nb_url, notebook.name),
                   "name_value" : n_name,
@@ -480,7 +487,7 @@ class EditNotePage(NotebookPage):
               "submit_button_text" : "Save changes",
               "markdown_p" : True,
               "cancel_url" : note_url,
-              "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
               "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a> / <a href="%s">%s</a>' 
               % (nbs_url, nb_url, notebook.name, note_url, note.title),
               "name_value" : note.title, "content_value" : note.content,
@@ -529,7 +536,7 @@ class EditNotePage(NotebookPage):
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
                   "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-                  "more_head" : "<style>.notebooks-tab {background: white;}</style>",
+                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
                   "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}

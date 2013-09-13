@@ -20,8 +20,8 @@
 {% endblock %}
 
 {% block p_content %}
-  <div class="note-head">
-    <div class="button1"><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">Edit</a></div>
+  <div id="note-head">{% if user_is_owner_p %}
+    <a class="button1" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">Edit</a>{% endif %}
     <div class="note-title">{{note.title}}</div>
     <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
   </div>
