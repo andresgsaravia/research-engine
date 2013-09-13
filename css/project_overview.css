@@ -24,7 +24,13 @@ h2, h3 {
 }
 
 #authors-list {
+    overflow: auto;
     margin-top: 0.5em;
+}
+
+.p-author {
+    float:  left;
+    margin-right: 0.5em;
 }
 
 .p-author a {

@@ -58,9 +58,11 @@
 <div class="error">{{error}}</div>
 
 <h3>Current authors:</h3>
-{% for a in authors %}
-<div class="p-author"><a href="/{{a.username}}">{{a.username.capitalize()}}</a></div>
-{% endfor %}
+<div id="authors-list">
+  {% for a in authors %}
+  <div class="p-author"><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}"/> {{a.username.capitalize()}}</a></div>
+  {% endfor %}
+</div>
 <a class="button1 bottom-buttons" href="/{{project.key.integer_id()}}/invite">Invite a collaborator</a>
 <a class="button1 bottom-buttons" href="#" onClick="alert('\'Leave this project\' is not implemented yet... sorry.')">Leave this project</a>
 

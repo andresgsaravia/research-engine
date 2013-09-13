@@ -69,3 +69,7 @@ textarea {
     overflow: auto;
     border: 1px solid #AAAAAA;
 }
+
+.info {
+    margin-left: 2.5em;
+    padding-bottom: 1em;
