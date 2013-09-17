@@ -19,7 +19,7 @@
 {% if projects %}
   {% for p in projects %}
   <div class="project">
-    <a href="/{{p.key.integer_id()}}">&rarr; {{p.name}}</a>
+    <a href="/{{p.key.integer_id()}}">&rarr; {{p.name | safe}}</a>
   </div>
   {% endfor %}
 {% else %}

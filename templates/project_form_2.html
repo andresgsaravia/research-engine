@@ -3,15 +3,8 @@
 {% block p_head %}
   <link href="/css/project_form_2.css" rel="stylesheet" type="text/css" />
   {% if markdown_p %}
-  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <script type="text/javascript" src="/js/showdown.js"></script>
   <script type="text/javascript" src="/js/preview.js"></script>
-  <script type="text/javascript">
-    MathJax.Hub.Config({
-        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
-        TeX: {equationNumbers: {autoNumber: "AMS"} }
-    });
-  </script>
   {% endif %}
   {{more_head | safe}}
 {% endblock %}

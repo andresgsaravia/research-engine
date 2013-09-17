@@ -4,6 +4,13 @@
 {% block head %}
     <link href="/css/project_base.css" rel="stylesheet" type="text/css" />
     <title>{{project.name}}</title>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+      "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+      TeX: {equationNumbers: {autoNumber: "AMS"} }
+      });
+    </script>
     {% block p_head %}
     {% endblock %}
 {% endblock %}
@@ -34,7 +41,7 @@
 </div>
 
 <div class="p-title-bar">
-  <a href="/{{project.key.integer_id()}}">{{project.name}}</a>
+  <a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a>
   {% block title_bar_extra %} {% endblock %}
 </div>
 
