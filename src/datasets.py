@@ -87,7 +87,7 @@ class MainPage(DataPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        self.render("datasets_main.html", project = project, items = self.get_datasets(project))
+        self.render("datasets_list.html", project = project, items = self.get_datasets(project))
 
 
 class NewDataSetPage(DataPage):
@@ -110,7 +110,7 @@ class NewDataSetPage(DataPage):
               "markdown_p": True,
               "cancel_url" : "/%s/datasets" % projectid,
               "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a>' % projectid,
-              "more_head" : "<style>.datasets-tab {background: white;}</style>",
+              "more_head" : "<style>#datasets-tab {background: white;}</style>",
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
@@ -149,7 +149,7 @@ class NewDataSetPage(DataPage):
                   "markdown_p": True,
                   "cancel_url" : "/%s/datasets" % projectid,
                   "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a>' % projectid,
-                  "more_head" : "<style>.datasets-tab {background: white;}</style>",
+                  "more_head" : "<style>#datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
                   "error_message" : error_message,
@@ -202,7 +202,7 @@ class EditDataSetPage(DataPage):
               "markdown_p": True,
               "cancel_url" : base_url + "/" + dataset_id,
               "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
-              "more_head" : "<style>.datasets-tab {background: white;}</style>",
+              "more_head" : "<style>#datasets-tab {background: white;}</style>",
               "name_value" : dataset.name,
               "content_value" : dataset.description,
               "disabled_p" : True if visitor_p else False,
@@ -249,7 +249,7 @@ class EditDataSetPage(DataPage):
                   "markdown_p": True,
                   "cancel_url" : base_url + '/' + dataset_id,
                   "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
-                  "more_head" : "<style>.datasets-tab {background: white;}</style>",
+                  "more_head" : "<style>#datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
                   "error_message" : error_message,
@@ -288,7 +288,7 @@ class NewDataConceptPage(DataPage):
               "cancel_url" : "/%s/datasets/%s" % (projectid, dataset_id),
               "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a> / <a href="/%s/datasets/%s">%s</a>' 
               % (projectid, projectid, dataset_id, dataset.name),
-              "more_head" : "<style>.datasets-tab {background: white;}</style>",
+              "more_head" : "<style>#datasets-tab {background: white;}</style>",
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
@@ -333,7 +333,7 @@ class NewDataConceptPage(DataPage):
                   "cancel_url" : "/%s/datasets/%s" % (projectid, dataset_id),
                   "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a> / <a href="/%s/datasets/%s">%s</a>' 
                   % (projectid, projectid, dataset_id, dataset.name),
-                  "more_head" : "<style>.datasets-tab {background: white;}</style>",
+                  "more_head" : "<style>#datasets-tab {background: white;}</style>",
                   "name_value" : d_name,
                   "content_value" : d_description,
                   "error_message" : error_message,

@@ -13,12 +13,10 @@
   <form method="post">
     <input type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus {% if disabled_p %}disabled{% endif %}/>
     <textarea name="description" placeholder="Description of the dataset" {% if disabled_p %}disabled{% endif %}>{{description}}</textarea>
-    <div  class="bottom-buttons">
-      <input type="submit" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
-      <input type="button" value="Cancel" 
-	     onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'" 
-	     {% if disabled_p %}disabled{% endif %}/>
-    </div>
+    <input type="submit" value="Save changes" class="button1" {% if disabled_p %}disabled{% endif %}/>
+    <input type="button" value="Cancel" class="button1"
+	   onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'" 
+	   {% if disabled_p %}disabled{% endif %}/>
   </form>
 
 

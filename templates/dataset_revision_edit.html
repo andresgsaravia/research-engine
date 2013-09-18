@@ -16,20 +16,16 @@
     
 {% block dv_content %}
 
-<div class="dv-content">
-  <h3>Edit revision</h3>
-  <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
-    <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');"
-	      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea><br/>
-    <div class="an-input">Data File: <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
-    <div class="an-input">New file (optional): <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
-    <div class="warning">WARNING: If you upload a new file, the previous file will be lost.</div>
-    <div class="an-input">
-      <input type="submit" value="Update revision" {% if disabled_p %}disabled{% endif %}/>
-      <input type="button" value="Cancel" onClick="window.location = '{{cancel_url}}'" {% if disabled_p %}disabled{% endif %}/>
-    </div>
-  </form>
-</div>
+<h3>Edit revision</h3>
+<form method="post" action="{{upload_url}}" enctype="multipart/form-data">
+  <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');"
+	    placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea><br/>
+  <div id="current-file">Current data file: <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
+  <div id="new-file">New data file (optional): <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
+  <div id="warning">WARNING: If you upload a new file, the previous file will be lost.</div>
+  <input type="submit" class="button1" value="Update revision" {% if disabled_p %}disabled{% endif %}/>
+  <input type="button" class="button1" value="Cancel" onClick="window.location = '{{cancel_url}}'" {% if disabled_p %}disabled{% endif %}/>
+</form>
  
 <div class="error">{{error_message}}</div>
 

@@ -1,35 +1,41 @@
 /* Stylesheet for the dataset_revision_edit.html template */
 
-.dr-navbar .dr-revisions-tab {
+#dr-navbar #dr-revisions-tab {
     background: #D0B1B1;
 }
 
-.dr-navbar .dr-new-tab:hover {
+#dr-navbar #dr-revisions-tab:hover {
     background: #D0B1B1;
 }
 
-.dv-content {
-    margin-top: 2em;
-    margin-left: 2em;
+h3 {
+    margin-left: 1%;
+}
+
+form {
+    width: 95%;
+    margin-top: 1em;
+    margin-left: 1%;
 }
 
 textarea {
-    width: 80%;
+    width: 100%;
     height: 20em;
     padding: 0.5em;
+    margin-bottom: 1em;
+    font-size: 1em;
 }
 
-.an-input {
-    margin-top: 0.5em;
+.button1 {
+    font-size: 0.9em;
+    float: left;
+    margin-top: 1em;
 }
 
 .help {
     font-size: 0.9em;
-    margin-left: 2em;
-}
-
-input[type=file] {
-    width: 60em;
+    margin-left: 1%;
+    margin-top: 4em;
 }
 
 .warning {
@@ -44,10 +50,11 @@ input[type=file] {
 }
 
 #previewArea {
-    margin: 1%;
+    margin-left: 1%;
+    margin-top: 0.5em;
     padding: 0.5em;
-
-    width: 80%;
+    min-height: 20em;
+    width: 95%;
     resize: both;
     overflow: auto;
     border: 1px solid #AAAAAA;

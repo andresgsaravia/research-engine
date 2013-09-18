@@ -16,15 +16,15 @@
 
 
 {% block p_content %}
-  <div class="dr-head">
-    <div class="dr-date">Last Updated: {{datac.last_updated.strftime("%d-%b-%Y")}}</div>
-    <div class="dr-name">{{datac.name}}</div>
+  <div id="dr-head">
+    <div id="dr-date">Last Updated: {{datac.last_updated.strftime("%d-%b-%Y")}}</div>
+    <div id="dr-name">{{datac.name}}</div>
   </div>
   
-  <div class="dr-navbar">
-    <a class="dr-revisions-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a>
-    <a class="dr-new-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">Upload new revision</a>
-    <a class="dr-info-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit">Edit info</a>
+  <div id="dr-navbar">
+    <a id="dr-revisions-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a>
+    <a id="dr-new-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">Upload new revision</a>
+    <a id="dr-info-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit">Edit info</a>
   </div>
     
   {% block dv_content %}

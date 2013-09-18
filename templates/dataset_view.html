@@ -24,7 +24,7 @@
     .item-head {background: #F2C7C7;}
     .item-head a {color: #380000;}
     .item-head:hover, .item-head:hover a {background: #FED9D9; color: #380000;}
-    .datasets-tab {background:white;}
+    #datasets-tab {background:white;}
     .item + .item {border-top: 1px solid #AD9696}
     .dataset-description {padding-left: 1em; padding-right: 1em;}
     .dataset-last-updated {color: #888888; font-size: 0.9em; padding-left:1em;}
@@ -41,8 +41,8 @@
 
 {% block p_content %}
 
-<div class="button1"><a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data">New data concept</a></div>
-<div class="button1"><a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">Edit Dataset</a></div>
+<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data">New data concept</a>
+<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">Edit Dataset</a>
 
 <h2>{{dataset.name}}</h2>
 
