@@ -1,19 +1,15 @@
 /* Stylesheet for the wiki_base.html template */
 
-.wiki-tab {
+#wiki-tab {
     background: white;
 }
 
-.p-content {
-    padding: 0;
-}
-
-.w-navbar {
+#w-navbar {
     overflow: auto;
     background: white;
 }
 
-.w-navbar a {
+#w-navbar a {
     display: block;
     position: relative;
     float: right;
