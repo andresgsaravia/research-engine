@@ -24,9 +24,9 @@
   <style type="text/css">
     .item-head {background: #C6E0C7;}
     .item-head a {color: #152815}
-    .item-head:hover, .item-head:hover a {background: #D6F9D8; color: ##152815}
+    .item-head:hover, .item-head:hover a {background: #D6F9D8; color: #152815}
     .item + .item {border-top: 1px solid #889B89;}
-    .writings-tab {background:white;}
+    #writings-tab {background:white;}
     .writing-description {padding-left: 1em; padding-right: 1em;}
     .writing-status {color: #555555; padding-left: 1em;}
     .writings-last-updated {color: #888888; font-style: italic; float:right; padding-right: 1em; }
@@ -41,7 +41,7 @@
 
 {% block p_content %}
 
-<div class="button1"><a href="/{{project.key.integer_id()}}/writings/new">New collaborative writing</a></div>
+<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/writings/new">New writing</a>
 <h2>Collaborative Writings</h2>
 
 

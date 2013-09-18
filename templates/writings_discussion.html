@@ -18,7 +18,7 @@
   <div class="help">
     <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
   </div>
-  <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
+  <input type="submit" class="button1" value="Post comment" {% if disabled_p %}disabled{% endif %}/>
 </form>
 
 <div class="error">{{error_message}}</div>
@@ -27,8 +27,8 @@
   {% for c in comments %}
   <div class="comment">
     <div class="c-meta">
-      <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
-      <div class="c-author">{{c.author.get().username.capitalize()}}</div>
+      <span class="c-date">{{c.date.strftime("%d-%b-%Y")}}</span>
+      <span class="c-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a> wrote:</span>
     </div>
     <div class="c-content">{{c.comment | md | safe}}</div>
   </div>

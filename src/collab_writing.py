@@ -107,7 +107,7 @@ class NewWritingPage(WritingPage):
               "submit_button_text" : "Create writing",
               "cancel_url" : "/%s/writings" % projectid,
               "title_bar_extra" : '/ <a href="/%s/writings">Collaborative writings</a>' % projectid,
-              "more_head" : "<style>.writings-tab {background: white;}</style>",
+              "more_head" : "<style>#writings-tab {background: white;}</style>",
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
@@ -144,7 +144,7 @@ class NewWritingPage(WritingPage):
                   "submit_button_text" : "Create writing",
                   "cancel_url" : "/%s/%s/writings" % projectid,
                   "title_bar_extra" : '/ <a href="/%s/%s/writings">Collaborative writings</a>' % projectid,
-                  "more_head" : "<style>.writings-tab {background: white;}</style>",
+                  "more_head" : "<style>#writings-tab {background: white;}</style>",
                   "name_value" : w_name,
                   "content_value" : w_description,
                   "error_message" : error_message,

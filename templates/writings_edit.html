@@ -23,8 +23,8 @@
     <div class="w-form-entry"><div class="w-form-label">Status:</div><input type="text" name="status" value="{{status}}" placeholder="Status of the writing (optional)" {% if disabled_p %}disabled{% endif %}/></div>
     <div class="w-form-entry"><div class="w-form-label">Changes:</div><input type="text" name="summary" value="{{summary}}" placeholder="Summary of changes (optional)" {% if disabled_p %}disabled{% endif %}/></div>
     
-    <input type="submit"  class="bottom-buttons" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
-    <input type="button" value="Cancel" class="bottom-buttons" 
+    <input type="submit" class="button1" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
+    <input type="button" class="button1" value="Cancel"
 	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'}" />
   </form>
 
@@ -34,7 +34,7 @@
   <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
 </div>
 
-<input type="button" class="bottom-buttons" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
+<input type="button" class="button1" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
 <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
 <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
 
