@@ -1,14 +1,10 @@
 /* Stylesheet for the forum_thread.html template */
 
-.code-tab {
+#code-tab {
     background: white;
 }
 
-.p-content {
-    padding: 0
-}
-
-.c-head {
+#c-head {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     padding-left: 1em;
@@ -19,24 +15,24 @@
     background-repeat: repeat-x;
 }
 
-.c-name {
+#c-name {
     font-size: 1.2em;
     font-weight: bold;
     color: #4B2921;
 }
 
-.c-link {
+#c-link {
     margin-top: 0.5em;
     font-size: 0.9em;
 }
 
-.c-date {
+#c-date {
     position: relative;
     float: right;
     color: #555555;
 }
 
-.c-description {
+#c-description {
     margin-left: 1em;
     margin-right: 1em;
     padding-left: 1em;
@@ -84,20 +80,19 @@
 
 .comment-form {
     margin-top: 2em;
-    margin-left: 1em;
-    margin-right: 1em;
 }
 
 textarea {
-    width: 100%;
+    width: 96%;
+    margin-left: 1%;
     height: 20em;
     padding: 0.5em;
+    font-size: 1em;
 }
 
-input[type=submit] {
-    font-size: 1.1em;
-    margin-top: 0.8em;
-    margin-bottom: 1.5em;
+.button1 {
+    margin-top: 0.5em;
+    margin-left: 1%;
 }
 
 .help {

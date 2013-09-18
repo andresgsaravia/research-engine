@@ -22,14 +22,13 @@
 
 {% block p_content %}
  
-<div class="c-wrapper">
-  <div class="c-head">
-    <div class="c-date">Last comment: {{code.last_updated.strftime("%d-%b-%Y")}}</div>
-    <div class="c-name">{{code.name}}</div>
-    <div class="c-link"><a href="{{code.link}}">External link</a></div>
-  </div>
-  <div class="c-description">{{code.description | md | safe}}</div>
+<div id="c-head">
+  <div id="c-date">Last comment: {{code.last_updated.strftime("%d-%b-%Y")}}</div>
+  <div id="c-name">{{code.name}}</div>
+  <div id="c-link"><a href="{{code.link}}">External link</a></div>
 </div>
+<div id="c-description">{{code.description | md | safe}}</div>
+
 
 
 {% for c in comments %}
@@ -45,7 +44,7 @@
 <div class="comment-form">
   <form method="post">
     <textarea name="comment" id="commentText" onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
-    <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
+    <input class="button1" type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
   </form>
 </div>
 
