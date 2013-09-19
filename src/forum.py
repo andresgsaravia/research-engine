@@ -49,22 +49,16 @@ class ForumComments(ndb.Model):
 
 class ForumPage(projects.ProjectPage):
     def get_threads(self, project, log_message = ''):
-        threads = []
-        for t in ForumThreads.query(ancestor = project.key).order(-ForumThreads.last_updated).iter():
-            self.log_read(ForumThreads, log_message)
-            threads.append(t)
-        return threads
+        self.log_read(ForumComments, "Fetching all the thread in a project's forum. ")
+        return ForumThreads.query(ancestor = project.key).order(-ForumThreads.last_updated).fetch()
 
     def get_thread(self, project, thread_id, log_message = ''):
         self.log_read(ForumThreads, log_message)
         return ForumThreads.get_by_id(int(thread_id), parent = project.key)
 
-    def get_comments(self, thread, log_message = ''):
-        comments = []
-        for c in ForumComments.query(ancestor = thread.key).order(ForumComments.date).iter():
-            self.log_read(ForumComments, log_message)
-            comments.append(c)
-        return comments
+    def get_comments(self, thread):
+        self.log_read(ForumComments, 'Fetching all the comments in a thread. ')
+        return ForumComments.query(ancestor = thread.key).order(ForumComments.date).fetch()
 
 
 class MainPage(ForumPage):
