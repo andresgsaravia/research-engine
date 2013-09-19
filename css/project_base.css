@@ -82,3 +82,8 @@ td, th {
     margin-left: 10em;
     font-size: 1.1em;
 }
+
+pre {
+    max-width: 100%;
+    overflow: auto;
+}
