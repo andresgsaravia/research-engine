@@ -11,7 +11,7 @@
   <form method="post">
     <input type="text" name="title" value="{{title_value}}" placeholder="Title of the writing." {% if disabled_p %}disabled{% endif %}/>
     <textarea name="description" placeholder="Description of the writing." {% if disabled_p %}disabled{% endif %}>{{description_value}}</textarea>
-    <input type="submit" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
+    <input type="submit" class="button1" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
   </form>
 
   <div class="error">{{error_message}}</div>

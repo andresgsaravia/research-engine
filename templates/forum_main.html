@@ -6,11 +6,11 @@
   <script type="text/javascript">
     var toggleVisibility = function (item) {
       var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
-      if (item.innerHTML.trim() == 'Show description') {
-        item.innerHTML = 'Hide description';
+      if (item.innerHTML.trim() == 'Show') {
+        item.innerHTML = 'Hide';
         infoDiv.style.maxHeight = '20em';
       } else {
-        item.innerHTML = 'Show description';
+        item.innerHTML = 'Show';
         infoDiv.style.maxHeight = '0em';
       }
     };
@@ -20,7 +20,7 @@
     .item-head a {color: black;}
     .item-head:hover, .item-head:hover a {background: #E8E8DB; color: black;}
     .item + .item {border-top: 1px solid #A5A591;}
-    .forum-tab {background:white;}
+    #forum-tab {background:white;}
     .thread-content {padding-left: 1em; padding-right: 1em;}
     .thread-author {padding-left: 1em;}
     .thread-last-updated {color: #888888; font-size: 0.9em; padding-right:1em; float: right;}
@@ -36,14 +36,14 @@
 
 {% block p_content %}
  
-<div class="button1"><a href="/{{project.key.integer_id()}}/forum/new_thread">New thread</a></div>
+<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/forum/new_thread">New thread</a>
 <h2>Forum</h2>
 
 <div class="list-wrapper">
 {% for i in items %}
   <div class="item">
     <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show</a>
       <a class="item-title" href="/{{project.key.integer_id()}}/forum/{{i.key.integer_id()}}">
 	<div class="item-count" title="Number of comments on this thread"> {{i.get_number_of_comments()}}</div>
 	{{i.title}}
