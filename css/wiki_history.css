@@ -1,15 +1,16 @@
 /* Stylesheet for the wiki_history.html template */
 
-.w-navbar .w-history-tab {
+#w-navbar #w-history-tab {
     background: white;
     border-bottom: none;
 }
 
-.w-title {
+#w-title {
+    padding-left: 1em;
+    padding-bottom: 0.3em;
     font-size: 1.5em;
     font-weight: bold;
-    margin-left: 1em;
-    margin-bottom: 1em;
+    border-bottom: 1px solid #AAAAAA;
 }
 
 .rev-meta {

@@ -2,37 +2,54 @@
 
 
 {% block dv_head %}
-  <link href="/css/dataset_concept_view.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript" language="javascript">
-    function showInfo(objid, targetid) {document.getElementById(targetid).innerHTML = document.getElementById(objid).innerHTML;}
+  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    var toggleVisibility = function (item) {
+      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
+      if (item.innerHTML.trim() == 'Show description') {
+        item.innerHTML = 'Hide description';
+        infoDiv.style.maxHeight = '20em';
+      } else {
+        item.innerHTML = 'Show description';
+        infoDiv.style.maxHeight = '0em';
+      }
+    };
   </script>
+  <style type="text/css">
+    .item:nth-of-type(even) .item-head {background: #D0D0D0;}
+    .item:nth-of-type(odd) .item-head {background: #DFDFDF;}
+    .item-head a {color: black}
+    .item-head:hover, .item-head:hover a {background: #F0F0F0;}
+    .item + .item {border-top: 1px solid #889B89;}
+    .rev-description {padding: 0 0.5em;}
+    .rev-author {padding-bottom: 0.5em; padding-left: 1em; font-size: 0.9em; color: #555555;}
+    .button1 {float:right; font-size: 0.8em; margin: 0.5em;}
+    #dr-navbar #dr-revisions-tab {background: #D0B1B1;}
+    #dr-navbar #dr-revisions-tab:hover {background: #D0B1B1;}
+  </style>
 {% endblock %}
 
     
 {% block dv_content %}
 
- <div class="dv-content">
-   {% if revisions %}
-     <div class="revisions-wrapper">
-     {% for rev in revisions %}
-       <div class="revision">
-	 <div class="date">{{rev.date.strftime("%d-%b-%Y")}}</div>
-	 <div class="author"><em>Author:</em> <a href="/{{rev.author.get().username}}">{{rev.author.get().username.title()[:20]}}</a></div>
-	 <div class="datafile"><a href="/file/{{rev.datafile}}">Download</a></div>
-	 <div class="info-link"><a href="#" onClick="showInfo('rid{{rev.key.integer_id()}}', 'mw');">Show info</a></div>
-	 <div class="meta" id="rid{{rev.key.integer_id()}}">
-	   <div class="button1"><a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}">Edit</a></div>
-	   {% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
-	 </div>
-       </div>
-     {% endfor %}
-     </div>
-     <div class="meta-window" id="mw"></div>
-   {% else %}
-     <p>There isn't any data uploaded yet. Click <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">here</a> or the <strong>Upload new revision</strong> tab above to upload the first revision.
-   {% endif %}
+{% if revisions %}
+<div class="list-wrapper">
+{% for rev in revisions %}
+  <div class="item">
+    <div class="item-head">
+      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
+      <a class="item-title" href="/file/{{rev.datafile}}">{{rev.date.strftime("%d-%b-%Y")}}</a>
+    </div>
+    <div class="item-description">
+      <a class="button1" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}">Edit</a>
+      <div class="rev-description">{% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}</div>
+      <div class="rev-author">Author: <a href="/{{rev.author.get().username}}">{{rev.author.get().username.title()[:20]}}</a></div>
+    </div>
+  </div>
+{% endfor %}
 </div>
-
-
+{% else %}
+<p>There isn't any data uploaded yet. Click <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">here</a> or the <strong>Upload new revision</strong> tab above to upload the first revision.</p>
+{% endif %}
 
 {% endblock %}

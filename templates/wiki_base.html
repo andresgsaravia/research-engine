@@ -13,13 +13,11 @@
 
 {% block p_content %}
   
-  <div class="w-navbar">
-    <a class="w-history-tab" href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">History</a>
-    <a class="w-edit-tab" href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a>
-    <a class="w-view-tab" href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">View</a>
+  <div id="w-navbar">
+    <a id="w-history-tab" href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">History</a>
+    <a id="w-edit-tab" href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a>
+    <a id="w-view-tab" href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">View</a>
   </div>
-
-
 
   {% block w_content %}
   {% endblock %}

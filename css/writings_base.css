@@ -1,13 +1,7 @@
 /* Stylesheet for the writings_base.html template */
 
-.writings-tab {
+#writings-tab {
     background: white;
-}
-
-.p-content {
-    padding-top: 0;
-    padding-left: 0;
-    padding-right: 0em;
 }
 
 .w-head {

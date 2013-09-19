@@ -85,7 +85,7 @@ class NewCodePage(CodePage):
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
         kw = {"title_bar_extra" : '/ <a href="/%s/code">Source code</a>' % projectid,
-              "more_head" : "<style>.code-tab {background: white;}</style>",
+              "more_head" : "<style>#code-tab {background: white;}</style>",
               "title" : "Add a source code repository",
               "pre_form_message" : 'Here you can add an existing <a href="https://github.com">GitHub</a> repository to your project so you can keep track of it and start a discussion.',
               "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",
@@ -138,7 +138,7 @@ class NewCodePage(CodePage):
                 error_message = "It seems that repository is already in your project. "
         if have_error:
             kw = {"title_bar_extra" : '/ <a href="/%s/code">Source code</a>' % projectid,
-                  "more_head" : "<style>.code-tab {background: white;}</style>",
+                  "more_head" : "<style>#code-tab {background: white;}</style>",
                   "title" : "Add a source code repository",
                   "pre_form_message" : 'Here you can add an existing <a href="https://github.com">GitHub</a> repository to your project so you can keep track of it and start a discussion.',
                   "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",

@@ -11,10 +11,10 @@
 
 {% block p_content %}
 
-<div class="nb-heading">
-  <div class="button1"><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">New note</a></div>
-  <div class="button1"><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">Edit notebook</a></div>
-  <div class="nb-name">{{notebook.name}}</div>
+<div id="nb-heading">{% if user_is_owner_p %}
+  <a class="button1" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">New note</a>
+  <a class="button1" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">Edit notebook</a>{% endif %}
+  <div id="nb-name"><img id="owner-picture" src="{{owner.get_profile_image(20)}}"/>{{notebook.name}}</div>
 </div>
 
 {% for note in notes %}

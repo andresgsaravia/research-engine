@@ -18,34 +18,33 @@
 
 {% block content %}
 
-<div class="p-menu-wrapper">
-  <ul class="p-menu">
-    <ul>
-      <li><div class="overview-tab"><a href="/{{project.key.integer_id()}}">Overview</a></div></li>
+<ul id="project-menu">
+  <ul>
+    <li><div id="overview-tab"><a href="/{{project.key.integer_id()}}">Overview</a></div></li>
     </ul>
-    <ul>
-      <li><div class="notebooks-tab"><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></div></li>
-      <li><div class="code-tab"><a href="/{{project.key.integer_id()}}/code">Code</a></div></li>
-      <li><div class="datasets-tab"><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></div></li>
-    </ul>
-    <ul>
-      <li><div class="wiki-tab"><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a></div></li>
-      <li><div class="writings-tab"><a href="/{{project.key.integer_id()}}/writings">Writings</a></div></li>
-      <li><div class="forum-tab"><a href="/{{project.key.integer_id()}}/forum">Forum</a></div></li>
-      <li><div class="bibliography-tab"><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></div></li>
-    </ul>
-    <ul>
-      <li><div class="admin-tab"><a href="/{{project.key.integer_id()}}/admin">Admin</a></div></li>
-    </ul>
+  <ul>
+    <li><div id="notebooks-tab"><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></div></li>
+    <li><div id="code-tab"><a href="/{{project.key.integer_id()}}/code">Code</a></div></li>
+    <li><div id="datasets-tab"><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></div></li>
   </ul>
-</div>
+  <ul>
+    <li><div id="wiki-tab"><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a></div></li>
+    <li><div id="writings-tab"><a href="/{{project.key.integer_id()}}/writings">Writings</a></div></li>
+    <li><div id="forum-tab"><a href="/{{project.key.integer_id()}}/forum">Forum</a></div></li>
+    <li><div id="bibliography-tab"><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></div></li>
+  </ul>
+    <ul>
+      <li><div id="admin-tab"><a href="/{{project.key.integer_id()}}/admin">Admin</a></div></li>
+    </ul>
+</ul>
 
-<div class="p-title-bar">
+
+<div id="project-title-bar">
   <a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a>
   {% block title_bar_extra %} {% endblock %}
 </div>
 
-<div class="p-content">
+<div id="project-content">
 
 {% block p_content %}
 {% endblock %}

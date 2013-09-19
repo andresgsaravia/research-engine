@@ -16,13 +16,13 @@
 
 {% block p_content %}
  
-<div class="thread">
-  <div class="t-head">
-    <div class="t-title">{{thread.title}}</div>
-    <div class="t-date">{{thread.date.strftime("%d-%b-%Y")}}</div>
-    <div class="t-author">by <a href="/{{thread.author.get().username}}">{{thread.author.get().username.capitalize()}}</a></div>
+<div id="thread">
+  <div id="t-head">
+    <div id="t-title">{{thread.title}}</div>
+    <div id="t-date">{{thread.date.strftime("%d-%b-%Y")}}</div>
+    <div id="t-author">by <a href="/{{thread.author.get().username}}">{{thread.author.get().username.capitalize()}}</a></div>
   </div>
-  <div class="t-content">{{thread.content | md | safe}}</div>
+  <div id="t-content">{{thread.content | md | safe}}</div>
 </div>
 
 
@@ -36,12 +36,11 @@
 </div>
 {% endfor %}
 
-<div class="comment-form">
-  <form method="post">
-    <textarea name="comment" id="commentText" onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
-    <input type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
-  </form>
-</div>
+<form method="post">
+  <textarea name="comment" id="commentText" onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
+  <input type="submit" class="button1" value="Post comment" {% if disabled_p %}disabled{% endif %}/>
+</form>
+
 
 <div class="error">{{error_message}}</div>
 

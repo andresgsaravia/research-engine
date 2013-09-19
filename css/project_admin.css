@@ -1,7 +1,15 @@
 /* Overview of proejcts inside the projects tab */
 
-.admin-tab {
+#admin-tab {
     background: white;
+}
+
+#project-content {
+    padding: 0 0.5em 0.5em 1em;
+}
+
+#save-button {
+    font-size: 0.9em;
 }
 
 input[type=submit] {
@@ -10,24 +18,47 @@ input[type=submit] {
 }
 
 input[type=text] {
-    width: 70%;
+    width: 97%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     padding: 0.5em;
+    font-size: 1em;
+    font-family: serif, sans-serif;
 }
 
 textarea {
     margin-top: 0.5em;
-    font-family: Helvetica, Arial, sans-serif;
-    width: 70%;
+    font-size: 1em;
+    font-family: serif, sans-serif;
+    width: 97%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     padding: 0.5em;
     height: 20em;
 }
 
-.button1 {
-    margin-top: 1em;
-    float: left;
-}
-
-.help {
+#help {
     font-size: 0.9em;
     margin-top: 0.4em;
+}
+
+.bottom-buttons {
+    float: left;
+    width: 10em;
+    font-size: 0.9em;
+    margin-right: 0.5em;
+    margin-top: 1em;
+}
+
+#authors-list {
+    overflow: auto;
+}
+
+.p-author {
+    float: left;
+    margin-right: 1em;
+}
+
+.p-author img {
+    border-radius: 0.2em;
 }

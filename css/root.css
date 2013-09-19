@@ -1,74 +1,61 @@
 /* For the welcome page (i.e. the root page) */
 
-#logo {
-    height: 1em;
-}
-
-.site-title {
-    font-size: 2em;
-    text-align: center;
-    font-weight: bold;
-}
-
-
-.content {
-    margin-left: 10%;
-    margin-right: 10%;
-    margin-top: 1em;
-    padding: 1em;
+#page-content {
     background: white;
-    min-height: 40em;
-    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+    box-shadow: 0 0.1em 0.2em #C0C0C0;
     overflow: auto;
-    text-align: justify;
+    margin-top: 1em;
 }
 
-.p-wrapper {
-    width: 45%;
-    overflow: auto;
-    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+
+/* Your projects section */
+
+#projects-wrapper {
+    width: 25em;
+    position:relative;
+    float: right;
+    margin: 1em 0.5em 0 0;
     border: 1px solid #C0C0C0;
     border-radius: 0.5em 0.5em 0 0;
-    margin-top: 2em;
 }
 
-.projects-title {
-    font-size: 1.5em;
+#projects-wrapper h2 {
     text-align: center;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
+    margin: 0;
+    padding: 0.3em 0;
+    background: #F5F5F5;
+    border-radius: 0.5em 0.5em 0 0;
+    border-bottom: 1px solid #C0C0C0;
+    font-size: 1.3em;
 }
 
-.project {
+#new-project-link {
+    float: right;
+    height: 0.1em;
+}
+
+#new-project-link > img {
+    height: 1.5em;
+    padding-top: 0.3em;
+    padding-right: 0.3em;
+}
+
+.project a,
+#no-projects {
+    display: block;
+    padding: 0.3em;
+}
+
+.project + .project {
     border-top: 1px solid #C0C0C0;
 }
 
-.project a {
-    display: block;
-    padding: 0.3em;
-    color: black;
-    background: #F0F0F0;
+
+/* Recent activity section */
+
+#activity-wrapper {
+    width: 40em;
+    margin-left: 1em;
 }
 
-.project a:hover {
-    background: #F8F8F8;
-    text-decoration: none;
-}
 
-.button1 {
-    float: left;
-    margin: 0.5em;
-}
-
-#no-projects {
-    border-top: 1px solid black;
-    padding: 0.5em;
-}
-
-.welcome-message {
-    padding: 1em;
-    margin-top: 3em;
-    border: 1px solid #CCCCCC;
-    border-radius: 1em 1em 1em 1em;
-    background: #F5F5F5;
-}

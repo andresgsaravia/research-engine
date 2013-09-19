@@ -9,9 +9,9 @@
 
 <div class="wikitext">
 
-  <div class="w-title">{{wikiurl.replace("_", " ")}}</div>
+  <div id="w-title">{{wikiurl.replace("_", " ")}}</div>
 
-  <div class="w-content">
+  <div id="w-content">
     {% if wikipage %}
       {{wikitext | md | safe}}
     {% else %}

@@ -1,9 +1,5 @@
-.bibliography-tab {
+#bibliography-tab {
     background: white;
-}
-
-#comment {
-    border: 1px solid #C0C0C0;
 }
 
 #comment-head {
@@ -18,6 +14,8 @@
 
 #item-title a {
     font-style: italic;
+    color: black;
+    font-size: 1.2em;
 }
 
 #comment-content {

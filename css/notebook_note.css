@@ -1,6 +1,6 @@
 /* Stylesheet for the notebook_note.css template */
 
-.notebooks-tab {
+#notebooks-tab {
     background: white;
 }
 
@@ -10,7 +10,7 @@
     padding-right: 0em;
 }
 
-.note-head {
+#note-head {
     color: black;
     display: block;
     padding-left: 1em;
@@ -18,8 +18,14 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     background-image: linear-gradient(#F8FBFC, #DDDDDD);
-    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
+    background-image: -webkit-linear-gradient(#F8FBFC, #DDDDDD);
     background-repeat: repeat-x;
+}
+
+#note-head .button1 {
+    float: right;
+    width: 5em;
+    font-size: 0.9em;
 }
 
 .note-title {

@@ -1,10 +1,10 @@
 /* Stylesheet for the dataset_concept_view.html template */
 
-.dr-navbar .dr-info-tab {
+#dr-navbar #dr-info-tab {
     background: #D0B1B1;
 }
 
-.dr-navbar .dr-info-tab:hover {
+#dr-navbar #dr-info-tab:hover {
     background: #D0B1B1;
 }
 
@@ -12,31 +12,31 @@ h3 {
     margin-left: 10%;
 }
 
+form, form * {
+    width: 95%;
+    margin-left: 2%;
+    font-size: 1em;
+}
+
 input[type=text] {
-    width: 80%;
-    margin-left: 10%;
-    font-size: 1.1em;
-    padding-left: 0.3em;
+    padding: 0.3em;
 }
 
 textarea {
-    width: 80%;
-    margin-left: 10%;
-    margin-top: 0.5em;
-    min-height: 30em;
+    min-height: 20em;
     padding: 0.5em;
 }
 
-.bottom-buttons {
-    margin-left: 10%;
+.button1 {
+    width: 8em;
+    float: left;
+    margin-bottom: 1em;
     margin-top: 0.5em;
-}
-
-.bottom-buttons > * {
-    font-size: 1.2em;
+    font-size: 0.9em;
 }
 
 .error {
-    margin-top: 1em;
-    margin-left: 10%;
+    margin-top: 4em;
+    margin-left: 2%;
+    margin-bottom: 1em;
 }

@@ -1,10 +1,5 @@
 /* Released under a GPLv3 license */
 
-/* 
-Color Scheme:
-http://colorschemedesigner.com/#3L61TlRK-w0w0
-*/
-
 
 html {
     height: 100%;
@@ -30,13 +25,12 @@ a:hover {
     text-decoration: underline;
 }
 
-.wrapper {
+#all-wrapper {
+    min-height: 100%;
     position: relative;
     background-color: white;
     margin: 0 auto;
-    min-height: 100%;
-    min-width: 750px;
-    width: 100%;
+    min-width: 60em;
     background: #F5F5F5;
 }
 
@@ -53,51 +47,60 @@ a:hover {
     color: #A6771A;
 }
 
-.content {
+#page-content {
+    width: 60em;
     padding-bottom: 3em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Menu */
 
-.menu,
-.menu ul,
-.menu li,
-.menu a {
+#top-menu,
+#top-menu ul,
+#top-menu li,
+#top-menu a {
     margin: 0 auto;
     padding: 0;
     border: none;
     outline: none;
 }
 
-.menu {
+#top-menu {
     height: 2.5em;
     background: white;
-    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+    box-shadow: 0 0 0.2em #C0C0C0;
 }
 
-.menu li {
+#top-menu-items {
+    width: 60em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#top-menu li {
     list-style: none;
     z-index: 100;
 }
 
-.menu > li {
+#top-menu-items > li {
     position: relative;
     float: left;
     display: block;
     height: 2.5em; 
-    border-right: 1px solid #808080;
 }
 
-.menu > li:last-child {
-    border-right: none;
+#top-menu-items > li:last-child {
+    width: 10em;
     float: right;
-    border-left: 1px solid #808080;
+    text-align: right;
+    padding-right: 1em;
 }
 
-.menu li a {
+#top-menu li a {
     display: block;
     padding: 0 1em;
-    margin: 1em 0;
+    padding-top: 1.2em;
     text-decoration: none;
     color: #444444;
     font-weight: bold;
@@ -105,60 +108,58 @@ a:hover {
     font-size: 0.8em;
 }
 
-.menu li:hover {
+#top-menu li:hover {
     background: #537AD5;
 }
 
-.menu li:hover > a {
+#top-menu li:hover > a {
     color: white;
 }
 
-.menu ul {
+#top-menu ul {
     position: absolute;
     top: 2.5em;
-    left: 0px;
+    left: 0;
     opacity: 0;
     background: white;
-    border: 1px solid #CCCCCC;
+    box-shadow: 0 0.1em 0.1em #C0C0C0;
 }
 
-.menu li:hover > ul {
+#top-menu li:hover > ul {
     opacity: 1;
 }
 
-.menu ul li {
+#top-menu ul li {
     height: 0;
     overflow: hidden;
     padding: 0;
 }
 
-.menu li:hover > ul li {
+#top-menu li:hover > ul li {
     height: 2.5em;
     overflow: visible;
     padding: 0;
 }
 
-.menu ul li a {
-    width: 230px;
+#top-menu ul li a {
+    width: 15em;
     padding: 1em 0 1em 2.5em;
     margin: 0;
-    border: none;
-    border-bottom: 1px solid #CCCCCC;
 }
 
-
-.menu ul li:last-child a {
-    border: none;
+#top-menu li:last-child ul {
+    right: 0;
+    left: -4em;
 }
 
-.menu li:last-child ul {
-    right: 0px;
-    left: -100px;
+#home-logo {
+    height: 2em;
+    padding: 0 0.5em;
 }
 
 /* Footer */
 
-.footer {
+#footer {
     width: 100%;
     min-height: 32px;
     height: 3em;
@@ -171,50 +172,42 @@ a:hover {
     padding-bottom: 0.5em;
 }
 
-.footer * {
-    margin: 0px;
-    padding: 0px;
+#footer * {
+    margin: 0;
+    padding: 0;
 }
 
-.footer .app-engine-image {
+#footer-app-engine-image {
     padding-top: 0.4em;
     position: relative;
     float:right;
 }
 
-.footer p {
+#footer p {
     padding-top: 0.4em;
 }
 
 /* Other */
 
-.button1 a, input[type=submit], button {
+.button1 {
     display: block;
-    background-color: rgb(234, 234, 234);
-    background-image: linear-gradient(rgb(250, 250, 250), rgb(234, 234, 234));
-    background-repeat: repeat-x;
-    color: rgb(51, 51, 51);
-    position: relative;
-    margin-top: 0.2em;
-    margin-right: 2em;
+    background-color: rgb(234,234,234);
+    background-image: linear-gradient(rgb(250,250,250), rgb(224,224,224));
+    color: rgb(51,51,51);
     padding: 0.3em;
-    border-radius: 3px 3px 3px 3px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(221, 221, 221) rgb(221, 221, 221) rgb(197, 197, 197);
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.075);
+    border-radius: 0.2em;
+    border: 1px solid rgb(197,197,197);
+    box-shadow: 0 0.1em 0.2em #C0C0C0;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    text-align: center;
 }
 
-.button1 a:hover, input[type=submit]:hover, button:hover {
+.button1:hover {
     text-decoration: none;
-    color: rgb(255, 255, 255);
-    background-color: rgb(48, 114, 179);
-    background-image: linear-gradient(rgb(89, 155, 205), rgb(48, 114, 179));
-    background-repeat: repeat-x;
-    border-color: rgb(42, 101, 160);
-}
-
-.button1 a {
-    float: right;
+    color: white;
+    background-color: rgb(48,114,179);
+    background-image: linear-gradient(rgb(89,155,205),rgb(48,114,179));
+    border-color: rgb(42,101,160);
 }

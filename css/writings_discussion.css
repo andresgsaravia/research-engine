@@ -7,17 +7,18 @@
 }
 
 textarea {
-    width: 90%;
-    margin-left: 5%;
+    width: 93%;
+    margin-left: 1em;
     margin-top: 1em;
     padding: 0.5em;
     height: 7em;
+    font-size: 1em;
 }
 
-input[type=submit] {
+.button1 {
     margin-left: 5%;
     margin-top: 0.5em;
-    font-size: 1.1em;
+    font-size: 0.9em;
 }
 
 .comments-wrapper {
@@ -25,11 +26,11 @@ input[type=submit] {
 }
 
 .comment {
-    margin-top: 1em;
     min-height: 4em;
-    margin-left: 5%;
-    margin-right: 5%;
-    box-shadow: 0em 0.1em 0.2em #C0C0C0;
+}
+
+.comment + .comment {
+    border-top: 2px solid #A7C1A8;
 }
 
 .comment:nth-of-type(even) {
@@ -41,12 +42,7 @@ input[type=submit] {
 }
 
 .c-meta {
-    position: relative;
-    float: right;
-    padding-top: 1em;
-    padding-right: 1em;
-    text-align: right;
-    width: 10em;
+    padding: 0.5em;
 }
 
 .c-date {
@@ -55,7 +51,6 @@ input[type=submit] {
 }
 
 .c-content {
-    margin-right: 12em;
     text-align: justify;
     padding: 1em;
 }

@@ -1,16 +1,10 @@
 /* Stylesheet for the dataset_concept_base.html template */
 
-.datasets-tab {
+#datasets-tab {
     background: white;
 }
 
-.p-content {
-    padding-top: 0;
-    padding-left: 0;
-    padding-right: 0em;
-}
-
-.dr-head {
+#dr-head {
     color: black;
     display: block;
     min-height: 2.5em;
@@ -23,7 +17,7 @@
     background-repeat: repeat-x;
 }
 
-.dr-name {
+#dr-name {
     font-size: 1.2em;
     font-weight: bold;
     margin-top: 0.5em;
@@ -31,7 +25,7 @@
     margin-right: 4em;
 }
 
-.dr-date {
+#dr-date {
     font-size: 0.8em;
     color: #888888;
     position: relative;
@@ -40,13 +34,13 @@
 
 }
 
-.dr-navbar {
+#dr-navbar {
     overflow: auto;
     background: #D4CDCD;
     padding-bottom: 0.3em;
 }
 
-.dr-navbar a {
+#dr-navbar a {
     display: block;
     position: relative;
     float: left;
@@ -61,7 +55,7 @@
     font-size: 0.9em;
 }
 
-.dr-navbar a:hover {
+#dr-navbar a:hover {
     text-decoration: none;
     background: #ECD7B9;
 }

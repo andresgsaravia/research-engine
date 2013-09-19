@@ -6,22 +6,21 @@
 
 {% block p_content %}
 
-<h3>{{project.name | safe}}</h3>
-<div class="p-description">{{project.description | md | safe}}</div>
+<a id="edit-project" class="button1" href="/{{project.key.integer_id()}}/admin">Edit</a>
+<h2><em>{{project.name | safe}}</em></h2>
+<div id="project-description">{{project.description | md | safe}}</div>
 
-<div class="p-authors">
-  <h3>Authors:</h3>
-  <div class="authors-list">
+<h3>Authors:</h3>
+<div id="authors-list">
   {% for a in authors %}
     <div class="p-author"><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}"/> {{a.username.capitalize()}}</a></div>
   {% endfor %}
-
 </div>
 
-<div class="p-latest-activity">
-  <div class="p-updated">Last update: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
+<div id="latest-activity">
+  <div id="last-updated">Last updated: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
   <h3>Latest activity</h3>
-  <div class="updates">
+  <div id="updates">
     {% for u in updates %}
     <div class="update">
       {{u.get_description_html(project) | safe}}

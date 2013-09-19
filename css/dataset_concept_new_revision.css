@@ -1,31 +1,32 @@
 /* Stylesheet for the dataset_concept_new_revision.html template */
 
-.dr-navbar .dr-new-tab {
+#dr-navbar #dr-new-tab {
     background: #D0B1B1;
 }
 
-.dr-navbar .dr-new-tab:hover {
+#dr-navbar #dr-new-tab:hover {
     background: #D0B1B1;
 }
 
 .dv-content {
-    margin-top: 2em;
-    margin-left: 2em;
+    margin: 1em; 
 }
 
 textarea {
-    width: 80%;
+    width: 95%;
     height: 20em;
     padding: 0.5em;
+    font-size: 1em;
+    margin-bottom: 1em;
 }
 
-.an-input {
-    margin-top: 0.5em;
+#upload-button {
+    margin-top: 0.8em;
+    font-size: 0.9em;
 }
 
 .help {
     font-size: 0.9em;
-    margin-left: 2em;
 }
 
 input[type=file] {
@@ -39,10 +40,11 @@ input[type=file] {
 }
 
 #previewArea {
-    margin: 1%;
     padding: 0.5em;
-
-    width: 80%;
+    width: 95%;
+    margin-top: 1em;
+    font-size: 1em;
+    min-height: 20em;
     resize: both;
     overflow: auto;
     border: 1px solid #AAAAAA;

@@ -14,18 +14,18 @@
   <form method="post" action="{{upload_url}}" enctype="multipart/form-data">
     <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');"
 	      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{meta}}</textarea><br/>
-    <div class="an-input">Data file: <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
-    <div class="an-input"><input type="submit" value="Upload data" {% if disabled_p %}disabled{% endif %}/></div>
+    <div>Data file: <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
+    <input type="submit" class="button1" id="upload-button" value="Upload data" {% if disabled_p %}disabled{% endif %}/>
   </form>
-</div>
+
  
-<div class="error">{{error_message}}</div>
+  <div class="error">{{error_message}}</div>
 
-<div class="help">
-  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+  <div class="help">
+    <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+  </div>
+
+  <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div id="previewArea"><em>Start typing above to see the preview here.<em></div>
 </div>
-
-<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
-
 {% endblock %}

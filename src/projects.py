@@ -300,7 +300,7 @@ class InvitePage(ProjectPage):
               "submit_button_text" : "Send invitation",
               "cancel_url" : "/%s/admin" % projectid,
               "title_bar_extra" : '/ <a href="/%s/admin">Admin</a>' % projectid,
-              "more_head" : "<style>.admin-tab {background: white;}</style>"}
+              "more_head" : "<style>#admin-tab {background: white;}</style>"}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
@@ -324,7 +324,7 @@ class InvitePage(ProjectPage):
               "submit_button_text" : "Send invitation",
               "cancel_url" : "/%s/admin" % projectid,
               "title_bar_extra" : '/ <a href="/%s/admin">Admin</a>' % projectid,
-              "more_head" : "<style>.admin-tab {background: white;}</style>"}
+              "more_head" : "<style>#admin-tab {background: white;}</style>"}
         have_error = False
         kw["name_value"] = self.request.get("name")
         kw["content_value"] = self.request.get("content")
@@ -341,4 +341,6 @@ class InvitePage(ProjectPage):
         if not have_error:
             email_messages.send_invitation_to_project(project = project, inviting = user, invited = i_user)
             kw["info_message"] = "Invitation sent"
+            kw["name_value"] = ''
+            kw["content_value"] = ''
         self.render("project_form_2.html", project = project, **kw)

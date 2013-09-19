@@ -1,71 +1,69 @@
 /* Stylesheet for the project_form_2.html template */
 
-h2 {
-    padding-left: 1em;
-    padding-top: 0.3em;
+#project-content {
+    padding: 0 0.5em;
+    overflow: auto;
 }
 
-h3 { 
-    margin-left: 5%;
-}
-
-form, .pre-message, .error {
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
+form {
+    overflow: auto
 }
 
 input[type=text] {
-    width: 100%;
+    width: 98%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     height: 1.5em;
     margin-top: 1em;
     padding-left: 0.5em;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: serif, sans-serif;
     font-size: 1em;
 }
 
 textarea {
+    width: 97%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     margin-top: 0.5em;
-    font-family: Helvetica, Arial, sans-serif;
-    width: 100%;
+    font-family: serif, sans-serif;
+    font-size: 1em;
     padding: 0.5em;
     height: 30em;
 }
 
-.bottom-buttons {
-    margin-top: 0.5em;
-    margin-right: 0.5em;
-    font-size: 1.2em;
-}
-
-.help {
+.button1 {
+    float: left;
+    margin: 1em 0.5em 1em 0;
     font-size: 0.9em;
-    margin-left: 5%;
 }
 
-.preview-title {
-    margin-left: 0.5em;
-    font-size: 1.2em;
-    font-weight: bold;
+#help {
+    font-size: 0.9em;
 }
 
-.preview-subtitle {
-    margin-left: 0.8em;
-    margin-top: 0.5em;
+#preview-subtitle {
+    padding-top: 1.5em;
     font-size: 0.8em;
     color: #777777;
+    border-top: 1px solid #C0C0C0;
 }
 
 #previewArea {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: serif, sans-serif;
+    font-size: 1em;
     margin-top: 1em;
     margin-bottom: 1em;
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 1% auto;
+    margin-right: 1% auto;
     padding: 0.5em;
     height: 30em;
-    width: 90%;
+    width: 98%;
     resize: both;
     overflow: auto;
     border: 1px solid #AAAAAA;
+}
+
+.info {
+    margin-left: 2.5em;
+    padding-bottom: 1em;
 }

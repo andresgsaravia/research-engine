@@ -1,25 +1,31 @@
 /* Stylesheet for the notebook_main.html template */
 
-.notebooks-tab {
+#notebooks-tab {
     background: white;
 }
 
-.p-content {
-    padding: 0;
+.button1 {
+    width: 8em;
+    margin: 0.5em;
+    float: right;
+    font-size: 0.9em;
 }
 
-.nb-heading {
-    padding-top: 0.5em;
-    padding-bottom: 1em;
+#nb-heading {
     background-color: #DDE8EB;
     background-image: linear-gradient(#F8FBFC, #CFDEE2);
     background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
     background-repeat: repeat-x;
+    overflow: auto;
 }
 
-.nb-name {
-    margin-left: 1em;
-    margin-top: 0.2em;
+#owner-picture {
+    margin-right: 0.5em;
+    border-radius: 0.2em;
+}
+
+#nb-name {
+    margin: 0.5em;
     font-size: 1.5em;
     font-weight: bold;
 }
@@ -32,7 +38,7 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     background-image: linear-gradient(#F8FBFC, #DDDDDD);
-    background-image: -webkit-linear-gradient(#F8FBFC, #CFDEE2);
+    background-image: -webkit-linear-gradient(#F8FBFC, #DDDDDD);
     background-repeat: repeat-x;
     border-top: 1px solid #AAAAAA;
 }

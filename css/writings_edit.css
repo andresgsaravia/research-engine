@@ -37,10 +37,11 @@ input[type=text] {
     width: 6em;
 }
 
-.bottom-buttons {
+.button1 {
     margin-top: 1em;
+    float: left;
+    font-size: 0.9em;
     margin-left: 0.5em;
-    font-size: 1.2em;
 }
 
 .error {
@@ -50,7 +51,7 @@ input[type=text] {
 
 .help {
     margin-left: 0.5em;
-    margin-top: 1em;
+    margin-top: 3.5em;
 }
 
 .preview-title {
@@ -60,7 +61,7 @@ input[type=text] {
 }
 
 .preview-subtitle {
-    margin-top: 0.5em;
+    margin-top: 6em;
     margin-left: 0.8em;
     font-size: 0.8em;
     color: #777777;

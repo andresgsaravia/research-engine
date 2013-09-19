@@ -7,15 +7,12 @@
 
 {% block content %}
 
-<h2>Your basic information</h2>
-
-<div class="profile-image">
-  <p>Profile picture</p>
-  <img src="{{user.get_profile_image(120)}}">
-  <p class="footnote">Retrieved from <a href="https://secure.gravatar.com/">Gravatar</a> using your email.</p>
+<div id="profile-image">
+  <img src="{{user.get_profile_image(150)}}">
+  <p class="footnote">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
 </div>
 
-<form method="post">
+<form method="post" id="settings-box">
   <table>
 
     <tr>
@@ -57,11 +54,10 @@
 
   </table>
   <div class="submit-button">
-    <input type="submit" value="Submit changes">
+    <input type="submit" class="button1" value="Save changes">
   </div>
 
   <br/>
-  <div class="info">{{info | safe}}</div>
   <div class="error">{{error | safe}}</div>
 
 </form>
