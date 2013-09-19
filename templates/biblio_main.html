@@ -18,15 +18,14 @@
     .item-head {background: #E0E0E0;}
     .item-head a {color: black;}
     .item-head:hover, .item-head:hover a {background: #E8E8E8; color: black;}
-    .bibliography-tab {background:white;}
-    .item-authors {padding-top: 0.8em; padding-left: 1em;}
-    .item-date {padding-left: 1em;}
+    #bibliography-tab {background:white;}
+    .item-authors {padding: 1em;}
     .item-author {font-style: italic}
     .item-author::after {content: ", ";}
     .item-author:last-child::after {content: ""}
-    .item-source {padding-left: 1em;}
+    .item-source {padding-left: 1em; padding-top: 0.5em;}
     .item-publication-kind {font-weight: bold;}
-    .item-identifier {display: block;}
+    .item-identifier::after {content: url("/static/icons/16x16/external.png");}
     .item-count::before {content: url("/static/icons/16x16/comment.png");}
   </style>
 {% endblock %}
@@ -39,7 +38,7 @@
 
 {% block p_content %}
  
-<div class="button1"><a href="/{{project.key.integer_id()}}/bibliography/new_item">New entry</a></div>
+<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/bibliography/new_item">New entry</a>
 <h2>Bibliography</h2>
 
 <div class="list-wrapper">
@@ -53,21 +52,22 @@
       </a>
     </div>
     <div class="item-description">
+      <div class="item-source">
+	{% if i.kind == "article" %} 
+	<span class="item-publication-kind"> {{i.metadata["publication"]}}</span>
+	<span class="item-date">({{i.metadata["date"]}})</span>
+	<a class="item-identifier" href="{{i.link}}">doi:{{i.identifier}}</a>
+	{% elif i.kind == "arXiv" %}
+	<span class="item-publication-kind">arXiv preprint</span>
+	<span class="item-date">({{i.metadata["date"]}})</span>
+	<a class="item-identifier" href="{{i.link}}">{{i.identifier}}</a>
+	{% endif %}	
+      </div>
       <div class="item-authors"> Authors:
 	{% for a in i.metadata["authors"] %}
 	<span class="item-author">{{a}}</span>
 	{% endfor %}
       </div>
-      <div class="item-source">
-	{% if i.kind == "article" %} 
-	<span class="item-publication-kind"> {{i.metadata["publication"]}}</span>
-	<a class="item-identifier" href="{{i.link}}">doi:{{i.identifier}}</a>
-	{% elif i.kind == "arXiv" %}
-	<span class="item-publication-kind">arXiv</span>
-	<a class="item-identifier" href="{{i.link}}">{{i.identifier}}</a>
-	{% endif %}	
-      </div>
-      <div class="item-date">Date of publication: ({{i.metadata["date"]}})</div>
     </div>
   </div>
 {% endfor %}

@@ -118,7 +118,7 @@ class BiblioPage(projects.ProjectPage):
 
     def get_comments_list(self, bibitem):
         self.log_read(BiblioComments, "Fetching all the comments for a bibliographic item. ")
-        return BiblioComments.query(ancestor = bibitem.key).order(-BiblioComments.date).fetch()
+        return BiblioComments.query(ancestor = bibitem.key).order(BiblioComments.date).fetch()
 
     def get_comment(self, bibitem, commentid):
         self.log_read(BiblioComments)

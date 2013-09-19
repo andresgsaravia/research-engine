@@ -27,7 +27,7 @@
 {% block p_content %}
  
 <h2>Bibliography</h2>
-<h3>Add new</h3>
+<h3>Add new entry</h3>
 
 <form method="post">
   <select name="kind" id="selectBox" onChange="changeIdName();">
@@ -38,7 +38,7 @@
 	 placeholder="Enter the DOI of the article" autofocus 
 	 {% if disabled_p %}disabled{% endif %}>
 
-  <input type="submit" value="Search and add" class="button1">
+  <input type="submit" class="button1" value="Search and add" class="button1">
 </form>
 
 <div class="error">{{error_message}}</div>

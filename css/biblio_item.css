@@ -1,12 +1,17 @@
 /* Stylesheet for the biblio_main.html template */
 
-.bibliography-tab {
+#bibliography-tab {
     background: white;
 }
 
-.item-info {
-    padding: 0.5em;
-    box-shadow: 0em 0.1em 0.3em #C0C0C0;
+#item-info {
+    padding: 0 1em 1em 1em;
+    box-shadow: 0em 0.2em 0.2em #C0C0C0;
+    border-radius: 0 0 1em 1em;
+}
+
+#authors {
+    padding-top: 0.5em;
 }
 
 .item-author:after {
@@ -17,23 +22,34 @@
     content: "";
 }
 
+#item-external-link::after {
+    content: url("/static/icons/16x16/external.png");
+}
+
+h3 {
+    padding-left: 0.5em;
+}
+
+#no-comments {
+    padding-left: 1em;
+    font-style: italic;
+}
+
 .comment {
-    margin-left: 1em;
-    margin-right: 1em;
     margin-top: 0.8em;
-    border: 1px solid #C0C0C0;
+    border-top: 1px solid #AAAAAA;
 }
 
 .comment-head a {
     color: black;
     display: block;
-    background: #F0F0F0;
+    background: #DDDDDD;
     padding: 0.5em;
 }
 
 .comment-head a:hover {
     text-decoration: none;
-    background: #D0D0D0;
+    background: #F0F0F0;
 }
 
 
@@ -49,26 +65,43 @@
     text-align: justify;
 }
 
+.button1 {
+    font-size: 0.9em;
+    margin: 0.5em;
+}
+
+textarea {
+    margin-top: 2em;
+    font-size: 1em;
+    width: 100%;
+    height: 20em;
+    padding: 0.5em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.help {
+    font-size: 0.9em;
+    margin-left: 0.5em;
+}
+
 .preview-subtitle {
     color: gray;
     font-size: 0.8em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-#inputText {
-    margin-top: 2em;
+    margin-top: 1em;
     margin-left: 1em;
-    margin-right: 1em;
-    width: 96%;
-    height: 20em;
-    padding: 0.5em;
 }
 
 #previewArea {
-    width: 95%;
-    min-height: 8em;
-    background: #FCFCFC;
-    border: 1px solid #C0C0C0;
+    font-size: 1em;
+    width: 100%;
+    height: 20em;
     padding: 0.5em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+    border: 1px solid #AAAAAA;
 }
