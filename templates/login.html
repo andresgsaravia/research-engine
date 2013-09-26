@@ -39,17 +39,29 @@
       
     </table>
     <div class="submit-button">
-      <input type="submit" value="Login">
+      <input type="submit" class="button1" value="Login">
     </div>
     <input type="hidden" name="goback" value="{{goback}}">
   </form>
-  <br/>
-  <div class="error">{{error | safe}}</div>
-  
-  <br/>
+
 <p>If you don't have an account you can <a href="/signup">signup</a> for free.</p>
 
-{% endif %}
+<h3>Forgot your password?</h3>
 
+<form method="post" action="/recover_password">
+  <table>
+    <tr>
+      <td>Enter your email so we can send you a recovery link:</td>
+      <td><input type="text" name="email" /></td>
+    </tr>
+  </table>
+  <input type="hidden" name="action" value="send_email" />
+  <input type="submit" class="button1" value="Send recovery link" />
+</form>
+
+<div class="error">{{error | safe}}</div>
+<div class="info">{{info | safe}}</div>
+
+{% endif %}
 
 {% endblock %}

@@ -17,6 +17,7 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                ('/settings', users.SettingsPage),
                                ('/recover_password', users.RecoverPasswordPage),                       # Needs review
                                ('/verify_email', users.VerifyEmailPage),
+                               ('/recover_password', users.RecoverPasswordPage),
                                # Cron jobs
                                ('/cron/send_email_notifications', email_messages.SendNotifications),
                                

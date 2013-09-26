@@ -4,19 +4,22 @@
 from generic import *
 import email_messages
 import hashlib
+from google.appengine.api import mail
 
 LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z][a-zA-Z0-9_-]{2,20}$'
 PASSWORD_RE = r'^.{3,20}$'
 FORBIDDEN_USERNAMES = ["login", "logout", "signup", "settings","recover_password","verify_email",
-                       "cron", "new_project", "file"]
+                       "cron", "new_project", "file", "recover_password"]
 
 class LoginPage(GenericPage):
     def get(self):
-        user = self.get_login_user()
-        goback = self.request.get('goback')
-        self.render("login.html", user = user, goback = goback)
+        kw = {'user': self.get_login_user(),
+              'goback' : self.request.get('goback'),
+              'error' : self.request.get('error'),
+              'info' : self.request.get('info')}
+        self.render("login.html", **kw)
 
     def post(self):
         email_or_username = self.request.get('email_or_username')
@@ -35,7 +38,7 @@ class LoginPage(GenericPage):
             else:
                 u = self.get_user_by_username(email_or_username.lower(), "Checking user's login information. ")
             if (not u) or (u.password_hash != hash_str(password + u.salt)):
-                kw["error"] = 'Invalid password. If you forgot your password you can recover it <a href="/recover_password">here.</a>'
+                kw["error"] = 'Invalid password. If you forgot your password try setting a new one with the form above.'
                 have_error = True
         if have_error:
             self.render("login.html", **kw)
@@ -188,8 +191,78 @@ class SettingsPage(GenericPage):
 
 class RecoverPasswordPage(GenericPage):
     def get(self):
-        self.render("under_construction.html")
+        email = self.request.get('email')
+        key = self.request.get('k')
+        have_error = False
+        if (not email) or (not key):
+            have_error = True
+            error = "Malformed url, please try again. "
+        user = self.get_user_by_email(email)
+        if not user:
+            have_error = True
+            error = "There's not a user with that email %s" % email            
+        else:
+            if not key == hash_str(user.username + user.salt):
+                have_error = True
+                error = "Malformed url, please try again. "
+        if have_error:
+            self.redirect("/login?error=%s" % error)
+        else:
+            self.render("recover_password.html", email = email, key = key, error = self.request.get("error"))
 
+    def post(self):
+        action = self.request.get('action')
+        have_error = False
+        email = self.request.get("email")
+        if action == "send_email":
+            if not email:
+                have_error = True
+                error = "Please write a valid email."
+            if not re.match(EMAIL_RE, email):
+                error = "That doesn't seem like a valid email."
+                have_error = True
+            if not have_error:
+                user = self.get_user_by_email(email)
+                if not user:
+                    have_error = True
+                    error = "That's not a registered email."
+            if have_error:
+                self.redirect("/login?error=%s" % error)
+            else:
+                link = '%s/recover_password?email=%s&k=%s' % (APP_URL, email, hash_str(user.username + user.salt))
+                message = mail.EmailMessage(sender = APP_NAME + ' <' + ADMIN_EMAIL + '>',
+                                            to = email,
+                                            subject = 'Password recovery',
+                                            body = render_str('emails/recover_password.txt',  reset_link = link, ADMIN_EMAIL = ADMIN_EMAIL),
+                                            html = render_str('emails/recover_password.html', reset_link = link, ADMIN_EMAIL = ADMIN_EMAIL))
+                if DEBUG: logging.debug("EMAIL: Sending an email for password recovery. ")
+                message.send()
+                self.redirect('/login?info=Email sent. To reset your password follow the instructions on the email.')
+        elif action == "do_reset":
+            password = self.request.get("password")
+            p_repeat = self.request.get("p_repeat")
+            key = self.request.get("k")
+            if not (email and key):
+                have_error = True
+            if not (password and p_repeat and re.match(PASSWORD_RE, password) and password == p_repeat):
+                self.redirect('/recover_password?email=%s&k=%s&error=%s' % (email, key, "Please fill both boxes with the same password. "))
+                return
+            if not have_error:
+                user = self.get_user_by_email(email)
+                if not user:
+                    have_error = True
+                elif not key == hash_str(user.username + user.salt):
+                    have_error = True
+            if have_error:
+                self.error(400)
+                error = "Invalid request. "
+                self.write(error)
+            else:
+                salt = make_salt()
+                user.salt = salt
+                user.password_hash = hash_str(password + salt)
+                self.log_and_put(user)
+                self.redirect("/login?info=Password successfully changed, you can login now with your new password.")
 
 class VerifyEmailPage(GenericPage):
     def get(self):
