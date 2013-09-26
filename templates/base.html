@@ -18,7 +18,7 @@
 	  {% if user %}<li><a href="/{{user.username}}">Projects <span style="font-size:0.7em;">&#9660;</span></a>
 	    <ul>
 	      {% for p in user.list_of_projects()[:3] %}
-	      <li><a href="/{{p.key.integer_id()}}">{{p.name[:15] | safe}}</a></li>
+	      <li><a href="/{{p.key.integer_id()}}">{{p.name[:15] | safe}}...</a></li>
 	      {% endfor %}
 	      <li><a href="/{{user.username}}"><em>More...</em></a></li>
 	    </ul>

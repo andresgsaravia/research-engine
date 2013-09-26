@@ -9,20 +9,15 @@
 
 {% block content %}
 
+<h2>New project</h2>
 
-<div class="form-wrapper">
-
-  <h2>New project</h2>
-
-  <form method="post">
-    <input type="text" name="p_name" value="{{p_name}}" placeholder="Name of the project" autofocus/>
-    <textarea name="p_description" placeholder="Description of the project">{{p_description}}</textarea>
-    <input type="submit" value="Create new project" class="bottom-buttons" />
-    <input type="button" value="Cancel" class="bottom-buttons" onClick="window.location = '/{{user.username}}'" />
-  </form>
+<form method="post">
+  <input type="text" name="p_name" value="{{p_name}}" placeholder="Name of the project" autofocus/>
+  <textarea name="p_description" placeholder="Description of the project">{{p_description}}</textarea>
+  <input type="submit" class="button1" value="Create new project" />
+  <input type="button" class="button1" value="Cancel" onClick="window.location = '/{{user.username}}'" />
+</form>
   
-  <br/><div class="error">{{error_message}}</div>
-
-</div>
+<br/><div class="error">{{error_message}}</div>
 
 {% endblock %}

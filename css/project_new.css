@@ -1,25 +1,12 @@
 /* Stylesheet for the project_new.html template */
 
-.p-title-bar {
-    margin: 0 auto;
-    font-size: 1.1em;
-}
-
-.content {
-    width: 90%;
-    padding-top: 2em;
-    margin: 0 auto;
-}
-
-.form-wrapper {
+#page-content {
+    margin-top: 2em;
+    padding: 1em;
     background: white;
     box-shadow: 0em 0.1em 0.2em #C0C0C0;
-    padding: 1em;
-    margin-top: 1em;
-    max-width: 60em;
-    margin: 0 auto;
+    overflow: auto;
 }
-
 
 form {
     width: 90%;
@@ -31,23 +18,22 @@ input[type=text] {
     width: 100%;
     height: 1.5em;
     margin-top: 1em;
-    padding-left: 0.5em;
+    padding: 0.2em 0.5em;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1em;
 }
 
 textarea {
     margin-top: 0.5em;
-    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1em;
     width: 100%;
     padding: 0.5em;
     height: 15em;
 }
 
-.bottom-buttons {
-    margin-top: 0.5em;
-    margin-right: 0.5em;
-    font-size: 1.2em;
+.button1 {
+    float: left;
+    margin: 1em 0.5em 0.5em 0;
 }
 
 .error {
