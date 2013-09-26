@@ -15,6 +15,7 @@
     background-image: linear-gradient(#F0F8F0, #C6E0C7);
     background-image: -webkit-linear-gradient(#F0F8F0, #C6E0C7);
     background-repeat: repeat-x;
+    overflow: auto;
 }
 
 .w-title {
@@ -23,12 +24,14 @@
     margin-top: 0.5em;
     margin-left: 1em;
     margin-right: 4em;
+    width: 70%;
 }
 
 .w-meta {
     position: relative;
     float: right;
     padding-top: 0.2em;
+    width: 25%;
 }
 
 .w-date {

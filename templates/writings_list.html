@@ -22,7 +22,7 @@
     .item + .item {border-top: 1px solid #889B89;}
     #writings-tab {background:white;}
     .writing-description {padding-left: 1em; padding-right: 1em;}
-    .writing-status {color: #555555; padding-left: 1em;}
+    .writing-status {color: #555555; font-size: 0.8em; width: 100%; tex-align: right;}
     .writings-last-updated {color: #888888; font-style: italic; float:right; padding-right: 1em; }
   </style>
 {% endblock %}
@@ -46,12 +46,12 @@
       <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
       <a class="item-title" href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">
 	{{i.title}}
+	<div class="writing-status"><em>{{i.status}}</em></div>
       </a>
     </div>
     <div class="item-description">
       <div class="writing-description">{{i.description | md | safe }}</div>
       <div class="writings-last-updated">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</div>
-      <div class="writing-status">Status: {{i.status}}</div>
     </div>
   </div>
 {% endfor %}
