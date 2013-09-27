@@ -24,6 +24,10 @@ handlers:
   static_dir: css
   secure: always
 
+- url: /fonts
+  static_dir: fonts
+  secure: always
+
 - url: /static
   static_dir: static
   secure: always

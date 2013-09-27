@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>{{APP_NAME}}</title>
-    <link href="/css/root.css" rel="stylesheet" type="text/css" />
+<title>{{APP_NAME}}</title>
 {% endblock %}
 
 
@@ -10,22 +9,28 @@
 
 {% if user %}
 
-<div id="projects-wrapper">
-  <a id="new-project-link" href="/new_project"><img src="/static/icons/32x32/add.png" /></a>
-  <h2>Your projects</h2>
-  {% if projects %}
-  {% for p in projects %}
-  <div class="project">
-    <a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a>
-  </div>
-  {% endfor %}
-  {% else %}
-  <div id="no-projects">You don't have any projects.</div>
-  {% endif %}  
-</div>
+<div class="container">
+  <div class="row">
 
-<div id="activity-wrapper">    
-  <h2>Recent activity</h2>
+    <div class="col-md-8">    
+      <h2>Recent activity</h2>
+    </div>
+
+    <div class="col-md-4">
+      <div class="list-group">
+	<a class="pull-right" href="/new_project">New</a>
+	<h3>Your projects</h3>
+	{% if projects %}
+	{% for p in projects %}
+	<a href="/{{p.key.integer_id()}}" class="list-group-item">{{p.name | safe}}</a>
+	{% endfor %}
+	{% else %}
+	<a href="/new_project">Start by creating a new project</a>
+	{% endif %}
+      </div>
+    </div>
+    
+  </div>
 </div>
 
 {% else %}
