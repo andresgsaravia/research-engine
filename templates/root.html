@@ -17,17 +17,40 @@
     </div>
 
     <div class="col-md-4">
-      <div class="list-group">
-	<a class="pull-right" href="/new_project">New</a>
-	<h3>Your projects</h3>
-	{% if projects %}
-	{% for p in projects %}
-	<a href="/{{p.key.integer_id()}}" class="list-group-item">{{p.name | safe}}</a>
-	{% endfor %}
-	{% else %}
-	<a href="/new_project">Start by creating a new project</a>
-	{% endif %}
+
+
+      <div class="panel panel-primary">
+	<div class="panel-heading">
+	  <h3 class="panel-title">Your projects</h3>
+	</div>
+
+	<div class="panel-body">
+	  <div class="panel-group" id="accordion1">
+	    {% for p in projects %}
+	    <div class="panel panel-default">
+	      <div class="panel-heading">
+		<h4 class="panel-title">
+		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}} </a>
+		  <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
+		    <span class="glyphicon glyphicon-info-sign"></span>
+	      </a>
+		</h4>
+	      </div>
+	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  
+		<div class="panel-body">
+		  {{p.description | md | safe}}
+		  <p class="muted">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</p>
+		</div>
+	      </div>
+	    </div>
+	    {% endfor %}
+	    <div class="panel">
+	      <a class="btn btn-success" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
+	    </div>
+	  </div>
+	</div>
       </div>
+
     </div>
     
   </div>
