@@ -1,75 +1,85 @@
-<div class="update-extra-info"><a href="/{{author.username}}"><img src="{{author.get_profile_image(30)}}" /></a><span class="update-date">{{update.date.strftime("%d-%b-%Y (%H:%M)")}}</span></div>
-<div class="update-description">
-  <span class="update-author"><a href="/{{author.username}}">{{author.username.capitalize()}}</a></span>
+<div class="container">
+  <div class="row">
 
-  {% if item.__class__.__name__ == "Notebooks" %}
-    started a new notebook: <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.integer_id()}}">{{item.name}}</a>
+    <div class="col-md-1">
+      <a href="/{{author.username}}">
+	<img src="{{author.get_profile_image(30)}}" style="margin:0 auto;" class="img-responsive"/>
+      </a>
+    </div>
 
-  {% elif item.__class__.__name__ == "NotebookNotes" %}
-    wrote a new note: 
-    <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.integer_id()}}/{{item.key.integer_id()}}">{{item.title}}</a> 
-    in the notebook: 
-    <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
+    <div class="col-md-11">
+      <a href="/{{author.username}}">{{author.username.capitalize()}}</a>
 
-  {% elif item.__class__.__name__ == "NoteComments" %}
-    made <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.parent().get().key.integer_id()}}/{{item.key.parent().get().key.integer_id()}}">a comment</a> 
-    in the note:
-    <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.parent().get().key.integer_id()}}/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
-    from the notebook:
-    <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.parent().get().key.integer_id()}}">{{item.key.parent().get().key.parent().get().name}}</a>
+      {% if item.__class__.__name__ == "Notebooks" %}
+      started a new notebook: <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.integer_id()}}">{{item.name}}</a>
 
-  {% elif item.__class__.__name__ == "CodeRepositories" %}
-    added a new code repository: <a href="/{{project.key.integer_id()}}/code/{{item.key.integer_id()}}">{{item.name}}</a>
+      {% elif item.__class__.__name__ == "NotebookNotes" %}
+      wrote a new note: 
+      <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.integer_id()}}/{{item.key.integer_id()}}">{{item.title}}</a> 
+      in the notebook: 
+      <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
 
-  {% elif item.__class__.__name__ == "CodeComments" %}
-    made <a href="/{{project.key.integer_id()}}/code/{{item.key.parent().get().key.integer_id()}}">a comment</a>
-    in the code repository:
-    <a href="/{{project.key.integer_id()}}/code/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
+      {% elif item.__class__.__name__ == "NoteComments" %}
+      made <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.parent().get().key.integer_id()}}/{{item.key.parent().get().key.integer_id()}}">a comment</a> 
+      in the note:
+      <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.parent().get().key.integer_id()}}/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
+      from the notebook:
+      <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().get().key.parent().get().key.integer_id()}}">{{item.key.parent().get().key.parent().get().name}}</a>
+      
+      {% elif item.__class__.__name__ == "CodeRepositories" %}
+      added a new code repository: <a href="/{{project.key.integer_id()}}/code/{{item.key.integer_id()}}">{{item.name}}</a>
+      
+      {% elif item.__class__.__name__ == "CodeComments" %}
+      made <a href="/{{project.key.integer_id()}}/code/{{item.key.parent().get().key.integer_id()}}">a comment</a>
+      in the code repository:
+      <a href="/{{project.key.integer_id()}}/code/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
 
-  {% elif item.__class__.__name__ == "DataSets" %}
-    added a new dataset: <a href="/{{project.key.integer_id()}}/datasets/{{item.key.integer_id()}}">{{item.name}}</a>
+      {% elif item.__class__.__name__ == "DataSets" %}
+      added a new dataset: <a href="/{{project.key.integer_id()}}/datasets/{{item.key.integer_id()}}">{{item.name}}</a>
+      
+      {% elif item.__class__.__name__ == "DataConcepts" %}
+      added a new concept: 
+      <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.integer_id()}}/{{item.key.integer_id()}}">{{item.name}}</a>
+      in the dataset:
+      <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
+      
+      {% elif item.__class__.__name__ == "DataRevisions" %}
+      added a new revision to the concept: 
+      <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.parent().get().key.integer_id()}}/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
+      from the dataset:
+      <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.parent().get().key.integer_id()}}">{{item.key.parent().get().key.parent().get().name}}</a>
+      
+      {% elif item.__class__.__name__ == "WikiRevisions" %}
+      made a new revision to the wiki page: <a href="/{{project.key.integer_id()}}/wiki/page/{{item.key.parent().get().url}}">{{item.key.parent().get().url.replace("_", " ")}}</a>
+      
+      {% elif item.__class__.__name__ == "CollaborativeWritings" %}
+      started a new collaborative writing: <a href="/{{project.key.integer_id()}}/writings/{{item.key.integer_id()}}">{{item.title}}</a>
+      
+      {% elif item.__class__.__name__ == "WritingRevisions" %}
+      made a new revision to the collaborative writing: 
+      <a href="/{{project.key.integer_id()}}/writings/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
+      
+      {% elif item.__class__.__name__ == "WritingComments" %}
+      made a <a href="/{{project.key.integer_id()}}/writings/{{item.key.parent().get().key.integer_id()}}/discussion">new comment</a>
+      to the collaborative writing:
+      <a href="/{{project.key.integer_id()}}/writings/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
 
-  {% elif item.__class__.__name__ == "DataConcepts" %}
-    added a new concept: 
-    <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.integer_id()}}/{{item.key.integer_id()}}">{{item.name}}</a>
-    in the dataset:
-    <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
+      {% elif item.__class__.__name__ == "ForumThreads" %}
+      started a new thread: <a href="/{{project.key.integer_id()}}/forum/{{item.key.integer_id()}}">{{item.title}}</a> in the Forum
+      
+      {% elif item.__class__.__name__ == "ForumComments" %}
+      made a new comment to the thread <a href="/{{project.key.integer_id()}}/forum/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a> in the Forum
+      
+      {% elif item.__class__.__name__ == "BiblioItems" %}
+      added a new item to the bibliography: <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title}}</a>
+      
+      {% elif item.__class__.__name__ == "BiblioComments" %}
+      made a new comment to the bibliography item
+      <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
 
-  {% elif item.__class__.__name__ == "DataRevisions" %}
-    added a new revision to the concept: 
-    <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.parent().get().key.integer_id()}}/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().name}}</a>
-    from the dataset:
-    <a href="/{{project.key.integer_id()}}/datasets/{{item.key.parent().get().key.parent().get().key.integer_id()}}">{{item.key.parent().get().key.parent().get().name}}</a>
+      {% endif %}
+      <small class="text-muted text-center pull-right">{{update.date.strftime("%d-%b-%Y (%H:%M)")}}</small>
+    </div>
 
-  {% elif item.__class__.__name__ == "WikiRevisions" %}
-    made a new revision to the wiki page: <a href="/{{project.key.integer_id()}}/wiki/page/{{item.key.parent().get().url}}">{{item.key.parent().get().url.replace("_", " ")}}</a>
-
-  {% elif item.__class__.__name__ == "CollaborativeWritings" %}
-    started a new collaborative writing: <a href="/{{project.key.integer_id()}}/writings/{{item.key.integer_id()}}">{{item.title}}</a>
-
-  {% elif item.__class__.__name__ == "WritingRevisions" %}
-    made a new revision to the collaborative writing: 
-    <a href="/{{project.key.integer_id()}}/writings/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
-
-  {% elif item.__class__.__name__ == "WritingComments" %}
-    made a <a href="/{{project.key.integer_id()}}/writings/{{item.key.parent().get().key.integer_id()}}/discussion">new comment</a>
-    to the collaborative writing:
-    <a href="/{{project.key.integer_id()}}/writings/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
-
-  {% elif item.__class__.__name__ == "ForumThreads" %}
-    started a new thread: <a href="/{{project.key.integer_id()}}/forum/{{item.key.integer_id()}}">{{item.title}}</a> in the Forum
-
-  {% elif item.__class__.__name__ == "ForumComments" %}
-    made a new comment to the thread <a href="/{{project.key.integer_id()}}/forum/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a> in the Forum
-
-  {% elif item.__class__.__name__ == "BiblioItems" %}
-    added a new item to the bibliography: <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title}}</a>
-
-  {% elif item.__class__.__name__ == "BiblioComments" %}
-    made a new comment to the bibliography item
-    <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.parent().get().key.integer_id()}}">{{item.key.parent().get().title}}</a>
-
-  {% endif %}
+  </div>
 </div>
-
-

@@ -119,6 +119,7 @@ class OverviewPage(ProjectPage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         self.render("project_overview.html", project = project, 
+                    overview_tab_class = "active",
                     authors = project.list_of_authors(self),
                     updates = project.list_updates(self, UPDATES_TO_DISPLAY))
 
