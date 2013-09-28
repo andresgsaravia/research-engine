@@ -1,109 +1,100 @@
 {% extends "project_base.html" %}
 
-
-{% block p_head %}
-  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    var toggleVisibility = function (item) {
-      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
-      if (item.innerHTML.trim() == 'Show description') {
-        item.innerHTML = 'Hide description';
-        infoDiv.style.maxHeight = '20em';
-      } else {
-        item.innerHTML = 'Show description';
-        infoDiv.style.maxHeight = '0em';
-      }
-    };
-  </script>
-  <style type="text/css">
-    #my-notebooks .item-head {background: #CFDEE2;}
-    #other-notebooks .item-head {background: #C4CCCE;}
-    #my-notebooks .item-head:hover a {background: #DAEBEF;}
-    #other-notebooks .item-head:hover a {background: #CFDEE2;}
-    #notebooks-tab {background:white;}
-    .notebook-description {padding-left: 1em; padding-right: 1em;}
-    .notebook-last-updated {float: right; padding-right: 1em; color: #888888; font-size: 0.9em;}
-    .notebook-owner {padding-left: 1em;}
-    .item-count::before {content: url("/static/icons/16x16/page_white_text.png");}
-  </style>
-{% endblock %}
-
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a>
-{% endblock %}
+{% block breadcrumbs %}<li class="active">Notebooks</li>{% endblock %}
 
 
 {% block p_content %}
-  
-<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/notebooks/new">New notebook</a>
 
 {% if user %}
 
-<h2>My notebooks</h2>
+<div class="page-header"><h2>My notebooks</h2></div>
 
-<div class="list-wrapper" id="my-notebooks">
+<div class="panel-group" id="myaccordion">
+  {% if my_notebooks %}
   {% for n in my_notebooks %}
-  <div class="item">
-    <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="item-title" href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
-	<div class="item-count" title="Number of notes in this notebook"> {{n.get_number_of_notes()}}</div>
-	{{n.name}}
-      </a>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name | safe}}</a>
+	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
+	  <span class="glyphicon glyphicon-info-sign"></span>
+	</a>
+	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+      </h4>
     </div>
-    <div class="item-description">
-      <div class="notebook-description">{{n.description | md | safe}}</div>
-      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
-      <div class="notebook-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+      <div class="panel-body">
+	{{n.description | md | safe }}
+	<p>Owner: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></p>
+	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</p>
+      </div>
     </div>
   </div>
   {% endfor %}
-</div>
+  {% else %}
+  <div class="panel">
+    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
+      <span class="glyphicon glyphicon-plus"></span> New notebook
+    </a>
+  </div>
+  {% endif %}
+</div>    
 
-<h2>Other notebooks</h2>
+{% if other_notebooks %}
 
-<div class="list-wrapper" id="other-notebooks">
+<div class="page-header"><h2>Other notebooks</h2></div>
+
+<div class="panel-group" id="otheraccordion">
   {% for n in other_notebooks %}
-  <div class="item">
-    <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="item-title" href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
-	<div class="item-count" title="Number of notes in this notebook"> {{n.get_number_of_notes()}}</div>
-	{{n.name}}
-      </a>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name | safe}}</a>
+	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
+	  <span class="glyphicon glyphicon-info-sign"></span>
+	</a>
+	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+      </h4>
     </div>
-    <div class="item-description">
-      <div class="notebook-description">{{n.description | md | safe}}</div>
-      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
-      <div class="notebook-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+      <div class="panel-body">
+	{{n.description | md | safe }}
+	<p>Owner: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></p>
+	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</p>
+      </div>
     </div>
   </div>
   {% endfor %}
-</div>
+</div>    
 
+{% endif %}
 
 {% else %}
-<h2>Notebooks</h2>
 
-<div class="list-wrapper" id="other-notebooks">
+<div class="page-header"><h2>Notebooks</h2></div>
+
+<div class="panel-group" id="anaccordion">
   {% for n in notebooks %}
-  <div class="item">
-    <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="item-title" href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
-	<div class="item-count" title="Number of notes in this notebook"> {{n.get_number_of_notes()}}</div>
-	{{n.name}}
-      </a>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name | safe}}</a>
+	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anaccordion" href="#{{n.key.integer_id()}}">
+	  <span class="glyphicon glyphicon-info-sign"></span>
+	</a>
+	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+      </h4>
     </div>
-    <div class="item-description">
-      <div class="notebook-description">{{n.description | md | safe}}</div>
-      <div class="notebook-last-updated">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</div>
-      <div class="notebook-owner">Author: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></div>
+    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+      <div class="panel-body">
+	{{n.description | md | safe }}
+	<p>Owner: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></p>
+	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</p>
+      </div>
     </div>
   </div>
   {% endfor %}
-</div>
+</div>    
 
 {% endif %}
 

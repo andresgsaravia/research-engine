@@ -80,6 +80,9 @@ class NotebookPage(projects.ProjectPage):
         self.log_read(NoteComments, "Fetching all the comments for a note in a notebook. ")
         return  NoteComments.query(ancestor = note.key).order(NoteComments.date).fetch()
 
+    def render(*a, **kw):
+        projects.ProjectPage.render(notebooks_tab_class = "active", *a, **kw)
+
 
 class NotebooksListPage(NotebookPage):
     def get(self, projectid):

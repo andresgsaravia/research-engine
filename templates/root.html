@@ -33,19 +33,19 @@
 		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}} </a>
 		  <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
 		    <span class="glyphicon glyphicon-info-sign"></span>
-	      </a>
+		  </a>
 		</h4>
 	      </div>
 	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  
 		<div class="panel-body">
 		  {{p.description | md | safe}}
-		  <p class="muted">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</p>
+		  <p class="text-muted pull-right">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</p>
 		</div>
 	      </div>
 	    </div>
 	    {% endfor %}
 	    <div class="panel">
-	      <a class="btn btn-success" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
+	      <a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
 	    </div>
 	  </div>
 	</div>
