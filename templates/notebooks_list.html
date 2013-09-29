@@ -15,7 +15,7 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name | safe}}</a>
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">{{n.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span>
 	</a>
@@ -31,7 +31,6 @@
     </div>
   </div>
   {% endfor %}
-  {% else %}
   <div class="panel">
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
       <span class="glyphicon glyphicon-plus"></span> New notebook

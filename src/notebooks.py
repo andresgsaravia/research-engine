@@ -123,11 +123,10 @@ class NewNotebookPage(NotebookPage):
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
               "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-              "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+              "breadcrumb" : '<li><a href="/%s/notebooks">Notebooks</a></li>' % project.key.integer_id(),
               "markdown_p" : True,
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):

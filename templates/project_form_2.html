@@ -1,39 +1,57 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-  <link href="/css/project_form_2.css" rel="stylesheet" type="text/css" />
   {% if markdown_p %}
   <script type="text/javascript" src="/js/showdown.js"></script>
   <script type="text/javascript" src="/js/preview.js"></script>
   {% endif %}
-  {{more_head | safe}}
 {% endblock %}
 
-{% block title_bar_extra %}{{title_bar_extra | safe}}{% endblock %}
+{% block breadcrumbs %}{{breadcrumb | safe}}{% endblock %}
 
 {% block p_content %}
 
-  <h2>{{title}}</h2>
-  <h3>{{subtitle}}</h3>
-  
-  <div class="pre-message">{{pre_form_message | safe}}</div>
+<div class="container">
+  <h2 class="page-header">{{title}}</h2>
+  {{pre_form_message | safe}}
 
-  <form method="post">
-    <input type="text" name="name" value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
-    <textarea name="content" id="inputText" placeholder="{{content_placeholder}}"
-	      {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
-    <input type="submit" value="{{submit_button_text}}" class="button1" {% if disabled_p %}disabled{% endif %}/>
-    <input type="button" value="Cancel" class="button1" onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}"/>
+  <form method="post" role="form">
+    <div class="form-group {{nClass}}">
+      <input type="text" name="name" class="form-control"
+	     value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
+    </div>
+    <div class="form-group {{cClass}}">
+      <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="10"
+		{% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
+    </div>
+    <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
+    <button type="button" class="btn btn-default"
+	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
+
+    {% if markdown_p %}
+    <span class="help-block">
+      Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+    </span>
+    {% endif %}
+
   </form>
 
   <span class="error">{{error_message | safe}}</span>
   <span class="info">{{info_message | safe}}</span>
 
-  {% if markdown_p %}
-  <p id="help">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p>
-  <div id="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-  <input type="button" class="button1" id="render-button" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
-  <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
-  {% endif %}
+{% if markdown_p %}
+  <div id="preview-subtitle">Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
+	Render preview
+      </button>
+    </div>
+    <div class="panel-body" id="previewArea">
+      Click the <em>Render preview</em> button to see a preview here.
+    </div>
+  </div>
+{% endif %}
 
+</div>
 {% endblock %}
