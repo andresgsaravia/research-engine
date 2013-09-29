@@ -8,7 +8,7 @@
 {% block p_content %}
 
 <div class="container">
-  <h3 class="page-header">{{notebook.name | safe}}
+  <h3 class="page-header" style="overflow:auto;">{{notebook.name | safe}}
     {% if user_is_owner_p %}
     <a class="btn btn-default btn-sm pull-right" 
        href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
