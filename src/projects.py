@@ -140,18 +140,19 @@ class NewProjectPage(GenericPage):
             self.redirect("/login?goback=%s" % goback)
             return
         have_error = False
-        error_message = ''
+        kw = {"error_message" : ''}
         p_name = self.request.get('p_name').strip()
         p_description = self.request.get('p_description')
         if not p_name:
             have_error = True
-            error_message = 'Please provide a name for your project. '
+            kw["error_message"] = 'Please provide a name for your project. '
+            kw["name_class"] = "has-error"
         if not p_description:
             have_error = True
-            error_message = 'Please provide a description of the project. '
+            kw["error_message"] = 'Please provide a description of the project. '
+            kw["description_class"] = "has-error"
         if have_error:
-            self.render("project_new.html", user = user, p_name = p_name, p_description = p_description,
-                        error_message = error_message)
+            self.render("project_new.html", user = user, p_name = p_name, p_description = p_description, **kw)
         else:
             new_project = Projects(name = p_name,
                                    description = p_description,
