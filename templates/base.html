@@ -35,8 +35,8 @@
 	  </ul>
 	  <ul class="nav navbar-nav navbar-right">
 	    <li><a href="/{{user.username}}"><img src="{{user.get_profile_image(20)}}" /> {{user.username}}</a></li>
-	    <li><a href="/settings">Settings</a></li>
-	    <li><a href="/logout">Logout</a></li>
+	    <li><a href="/settings" title="Settings"><span class="glyphicon glyphicon-wrench"></span></a></li>
+	    <li><a href="/logout" title="Logout"><span class="glyphicon glyphicon-log-out"></span></a></li>
 	  </ul>
 	  {% else %}
 	  <form class="navbar-form navbar-right" action="/login" method="post">
