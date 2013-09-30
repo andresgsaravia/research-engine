@@ -21,7 +21,7 @@
 <!-- Breadcrumbs -->
 <div class="container">
   <ol class="breadcrumb">
-    <li><a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a></li>
+    <li><a href="/{{project.key.integer_id()}}">{{project.name | safe | truncate(40, True)}}</a></li>
     {% block breadcrumbs %}{% endblock %}
   </ol>
 
