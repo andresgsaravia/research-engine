@@ -58,6 +58,9 @@ class WikiRevisions(ndb.Model):
 ######################
 
 class GenericWikiPage(projects.ProjectPage):
+    def render(self, *a, **kw):
+        projects.ProjectPage.render(self, wiki_tab_class = "active", *a, **kw)
+
     def get_wikipage(self, project, url, log_message = ''):
         url = url.strip().replace(" ", "_")
         self.log_read(WikiPages, log_message)
@@ -88,7 +91,7 @@ class ViewWikiPage(GenericWikiPage):
             wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), wikipage.content) 
         else:
             wikitext = '' 
-        self.render("wiki_view.html", project = project, 
+        self.render("wiki_view.html", project = project, viewClass = "active",
                     wikiurl = wikiurl, wikipage = wikipage, wikitext = wikitext)
 
 
@@ -103,7 +106,7 @@ class EditWikiPage(GenericWikiPage):
         wikipage = self.get_wikipage(project, wikiurl)
         visitor_p = False if (user and project.user_is_author(user)) else True
         self.render("wiki_edit.html", project = project, disabled_p = visitor_p,
-                    wikiurl = wikiurl, wikipage = wikipage)
+                    wikiurl = wikiurl, wikipage = wikipage, editClass = "active")
 
     def post(self, projectid, wikiurl):
         user = self.get_login_user()
@@ -149,7 +152,7 @@ class EditWikiPage(GenericWikiPage):
             self.redirect("/%s/wiki/page/%s" % (projectid, wikiurl))
         else:
             self.render("wiki_edit.html", project = project, wikipage = wikipage, disabled_p = visitor_p,
-                        wikiurl = wikiurl, wikitext = content, error_message = error_message)
+                        wikiurl = wikiurl, wikitext = content, error_message = error_message, editClass = "active")
 
 
 class HistoryWikiPage(GenericWikiPage):
@@ -161,7 +164,7 @@ class HistoryWikiPage(GenericWikiPage):
             return
         wikipage = self.get_wikipage(project, wikiurl)
         revisions = self.get_revisions(wikipage)
-        self.render("wiki_history.html", project = project, 
+        self.render("wiki_history.html", project = project, histClass = "active",
                     wikiurl = wikiurl, wikipage = wikipage, revisions = revisions)
 
 
@@ -186,5 +189,5 @@ class RevisionWikiPage(GenericWikiPage):
             wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), revision.content) 
         else:
             wikitext = ''
-        self.render("wiki_revision.html", project = project, 
+        self.render("wiki_revision.html", project = project, histClass = "active",
                     wikiurl = wikiurl, revision = revision, wikitext = wikitext)

@@ -23,9 +23,9 @@
     </div>
     <button type="submit" class="btn btn-success">Create new project</button>
     <button type="button" class="btn btn-default" onClick="window.location = '/{{user.username}}'">Cancel</button>
+    <p class="text-danger" style="margin-top:10px;">{{error_message}}</p>
   </form>
-  
-  <p class="text-danger" style="margin-top:10px;">{{error_message}}</p>
+
 </div>
 
 {% endblock %}

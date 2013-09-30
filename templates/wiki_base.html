@@ -1,25 +1,24 @@
 {% extends "project_base.html" %}
 
-{% block p_head %}
-  <link href="/css/wiki_base.css" rel="stylesheet" type="text/css" />
-  {% block w_head %}
-  {% endblock %}
-{% endblock %}
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a>
-/  <a href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">{{wikiurl.replace("_", " ")}}</a>
+{% block breadcrumbs %}
+<li><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a></li>
+<li class="active">{{wikiurl.replace("_", " ") | truncate(40, True)}}</li>
 {% endblock %}
 
 {% block p_content %}
-  
-  <div id="w-navbar">
-    <a id="w-history-tab" href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">History</a>
-    <a id="w-edit-tab" href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a>
-    <a id="w-view-tab" href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">View</a>
-  </div>
 
-  {% block w_content %}
-  {% endblock %}
+<ul class="nav nav-tabs">
+  <li class="pull-right {{histClass}}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">History</a></li>
+  <li class="pull-right {{editClass}}"><a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a></li>
+  <li class="pull-right {{viewClass}}"><a href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">View</a></li>
+</ul>
+
+<div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
+  <div class="panel-body">
+    <h1 style="border-bottom:1px solid #B0B0B0;">{{wikiurl.replace("_", " ")}}</h1>
+    {% block w_content %}
+    {% endblock %}
+  </div>
+</div>
 
 {% endblock %}
