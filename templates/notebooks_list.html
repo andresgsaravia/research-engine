@@ -31,12 +31,12 @@
     </div>
   </div>
   {% endfor %}
+  {% endif %}
   <div class="panel">
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
       <span class="glyphicon glyphicon-plus"></span> New notebook
     </a>
   </div>
-  {% endif %}
 </div>    
 
 {% if other_notebooks %}
