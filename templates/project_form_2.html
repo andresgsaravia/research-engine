@@ -12,7 +12,7 @@
 {% block p_content %}
 
 <div class="container">
-  <h2 class="page-header">{{title}}</h2>
+  <h2 class="page-header">{{title | safe}}</h2>
   {{pre_form_message | safe}}
 
   <form method="post" role="form">
@@ -27,7 +27,7 @@
     <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
     <button type="button" class="btn btn-default"
 	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
-
+    <p class="text-danger">{{error_message | safe}}</p>
     {% if markdown_p %}
     <span class="help-block">
       Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
@@ -36,8 +36,8 @@
 
   </form>
 
-  <span class="error">{{error_message | safe}}</span>
-  <span class="info">{{info_message | safe}}</span>
+
+  <p class="info">{{info_message | safe}}</p>
 
 {% if markdown_p %}
   <div id="preview-subtitle">Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
