@@ -1,70 +1,84 @@
 {% extends "project_base.html" %}
 
-{% block p_head %}
-  <link href="/css/project_admin.css" rel="stylesheet" type="text/css" />
+{% block breadcrumbs %}
+<li class="active">Admin</li>
 {% endblock %}
 
 {% block p_content %}
 
+<h2 class="page-header">Project settings</h2>
+
 {% if visitor_p %}
-<p>You are not an author of this project.</p>
+<p class="text-danger">You are not an author of this project.</p>
 {% else %}
 
-<form method="post">
+<form method="post" role="form">
+  <div class="from-group {{nClass}}">
+    <label for="projectName">Project name</label>
+    <input id="projectName" type="text" name="p_name" class="form-control"
+	   value="{{p_name}}" placeholder="The name for your project" />
+  </div>
+  <br/>
+  <div class="form-group {{dClass}}">
+    <label for="projectDescription">Description</label>  
+    <textarea id="projectDescription" name="p_description" class="form-control" rows="10"
+	      placeholder="Description of the project.">{{p_description}}</textarea>
+  </div>
+  <span class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</span>
     
-  <h2>Project settings</h2>
-  
-  <h3>Project name</h3>
-
-  <input type="text" name="p_name" value="{{project.name | safe}}" placeholder="The name for your project" />
-
-  <h3>Description</h3>
-  
-  <textarea name="p_description" placeholder="Description of the project.">{{p_description}}</textarea>
-  <div id="help">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</div>
-  
-  <h3>Email notifications</h3>
-  
   <p>You will receive an email notification for:</p>
-  
-  <div class="notif-checkbox">
-    <input type="checkbox" value="checked" name="wiki_p" {{wiki_p}}/>
-    An update in a <strong>wiki</strong> page
+  <div class="checkbox">
+    <label for="wikicb">An update in a <strong>wiki</strong> page</label>
+    <input id="wikicb" type="checkbox" value="checked" name="wiki_p" {{wiki_p}}/>
   </div>
-  <div class="notif-checkbox"><input type="checkbox" value="checked" name="notebooks_p" {{notebooks_p}}/>
-    A new note in a <strong>notebook</strong>
+  <div class="checkbox">
+    <label for="ncb">A new note in a <strong>notebook</strong></label>
+    <input id="ncb" type="checkbox" value="checked" name="notebooks_p" {{notebooks_p}}/>
   </div>
-  <div class="notif-checkbox"><input type="checkbox" value="checked" name="writings_p" {{writings_p}}/>
-    A change in a <strong>collaborative writing</strong>
+  <div class="checkbox">
+    <label for="cwcb">A change in a <strong>collaborative writing</strong></label>
+    <input id="cwcb" type="checkbox" value="checked" name="writings_p" {{writings_p}}/>
   </div>
-  <div class="notif-checkbox"><input type="checkbox" value="checked" name="code_p" {{code_p}}/>
-    Updates to a <strong>source code</strong> repository
+  <div class="checkbox">
+    <label for="codecb">Updates to a <strong>source code</strong> repository</label>
+    <input id="codecb" type="checkbox" value="checked" name="code_p" {{code_p}}/>
   </div>
-  <div class="notif-checkbox"><input type="checkbox" value="checked" name="datasets_p" {{datasets_p}}/>
-    Updates in a <strong>dataset</strong>
+  <div class="checkbox">
+    <label for="dscb">Updates in a <strong>dataset</strong></label>
+    <input id="dscb" type="checkbox" value="checked" name="datasets_p" {{datasets_p}}/>
   </div>
-  <div class="notif-checkbox"><input type="checkbox" value="checked" name="forum_threads_p" {{forum_threads_p}}/>
-    A new thread in the <strong>forum</strong>
+  <div class="checkbox">
+    <label for="ftcb">A new thread in the <strong>forum</strong></label>
+    <input id="ftcb" type="checkbox" value="checked" name="forum_threads_p" {{forum_threads_p}}/>
   </div>
-  <div class="notif-checkbox"><input type="checkbox" value="checked" name="forum_posts_p" {{forum_posts_p}}/>
-    A new post in a <strong>forum</strong> thread
+  <div class="checkbox">
+    <label for="fpcb">A new post in a <strong>forum</strong> thread</label>
+    <input id="fpcb" type="checkbox" value="checked" name="forum_posts_p" {{forum_posts_p}}/>
   </div>
-  
-  <input type="submit" class="button1" id="save-button" value="Save changes" />
+
+  <button type="submit" class="btn btn-success">Save changes</button>
+  <button type="button" class="btn btn-default" onClick="window.location = '/{{project.key.integer_id()}}'">Cancel</button>
+
+  {% if info_message %}<p class="text-success">{{info_message}}</p>{% endif %}
+  {% if error %}<p class="text-danger">{{error}}</p>{% endif %}
   
 </form>
 
-<div class="info">{{info_message}}</div>
-<div class="error">{{error}}</div>
-
-<h3>Current authors:</h3>
-<div id="authors-list">
-  {% for a in authors %}
-  <div class="p-author"><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}"/> {{a.username.capitalize()}}</a></div>
-  {% endfor %}
+<h3>Members of this project</h3>
+<div class="container" style="margin-bottom:14px;">
+  <ul class="nav nav-pills">
+    {% for a in authors %}
+    <li><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}"/> {{a.username.capitalize()}}</a></li>
+    {% endfor %}
+  </ul>
 </div>
-<a class="button1 bottom-buttons" href="/{{project.key.integer_id()}}/invite">Invite a collaborator</a>
-<a class="button1 bottom-buttons" href="#" onClick="alert('\'Leave this project\' is not implemented yet... sorry.')">Leave this project</a>
+
+<a class="btn btn-success" href="/{{project.key.integer_id()}}/invite">
+  <span class=" glyphicon glyphicon-plus"></span> Invite a collaborator
+</a>
+<a class="btn btn-danger" href="#" onClick="alert('\'Leave this project\' is not implemented yet... sorry.')">
+  <span class="glyphicon glyphicon-minus"></span> Leave this project
+</a>
 
 {% endif %}
 {% endblock %}

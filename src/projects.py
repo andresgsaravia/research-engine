@@ -171,6 +171,9 @@ class NewProjectPage(GenericPage):
 
 
 class AdminPage(ProjectPage):
+    def render(self, *a, **kw):
+        ProjectPage.render(self, admin_tab_class = "active", *a, **kw)
+
     def get(self, projectid):
         user = self.get_login_user()
         h = self.request.get("h")           # This will be present if a new user is invited to the project.
@@ -200,6 +203,7 @@ class AdminPage(ProjectPage):
               "forum_threads_p" : "checked" if user.key in project.forum_threads_notifications_list else "",
               "forum_posts_p"   : "checked" if user.key in project.forum_posts_notifications_list else "",
               "p_description"   : project.description,
+              "p_name"          : project.name,
               "authors"         : project.list_of_authors(self)}
         self.render('project_admin.html', visitor_p = visitor_p, project = project, **kw)
 
@@ -236,11 +240,13 @@ class AdminPage(ProjectPage):
         else:
             have_error = True
             kw["error"] = "You must provide a name for your project. "
+            kw["nClass"] = "has-error"
         if kw["p_description"]:
             project.description = kw["p_description"]
         else:
             have_error = True
             kw["error"] += "You must provide a description for the project. "
+            kw["dClass"] = "has-error"
 
         ## Email notifications
         # Add to list
