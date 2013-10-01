@@ -1,61 +1,80 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-  <link href="/css/biblio_item.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript" src="/js/showdown.js"></script>
-  <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/showdown.js"></script>
+<script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
 
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
-/  <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title[:20]}}...</a> 
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></li><li class="active">{{item.title | truncate(40, True)}}...</li>{% endblock %}
 
 
 {% block p_content %}
-<div id="item-info">
-  <h2>{{item.title}}</h2>
 
-  <div id="publication-data"><strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})</div>
-
-  <div id="authors">{% for a in item.metadata["authors"] %}
-    <span class="item-author">{{a}}</span>{% endfor %}</div>
-  <div id="item-identifier">
-    {% if item.kind == "article" %}doi:{% elif item.kind == "arXiv" %}arXiv id:{% endif %}
-    <a id="item-external-link" href="http://dx.doi.org/{{item.identifier}}">{{item.identifier}}</a>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{item.title}}</h3>
   </div>
+  <div class="panel-body">
+    {% if item.kind == "article" %} 
+    <strong>{{item.metadata["publication"]}}</strong> <em>({{item.metadata["date"]}})</em>
+    <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+    {% elif item.kind == "arXiv" %}
+    <strong>arXiv preprint</strong> <em>({{item.metadata["date"]}})</em>
+    <p><a href="{{i.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+    {% endif %}		
+    <p>Authors:</p>
+    <ul class="list-inline list-group">
+      {% for a in item.metadata["authors"] %}
+      <li class="list-group-item">{{a}}</li>
+      {% endfor %}
+    </ul>
+  </div>	
 </div>
 
-<h3>Comments:</h3>
+<div class="page-header"><h3>Comments <span class="badge">{{item.get_number_of_comments()}}</span></h3></div>
 
-<div class="comments">
+<div class="list-group">
   {% if comments %}
   {% for c in comments %}
-  <div class="comment">
-    <div class="comment-head">
-      <div class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</div>
-      <div class="comment-title">
-	<a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}">{{c.author.get().username.capitalize()}} commented:</a>
-      </div>
-    </div>
-    <div class="comment-content">{{c.content | md | safe}}</div>
+  <div class="list-group-item">
+    <small><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" class="pull-right"
+	      title="link to this comment only"><span class="glyphicon glyphicon-new-window"></span></a></small>
+    {{c.content | md | safe}}
+    <p class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</p>
+    <ul class="nav nav-pills">
+      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
+    </ul>
   </div>
   {% endfor %}
   {% else %}
-  <div id="no-comments">No comments yet</div>
+  <div class="list-group-item"><em>No comments yet</em></div>
   {% endif %}
 </div>
-    
-<form method="post">
-  <textarea name="comment" id="inputText" 
+
+<form method="post" role="form">
+  <div class="form-group{% if error_message %}has-error{% endif %}">
+    <label for="inputText">Your comment</label>
+    <textarea name="comment" id="inputText" class="form-control" rows="20"
 	    placeholder="What do you think about this {% if item.kind=='article' %}article{% endif %}?"
 	    {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
-  <input type="submit" class="button1" value="Post comment" {% if disabled_p %}disabled{% endif %} />
-  <div class="help">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help.</div>
-  <div class="error">{{error_message}}</div>
+  </div>
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Post comment</button>
+  <p class="text-danger">{{error_message}}</p>
+  <div class="help-block">
+    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </div>
 </form>
-  <input type="button" class="button1" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
-  <div class="preview-subtitle">Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-  <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
+
+<div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
+      Render preview
+    </button>
+  </div>
+  <div class="panel-body" id="previewArea">
+    Click the <em>Render preview</em> button to see a preview here.
+  </div>
+</div>
 {% endblock %}
