@@ -1,27 +1,14 @@
 {% extends "writings_base.html" %}
-
-
-{% block w_head %}
-  <link href="/css/writings_history.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
     
 {% block w_content %}
 
-{% for rev in revisions %}
-  <div class="revision">
-    <div class="rev-meta">
-      <div class="rev-date">{{rev.date.strftime("%d-%b-%Y")}}</div>
-      <div class="rev-author">Author: <a href="/{{rev.author.get().username}}">{{rev.author.get().username.capitalize()}}</a></div>
-    </div>
-    <div class="rev-summary">
-      <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/rev/{{rev.key.integer_id()}}">
-	{% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
-      </a>
-    </div>
-  </div>
-{% endfor %}
-
-
+<div class="list-group">
+  {% for rev in revisions %}
+  <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/rev/{{rev.key.integer_id()}}" class="list-group-item">
+    {% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
+    <p class="text-muted pull-right">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d-%b-%Y")}}</em></p>
+  </a>
+  {% endfor %}
+</div>
 
 {% endblock %}

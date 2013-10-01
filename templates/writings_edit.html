@@ -2,34 +2,48 @@
 
 
 {% block w_head %}
-  <link href="/css/writings_edit.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript" src="/js/showdown.js"></script>
-  <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/showdown.js"></script>
+<script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
     
 {% block w_content %}
 
-  <div class="error">{{edit_warning | safe}}</div>
-  <form method="post">
-    <textarea name="content" id="inputText" {% if disabled_p %}disabled{% endif %}>{{content}}</textarea>
-    <div class="w-form-entry"><div class="w-form-label">Status:</div><input type="text" name="status" value="{{status}}" placeholder="Status of the writing (optional)" {% if disabled_p %}disabled{% endif %}/></div>
-    <div class="w-form-entry"><div class="w-form-label">Changes:</div><input type="text" name="summary" value="{{summary}}" placeholder="Summary of changes (optional)" {% if disabled_p %}disabled{% endif %}/></div>
-    
-    <input type="submit" class="button1" value="Save changes" {% if disabled_p %}disabled{% endif %}/>
-    <input type="button" class="button1" value="Cancel"
-	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'}" />
-  </form>
+<p class="text-danger">{{edit_warning | safe}}</p>
 
-<div class="error">{{error_message}}</div>
+<form method="post" role="form">
+  <div class="form-group {{cClass}}">
+    <textarea name="content" id="inputText" class="form-control" rows="20" autofocus
+	      {% if disabled_p %}disabled{% endif %}>{{content}}</textarea>
+  </div>
+  <div class="form-group {{sClass}}">
+    <label for="stinput">Status:</label>
+    <input id="stinput" type="text" name="status" value="{{status}}" class="form-control" placeholder="Status of the writing (optional)" {% if disabled_p %}disabled{% endif %}/>
+  </div>
+  <div class="form-group">
+    <label for="chinput">Changes:</label>
+    <input id="chinput" type="text" name="summary" value="{{summary}}" class="form-control" placeholder="Summary of changes (optional)" {% if disabled_p %}disabled{% endif %}/>
+  </div>
+  <button type="submit" class="btn btn-success"{% if disabled_p %}disabled{% endif %}>Save changes</button>
+  <button onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'}"
+	  type="button" class="btn btn-default">Cancel</button>
+  <p class="text-danger">{{error_message}}</p>
+  <div class="help-block">
+    <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+  </div>
+</form>
 
-<div class="help">
-  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+<p>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</p>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
+      Render preview
+    </button>
+  </div>
+  <div class="panel-body" id="previewArea">
+    Click the <em>Render preview</em> button to see a preview here.
+  </div>
 </div>
-
-<input type="button" class="button1" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
-<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
 
 
 {% endblock %}

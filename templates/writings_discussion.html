@@ -1,33 +1,25 @@
 {% extends "writings_base.html" %}
 
-{% block w_head %}
-  <link href="/css/writings_discussion.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
     
 {% block w_content %}
 
-<form method="post">
-  <textarea name="comment" placeholder="Write a new comment here." {% if disabled_p %}disabled{% endif %}>{{comment}}</textarea>
-  <div class="help">
-    <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+<form method="post" role="form">
+  <div class="form-group">
+    <textarea name="comment" class="form-control" rows="10" placeholder="Write a new comment here." {% if disabled_p %}disabled{% endif %}>{{comment}}</textarea>
   </div>
-  <input type="submit" class="button1" value="Post comment" {% if disabled_p %}disabled{% endif %}/>
+  <div class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</div>
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Post comment</button>
+  <p class="text-danger">{{error_message}}</p>
 </form>
 
-<div class="error">{{error_message}}</div>
-
-<div class="comments-wrapper">
+<div class="list-group">
   {% for c in comments %}
-  <div class="comment">
-    <div class="c-meta">
-      <span class="c-date">{{c.date.strftime("%d-%b-%Y")}}</span>
-      <span class="c-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a> wrote:</span>
-    </div>
-    <div class="c-content">{{c.comment | md | safe}}</div>
+  <div class="list-group-item">
+    {{c.comment | md | safe}}
+    <a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a>
+    <small class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</small>
   </div>
   {% endfor %}
 </div>
-
 
 {% endblock %}
