@@ -7,10 +7,7 @@
 {% endblock %}
 
 
-{% block breadcrumbs %}
-<li><a href="/{{project.key.integer_id()}}/code">Source code</a></li>
-<li class="active">{{code.name | truncate(40, True)}}</li>
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/code">Source code</a></li><li class="active">{{code.name | truncate(40, True)}}</li>{% endblock %}
 
 
 {% block p_content %}

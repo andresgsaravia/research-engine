@@ -1,8 +1,7 @@
 {% extends "project_base.html" %}
 
 {% block breadcrumbs %}
-<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li>
-<li class="active" title="{{notebook.name | safe}}">{{notebook.name | safe | truncate(40, True)}}</li>
+<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li><li class="active" title="{{notebook.name | safe}}">{{notebook.name | safe | truncate(40, True)}}</li>
 {% endblock %}
 
 {% block p_content %}

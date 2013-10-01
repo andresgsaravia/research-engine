@@ -123,7 +123,7 @@ class NewNotebookPage(NotebookPage):
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
               "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-              "breadcrumb" : '<li><a href="/%s/notebooks">Notebooks</a></li>' % project.key.integer_id(),
+              "breadcrumb" : '<li class="active">Notebooks</li>',
               "markdown_p" : True,
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
@@ -160,8 +160,7 @@ class NewNotebookPage(NotebookPage):
                   "content_placeholder" : "Description of the new notebook",
                   "submit_button_text" : "Create notebook",
                   "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-                  "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+                  "breadcrumb" : '<li class="active">Notebooks</li>',
                   "markdown_p" : True,
                   "name_value" : n_name,
                   "content_value" : n_description,
@@ -228,8 +227,7 @@ class NewNotePage(NotebookPage):
               "submit_button_text" : "Create note",
               "cancel_url" : "%s/%s" % (parent_url, nbid),
               "markdown_p" : True,
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
+              "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>' % (parent_url, notebook.name),
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
@@ -272,8 +270,7 @@ class NewNotePage(NotebookPage):
                   "submit_button_text" : "Create note",
                   "cancel_url" : "%s/%s" % (parent_url ,notebook.key.integer_id()),
                   "markdown_p" : True,
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-                  "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
+                  "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>' % (parent_url, notebook.name),
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
                   "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
@@ -485,9 +482,8 @@ class EditNotePage(NotebookPage):
               "submit_button_text" : "Save changes",
               "markdown_p" : True,
               "cancel_url" : note_url,
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a> / <a href="%s">%s</a>' 
-              % (nbs_url, nb_url, notebook.name, note_url, note.title),
+              "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li><a href="%s">%s</a></li><li class="active">%s</li>'
+              % (nbs_url, nb_url, notebook.name, note.title),
               "name_value" : note.title, "content_value" : note.content,
               "disabled_p" : True if visitor_p else False,
               "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
@@ -534,7 +530,8 @@ class EditNotePage(NotebookPage):
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
                   "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+                  "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li><a href="%s">%s</a></li><li class="active">%s</li>' 
+                  % (nbs_url, nb_url, notebook.name, note.title),
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
                   "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}

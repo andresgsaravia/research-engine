@@ -6,10 +6,7 @@
   <script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li>
-<li><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">{{notebook.name | safe | truncate(40, True)}}</a></li>
-<li class="active">{{note.title | safe | truncate(40, True)}}</li>
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li><li><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">{{notebook.name | safe | truncate(40, True)}}</a></li><li class="active">{{note.title | safe | truncate(40, True)}}</li>
 {% endblock %}
 
 {% block p_content %}
