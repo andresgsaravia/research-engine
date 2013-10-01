@@ -9,17 +9,23 @@
 
 <div class="container">
 
-  {% if user_is_owner_p %}
-  <a class="btn btn-default btn-sm pull-right" 
-     href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
-    <span class="glyphicon glyphicon-cog"></span>
-  </a>
-  <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-     href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
-    <span class="glyphicon glyphicon-plus"></span> New note
-  </a>
-  {% endif %}
-  <h3 class="page-header" style="overflow:auto;">{{notebook.name | safe}}</h3>
+  <div class="page-header">
+    <h3 style="overflow:auto;">{{notebook.name | safe}}
+      {% if user_is_owner_p %}
+      <div class=" pull-right">
+	<a class="btn btn-success btn-sm" style="margin-right:5px;"
+	   href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
+	  <span class="glyphicon glyphicon-plus"></span> New note
+	</a>
+	<a class="btn btn-default btn-sm" 
+	   href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
+	  <span class="glyphicon glyphicon-cog"></span>
+	</a>
+      </div>
+      {% endif %}
+    </h3>
+  </div>
+
 
   {% for note in notes %}
   <div class="panel panel-default">

@@ -7,7 +7,12 @@
 {% block p_content %}
 
 
-<div class="page-header"><h2>Collaborative Writings</h2></div>
+<div class="page-header" >
+  <h2>Collaborative Writings
+    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/writings/new">
+      <span class="glyphicon glyphicon-plus"></span> New writing</a>
+  </h2>
+</div>
 
 <div class="panel-group" id="myaccordion">
   {% for i in items %}
@@ -29,11 +34,6 @@
     </div>
   </div>
   {% endfor %}
-  <div class="panel">
-    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/writings/new">
-      <span class="glyphicon glyphicon-plus"></span> New writing
-    </a>
-  </div>
 </div>    
 
 {% endblock %}

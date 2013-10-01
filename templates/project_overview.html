@@ -5,8 +5,12 @@
 
 {% block p_content %}
 
-<a class="btn btn-default pull-right" href="/{{project.key.integer_id()}}/admin">Edit</a>
-<div class="page-header"><h2>{{project.name | safe}}</h2></div>
+<div class="page-header">
+  <h2>{{project.name | safe}}
+    <a class="btn btn-default pull-right" href="/{{project.key.integer_id()}}/admin" title="Edit settings">
+      <span class="glyphicon glyphicon-cog"></span></a>
+  </h2>
+</div>
 
 <div>{{project.description | md | safe}}</div>
 

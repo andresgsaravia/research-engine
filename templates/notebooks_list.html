@@ -7,7 +7,12 @@
 
 {% if user %}
 
-<div class="page-header"><h2>My notebooks</h2></div>
+<div class="page-header">
+  <h2>My notebooks
+    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
+      <span class="glyphicon glyphicon-plus"></span> New notebook</a>
+  </h2>
+</div>
 
 <div class="panel-group" id="myaccordion">
   {% if my_notebooks %}
@@ -25,18 +30,15 @@
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
 	{{n.description | md | safe }}
-	<p>Owner: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></p>
 	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</p>
+	<ul class="nav nav-pills">
+	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}"/> {{n.owner.get().username.capitalize()}}</a></li>
+	</ul>
       </div>
     </div>
   </div>
   {% endfor %}
   {% endif %}
-  <div class="panel">
-    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
-      <span class="glyphicon glyphicon-plus"></span> New notebook
-    </a>
-  </div>
 </div>    
 
 {% if other_notebooks %}
@@ -58,8 +60,10 @@
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
 	{{n.description | md | safe }}
-	<p>Owner: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></p>
 	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</p>
+	<ul class="nav nav-pills">
+	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}"/> {{n.owner.get().username.capitalize()}}</a></li>
+	</ul>
       </div>
     </div>
   </div>
@@ -87,8 +91,10 @@
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
 	{{n.description | md | safe }}
-	<p>Owner: <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a></p>
 	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d-%b-%Y")}}</p>
+	<ul class="nav nav-pills">
+	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}"/> {{n.owner.get().username.capitalize()}}</a></li>
+	</ul>
       </div>
     </div>
   </div>

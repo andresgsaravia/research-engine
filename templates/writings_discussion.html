@@ -16,8 +16,10 @@
   {% for c in comments %}
   <div class="list-group-item">
     {{c.comment | md | safe}}
-    <a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a>
     <small class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</small>
+    <ul class="nav nav-pills">
+      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
+    </ul>
   </div>
   {% endfor %}
 </div>
