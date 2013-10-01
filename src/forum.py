@@ -48,6 +48,9 @@ class ForumComments(ndb.Model):
 ######################
 
 class ForumPage(projects.ProjectPage):
+    def render(self, *a, **kw):
+        projects.ProjectPage.render(self, forum_tab_class = "active", *a, **kw)
+
     def get_threads(self, project, log_message = ''):
         self.log_read(ForumComments, "Fetching all the thread in a project's forum. ")
         return ForumThreads.query(ancestor = project.key).order(-ForumThreads.last_updated).fetch()
