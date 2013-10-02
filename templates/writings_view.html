@@ -1,21 +1,11 @@
 {% extends "writings_base.html" %}
-
-
-{% block w_head %}
-  <link href="/css/writings_view.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
     
 {% block w_content %}
 
- <div class="w-content">
-   {% if last_revision %}
-     {{last_revision.content | md | safe}}
-   {% else %}
-     <p>This writing hasn't been started yet. Click <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">here</a> or the <em>Edit</em> tab to make the first draft.</p>
-   {% endif %}
-</div>
-
-
+{% if last_revision %}
+{{last_revision.content | md | safe}}
+{% else %}
+<p>This writing hasn't been started yet. Click <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">here</a> or the <em>Edit</em> tab above to make the first draft.</p>
+{% endif %}
 
 {% endblock %}

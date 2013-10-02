@@ -2,53 +2,57 @@
 
 
 {% block p_head %}
-  <link href="/css/code_view.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="/js/showdown.js"></script>
   <script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
 
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/code">Source code</a>
-/  <a href="/{{project.key.integer_id()}}/code/{{code.key.integer_id()}}">{{code.name}}</a>
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/code">Source code</a></li><li class="active">{{code.name | truncate(40, True)}}</li>{% endblock %}
 
 
 {% block p_content %}
  
-<div id="c-head">
-  <div id="c-date">Last comment: {{code.last_updated.strftime("%d-%b-%Y")}}</div>
-  <div id="c-name">{{code.name}}</div>
-  <div id="c-link"><a href="{{code.link}}">External link</a></div>
-</div>
-<div id="c-description">{{code.description | md | safe}}</div>
-
-
-
-{% for c in comments %}
-<div class="comment">
-  <div class="comment-head">
-    <div class="comment-date">{{c.date.strftime("%d-%b-%Y")}}</div>
-    <div class="comment-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a></div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{code.name}}</h3>
   </div>
-  <div class="comment-content">{{c.comment | md | safe}}</div>
-</div>
-{% endfor %}
-
-<div class="comment-form">
-  <form method="post">
-    <textarea name="comment" id="commentText" onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
-    <input class="button1" type="submit" value="Comment" {% if disabled_p %}disabled{% endif %}/>
-  </form>
+  <div class="panel-body">
+    {{code.description | md | safe}}
+    <p class="text-muted pull-right">Last comment: {{code.last_updated.strftime("%d-%b-%Y")}}</p>
+    <a href="{{code.link}}">External link</a>
+  </div>
 </div>
 
-<div class="error">{{error_message}}</div>
+<h3 class="page-header">Comments <span class="badge">{{code.get_number_of_comments()}}</span></h3>
 
-<div class="help">
-  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+<div class="list-group">
+  {% for c in comments %}
+  <div class="list-group-item">
+    {{c.comment | md | safe}}
+    <p class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</p>
+    <ul class="nav nav-pills">
+      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
+    </ul>
+  </div>
+  {% endfor %}
 </div>
 
-<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
+<form method="post" role="form">
+  <div class="form-group{% if error_message %} has-error{% endif %}">
+    <label for="commentText">Your comment</label>
+    <textarea name="comment" id="commentText" class="form-control" rows="10"
+	      onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Comment</button>
+  <p class="text-danger">{{error_message}}</p>
+  <div class="help-block">
+    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </div>
+</form>
+
+<div>This is a preview of how the page will be renderer when you post it. It may not be 100&#37; accurate but it should be close.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.<em></div>
+</div>
 
 {% endblock %}

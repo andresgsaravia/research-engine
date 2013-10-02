@@ -2,7 +2,6 @@
 
 
 {% block head %}
-    <link href="/css/project_base.css" rel="stylesheet" type="text/css" />
     <title>{{project.name}}</title>
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript">
@@ -11,6 +10,7 @@
       TeX: {equationNumbers: {autoNumber: "AMS"} }
       });
     </script>
+    <style class="text/css">img{max-width:100%;height:auto;}</style>
     {% block p_head %}
     {% endblock %}
 {% endblock %}
@@ -18,36 +18,39 @@
 
 {% block content %}
 
-<ul id="project-menu">
-  <ul>
-    <li><div id="overview-tab"><a href="/{{project.key.integer_id()}}">Overview</a></div></li>
-    </ul>
-  <ul>
-    <li><div id="notebooks-tab"><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></div></li>
-    <li><div id="code-tab"><a href="/{{project.key.integer_id()}}/code">Code</a></div></li>
-    <li><div id="datasets-tab"><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></div></li>
-  </ul>
-  <ul>
-    <li><div id="wiki-tab"><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a></div></li>
-    <li><div id="writings-tab"><a href="/{{project.key.integer_id()}}/writings">Writings</a></div></li>
-    <li><div id="forum-tab"><a href="/{{project.key.integer_id()}}/forum">Forum</a></div></li>
-    <li><div id="bibliography-tab"><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></div></li>
-  </ul>
-    <ul>
-      <li><div id="admin-tab"><a href="/{{project.key.integer_id()}}/admin">Admin</a></div></li>
-    </ul>
-</ul>
+<!-- Breadcrumbs -->
+<div class="container">
+  <ol class="breadcrumb">
+    <li><a href="/{{project.key.integer_id()}}">{{project.name | safe | truncate(40, True)}}</a></li>
+    {% block breadcrumbs %}{% endblock %}
+  </ol>
 
+  <div class="row">
 
-<div id="project-title-bar">
-  <a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a>
-  {% block title_bar_extra %} {% endblock %}
+    <!-- Project menu -->
+    <div class="col-md-3 panel panel-default">
+      <div class="panel-body">
+	<ul class="nav nav-pills nav-stacked">
+	  <li class="{{overview_tab_class}}"><a href="/{{project.key.integer_id()}}">Overview</a></li>
+	  <li class="{{notebooks_tab_class}}"><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li>
+	  <li class="{{code_tab_class}}"><a href="/{{project.key.integer_id()}}/code">Code</a></li>
+	  <li class="{{datasets_tab_class}}"><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></li>
+	  <li class="{{wiki_tab_class}}"><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a></li>
+	  <li class="{{writings_tab_class}}"><a href="/{{project.key.integer_id()}}/writings">Writings</a></li>
+	  <li class="{{forum_tab_class}}"><a href="/{{project.key.integer_id()}}/forum">Forum</a></li>
+	  <li class="{{bibliography_tab_class}}"><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></li>
+	  <li class="{{admin_tab_class}}"><a href="/{{project.key.integer_id()}}/admin">Admin</a></li>
+	</ul>
+      </div>
+    </div>
+
+    <!-- Project content -->
+    <div class="col-md-9">
+      {% block p_content %}
+      {% endblock %}
+    </div>
+  </div>
 </div>
 
-<div id="project-content">
-
-{% block p_content %}
-{% endblock %}
-</div>
 
 {% endblock %}

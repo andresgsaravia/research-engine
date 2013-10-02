@@ -1,34 +1,30 @@
 {% extends "project_base.html" %}
 
 
-{% block p_head %}
-  <link href="/css/dataset_concept_base.css" rel="stylesheet" type="text/css" />
-  {% block dv_head %}
-  {% endblock %}
-{% endblock %}
-
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/datasets">Datasets</a>
-/  <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name}}</a>
-/  <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">{{datac.name[0:80]}}</a> 
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></li><li><a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name}}</a></li><li class="active">{{datac.name | truncate(40, True)}}</li>{% endblock %}
 
 
 {% block p_content %}
-  <div id="dr-head">
-    <div id="dr-date">Last Updated: {{datac.last_updated.strftime("%d-%b-%Y")}}</div>
-    <div id="dr-name">{{datac.name}}</div>
-  </div>
-  
-  <div id="dr-navbar">
-    <a id="dr-revisions-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a>
-    <a id="dr-new-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">Upload new revision</a>
-    <a id="dr-info-tab" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit">Edit info</a>
-  </div>
-    
-  {% block dv_content %}
-  {% endblock %}
 
+<ul class="nav nav-tabs">
+  <li{% if rev_p %} class="active"{% endif %}>
+    <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a></li>
+  <li{% if new_p %} class="active"{% endif %}>
+    <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">New revision</a></li>
+  <li{% if inf_p %} class="active"{% endif %}>
+    <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit" title="Edit info">
+      <span class="glyphicon glyphicon-cog"></span></a></li>
+</ul>
+
+<div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
+  <div class="panel-body">
+    <div class="page-header"><h3>{{datac.name | safe}}</h3></div>
+    {% block dv_content %}
+    {% endblock %}
+  </div>
+  <div class="panel-footer">
+    <p class="text-muted">Last Updated: {{datac.last_updated.strftime("%d-%b-%Y")}}</p>
+  </div>
+</div>    
 
 {% endblock %}

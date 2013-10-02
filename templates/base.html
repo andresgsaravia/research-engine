@@ -1,60 +1,82 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <link href="/css/base.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <style class="text/css">
+      html,body {height: 100%;}
+      #wrap {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; padding: 0 0 50px;}
+      #footer {padding-top: 10px; height: 45px; border-top: 1px solid #C0C0C0;}
+    </style>
     {% block head %}
     {% endblock %}
   </head>
 
   <body>
-    <div id="all-wrapper">
-
-      <!-- MENU  -->
-      <ul id="top-menu">
-	<div id="top-menu-items">
-	  <!-- <li><a href="/">Notifications</a></li> -->
-	  <li><a href="/" style="padding: 0.5em 0;"><img id="home-logo" src="/static/logo.png"/></a></li>
-	  {% if user %}<li><a href="/{{user.username}}">Projects <span style="font-size:0.7em;">&#9660;</span></a>
-	    <ul>
-	      {% for p in user.list_of_projects()[:3] %}
-	      <li><a href="/{{p.key.integer_id()}}">{{p.name[:15] | safe}}...</a></li>
-	      {% endfor %}
-	      <li><a href="/{{user.username}}"><em>More...</em></a></li>
-	    </ul>
-	  </li>{% endif %}
-	  <!-- <li><a href="/classroom">Classroom</a></li> -->
-	  <!-- <li><a href="/blog">Blog</a></li> -->
-	  <!--<li>{{login_message | safe}}</li> -->
-	  <li>{% if user %}
-	    <a href="/{{user.username}}"><img src="{{user.get_profile_image(20)}}" 
-					      style="border-radius: 0.2em; margin-top: -0.5em; margin-right:0.5em;"/> {{user.username.capitalize()}} <span style="font-size:0.7em;">&#9660;</span></a>
-	    <ul>
-	      <li><a href="/settings">Settings</a></li>
-	      <li><a href="/logout">Logout</a></li>
-	    </ul>{% else %}
-	    <a href="/login">Login &#9660;</a> <ul><li><a href="/signup">Signup</a></li></ul>{% endif %}
-	  </li>
+    <div id="wrap">
+      
+      <!-- NAVBAR -->
+      <nav class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="/">Research Engine</a>
 	</div>
-      </ul>
-
-
-      <!-- FOOTER -->
-      <div id="footer">
-	<img id="footer-app-engine-image" 
-	     src="https://developers.google.com/appengine/images/appengine-noborder-120x30.gif"
-	     alt="Powered by Google App Engine" />
-	<p><b>{{APP_NAME}}</b> (alpha)</p>
-	<p>You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></p>
-      </div>
-
-
+	
+	<div class="collapse navbar-collapse navbar-ex1-collapse">
+	  {% if user %}
+	  <ul class="nav navbar-nav">
+	    <li class="dropdown">
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+	      <ul class="dropdown-menu">
+		{% for p in user.list_of_projects() %}
+		<li><a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a></li>
+		{% endfor %}
+	      </ul>
+	    </li>
+	  </ul>
+	  <ul class="nav navbar-nav navbar-right">
+	    <li><a href="/{{user.username}}"><img src="{{user.get_profile_image(20)}}" /> {{user.username}}</a></li>
+	    <li><a href="/settings" title="Settings"><span class="glyphicon glyphicon-wrench"></span></a></li>
+	    <li><a href="/logout" title="Logout"><span class="glyphicon glyphicon-log-out"></span></a></li>
+	  </ul>
+	  {% else %}
+	  <form class="navbar-form navbar-right" action="/login" method="post">
+	    <div class="form-group">
+	      <input type="text" placeholder="Email or username" class="form-control" name="email_or_username"/>
+	    </div>
+	    <div class="form-group">
+	      <input type="password" placeholder="Password" class="form-control" name="password"/>
+	    </div>
+            <button type="submit" class="btn btn-success">Log in</button>
+	    <input id="goback" type="hidden" name="goback" value=""/>
+          </form>	
+	  {% endif %}
+	</div>
+      </nav>
+      
       <!-- CONTENT -->    
-      <div id="page-content">      
-	{% block content %}
-	{% endblock %}          
-      </div>
-    
+      {% block content %}
+      {% endblock %}
+      
     </div>
+
+    <!-- FOOTER -->
+    <div id="footer">
+      <div class="container">
+	<a href="https://developers.google.com/appengine/" class="pull-right">
+	  <img src="https://developers.google.com/appengine/images/appengine-noborder-120x30.gif"
+	       alt="Powered by Google App Engine" />
+	</a>
+	<p>{{APP_NAME}} (alpha). <small class="text-muted credit">You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></small>
+	</p>
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    {% if not user %}<script languaje="javascript">document.getElementById("goback").value = window.location.pathname</script>{% endif %}
   </body>
 </html>

@@ -2,53 +2,62 @@
 
 
 {% block p_head %}
-  <link href="/css/forum_thread.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="/js/showdown.js"></script>
   <script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
 
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/forum">Forum</a>
-/  <a href="/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}">{{thread.title[0:30]}}...</a>
+{% block breadcrumbs %}
+<li><a href="/{{project.key.integer_id()}}/forum">Forum</a></li>
+<li class="active">{{thread.title | safe | truncate(40,True)}}</li>
 {% endblock %}
 
 
 {% block p_content %}
- 
-<div id="thread">
-  <div id="t-head">
-    <div id="t-title">{{thread.title}}</div>
-    <div id="t-date">{{thread.date.strftime("%d-%b-%Y")}}</div>
-    <div id="t-author">by <a href="/{{thread.author.get().username}}">{{thread.author.get().username.capitalize()}}</a></div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{thread.title}}</h3>
   </div>
-  <div id="t-content">{{thread.content | md | safe}}</div>
+  <div class="panel-body">
+    {{thread.content | md | safe}}
+    <p class="text-muted pull-right">{{thread.date.strftime("%d-%b-%Y")}}</p>
+    <ul class="nav nav-pills">
+      <li><a href="/{{thread.author.get().username}}"><img src="{{thread.author.get().get_profile_image(20)}}"/> {{thread.author.get().username.capitalize()}}</a></li>
+    </ul>
+  </div>
 </div>
 
+<h3 class="page-header">Answers <span class="badge">{{thread.get_number_of_comments()}}</span></h3>
 
-{% for c in comments %}
-<div class="t-comment">
-  <div class="c-head">
-    <div class="c-date">{{c.date.strftime("%d-%b-%Y")}}</div>
-    <div class="c-author"><a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a></div>
+<div class="list-group">
+  {% for c in comments %}
+  <div class="list-group-item">
+    {{c.comment | md | safe}}
+    <p class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</p>
+    <ul class="nav nav-pills">
+      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
+    </ul>
   </div>
-  <div class="c-comment">{{c.comment | md | safe}}</div>
+  {% endfor %}
 </div>
-{% endfor %}
 
-<form method="post">
-  <textarea name="comment" id="commentText" onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
-  <input type="submit" class="button1" value="Post comment" {% if disabled_p %}disabled{% endif %}/>
+<form method="post" role="form">
+  <div class="form-group">
+    <label for="commentText">Your answer</label>
+    <textarea name="comment" id="commentText" class="form-control" rows="10"
+	      onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Post answer</button>
+  <p class="text-danger">{{error_message}}</p>
+  <div class="help-block">
+    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </div>
 </form>
 
-
-<div class="error">{{error_message}}</div>
-
-<div class="help">
-  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+<div>This is a preview of how the page will be renderer when you post it. It may not be 100&#37; accurate but it should be close.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.<em></div>
 </div>
-
-<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
 
 {% endblock %}

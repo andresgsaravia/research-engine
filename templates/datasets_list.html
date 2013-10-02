@@ -1,58 +1,38 @@
 {% extends "project_base.html" %}
 
-{% block p_head %}
-  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    var toggleVisibility = function (item) {
-      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
-      if (item.innerHTML.trim() == 'Show description') {
-        item.innerHTML = 'Hide description';
-        infoDiv.style.maxHeight = '20em';
-      } else {
-        item.innerHTML = 'Show description';
-        infoDiv.style.maxHeight = '0em';
-      }
-    };
-  </script>
-  <style type="text/css">
-    .item-head {background: #D0B1B1;}
-    .item-head a {color: black;}
-    .item-head:hover, .item-head:hover a {background: #E8D3D3; color: black;}
-    #datasets-tab {background:white;}
-    .item + .item {border-top: 1px solid #AD9696}
-    .dataset-description {padding-left: 1em; padding-right: 1em;}
-    .dataset-last-updated {color: #888888; font-size: 0.9em; padding-left:1em;}
-    .item-count::before {content: url("/static/icons/16x16/database.png");}
-  </style>
-{% endblock %}
 
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/datasets">Datasets</a>
-{% endblock %}
+{% block title_bar_extra %}<li class="active">Datasets</li>{% endblock %}
 
 
 {% block p_content %}
  
-<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/datasets/new">New dataset</a>
-<h2>Datasets</h2>
+<div class="page-header">
+  <h2>Datasets
+    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/datasets/new">
+      <span class="glyphicon glyphicon-plus"></span> New dataset</a>
+  </h2>
+</div>
 
-<div class="list-wrapper">
-{% for i in items %}
-  <div class="item">
-    <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="item-title" href="/{{project.key.integer_id()}}/datasets/{{i.key.integer_id()}}">
-	<div class="item-count" title="Number of concepts in this dataset"> {{i.get_number_of_concepts()}}</div>
-	{{i.name}}
-      </a>
+
+<div class="panel-group" id="caccordion">
+  {% for i in items %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+	<a href="/{{project.key.integer_id()}}/datasets/{{i.key.integer_id()}}">{{i.name | safe}}</a>
+	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
+	  <span class="glyphicon glyphicon-info-sign"></span></a>
+	<span class="badge pull-right" title="Number of concepts in this dataset" style="margin-right:10px;">{{i.get_number_of_concepts()}}</span>
+      </h4>
     </div>
-    <div class="item-description">
-      <div class="dataset-description">{{i.description | md | safe}}</div>
-      <div class="dataset-last-updated">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</div>
+    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+      <div class="panel-body">
+	{{i.description | md | safe}}
+	<p class="text-muted pull-right">Last updated: {{i.last_updated.strftime("%d-%b-%Y")}}</p>
+      </div>
     </div>
   </div>
-{% endfor %}
+  {% endfor %}
 </div>
 
 {% endblock %}

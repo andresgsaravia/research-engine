@@ -1,26 +1,42 @@
 {% extends "project_base.html" %}
 
-{% block p_head %}
-  <link href="/css/biblio_comment.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
-/  <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title[:20]}}...</a> 
-/  <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{comment.key.integer_id()}}">{{comment.key.integer_id()}}</a>
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></li><li><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title | truncate(40, True)}}</a></li><li class="active">{{comment.key.integer_id()}}</li>{% endblock %}
 
 
 {% block p_content %}
 
-<div id="comment">
-  <div id="comment-head">
-    <div id="comment-date">{{comment.date.strftime("%d-%b-%Y")}}</div>
-    <div id="item-title"><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title}}</a></div>
-    <div id="comment-author"><a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a> commented:</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{item.title}}</h3>
   </div>
-  <div id="comment-content">{{comment.content | md | safe}}</div>
+  <div class="panel-body">
+    {% if item.kind == "article" %} 
+    <strong>{{item.metadata["publication"]}}</strong> <em>({{item.metadata["date"]}})</em>
+    <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+    {% elif item.kind == "arXiv" %}
+    <strong>arXiv preprint</strong> <em>({{item.metadata["date"]}})</em>
+    <p><a href="{{i.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+    {% endif %}		
+    <p>Authors:</p>
+    <ul class="list-inline list-group">
+      {% for a in item.metadata["authors"] %}
+      <li class="list-group-item">{{a}}</li>
+      {% endfor %}
+    </ul>
+  </div>	
+</div>
+
+<div class="page-header"><h3>Comment</span></h3></div>
+
+<div class="list-group">
+  <div class="list-group-item">
+    {{comment.content | md | safe}}
+    <p class="text-muted pull-right">{{comment.date.strftime("%d-%b-%Y")}}</p>
+    <ul class="nav nav-pills">
+      <li><a href="/{{comment.author.get().username}}"><img src="{{comment.author.get().get_profile_image(20)}}"/> {{comment.author.get().username.capitalize()}}</a></li>
+    </ul>
+  </div>
 </div>
 
 {% endblock %}

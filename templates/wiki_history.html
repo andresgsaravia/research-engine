@@ -1,28 +1,15 @@
 {% extends "wiki_base.html" %}
 
-
-{% block w_head %}
-  <link href="/css/wiki_history.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
     
 {% block w_content %}
 
-  <div id="w-title">History of <em>{{wikiurl.replace("_", " ")}}</em></div>
-
-
-{% for rev in revisions %}
-  <div class="revision">
-    <div class="rev-meta">
-      <div class="rev-date">{{rev.date.strftime("%d-%b-%Y")}}</div>
-      <div class="rev-author">Author: <a href="/{{rev.author.get().username}}">{{rev.author.get().username.capitalize()}}</a></div>
-    </div>
-    <div class="rev-summary">
-      <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key.id()}}">
-	{% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
-      </a>
-    </div>
-  </div>
-{% endfor %}
+<div class="list-group">
+  {% for rev in revisions %}
+  <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key.id()}}" class="list-group-item">
+    {% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
+    <p class="text-muted pull-right">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d-%b-%Y")}}</em></p>
+  </a>
+  {% endfor %}
+</div>
 
 {% endblock %}

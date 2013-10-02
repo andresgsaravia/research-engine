@@ -1,46 +1,55 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-  <link href="/css/biblio_new.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    var changeIdName = function () {
-      var selectBox = document.getElementById("selectBox");
-      var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-      var d = document.getElementById("inputId");
-      if (selectedValue === "article") {
-        d.placeholder = "Enter the DOI of the article";
-      } else if (selectedValue === "arXiv") {
-        d.placeholder = "Enter the arXiv id of the preprint";
-      } else {
-        d.placeholder = "";
-      }
-    };
-  </script>
+<script type="text/javascript">
+  var changeIdName = function () {
+  var selectBox = document.getElementById("selectBox");
+  var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+  var d = document.getElementById("inputId");
+  if (selectedValue === "article") {
+   d.placeholder = "Enter the DOI of the article";
+  } else if (selectedValue === "arXiv") {
+   d.placeholder = "Enter the arXiv id of the preprint";
+  } else {
+   d.placeholder = "";
+  }};
+</script>
 {% endblock %}
 
 
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
-{% endblock %}
+{% block breadcrumbs %}<li class="active">Bibliography</li>{% endblock %}
 
 
 {% block p_content %}
  
-<h2>Bibliography</h2>
-<h3>Add new entry</h3>
+<div class="page-header"><h2>New bibliography entry</h2></div>
 
-<form method="post">
-  <select name="kind" id="selectBox" onChange="changeIdName();">
-    <option value="article">Published article</option>
-    <option value="arXiv" {% if kind=="arXiv" %}selected{% endif %}>arXiv preprint</option>
-  </select>
-  <input type="text" name="identifier" value="{{identifier}}" id="inputId"
-	 placeholder="Enter the DOI of the article" autofocus 
-	 {% if disabled_p %}disabled{% endif %}>
 
-  <input type="submit" class="button1" value="Search and add" class="button1">
+<form method="post" class="form-horizontal" role="form">
+  <div class="form-group">
+    <label for="selectBox" class="control-label col-lg-2">Kind of publication</label>
+    <div class="col-lg-10">
+      <select name="kind" id="selectBox" onChange="changeIdName();" class="form-control">
+	<option value="article">Published article</option>
+	<option value="arXiv" {% if kind=="arXiv" %}selected{% endif %}>arXiv preprint</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group{% if error_message %} has-error{% endif %}">
+    <label for="inputId" class="control-label col-lg-2">Identifier 
+      <span class="glyphicon glyphicon-question-sign" title="This is either the article's DOI or its arXiv ID"></span></label>
+    <div class="col-lg-10">
+      <input type="text" name="identifier" value="{{identifier}}" id="inputId" class="form-control"
+	     placeholder="Enter the DOI of the article" autofocus {% if disabled_p %}disabled{% endif %}/>
+    </div>
+  </div>
+  <div class="pull-right">
+    <button type="submit" class="btn btn-success">Search and add</button>
+    <button type="button" class="btn btn-default" onClick="window.location='/{{project.key.integer_id()}}/bibliography'">Cancel</button>
+  </div>
+  <p class="text-danger">{{error_message}}</p>
 </form>
 
-<div class="error">{{error_message}}</div>
+
 
 {% endblock %}

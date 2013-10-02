@@ -80,6 +80,9 @@ class NotebookPage(projects.ProjectPage):
         self.log_read(NoteComments, "Fetching all the comments for a note in a notebook. ")
         return  NoteComments.query(ancestor = note.key).order(NoteComments.date).fetch()
 
+    def render(*a, **kw):
+        projects.ProjectPage.render(notebooks_tab_class = "active", *a, **kw)
+
 
 class NotebooksListPage(NotebookPage):
     def get(self, projectid):
@@ -120,11 +123,10 @@ class NewNotebookPage(NotebookPage):
               "content_placeholder" : "Description of the new notebook",
               "submit_button_text" : "Create notebook",
               "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-              "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+              "breadcrumb" : '<li class="active">Notebooks</li>',
               "markdown_p" : True,
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
@@ -158,14 +160,13 @@ class NewNotebookPage(NotebookPage):
                   "content_placeholder" : "Description of the new notebook",
                   "submit_button_text" : "Create notebook",
                   "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-                  "title_bar_extra" : '/ <a href="/%s/notebooks">Notebooks</a>' % project.key.integer_id(),
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+                  "breadcrumb" : '<li class="active">Notebooks</li>',
                   "markdown_p" : True,
                   "name_value" : n_name,
                   "content_value" : n_description,
                   "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+                  "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_notebook = Notebooks(owner = user.key, 
@@ -226,10 +227,9 @@ class NewNotePage(NotebookPage):
               "submit_button_text" : "Create note",
               "cancel_url" : "%s/%s" % (parent_url, nbid),
               "markdown_p" : True,
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
+              "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>' % (parent_url, notebook.name),
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid, nbid):
@@ -270,11 +270,10 @@ class NewNotePage(NotebookPage):
                   "submit_button_text" : "Create note",
                   "cancel_url" : "%s/%s" % (parent_url ,notebook.key.integer_id()),
                   "markdown_p" : True,
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-                  "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' % (parent_url, parent_url + '/' + str(notebook.key.integer_id()), notebook.name),
+                  "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>' % (parent_url, notebook.name),
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+                  "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key)
@@ -384,20 +383,18 @@ class EditNotebookPage(NotebookPage):
             return
         visitor_p = False if notebook.owner.get().key == user.key else True
         nbs_url = "/%s/notebooks" % projectid
-        nb_url = nbs_url + "/" + nbid
-        kw = {"title" : "Edit notebook: %s" % notebook.name,
+        kw = {"title" : "Editing notebook <br/> <small>%s</small>" % notebook.name,
               "name_placeholder" : "Title of the notebook",
               "content_placeholder" : "Description of the notebook",
               "submit_button_text" : "Save Changes",
               "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
-              % (nbs_url, nb_url, notebook.name),
+              "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>' 
+              % (nbs_url, notebook.name),
               "name_value" : notebook.name,
               "content_value" : notebook.description,
               "markdown_p" : True,
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid, nbid):
@@ -432,21 +429,19 @@ class EditNotebookPage(NotebookPage):
             error_message += "Please provide a description of this notebook. "
         if have_error:
             nbs_url = "/%s/notebooks" % (projectid)
-            nb_url = nbs_url + "/" + nbid
-            kw = {"title" : "Edit notebook: %s" % notebook.name,
+            kw = {"title" : "Editing notebook <br/><small>%s</small>" % notebook.name,
                   "name_placeholder" : "Title of the notebook",
                   "content_placeholder" : "Description of the notebook",
                   "submit_button_text" : "Save Changes",
                   "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-                  "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a>' 
-                  % (nbs_url, nb_url, notebook.name),
+                  "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>'
+                  % (nbs_url, notebook.name),
                   "name_value" : n_name,
                   "content_value" : n_description,
                   "error_message" : error_message,
                   "markdown_p" : True,
                   "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+                  "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
             self.render("project_form_2.html", project = project, **kw)
         else:
             notebook.name = n_name
@@ -487,12 +482,11 @@ class EditNotePage(NotebookPage):
               "submit_button_text" : "Save changes",
               "markdown_p" : True,
               "cancel_url" : note_url,
-              "more_head" : "<style>#notebooks-tab {background: white;}</style>",
-              "title_bar_extra" : '/ <a href="%s">Notebooks</a> / <a href="%s">%s</a> / <a href="%s">%s</a>' 
-              % (nbs_url, nb_url, notebook.name, note_url, note.title),
+              "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li><a href="%s">%s</a></li><li class="active">%s</li>'
+              % (nbs_url, nb_url, notebook.name, note.title),
               "name_value" : note.title, "content_value" : note.content,
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid, nbid, note_id):
@@ -536,10 +530,11 @@ class EditNotePage(NotebookPage):
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",
                   "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-                  "more_head" : "<style>#notebooks-tab {background: white;}</style>",
+                  "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li><a href="%s">%s</a></li><li class="active">%s</li>' 
+                  % (nbs_url, nb_url, notebook.name, note.title),
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message,
                   "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not the owner of this notebook.</span>' if visitor_p else ""}
+                  "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
             self.render("project_form_2.html", project = project, **kw)
         else:
             if (note.title != n_title) or (note.content != n_content):

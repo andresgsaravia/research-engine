@@ -52,6 +52,9 @@ class CodeComments(ndb.Model):
 ######################
 
 class CodePage(projects.ProjectPage):
+    def render(self, *a, **kw):
+        projects.ProjectPage.render(self, code_tab_class = "active", *a, **kw)
+
     def get_codes_list(self, project):
         self.log_read(CodeRepositories, "Fetching all the code reposirtories. ")
         return CodeRepositories.query(ancestor = project.key).order(-CodeRepositories.last_updated).fetch()
@@ -84,17 +87,15 @@ class NewCodePage(CodePage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
-        kw = {"title_bar_extra" : '/ <a href="/%s/code">Source code</a>' % projectid,
-              "more_head" : "<style>#code-tab {background: white;}</style>",
+        kw = {"breadcrumb" : '<li class="active">Source code</li>',
               "title" : "Add a source code repository",
-              "pre_form_message" : 'Here you can add an existing <a href="https://github.com">GitHub</a> repository to your project so you can keep track of it and start a discussion.',
               "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",
               "content_placeholder" : "Briefly describe how this repository is related to the project.",
               "submit_button_text" : "Add repository",
               "markdown_p" : True,
               "cancel_url" : "/%s/code" % projectid,
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not a member of this project.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
@@ -107,54 +108,54 @@ class NewCodePage(CodePage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        link = self.request.get("name").strip()
-        description = self.request.get("content")
         have_error = False
-        error_message = ''
-        visitor_p = False if project.user_is_author(user) else True
-        if visitor_p:
+        kw = {"link" : self.request.get("name").strip(),
+              "description" : self.request.get("content"),
+              "visitor_p" : False if project.user_is_author(user) else True}
+        if kw["visitor_p"]:
             have_error = True
-            error_message = "You are not an author in this project. "
+            kw["error_message"] = "You are not an author in this project. "
         else:
-            if not link:
+            if not kw["link"]:
                 have_error = True
-                error_message = "Please provide a link to the repository you want to add. "
-            elif not re.match(GITHUB_REPO_RE, link):
+                kw["error_message"] = "Please provide a link to the repository you want to add. "
+                kw["nClass"] = "has-error"
+            elif not re.match(GITHUB_REPO_RE, kw["link"]):
                 have_error = True
-                error_message = "That doesn't look like a valid GitHub url to me. Please make sure it has the form https://github.com/<em>author-name</em>/<em>repo-name</em>. "
-            if not description:
+                kw["error_message"] = "That doesn't look like a valid GitHub url to me. Please make sure it has the form https://github.com/<em>author-name</em>/<em>repo-name</em>. "
+                kw["nClass"] = "has-error"
+            if not kw["description"]:
                 have_error = True
-                error_message += "Please provide a brief description of the relationship of this repository to the project. "
+                kw["error_message"] = "Please provide a brief description of the relationship of this repository to the project. "
+                kw["cClass"] = "has-error"
         # Fetch the repo
         if not have_error:
-            repo_api_url = GITHUB_API_PREFIX + re.split(GITHUB_PREFIX, link)[1]
+            repo_api_url = GITHUB_API_PREFIX + re.split(GITHUB_PREFIX, kw["link"])[1]
             repo_fetch = urlfetch.fetch(url = repo_api_url, method = urlfetch.GET, follow_redirects = True)
             if not repo_fetch.status_code == 200:
                 have_error = True
-                error_message = "Could not retrieve url <em>%s</em><br/> Please check the url is correct" % link
+                kw["error_message"] = "Could not retrieve url <em>%s</em><br/> Please check the url is correct." % kw["link"]
+                kw["nClass"] = "has-error"
             # Check for duplicated
-            elif CodeRepositories.query(CodeRepositories.link == str(link), ancestor = project.key).get():
+            elif CodeRepositories.query(CodeRepositories.link == str(kw["link"]), ancestor = project.key).get():
                 have_error = True
-                error_message = "It seems that repository is already in your project. "
+                kw["error_message"] = "It seems that repository is already in your project. "
+                kw["nClass"] = "has-error"
         if have_error:
-            kw = {"title_bar_extra" : '/ <a href="/%s/code">Source code</a>' % projectid,
-                  "more_head" : "<style>#code-tab {background: white;}</style>",
-                  "title" : "Add a source code repository",
-                  "pre_form_message" : 'Here you can add an existing <a href="https://github.com">GitHub</a> repository to your project so you can keep track of it and start a discussion.',
-                  "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",
-                  "content_placeholder" : "Briefly describe how this repository is related to the project.",
-                  "submit_button_text" : "Add repository",
-                  "markdown_p" : True,
-                  "cancel_url" : "/%s/code" % projectid,
-                  "error_message" : error_message,
-                  "name_value" : link,
-                  "content_value" : description,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            kw["title"] = "Add a source code repository"
+            kw["name_placeholder"] = "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name"
+            kw["content_placeholder"] = "Briefly describe how this repository is related to the project."
+            kw["submit_button_text"] = "Add repository"
+            kw["markdown_p"] = True
+            kw["cancel_url"] = "/%s/code" % projectid
+            kw["name_value"] = kw["link"]
+            kw["content_value"] = kw["description"]
+            kw["disabled_p"] = True if kw["visitor_p"] else False
+            kw["pre_form_message"] = '<p class="text-danger">You are not a member of this project.</p>' if kw["visitor_p"] else ""
             self.render("project_form_2.html", project = project, **kw)
         else:
             repo_json = json.loads(repo_fetch.content)
-            new_repo = CodeRepositories(link = link, description = description, parent = project.key,
+            new_repo = CodeRepositories(link = kw["link"], description = kw["description"], parent = project.key,
                                         name = repo_json["full_name"], github_json = repo_json)
             project.put_and_notify(self, new_repo, user)
             html, txt = new_repo.notification_html_and_txt(user, project)
@@ -205,7 +206,7 @@ class ViewCodePage(CodePage):
         visitor_p = False if project.user_is_author(user) else True
         if visitor_p:
             have_error = True
-            erro_message = "You are not an author in this project. "
+            error_message = "You are not an author in this project. "
         elif not comment:
             have_error = True
             error_message = "You can't submit an empty comment. "

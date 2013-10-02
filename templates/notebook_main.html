@@ -1,45 +1,69 @@
 {% extends "project_base.html" %}
 
-{% block p_head %}
-  <link href="/css/notebook_main.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a>
-/  <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">{{notebook.name}}</a>
+{% block breadcrumbs %}
+<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li><li class="active" title="{{notebook.name | safe}}">{{notebook.name | safe | truncate(40, True)}}</li>
 {% endblock %}
 
 {% block p_content %}
 
-<div id="nb-heading">{% if user_is_owner_p %}
-  <a class="button1" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">New note</a>
-  <a class="button1" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">Edit notebook</a>{% endif %}
-  <div id="nb-name"><img id="owner-picture" src="{{owner.get_profile_image(20)}}"/>{{notebook.name}}</div>
-</div>
+<div class="container">
 
-{% for note in notes %}
-<div class="note">
-  <div class="note-head">
-    <div class="note-date">{{note.date.strftime("%d-%b-%Y")}}</div>
-    <div class="note-title">
-      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">{{note.title}}</a>
+  <div class="page-header">
+    <h3 style="overflow:auto;">{{notebook.name | safe}}
+      {% if user_is_owner_p %}
+      <div class=" pull-right">
+	<a class="btn btn-success btn-sm" style="margin-right:5px;"
+	   href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
+	  <span class="glyphicon glyphicon-plus"></span> New note
+	</a>
+	<a class="btn btn-default btn-sm" 
+	   href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
+	  <span class="glyphicon glyphicon-cog"></span>
+	</a>
+      </div>
+      {% endif %}
+    </h3>
+  </div>
+
+
+  {% for note in notes %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">{{note.title}}</a>
+      </h3>
+    </div>
+    <div class="panel-body">
+      {{note.content | md | safe}}
+      <small class="text-muted">{{note.date.strftime("%d-%b-%Y")}}</small>
+      <div class="pull-right">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
+	  <span class="glyphicon glyphicon-comment"></span> {{note.get_number_of_comments()}} comments</a>
+	<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
+	  <span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
+      </div>
     </div>
   </div>
-  <div class="note-content">{{note.content | md | safe}}</div>
-  <div class="note-comments">
-    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
-      <img src="/static/icons/16x16/comment.png" /> {{note.get_number_of_comments()}} comments</a>
-    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
-      <img src="/static/icons/16x16/comment_add.png"/> New comment</a>
-  </div>
-</div>
-{% endfor %}
+  {% endfor %}
 
-{% if page>0 or more_p %}
-<div id="browse-pages-links">
-{% if page>0 %}<a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">Previous page</a>{% endif %}
-{% if more_p %}<a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">Next page</a>{% endif %}
-</div>
-{% endif %}
+  
+  {% if page>0 or more_p %}
+  <ul class="pager">
+  {% if page>0 %}
+  <li class="previous">
+    <a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">
+      Previous page
+    </a>
+  </li>
+  {% endif %}
+  {% if more_p %}
+  <li class="next">
+    <a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">
+      Next page
+    </a>
+  </li>
+  {% endif %}
 
+  {% endif %}
+</div>
 {% endblock %}

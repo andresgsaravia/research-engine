@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>{{APP_NAME}}</title>
-    <link href="/css/root.css" rel="stylesheet" type="text/css" />
+<title>{{APP_NAME}}</title>
 {% endblock %}
 
 
@@ -10,22 +9,52 @@
 
 {% if user %}
 
-<div id="projects-wrapper">
-  <a id="new-project-link" href="/new_project"><img src="/static/icons/32x32/add.png" /></a>
-  <h2>Your projects</h2>
-  {% if projects %}
-  {% for p in projects %}
-  <div class="project">
-    <a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a>
-  </div>
-  {% endfor %}
-  {% else %}
-  <div id="no-projects">You don't have any projects.</div>
-  {% endif %}  
-</div>
+<div class="container">
+  <div class="row">
 
-<div id="activity-wrapper">    
-  <h2>Recent activity</h2>
+    <div class="col-md-7">
+      <h2>Recent activity</h2>
+      <p><em>Coming soon...</em></p>
+    </div>
+
+    <div class="col-md-5">
+
+
+      <div class="panel panel-primary">
+	<div class="panel-heading">
+	  <h3 class="panel-title">Your projects</h3>
+	</div>
+
+	<div class="panel-body">
+	  <div class="panel-group" id="accordion1">
+	    {% for p in projects %}
+	    <div class="panel panel-default">
+	      <div class="panel-heading">
+		<h4 class="panel-title">
+		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}} </a>
+		  <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
+		    <span class="glyphicon glyphicon-info-sign"></span>
+		  </a>
+		</h4>
+	      </div>
+	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  
+		<div class="panel-body">
+		  {{p.description | md | safe}}
+		  <p class="text-muted pull-right">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</p>
+		</div>
+	      </div>
+	    </div>
+	    {% endfor %}
+	    <div class="panel">
+	      <a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
+    </div>
+    
+  </div>
 </div>
 
 {% else %}

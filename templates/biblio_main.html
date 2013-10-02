@@ -1,76 +1,51 @@
 {% extends "project_base.html" %}
 
-{% block p_head %}
-  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    var toggleVisibility = function (item) {
-      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
-      if (item.innerHTML.trim() == 'Show description') {
-        item.innerHTML = 'Hide description';
-        infoDiv.style.maxHeight = '20em';
-      } else {
-        item.innerHTML = 'Show description';
-        infoDiv.style.maxHeight = '0em';
-      }
-    };
-  </script>
-  <style type="text/css">
-    .item-head {background: #E0E0E0;}
-    .item-head a {color: black;}
-    .item-head:hover, .item-head:hover a {background: #E8E8E8; color: black;}
-    #bibliography-tab {background:white;}
-    .item-authors {padding: 1em;}
-    .item-author {font-style: italic}
-    .item-author::after {content: ", ";}
-    .item-author:last-child::after {content: ""}
-    .item-source {padding-left: 1em; padding-top: 0.5em;}
-    .item-publication-kind {font-weight: bold;}
-    .item-identifier::after {content: url("/static/icons/16x16/external.png");}
-    .item-count::before {content: url("/static/icons/16x16/comment.png");}
-  </style>
-{% endblock %}
 
-
-{% block title_bar_extra %}
-/  <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
-{% endblock %}
+{% block breadcrumbs %}<li class="active">Bibliography</li>{% endblock %}
 
 
 {% block p_content %}
  
-<a class="button1" id="new-button" href="/{{project.key.integer_id()}}/bibliography/new_item">New entry</a>
-<h2>Bibliography</h2>
+<div class="page-header">
+  <h2>Bibliography
+    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/bibliography/new_item">
+      <span class="glyphicon glyphicon-plus"></span> New entry</a>
+  </h2>
+</div>
 
-<div class="list-wrapper">
-{% for i in items %}
-  <div class="item">
-    <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="item-title" href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
-	<div class="item-count" title="Number of comments on this item"> {{i.get_number_of_comments()}}</div>
-	{{i.title}}
-      </a>
+
+<div class="panel-group" id="baccordion">
+  {% for i in items %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+	<a href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">{{i.title | safe}}</a>
+	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#baccordion" href="#{{i.key.integer_id()}}">
+	  <span class="glyphicon glyphicon-info-sign"></span></a>
+	<span class="badge pull-right" title="Number of comments" style="margin-right:10px;">{{i.get_number_of_comments()}}</span>
+      </h4>
     </div>
-    <div class="item-description">
-      <div class="item-source">
+    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+      <div class="panel-body">
 	{% if i.kind == "article" %} 
-	<span class="item-publication-kind"> {{i.metadata["publication"]}}</span>
-	<span class="item-date">({{i.metadata["date"]}})</span>
-	<a class="item-identifier" href="{{i.link}}">doi:{{i.identifier}}</a>
+	<strong>{{i.metadata["publication"]}}</strong> <em>({{i.metadata["date"]}})</em>
+	<p><a href="{{i.link}}">doi:{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
 	{% elif i.kind == "arXiv" %}
-	<span class="item-publication-kind">arXiv preprint</span>
-	<span class="item-date">({{i.metadata["date"]}})</span>
-	<a class="item-identifier" href="{{i.link}}">{{i.identifier}}</a>
+	<strong>arXiv preprint</strong> <em>({{i.metadata["date"]}})</em>
+	<p><a href="{{i.link}}">{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
 	{% endif %}	
-      </div>
-      <div class="item-authors"> Authors:
-	{% for a in i.metadata["authors"] %}
-	<span class="item-author">{{a}}</span>
-	{% endfor %}
+	
+	<p>Authors:</p>
+	<ul class="list-inline list-group">
+	  {% for a in i.metadata["authors"] %}
+	  <li class="list-group-item">{{a}}</li>
+	  {% endfor %}
+	</ul>
       </div>
     </div>
   </div>
-{% endfor %}
+  {% endfor %}
 </div>
+
 
 {% endblock %}

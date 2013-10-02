@@ -1,38 +1,47 @@
 {% extends "wiki_base.html" %}
 
 
-{% block w_head %}
-  <link href="/css/wiki_edit.css" rel="stylesheet" type="text/css" />
+{% block p_head %}
   <script type="text/javascript" src="/js/showdown.js"></script>
   <script type="text/javascript" src="/js/preview.js"></script>
-
 {% endblock %}
 
     
 {% block w_content %}
 
-  <div id="w-title">Editing {{wikiurl.replace("_"," ")}}</div>
+  <form method="post" role="form">
+    <div class="form-group {{cClass}}">
+      <textarea name="content" id="inputText" placeholder="Write the content of this page here." class="form-control" rows="20"
+		autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="summary">Summary of changes (optional)</label>
+      <input id="summary" type="text" name="summary" class="form-control"
+	     placeholder="Summary with at most 160 characters (optional)" maxlength="160" {% if disabled_p %}disabled{% endif %}/>
+    </div>
+    <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Save</button>
+    <button type="button" class="btn btn-default"
+	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}'}">Cancel
+    </button>
+    <p class="text-danger">{{error_message}}</p>
 
-  <form method="post">
-    <textarea name="content" id="inputText" placeholder="Write the content of this page here." autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
-    <input type="text" name="summary" placeholder="Summary of changes (optional)" maxlength="160" {% if disabled_p %}disabled{% endif %}/>
-    <input type="submit" class="button1" value="Save" {% if disabled_p %}disabled{% endif %}/>
-    <input type="button" class="button1" value="Cancel" 
-	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}'}" />
-  </form>
-
-  <div class="error">{{error_message}}</div>
-
-  <div class="help">
-
-    <div class="help">
-      <p>You can link to another page in this wiki using the syntax: <code>[[another page]]</code> or, if you want a link to another page but displaying a different text link, you can write <code>[[another page | this text will be displayed]]. This will not be rendered in the preview below.</code>.</p>
+    <div class="help-block">
+      <p>You can link to another page in this wiki using the syntax: <code>[[another page]]</code> or, if you want a link to another page but displaying a different text link, you can write <code>[[another page | this text will be displayed]]</code>. This will not be rendered in the preview below.</p>
       <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some more editing help (opens in a new window).</p> 
     </div>
+
+  </form>
+
+<p>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</p>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
+      Render preview
+    </button>
   </div>
-  
-  <input type="button" class="button1" id="render-button" value="Render preview" onCLick="Preview('inputText', 'previewArea');">
-  <div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-  <div id="previewArea">Click the <em>Render preview</em> button to see a preview here.</div>
+  <div class="panel-body" id="previewArea">
+    Click the <em>Render preview</em> button to see a preview here.
+  </div>
+</div>
 
 {% endblock %}

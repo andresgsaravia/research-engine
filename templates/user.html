@@ -2,47 +2,63 @@
 
 {% block head %}
     <title>Research Engine | {{page_user.username.capitalize()}}</title>
-    <link href="/css/user.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript">
-      var toggleVisibility = function (item) {
-        var infoDiv = item.parentElement.getElementsByClassName('description')[0];
-        console.log(infoDiv);
-        if (item.innerHTML.trim() == 'Show description') {
-          item.innerHTML = 'Hide description';
-          infoDiv.style.maxHeight = '30em';
-        } else {
-          item.innerHTML = 'Show description';
-          infoDiv.style.maxHeight = '0em';
-        }
-      };
-  </script>
-
 {% endblock %}
 
 
 {% block content %}
 
-<div id="user-info-section">
-  <div id="user-name">{{page_user.username.capitalize()}}</div>
-  <img src="{{page_user.get_profile_image(150)}}">
-  <div id="user-about">{% if page_user.about_me %}{{page_user.about_me | md | safe}}{% endif %}</div>
-  {% if self_user_p %}<a id="user-edit" class="button1" href="/settings">Edit profile</a>{% endif %}
-</div>
+<div class="container">
+  <div class="row">
+  
+    <div class="col-md-7">
+      <div class="panel panel-primary">
+	<div class="panel-heading">
+	  <h3 class="panel-title">{% if self_user_p %}Your projects{% else %}Projects{% endif %}</h3>
+	</div>
 
-<div id="projects-wrapper">
-  <div id="projects-head">
-    {% if self_user_p %}<a class="button1" id="new-project-button" href="/new_project"><img src="/static/icons/32x32/add.png" /> New Project</a>{% endif %}
-    <h2>Projects</h2>
-  </div>
-  {% for p in projects %} 
-    <div class="u-project">
-      <a class="info-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <div class="name"><a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a></div>
-      <div class="description"><br/>{{p.description | md | safe}}<div class="u-pupdated">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</div>
+	<div class="panel-body">
+	  <div class="panel-group" id="accordion1">
+	    {% for p in projects %}
+	    <div class="panel panel-default">
+	      <div class="panel-heading">
+		<h4 class="panel-title">
+		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}} </a>
+		  <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
+		    <span class="glyphicon glyphicon-info-sign"></span>
+	      </a>
+		</h4>
+	      </div>
+	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  
+		<div class="panel-body">
+		  {{p.description | md | safe}}
+		  <p class="muted">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</p>
+		</div>
+	      </div>
+	    </div>
+	    {% endfor %}
+	    {% if self_user_p %}
+	    <div class="panel">
+	      <a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
+	    </div>
+	{% endif %}
+	  </div>
+	</div>
       </div>
     </div>
-  {% endfor %}
+    
+    <div class="col-md-5">
+      <div class="panel panel-info">
+	<div class="panel-heading">
+	  <h3 class="panel-title">{{page_user.username.capitalize()}}</h3>
+	</div>
+	<div class="panel-body">
+	  {% if self_user_p %}<a class="btn btn-default btn-sm pull-right" href="/settings"><span class="glyphicon glyphicon-cog"></span></a>{% endif %}
+	  <img class="img-responsive" src="{{page_user.get_profile_image(150)}}" style="margin:0 auto;">
+	  {% if page_user.about_me %}<div style="margin-top:15px;text-align:justify;">{{page_user.about_me | md | safe}}</div>{% endif %}
+	</div>
+      </div>
+      
+    </div>
+  </div>
 </div>
-
-
 {% endblock %}

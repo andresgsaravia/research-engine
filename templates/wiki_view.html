@@ -1,24 +1,12 @@
 {% extends "wiki_base.html" %}
 
-{% block w_head %}
-  <link href="/css/wiki_view.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
     
 {% block w_content %}
 
-<div class="wikitext">
-
-  <div id="w-title">{{wikiurl.replace("_", " ")}}</div>
-
-  <div id="w-content">
-    {% if wikipage %}
-      {{wikitext | md | safe}}
-    {% else %}
-      <em>This page doesn't exist yet. Click <a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
-      {% endif %}
-  </div>
-
-</div>
+{% if wikipage %}
+{{wikitext | md | safe}}
+{% else %}
+<em>This page doesn't exist yet. Click <a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">here</a> to create it.</em>
+{% endif %}
 
 {% endblock %}

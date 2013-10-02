@@ -108,6 +108,9 @@ class BiblioComments(ndb.Model):
 ######################
 
 class BiblioPage(projects.ProjectPage):
+    def render(self, *a, **kw):
+        projects.ProjectPage.render(self, bibliography_tab_class = "active", *a, **kw)
+
     def get_BiblioItems_list(self, project):
         self.log_read(BiblioItems, "Fetching all bibliography items for a project. ")
         return BiblioItems.query(ancestor = project.key).order(-BiblioItems.last_updated).fetch()

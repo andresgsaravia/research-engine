@@ -1,37 +1,28 @@
 {% extends "project_base.html" %}
 
 
-{% block p_head %}
-  <link href="/css/writings_base.css" rel="stylesheet" type="text/css" />
-  {% block w_head %}
-  {% endblock %}
-{% endblock %}
-
-
-{% block title_bar_extra %}
-  / <a href="/{{project.key.integer_id()}}/writings">Collaborative writings</a>
-  / <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">{{writing.title}}</a>
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/writings">Collaborative writings</a></li><li class="active">{{writing.title | safe | truncate(40, True)}}</li>{% endblock %}
 
 
 {% block p_content %}
-  <div class="w-head">
-    <div class="w-meta">
-      <div class="w-date">Last Updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</div>
-      <div class="w-status">Status: <b>{{writing.status}}</b></div>
-    </div>
-    <div class="w-title">{{writing.title}}</div>
-  </div>
   
-  <div class="w-navbar">
-    <a class="w-current-revision-tab" href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">Current revision</a>
-    <a class="w-edit-tab" href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">Edit</a>
-    <a class="w-history-tab" href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">History</a>
-    <a class="w-discussion-tab" href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion">Discussion</a>
-    <a class="w-info-tab" href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info">Info</a>
-  </div>
-    
-  {% block w_content %}
-  {% endblock %}
+<ul class="nav nav-tabs nav-justified">
+  <li{% if curr_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">Current revision</a></li>
+  <li{% if edit_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">Edit</a></li>
+  <li{% if hist_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">History</a></li>
+  <li{% if disc_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion">Discussion</a></li>
+  <li{% if info_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info">Info</a></li>
+</ul>
 
+<div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
+  <div class="panel-body">
+    <div class="page-header"><h2>{{writing.title | safe}}</h2></div>
+    {% block w_content %}
+    {% endblock %}
+  </div>
+  <div class="panel-footer">
+    <p class="text-muted pull-right">Last Updated: {{writing.last_updated.strftime("%d-%b-%Y")}}</p>
+    <p class="text-muted">Status: <em>{{writing.status}}</em></p>
+  </div>
+</div>
 {% endblock %}

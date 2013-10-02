@@ -1,21 +1,12 @@
 {% extends "wiki_base.html" %}
 
-
-{% block w_head %}
-  <link href="/css/wiki_revision.css" rel="stylesheet" type="text/css" />
-{% endblock %}
-
     
 {% block w_content %}
 
-<div class="wikitext">
+<p class="text-muted">
+  Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a>
+</p>
+{{wikitext | md | safe}}
 
-  <div id="w-title">{{wikiurl.replace("_", " ")}}</div>
-  <div id="rev-meta">
-    Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a>
-  </div>
-  <div id="w-content">{{wikitext | md | safe}}</div>
-
-</div>
 
 {% endblock %}

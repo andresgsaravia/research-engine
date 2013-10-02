@@ -1,33 +1,43 @@
 {% extends "dataset_concept_base.html" %}
 
 
-{% block dv_head %}
-  <link href="/css/dataset_revision_edit.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript" src="/js/showdown.js"></script>
-  <script type="text/javascript" src="/js/preview.js"></script>
+{% block p_head %}
+<script type="text/javascript" src="/js/showdown.js"></script>
+<script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
     
 {% block dv_content %}
 
-<h3>Edit revision</h3>
-<form method="post" action="{{upload_url}}" enctype="multipart/form-data">
-  <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');"
-	    placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea><br/>
-  <div id="current-file">Current data file: <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</div>
-  <div id="new-file">New data file (optional): <input type="file" name="file" {% if disabled_p %}disabled{% endif %}/></div>
-  <div id="warning">WARNING: If you upload a new file, the previous file will be lost.</div>
-  <input type="submit" class="button1" value="Update revision" {% if disabled_p %}disabled{% endif %}/>
-  <input type="button" class="button1" value="Cancel" onClick="window.location = '{{cancel_url}}'" {% if disabled_p %}disabled{% endif %}/>
+<h4>Editing revision</h4>
+<form method="post" action="{{upload_url}}" enctype="multipart/form-data" role="form">
+  <div class="form-group">
+    <label for="descriptionText">Description of the revision</label>
+    <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');" class="form-control" rows="10"
+	      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="current-file">Current data file</label>
+    <p id="current-file" class="form-control"> <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</p>
+  </div>
+  <div class="form-group">
+    <label for="new-file">New data file (optional)</label>
+    <input id="new-file" type="file" name="file" class="form-control" {% if disabled_p %}disabled{% endif %}/>
+  </div>
+  <p class="text-warning">WARNING: If you upload a new file, the previous file will be lost.</p>
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Update revision</button>
+  <button type="button" class="btn btn-default" onClick="window.location = '{{cancel_url}}'" {% if disabled_p %}disabled{% endif %}>Cancel</button>
+  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+  <div class="help-block">
+    The text will be processed as markdown syntax, click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </div>
 </form>
  
-<div class="error">{{error_message}}</div>
-
-<div class="help">
-  <p>The text will be processed as markdown syntax, click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
+<div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    <em>Start typing above to see the preview here.<em>
+  </div>
 </div>
-
-<div class="preview-subtitle">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div id="previewArea"><em>Start typing above to see the preview here.<em></div>
 
 {% endblock %}

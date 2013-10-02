@@ -2,81 +2,46 @@
 
 {% block head %}
 <title>Research Engine | Signup</title>
-<link href="/css/signup.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block content %}
 
-<h2>Signup</h2>
+<div class="container" style="max-width:750px;">
+  <div class="page-header"><h2>Create an account</h2></div>
 
-{% if user %}
-<p>Welcome back {{username}}, you are already logged in.</p>
-<p>If you are not {{username}} you can <a href="/logout">Logout</a></p>
+  {% if user %}
+  <p>Welcome back {{username}}, you are already logged in.</p>
+  <p>If you are not {{username}} you can <a href="/logout">Logout</a></p>
 
-{% else %}
-  <form method="post">
-    <table>
-      
-      <tr class="row">
-	<td class="label">
-	  Username
-	</td>
-	<td class="user-input">
-	  <input type="text" name="usern" value="{{usern}}">
-	</td>
-	<td class="error">
-	  {{error_username}}
-	</td>
-      </tr>
-
-      <tr class="row">
-	<td class="label">
-	  Password
-	</td>
-	<td class="user-input">
-	  <input type="password" name="password" value="">
-	</td>
-	<td class="error">
-	  {{error_password}}
-	</td>
-      </tr>
-
-      <tr class="row">
-	<td class="label">
-	  Verify Password
-	</td>
-	<td class="user-input">
-	  <input type="password" name="verify" value="">
-	</td>
-	<td class="error">
-	  {{error_verify}}
-	</td>
-      </tr>
-
-      <tr class="row">
-	<td class="label">
-	  Email
-	</td>
-	<td class="user-input">
-	  <input type="text" name="email" value="{{email}}">
-	</td>
-	<td class="error">
-	  {{error_email}}
-	</td>
-      </tr>
-
-    </table>
-    <div class="submit-button">
-      <input type="submit" value="Signup">
+  {% else %}
+  <form method="post" role="form" class="form-horizontal" style="margin-bottom:10px;">
+    <div class="form-group{% if error_username %} has-error{% endif %}">
+      <label for="usrInput" class="col-sm-2 control-label">Username</label>
+      <div class="col-sm-10"><input type="text" name="usern" value="{{usern}}" placeholder="Username" class="form-control"/></div>
     </div>
+
+    <div class="form-group{% if error_password %} has-error{% endif %}">
+      <label for="pwdInput" class="col-sm-2 control-label">Password</label>
+      <div class="col-sm-10"><input type="password" name="password" value="" placeholder="Password" class="form-control" /></div>
+    </div>
+
+    <div class="form-group{% if error_verify %} has-error{% endif %}">
+      <label for="verInput" class="col-sm-2 control-label">Verify password</label>
+      <div class="col-sm-10"><input type="password" name="verify" value="" placeholder="Write again your password" class="form-control"/></div>
+    </div>
+
+    <div class="form-group{% if error_email %} has-error{% endif %}">
+      <label for="usrInput" class="col-sm-2 control-label">Email</label>
+      <div class="col-sm-10"><input type="text" name="email" value="{{email}}" placeholder="Email address" class="form-control"/></div>
+    </div>
+    <button type="submit" class="btn btn-success col-sm-offset-2">Create account</button>
+
   </form>
+  {% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
+  {% if info %}<div class="alert alert-success">{{info | safe}}</div>{% endif %} 
 
-<br/><p>Signing up for an account here at Research Engine is free. Please have a look at our <a href="/terms_and_conditions">Terms and conditions</a> before creating a new account.</p>
+  <p>Signing up for an account here at Research Engine is free. Please have a look at our <a href="/terms_and_conditions">Terms and conditions</a> before creating a new account.</p>
 
-{% endif %}
-
-<div class="error">
-  <br/>{{error | safe}}
+  {% endif %}
 </div>
-
 {% endblock %}
