@@ -55,6 +55,9 @@ class DataRevisions(ndb.Model):
 ######################
 
 class DataPage(projects.ProjectPage):
+    def render(self, *a, **kw):
+        projects.ProjectPage.render(self, datasets_tab_class = "active", *a, **kw)
+
     def get_datasets(self, project):
         self.log_read(DataSets, "Fetching all DataSets for a project. ")
         return DataSets.query(ancestor = project.key).order(-DataSets.last_updated).fetch()
@@ -109,10 +112,9 @@ class NewDataSetPage(DataPage):
               "submit_button_text" : "Create dataset",
               "markdown_p": True,
               "cancel_url" : "/%s/datasets" % projectid,
-              "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a>' % projectid,
-              "more_head" : "<style>#datasets-tab {background: white;}</style>",
+              "breadcrumb" : '<li class="active">Datasets</li>',
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not a member of this project.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
@@ -127,38 +129,36 @@ class NewDataSetPage(DataPage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         have_error = False
-        error_message = ''
+        kw = {"error_message" : ''}
         visitor_p = False if project.user_is_author(user) else True
         if visitor_p:
             have_error = True
-            error_message = "You are not an author of this project. "
+            kw["error_message"] = "You are not an author of this project. "
         else:
-            d_name = self.request.get("name")
-            d_description = self.request.get("content")
-            if not d_name:
+            kw["name_value"] = self.request.get("name")
+            kw["content_value"] = self.request.get("content")
+            if not kw["name_value"]:
                 have_error = True
-                error_message = "You must provide a name for your new dataset. "
-                if not d_description:
-                    have_error = True
-                    error_message += "Please provide a description of this dataset. "
+                kw["error_message"] = "You must provide a name for your new dataset. "
+                kw["nClass"] = "has-error"
+            if not kw["content_value"]:
+                have_error = True
+                kw["error_message"] += "Please provide a description of this dataset. "
+                kw["cClass"] = "has-error"
         if have_error:
-            kw = {"title" : "New dataset",
-                  "name_placeholder" : "Title of the new dataset",
-                  "content_placeholder" : "Description of the new dataset",
-                  "submit_button_text" : "Create dataset",
-                  "markdown_p": True,
-                  "cancel_url" : "/%s/datasets" % projectid,
-                  "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a>' % projectid,
-                  "more_head" : "<style>#datasets-tab {background: white;}</style>",
-                  "name_value" : d_name,
-                  "content_value" : d_description,
-                  "error_message" : error_message,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            kw["title"] = "New dataset"
+            kw["name_placeholder"] = "Title of the new dataset"
+            kw["content_placeholder"] = "Description of the new dataset"
+            kw["submit_button_text"] = "Create dataset"
+            kw["markdown_p"] = True
+            kw["cancel_url"] = "/%s/datasets" % projectid
+            kw["breadcrumb"] = '<li>Datasets</li>'
+            kw["disabled_p"] = True if visitor_p else False
+            kw["pre_form_message"] = '<p class="text-danger">You are not a member of this project.</p>' if visitor_p else ""
             self.render("project_form_2.html", project = project, **kw)
         else:
-            new_dataset = DataSets(name = d_name,
-                                   description = d_description,
+            new_dataset = DataSets(name = kw["name_value"],
+                                   description = kw["content_value"],
                                    parent  = project.key)
             project.put_and_notify(self, new_dataset, user)
             self.redirect("/%s/datasets/%s" % (project.key.integer_id(), new_dataset.key.integer_id()))
@@ -195,18 +195,17 @@ class EditDataSetPage(DataPage):
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
         base_url = "/%s/datasets" % projectid
-        kw = {"title" : "Edit dataset",
+        kw = {"title" : "Editing dataset <br/><small>%s</small>" % dataset.name,
               "name_placeholder" : "Title of the dataset",
               "content_placeholder" : "Description of the dataset",
               "submit_button_text" : "Save changes",
               "markdown_p": True,
               "cancel_url" : base_url + "/" + dataset_id,
-              "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
-              "more_head" : "<style>#datasets-tab {background: white;}</style>",
+              "breadcrumb" : '<li><a href="%s">Datasets</a></li><li class="active">%s</li>' % (base_url, dataset.name),
               "name_value" : dataset.name,
               "content_value" : dataset.description,
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not a member of this project.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid, dataset_id):
@@ -226,40 +225,38 @@ class EditDataSetPage(DataPage):
             self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         have_error = False
-        error_message = ''
-        visitor_p = False if project.user_is_author(user) else True
-        if visitor_p:
+        kw = {"error_message" : '',
+              "visitor_p" : False if project.user_is_author(user) else True}
+        if kw["visitor_p"]:
             have_error = True
-            error_message = "You are not an author of this project. "
+            kw["error_message"] = "You are not an author of this project. "
         else:
-            d_name = self.request.get("name")
-            d_description = self.request.get("content")
-            if not d_name:
+            kw["name_value"] = self.request.get("name")
+            kw["content_value"] = self.request.get("content")
+            if not kw["name_value"]:
                 have_error = True
-                error_message = "You must provide a name for your dataset. "
-            if not d_description:
+                kw["error_message"] = "You must provide a name for your dataset. "
+                kw["nClass"] = "has-error"
+            if not kw["content_value"]:
                 have_error = True
-                error_message += "Please provide a description of this dataset. "
+                kw["error_message"] += "Please provide a description of this dataset. "
+                kw["cClass"] = "has-error"
         if have_error:
             base_url = "/%s/datasets" % projectid
-            kw = {"title" : "Edit dataset",
-                  "name_placeholder" : "Title of the dataset",
-                  "content_placeholder" : "Description of the dataset",
-                  "submit_button_text" : "Save changes",
-                  "markdown_p": True,
-                  "cancel_url" : base_url + '/' + dataset_id,
-                  "title_bar_extra" : '/ <a href="%s">Datasets</a> / <a href="%s">%s</a>' % (base_url, base_url + '/' + dataset_id, dataset.name),
-                  "more_head" : "<style>#datasets-tab {background: white;}</style>",
-                  "name_value" : d_name,
-                  "content_value" : d_description,
-                  "error_message" : error_message,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
-            self.render("project_form_2.html", p_author = p_author, project = project, **kw)
+            kw["title"]  = "Editing dataset <br/><small>%s</small>" % dataset.name
+            kw["name_placeholder"] = "Title of the dataset"
+            kw["content_placeholder"] = "Description of the dataset"
+            kw["submit_button_text"] = "Save changes"
+            kw["markdown_p"] = True
+            kw["cancel_url"] = base_url + '/' + dataset_id
+            kw["breadcrumb"] = '<li><a href="%s">Datasets</a><li class="active">%s</li>' % (base_url, dataset.name)
+            kw["disabled_p"] = True if kw["visitor_p"] else False
+            kw["pre_form_message"] = '<p class="text-danger">You are not a member of this project.</p>' if kw["visitor_p"] else ""
+            self.render("project_form_2.html", project = project, **kw)
         else:
-            if (d_name != dataset.name) or (d_description != dataset.description):
-                dataset.name = d_name
-                dataset.description = d_description
+            if (kw["name_value"] != dataset.name) or (kw["content_value"] != dataset.description):
+                dataset.name = kw["name_value"]
+                dataset.description = kw["content_value"]
                 self.log_and_put(dataset)
                 self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/%s/datasets/%s" % (project.key.integer_id(), dataset.key.integer_id()))
@@ -280,17 +277,16 @@ class NewDataConceptPage(DataPage):
             self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
-        kw = {"title" : "New data concept",
+        kw = {"title" : "New data concept<br/><small>%s</small>" % dataset.name,
               "name_placeholder" : "Title of the new data concept",
               "content_placeholder" : "Description of the new data concept",
               "submit_button_text" : "Create data concept",
               "markdown_p": True,
               "cancel_url" : "/%s/datasets/%s" % (projectid, dataset_id),
-              "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a> / <a href="/%s/datasets/%s">%s</a>' 
-              % (projectid, projectid, dataset_id, dataset.name),
-              "more_head" : "<style>#datasets-tab {background: white;}</style>",
+              "breadcrumb" : '<li><a href="/%s/datasets">Datasets</a></li><li class="active">%s</li>' 
+              % (projectid, dataset.name),
               "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+              "pre_form_message" : '<p class="text-danger">You are not a member of this project.</p>' if visitor_p else ""}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid, dataset_id):
@@ -310,39 +306,36 @@ class NewDataConceptPage(DataPage):
             self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return
         have_error = False
-        error_message = ''
+        kw = {"error_message" : ''}
         visitor_p = False if project.user_is_author(user) else True
         if visitor_p:
             have_error = True
-            error_message = "You are not an author of this project. "
+            kw["error_message"] = "You are not an author of this project. "
         else:
-            d_name = self.request.get("name")
-            d_description = self.request.get("content")
-            if not d_name:
+            kw["name_value"] = self.request.get("name")
+            kw["content_value"] = self.request.get("content")
+            if not kw["name_value"]:
                 have_error = True
-                error_message = "You must provide a name for your new data concept. "
-            if not d_description:
+                kw["error_message"] = "You must provide a name for your new data concept. "
+                kw["nClass"] = "has-error"
+            if not kw["content_value"]:
                 have_error = True
-                error_message += "Please provide a description of this data concept. "
+                kw["error_message"] += "Please provide a description of this data concept. "
+                kw["cClass"] = "has-error"
         if have_error:
-            kw = {"title" : "New data concept",
-                  "name_placeholder" : "Title of the new data concept",
-                  "content_placeholder" : "Description of the new data concept",
-                  "submit_button_text" : "Create data concept",
-                  "markdown_p": True,
-                  "cancel_url" : "/%s/datasets/%s" % (projectid, dataset_id),
-                  "title_bar_extra" : '/ <a href="/%s/datasets">Datasets</a> / <a href="/%s/datasets/%s">%s</a>' 
-                  % (projectid, projectid, dataset_id, dataset.name),
-                  "more_head" : "<style>#datasets-tab {background: white;}</style>",
-                  "name_value" : d_name,
-                  "content_value" : d_description,
-                  "error_message" : error_message,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not a member of this project.</span>' if visitor_p else ""}
+            kw["title"] = "New data concept<br/><small>%s</small>" % dataset.name
+            kw["name_placeholder"] = "Title of the new data concept"
+            kw["content_placeholder"] = "Description of the new data concept"
+            kw["submit_button_text"] = "Create data concept"
+            kw["markdown_p"] = True
+            kw["cancel_url"] = "/%s/datasets/%s" % (projectid, dataset_id)
+            kw["breadcrumb"] = '<li><a href="/%s/datasets">Datasets</a><li class="active">%s</li>' % (projectid, dataset.name)
+            kw["disabled_p"] = True if visitor_p else False
+            kw["pre_form_message"] = '<p class="text-danger">You are not a member of this project.</p>' if visitor_p else ""
             self.render("project_form_2.html", project = project, **kw)
         else:
-            new_dataconcept = DataConcepts(name = d_name, 
-                                           description = d_description, 
+            new_dataconcept = DataConcepts(name = kw["name_value"], 
+                                           description = kw["content_value"], 
                                            parent  = dataset.key)
             project.put_and_notify(self, new_dataconcept, user)
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, new_dataconcept.key.integer_id()))
@@ -366,7 +359,7 @@ class DataConceptPage(DataPage):
             self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         revisions = self.get_revisions(datac)
-        self.render("dataset_concept_view.html", project = project, 
+        self.render("dataset_concept_view.html", project = project, rev_p = True,
                     dataset = dataset, datac = datac, revisions = revisions)
 
 
@@ -389,7 +382,7 @@ class EditConceptPage(DataPage):
             self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("dataset_concept_edit.html", project = project, disabled_p = visitor_p,
+        self.render("dataset_concept_edit.html", project = project, visitor_p = visitor_p, inf_p = True,
                     dataset = dataset, datac = datac, description = datac.description, name = datac.name)
 
     def post(self, projectid, dataset_id, datac_id):
@@ -413,28 +406,29 @@ class EditConceptPage(DataPage):
             self.error(404)
             self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
-        d_name = self.request.get("title")
-        d_description = self.request.get("description")
+        kw = {"name" :self.request.get("title"),
+              "description" :self.request.get("description"),
+              "error_message" : '',
+              "visitor_p" : False if project.user_is_author(user) else True}
         have_error = False
-        error_message = ''
-        visitor_p = False if project.user_is_author(user) else True
-        if visitor_p:
+        if kw["visitor_p"]:
             have_error = True
-            error_message = "You are not an author of this project."
+            kw["error_message"] = "You are not an author of this project."
         else:
-            if not d_name:
+            if not kw["name"]:
                 have_error = True
-                error_message = "You must provide a name for your new data concept. "
-            if not d_description:
+                kw["error_message"] = "You must provide a name for your new data concept. "
+                kw["nClass"] = "has-error"
+            if not kw["description"]:
                 have_error = True
-                error_message += "Please provide a description of this data concept. "
+                kw["error_message"] += "Please provide a description of this data concept. "
+                kw["cClass"] = "has-error"
         if have_error:
-            self.render("dataset_concept_edit.html", project = project, disabled_p = visitor_p,
-                        dataset = dataset, datac = datac, name = d_name, description = d_description,
-                        error_message = error_message)
+            self.render("dataset_concept_edit.html", project = project, inf_p = True,
+                        dataset = dataset, datac = datac, **kw)
         else:
-            datac.name = d_name
-            datac.description = d_description
+            datac.name = kw["name"]
+            datac.description = kw["description"]
             self.log_and_put(datac)
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))
 
@@ -460,8 +454,9 @@ class NewDataRevisionPage(DataPage):
         visitor_p = False if (user and project.user_is_author(user)) else True
         upload_url = blobstore.create_upload_url("/%s/datasets/%s/%s/upload" 
                                                  % (projectid, dataset_id, datac_id)) if not visitor_p else ''
-        self.render("dataset_concept_new_revision.html", project = project, disabled_p = visitor_p,
-                    dataset = dataset, datac = datac, upload_url = upload_url, error_message = self.request.get("error_message"))
+        self.render("dataset_concept_new_revision.html", project = project, disabled_p = visitor_p, 
+                    dataset = dataset, datac = datac, upload_url = upload_url, new_p = True,
+                    error_message = self.request.get("error_message"), fClass = self.request.get("fClass"))
 
 
 class EditRevisionPage(DataPage):
@@ -493,7 +488,7 @@ class EditRevisionPage(DataPage):
         cancel_url = '/%s/datasets/%s/%s' % (projectid, dataset.key.integer_id(), datac.key.integer_id())
         upload_url = blobstore.create_upload_url("/%s/datasets/%s/%s/update/%s"
                                                  % (projectid, dataset_id, datac_id, rev_id)) if not visitor_p else ''
-        self.render("dataset_revision_edit.html", project = project, disabled_p = visitor_p,
+        self.render("dataset_revision_edit.html", project = project, disabled_p = visitor_p, rev_p = True,
                     dataset = dataset, datac = datac, rev = rev, blob_info = blob_info, size = size,
                     cancel_url = cancel_url, upload_url = upload_url,
                     error_message = self.request.get("error_message"))
@@ -544,14 +539,16 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
         meta = self.request.get("meta")
         datafile = self.get_uploads("file")
         have_error = False
+        fClass = ''
         if not project.user_is_author(user):
             have_error = True
             error_message = "You are not an author for this project. "
         if not datafile:
             have_error = True
             error_message = "You must select a file to upload."
+            fClass = "has-error"
         if have_error:
-            self.redirect("/%s/datasets/%s/%s/new?error_message=%s" % (projectid, dataset_id, datac_id, error_message))
+            self.redirect("/%s/datasets/%s/%s/new?error_message=%s&fClass=%s" % (projectid, dataset_id, datac_id, error_message, fClass))
         else:
             new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac.key)
             project.put_and_notify(self, new_revision, user)

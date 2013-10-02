@@ -1,55 +1,41 @@
 {% extends "dataset_concept_base.html" %}
 
-
-{% block dv_head %}
-  <link href="/css/project_list_page.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    var toggleVisibility = function (item) {
-      var infoDiv = item.parentElement.parentElement.getElementsByClassName('item-description')[0];
-      if (item.innerHTML.trim() == 'Show description') {
-        item.innerHTML = 'Hide description';
-        infoDiv.style.maxHeight = '20em';
-      } else {
-        item.innerHTML = 'Show description';
-        infoDiv.style.maxHeight = '0em';
-      }
-    };
-  </script>
-  <style type="text/css">
-    .item:nth-of-type(even) .item-head {background: #D0D0D0;}
-    .item:nth-of-type(odd) .item-head {background: #DFDFDF;}
-    .item-head a {color: black}
-    .item-head:hover, .item-head:hover a {background: #F0F0F0;}
-    .item + .item {border-top: 1px solid #889B89;}
-    .rev-description {padding: 0 0.5em;}
-    .rev-author {padding-bottom: 0.5em; padding-left: 1em; font-size: 0.9em; color: #555555;}
-    .button1 {float:right; font-size: 0.8em; margin: 0.5em;}
-    #dr-navbar #dr-revisions-tab {background: #D0B1B1;}
-    #dr-navbar #dr-revisions-tab:hover {background: #D0B1B1;}
-  </style>
-{% endblock %}
-
     
 {% block dv_content %}
 
 {% if revisions %}
-<div class="list-wrapper">
-{% for rev in revisions %}
-  <div class="item">
-    <div class="item-head">
-      <a class="item-description-link" href="#" onClick="toggleVisibility(this);">Show description</a>
-      <a class="item-title" href="/file/{{rev.datafile}}">{{rev.date.strftime("%d-%b-%Y")}}</a>
+
+<div class="panel-group" id="accordion">
+  {% for rev in revisions %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <ul class="nav nav-pills nav-justified">
+	<li><a href="/{{rev.author.get().username}}">
+	    <img src="{{rev.author.get().get_profile_image(20)}}"/> {{rev.author.get().username.capitalize()}}</a></li>
+	<li><a href="/file/{{rev.datafile}}">Download</a></li>
+	<li>
+	  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" 
+	     href="#{{rev.key.integer_id()}}" title="Click to show more information about this revision">
+	    <span class=" glyphicon glyphicon-info-sign"></span></a></li>
+	<li><p class="text-muted text-center">{{rev.date.strftime("%d-%b-%Y")}}</p></li>
+      </ul>
     </div>
-    <div class="item-description">
-      <a class="button1" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}">Edit</a>
-      <div class="rev-description">{% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}</div>
-      <div class="rev-author">Author: <a href="/{{rev.author.get().username}}">{{rev.author.get().username.title()[:20]}}</a></div>
+    <div class="panel-collapse collapse" id="{{rev.key.integer_id()}}">
+      <div class="panel-body">
+	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}" 
+	   class="btn btn-default pull-right" title="Edit this description"><span class="glyphicon glyphicon-cog"></span></a>
+	{% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
+      </div>
     </div>
   </div>
-{% endfor %}
+  {% endfor %}
 </div>
+
 {% else %}
-<p>There isn't any data uploaded yet. Click <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">here</a> or the <strong>Upload new revision</strong> tab above to upload the first revision.</p>
+<p>There isn't any data uploaded yet. 
+  Click <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">here</a> 
+  or the <strong>Upload new revision</strong> tab above to upload the first revision.
+</p>
 {% endif %}
 
 {% endblock %}
