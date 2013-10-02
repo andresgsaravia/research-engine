@@ -10,7 +10,7 @@
 <div class="container">
   <div class="row">
   
-    <div class="col-md-8">
+    <div class="col-md-7">
       <div class="panel panel-primary">
 	<div class="panel-heading">
 	  <h3 class="panel-title">{% if self_user_p %}Your projects{% else %}Projects{% endif %}</h3>
@@ -46,15 +46,15 @@
       </div>
     </div>
     
-    <div class="col-md-4">
+    <div class="col-md-5">
       <div class="panel panel-info">
 	<div class="panel-heading">
 	  <h3 class="panel-title">{{page_user.username.capitalize()}}</h3>
 	</div>
 	<div class="panel-body">
+	  {% if self_user_p %}<a class="btn btn-default btn-sm pull-right" href="/settings"><span class="glyphicon glyphicon-cog"></span></a>{% endif %}
 	  <img class="img-responsive" src="{{page_user.get_profile_image(150)}}" style="margin:0 auto;">
 	  {% if page_user.about_me %}<div style="margin-top:15px;text-align:justify;">{{page_user.about_me | md | safe}}</div>{% endif %}
-	  {% if self_user_p %}<a class="btn btn-default btn-sm pull-right" href="/settings">Edit profile</a>{% endif %}
 	</div>
       </div>
       

@@ -1,65 +1,51 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link href="/css/settings.css" rel="stylesheet" type="text/css" />
-    <title>Research Engine | Settings</title>
+<title>Research Engine | Settings</title>
 {% endblock %}
 
 {% block content %}
 
-<div id="profile-image">
-  <img src="{{user.get_profile_image(150)}}">
-  <p class="footnote">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
-</div>
+<div class="container" style="max-width:750px;">
+  <div class="page-header"><h2>{{user.username.capitalize()}}</h2></div>
 
-<form method="post" id="settings-box">
-  <table>
+  <div class="row">
+    <div class="col-md-4 panel panel-default">
+      <div class="panel-body">
+	<img src="{{user.get_profile_image(200)}}" class="img-responsive">
+	<p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
+      </div>
+    </div>
 
-    <tr>
-      <td class="label">
-	Username
-      </td>
-      <td>
-	<input type="text" name="usern" value="{{usern}}">
-      </td>
-      <td class="error">
-	{{error_username}}
-      </td>
-    </tr>
+    <div class="col-md-8">
+      <form method="post" class="form-horizontal">
+	<div class="form-group{% if uname_error_p %} has-error{% endif %}">
+	  <label for="unameInput" class="col-sm-2 control-label">Username</label>
+	  <div class="col-sm-10">
+	    <input id="unameInput" type="text" name="usern" value="{{usern}}" class="form-control"/>
+	  </div>
+	</div>
 
-    <tr>
-      <td class="label">
-	Email
-      </td>
-      <td>
-	<input type="text" name="email" value="{{email}}">
-      </td>
-      <td class="error">
-	{{error_email}}
-      </td>
-    </tr>
-
-    <tr>
-      <td class="label">
-	About Me
-      </td>
-      <td>
-	<textarea name="about_me">{{about_me}}</textarea>
-      </td>
-      <td class="error">
-	{{error_about_me}}
-      </td>
-    </tr>
-
-
-  </table>
-  <div class="submit-button">
-    <input type="submit" class="button1" value="Save changes">
+	<div class="form-group{% if email_error_p %} has-error{% endif %}">
+	  <label for="emailInput" class="col-sm-2 control-label">Email</label>
+	  <div class="col-sm-10">
+	    <input id="emailInput" type="text" name="email" value="{{email}}" class="form-control"/>
+	  </div>
+	</div>
+	
+	<div class="form-group">
+	  <label for="aboutInput" class="col-sm-2 control-label">About me</label>
+	  <div class="col-sm-10">
+	    <textarea id="aboutInput" name="about_me" class="form-control" rows="15">{{about_me}}</textarea>
+	  </div>
+	</div>
+	
+	<button type="submit" class="btn btn-success col-sm-offset-2">Save changes</button>
+	<button type="button" class="btn btn-default" onClick="window.location = '/{{usern}}'">Cancel</button>
+	{% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
+      </form>
+    </div>
   </div>
-
-  <br/>
-  <div class="error">{{error | safe}}</div>
-
-</form>
+</div>
 
 {% endblock %}

@@ -2,66 +2,54 @@
 
 {% block head %}
 <title>Research Engine | Login</title>
-<link href="/css/login.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block content %}
 
-<h2>Login</h2>
+<div class="container" style="max-width:750px;">
+  <div class="page-header"><h2>Log in</h2></div>
 
   {% if user %}
   <p>Welcome back {{user.username.title()}}, you are already logged in</p>
-  <p>If you are not {{user.username.title()}} you can <a href="/logout">Logout</a></p>
-
+  <p>If you are not {{user.username.title()}} you can <a href="/logout">Logout here</a></p>
+  
   {% else %}
   
-  <form method="post">
-    <table>
-      
-      <tr>
-	<td>
-	  Email or username
-	</td>
-	<td>
-	  <input type="text" name="email_or_username" value="{{email_or_username}}" autofocus>
-	</td>
-      </tr>
-      
-      <tr>
-	<td>
-	  Password
-	</td>
-	<td>
-	  <input type="password" name="password" value="">
-	</td>
-      </tr>
-      
-    </table>
-    <div class="submit-button">
-      <input type="submit" class="button1" value="Login">
+  <form method="post" role="form" class="form-horizontal">
+    <div class="form-group{% if uname_error_p %} has-error{% endif %}">
+      <label for="username" class="col-sm-2 control-label">Email or username</label>
+      <div class="col-sm-10">
+	<input id="username" class="form-control" type="text" name="email_or_username" value="{{email_or_username}}" placeholder="Email or username" autofocus/>
+      </div>
     </div>
+    <div class="form-group{% if pwd_error_p %} has-error{% endif %}">
+      <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+      <div class="col-sm-10">
+	<input id="inputPassword" class="form-control" type="password" name="password" value="" placeholder="Password"/>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success col-sm-offset-2">Log in</button>
     <input type="hidden" name="goback" value="{{goback}}">
+    <div class="help-block">If you don't have an account you can <a href="/signup">create an account</a> for free.</div>
+    {% if error_message %}<div class="alert alert-danger">{{error_message}}</div>{% endif %}
   </form>
 
-<p>If you don't have an account you can <a href="/signup">signup</a> for free.</p>
+  <div class="page-header"><h3>Forgot your password?</h3></div>
 
-<h3>Forgot your password?</h3>
+  <form method="post" action="/recover_password" role="form" class="form-horizontal">
+    <div class="form-group{% if r_error_message %} has-error{% endif %}">
+      <label for="recoverEmail" class="col-md-3 text-right">Enter your email</label>
+      <div class="col-md-7"><input type="text" name="email" class="form-control" placeholder="Email"/></div>
+      <div class="col-md-2"><input type="submit" class="btn btn-success" value="Send recovery link" /></div>
+      {% if r_error_message %}<p class="text-danger">{{r_error_message}}</p>{% endif %}
+      <input type="hidden" name="action" value="send_email" />
+    </div>
+  </form>
+  
+  {% if info %}<div class="alert alert-success">{{info}}</div>{% endif %}
 
-<form method="post" action="/recover_password">
-  <table>
-    <tr>
-      <td>Enter your email so we can send you a recovery link:</td>
-      <td><input type="text" name="email" /></td>
-    </tr>
-  </table>
-  <input type="hidden" name="action" value="send_email" />
-  <input type="submit" class="button1" value="Send recovery link" />
-</form>
-
-<div class="error">{{error | safe}}</div>
-<div class="info">{{info | safe}}</div>
-
+</div>
 {% endif %}
 
 {% endblock %}

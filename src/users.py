@@ -17,7 +17,7 @@ class LoginPage(GenericPage):
     def get(self):
         kw = {'user': self.get_login_user(),
               'goback' : self.request.get('goback'),
-              'error' : self.request.get('error'),
+              'r_error_message' : self.request.get('r_error_message'),
               'info' : self.request.get('info')}
         self.render("login.html", **kw)
 
@@ -25,12 +25,14 @@ class LoginPage(GenericPage):
         email_or_username = self.request.get('email_or_username')
         password = self.request.get('password')
         have_error = False
-        kw = {'email_or_username' : email_or_username, 'password' : password, 'error' : '', 'goback' : self.request.get('goback')}
+        kw = {'email_or_username' : email_or_username, 'password' : password, 'error_message' : '', 'goback' : self.request.get('goback')}
         if not email_or_username:
-            kw["error"] += "You must provide a valid email or username. "
+            kw["error_message"] += "You must provide a valid email or username. "
+            kw["uname_error_p"] = True
             have_error = True
         if not password:
-            kw["error"] += "You must provide your password. "
+            kw["error_message"] += "You must provide your password. "
+            kw["pwd_error_p"] = True
             have_error = True
         if not have_error:
             if re.match(EMAIL_RE, email_or_username):
@@ -38,8 +40,9 @@ class LoginPage(GenericPage):
             else:
                 u = self.get_user_by_username(email_or_username.lower(), "Checking user's login information. ")
             if (not u) or (u.password_hash != hash_str(password + u.salt)):
-                kw["error"] = 'Invalid password. If you forgot your password try setting a new one with the form above.'
+                kw["error_message"] = 'Invalid password. If you forgot your password try setting a new one with the form below.'
                 have_error = True
+                kw["pwd_error_p"] = True
         if have_error:
             self.render("login.html", **kw)
         else:
@@ -215,19 +218,16 @@ class RecoverPasswordPage(GenericPage):
         have_error = False
         email = self.request.get("email")
         if action == "send_email":
-            if not email:
+            if (not email) or (not re.match(EMAIL_RE, email)):
                 have_error = True
-                error = "Please write a valid email."
-            if not re.match(EMAIL_RE, email):
-                error = "That doesn't seem like a valid email."
-                have_error = True
+                r_error_message = "Please write a valid email."
             if not have_error:
                 user = self.get_user_by_email(email)
                 if not user:
                     have_error = True
-                    error = "That's not a registered email."
+                    r_error_message = "That's not a registered email."
             if have_error:
-                self.redirect("/login?error=%s" % error)
+                self.redirect("/login?r_error_message=%s" % r_error_message)
             else:
                 link = '%s/recover_password?email=%s&k=%s' % (APP_URL, email, hash_str(user.username + user.salt))
                 message = mail.EmailMessage(sender = APP_NAME + ' <' + ADMIN_EMAIL + '>',

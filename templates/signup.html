@@ -7,6 +7,7 @@
 
 {% block content %}
 
+<div class="container" style="max-width:750px;">
 <h2>Signup</h2>
 
 {% if user %}
@@ -78,5 +79,5 @@
 <div class="error">
   <br/>{{error | safe}}
 </div>
-
+</div>
 {% endblock %}
