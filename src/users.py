@@ -78,7 +78,7 @@ class UserPage(GenericPage):
 class SignupPage(GenericPage):
     def get(self):
         user = self.get_login_user()
-        self.render("signup.html", user = user)
+        self.render("signup.html", user = user, info = self.request.get("info"))
 
     def post(self):
         usern = self.request.get('usern')
@@ -86,26 +86,26 @@ class SignupPage(GenericPage):
         verify = self.request.get('verify')
         email = self.request.get('email')
         have_error = False
-        kw = {"usern" : usern, "email" : email, "error" : ''}
+        kw = {"usern" : usern, "email" : email, "error" : '', "info" : self.request.get("info")}
         # Valid input
         if usern and (usern.lower() in FORBIDDEN_USERNAMES):
-            kw['error_username'] = "*"
+            kw['error_username'] = True
             kw['error'] = "That username is not available"
             have_error = True
         if not re.match(USERNAME_RE, usern):
-            kw['error_username'] = "*"
+            kw['error_username'] = True
             kw['error'] += "That's not a valid username, it must be from 3 to 20 characters long, start with a letter and contain only letters, numbers, dashes and underscores. "
             have_error = True
         if not re.match(EMAIL_RE, email):
-            kw['error_email'] = "*"
+            kw['error_email'] = True
             kw['error'] += "That doesn't seem like a valid email. "
             have_error = True
         if not re.match(PASSWORD_RE, password):
-            kw['error_password'] = "*"
+            kw['error_password'] = True
             kw['error'] += "That's not a valid password, it must be between 3 and 20 characters long. "
             have_error = True
         elif password != verify:
-            kw['error_verify'] = "*"
+            kw['error_verify'] = True
             kw['error'] += "Your passwords didn't match. "
             have_error = True
         if not have_error:
@@ -117,20 +117,20 @@ class SignupPage(GenericPage):
                 another_user = UnverifiedUsers.query(UnverifiedUsers.username == usern).get()
             if another_user:
                 have_error = True
-                kw['error_username'] = "*"
+                kw['error_username'] = True
                 kw['error'] += 'That username is not available. '
             # Available email
             another_email = self.get_user_by_email(email, "Checking if email is available. ")
             if another_email:
                 have_error = True
-                kw['error_email'] = "*"
+                kw['error_email'] = True
                 kw['error'] += 'That email is already in use by someone. Did you <a href="/recover_password?email=%s">forget your password?. </a>' % email
             else:
                 self.log_read(UnverifiedUsers, "Checking if email is available. ")
                 another_email = UnverifiedUsers.query(UnverifiedUsers.email == email).get()
                 if another_email:
                     have_error = True
-                    kw['error_email'] = '*'
+                    kw['error_email'] = True
                     kw['error'] += 'This email is already registered but it still needs to be verified, click <a href="/verify_email?email=%s">here</a> to send the verification email again.' % email
         # Render
         if have_error:
@@ -141,7 +141,7 @@ class SignupPage(GenericPage):
             u = UnverifiedUsers(username = usern, password_hash = ph, salt = salt, email = email)
             self.log_and_put(u, "New user registration")
             email_messages.send_verify_email(u)
-            self.render("please_verify_email.html")
+            self.render('signup.html', info = "A message has been sent to your email, please follow the instructions provided there.")
 
 
 class SettingsPage(GenericPage):
