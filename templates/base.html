@@ -3,7 +3,11 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/css/base.css" rel="stylesheet" />
+    <style class="text/css">
+      html,body {height: 100%;}
+      #wrap {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; padding: 0 0 50px;}
+      #footer {padding-top: 10px; height: 45px; border-top: 1px solid #C0C0C0;}
+    </style>
     {% block head %}
     {% endblock %}
   </head>
