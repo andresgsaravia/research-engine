@@ -1,10 +1,7 @@
 {% extends "project_base.html" %}
 
 
-{% block breadcrumbs %}
-<li><a href="/{{project.key.integer_id()}}/writings">Collaborative writings</a></li>
-<li class="active">{{writing.title | safe | truncate(40, True)}}</li>
-{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/writings">Collaborative writings</a></li><li class="active">{{writing.title | safe | truncate(40, True)}}</li>{% endblock %}
 
 
 {% block p_content %}

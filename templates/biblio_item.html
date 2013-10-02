@@ -21,7 +21,7 @@
     <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
     {% elif item.kind == "arXiv" %}
     <strong>arXiv preprint</strong> <em>({{item.metadata["date"]}})</em>
-    <p><a href="{{i.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+    <p><a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
     {% endif %}		
     <p>Authors:</p>
     <ul class="list-inline list-group">
