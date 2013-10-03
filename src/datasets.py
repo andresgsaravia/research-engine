@@ -85,12 +85,14 @@ class DataPage(projects.ProjectPage):
 
 class MainPage(DataPage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        self.render("datasets_list.html", project = project, items = self.get_datasets(project))
+        self.render("datasets_list.html", project = project, items = self.get_datasets(project),
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class NewDataSetPage(DataPage):
@@ -166,6 +168,7 @@ class NewDataSetPage(DataPage):
 
 class DataSetPage(DataPage):
     def get(self, projectid, dataset_id):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -176,8 +179,8 @@ class DataSetPage(DataPage):
             self.error(404)
             self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
             return        
-        self.render("dataset_view.html", project = project, dataset = dataset, 
-                    items = self.get_dataconcepts(dataset))
+        self.render("dataset_view.html", project = project, dataset = dataset, items = self.get_dataconcepts(dataset),
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class EditDataSetPage(DataPage):
@@ -343,6 +346,7 @@ class NewDataConceptPage(DataPage):
 
 class DataConceptPage(DataPage):
     def get(self, projectid, dataset_id, datac_id):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -360,7 +364,8 @@ class DataConceptPage(DataPage):
             return
         revisions = self.get_revisions(datac)
         self.render("dataset_concept_view.html", project = project, rev_p = True,
-                    dataset = dataset, datac = datac, revisions = revisions)
+                    dataset = dataset, datac = datac, revisions = revisions,
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class EditConceptPage(DataPage):
@@ -382,7 +387,7 @@ class EditConceptPage(DataPage):
             self.render("404.html", info = 'Data concept with key <em>%s</em> not found' % datac_id)
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("dataset_concept_edit.html", project = project, visitor_p = visitor_p, inf_p = True,
+        self.render("dataset_concept_edit.html", project = project, visitor_p = visitor_p, inf_p = True, user = user,
                     dataset = dataset, datac = datac, description = datac.description, name = datac.name)
 
     def post(self, projectid, dataset_id, datac_id):
@@ -424,7 +429,7 @@ class EditConceptPage(DataPage):
                 kw["error_message"] += "Please provide a description of this data concept. "
                 kw["cClass"] = "has-error"
         if have_error:
-            self.render("dataset_concept_edit.html", project = project, inf_p = True,
+            self.render("dataset_concept_edit.html", project = project, user = user, inf_p = True,
                         dataset = dataset, datac = datac, **kw)
         else:
             datac.name = kw["name"]
@@ -454,7 +459,7 @@ class NewDataRevisionPage(DataPage):
         visitor_p = False if (user and project.user_is_author(user)) else True
         upload_url = blobstore.create_upload_url("/%s/datasets/%s/%s/upload" 
                                                  % (projectid, dataset_id, datac_id)) if not visitor_p else ''
-        self.render("dataset_concept_new_revision.html", project = project, disabled_p = visitor_p, 
+        self.render("dataset_concept_new_revision.html", project = project, visitor_p = visitor_p, user = user,
                     dataset = dataset, datac = datac, upload_url = upload_url, new_p = True,
                     error_message = self.request.get("error_message"), fClass = self.request.get("fClass"))
 

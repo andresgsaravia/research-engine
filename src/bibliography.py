@@ -130,12 +130,14 @@ class BiblioPage(projects.ProjectPage):
         
 class MainPage(BiblioPage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found." % projectid)
             return
-        self.render("biblio_main.html", project = project, items = self.get_BiblioItems_list(project))
+        self.render("biblio_main.html", project = project, items = self.get_BiblioItems_list(project),
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class NewItemPage(BiblioPage):
@@ -203,6 +205,7 @@ class NewItemPage(BiblioPage):
 
 class ItemPage(BiblioPage):
     def get(self, projectid, itemid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -213,9 +216,8 @@ class ItemPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
             return
-        user = self.get_login_user()
-        self.render("biblio_item.html", project = project, item = item, 
-                    disabled_p = not (user and  project.user_is_author(user)),
+        self.render("biblio_item.html", project = project, item = item, user = user,
+                    visitor_p = not (user and  project.user_is_author(user)),
                     comments = self.get_comments_list(item))
 
     def post(self, projectid, itemid):
@@ -243,8 +245,8 @@ class ItemPage(BiblioPage):
             have_error = True
             error_message = "You can not make an empty comment."
         if have_error:
-            self.render("biblio_item.html", project = project, item = item,
-                        disabled_p = not (user and project.user_is_author(user)),
+            self.render("biblio_item.html", project = project, item = item, user = user,
+                        visitor_p = not (user and project.user_is_author(user)),
                         comment = self.get_comments_list(item),
                         error_message = error_message)
         else:

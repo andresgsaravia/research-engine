@@ -83,12 +83,14 @@ class WritingPage(projects.ProjectPage):
 
 class WritingsListPage(WritingPage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        self.render("writings_list.html", project = project, items = self.get_writings_list(project))
+        self.render("writings_list.html", project = project, user = user, items = self.get_writings_list(project),
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class NewWritingPage(WritingPage):
@@ -165,6 +167,7 @@ class NewWritingPage(WritingPage):
 
 class ViewWritingPage(WritingPage):
     def get(self, projectid, writing_id):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -176,7 +179,8 @@ class ViewWritingPage(WritingPage):
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
         last_revision = self.get_last_revision(writing)
-        self.render("writings_view.html", project = project, writing = writing, last_revision = last_revision, curr_p = True)
+        self.render("writings_view.html", project = project, writing = writing, last_revision = last_revision, curr_p = True,
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class EditWritingPage(WritingPage):
@@ -204,8 +208,8 @@ class EditWritingPage(WritingPage):
             edit_warning = "Please log in to save your changes."
         else:
             edit_warning = ''
-        self.render("writings_edit.html", project = project, writing = writing, disabled_p = visitor_p, edit_p = True,
-                    content = content, status = writing.status, edit_warning = edit_warning)
+        self.render("writings_edit.html", project = project, writing = writing, visitor_p = visitor_p, edit_p = True,
+                    content = content, status = writing.status, user = user)
 
     def post(self, projectid, writing_id):
         user = self.get_login_user()
@@ -241,7 +245,7 @@ class EditWritingPage(WritingPage):
             error_message = "There aren't any changes to save. "
         if have_error:
             self.render("writings_edit.html", project = project, writing = writing, disabled_p = visitor_p, edit_p = True,
-                        content = content, status = status, summary = summary, error_message = error_message)
+                        content = content, status = status, summary = summary, error_message = error_message, user = user)
         else:
             new_revision = WritingRevisions(author = user.key, content = content, summary = summary, parent = writing.key)
             project.put_and_notify(self, new_revision, user)
@@ -256,6 +260,7 @@ class EditWritingPage(WritingPage):
 
 class HistoryWritingPage(WritingPage):
     def get(self, projectid, writing_id):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -267,11 +272,13 @@ class HistoryWritingPage(WritingPage):
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
         revisions = self.get_revisions(writing)
-        self.render("writings_history.html", project = project, writing = writing, revisions = revisions, hist_p = True)
+        self.render("writings_history.html", project = project, user = user, writing = writing, revisions = revisions, 
+                    hist_p = True, visitor_p = not (user and project.user_is_author(user)))
 
 
 class ViewRevisionPage(WritingPage):
     def get(self, projectid, writing_id, rev_id):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -287,8 +294,8 @@ class ViewRevisionPage(WritingPage):
             self.error(404)
             self.render("404.html", info = "Revision with key <em>%s</em> not found" % rev_id)
             return
-        self.render("writings_revision.html", project = project, hist_p = True,
-                    writing = writing, revision = revision)
+        self.render("writings_revision.html", project = project, hist_p = True, user = user, writing = writing,
+                    visitor_p = not (user and project.user_is_author(user)), revision = revision)
 
 
 class DiscussionPage(WritingPage):
@@ -306,7 +313,7 @@ class DiscussionPage(WritingPage):
             return
         comments = self.get_comments(writing)
         visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("writings_discussion.html", project = project, disabled_p = visitor_p, disc_p = True,
+        self.render("writings_discussion.html", project = project, visitor_p = visitor_p, disc_p = True,
                     writing = writing, comments = comments)
 
     def post(self, projectid, writing_id):
@@ -342,7 +349,7 @@ class DiscussionPage(WritingPage):
             return
         else:
             comments = self.get_comments(writing)
-            self.render("writings_discussion.html", project = project, disabled_p = visitor_p,
+            self.render("writings_discussion.html", project = project, visitor_p = visitor_p, user = user,
                         writing = writing, comments = comments, comment = comment, disc_p = True,
                         error_message = error_message)
 
@@ -361,7 +368,7 @@ class InfoPage(WritingPage):
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("writings_info.html", project = project, writing = writing, disabled_p = visitor_p,
+        self.render("writings_info.html", project = project, writing = writing, visitor_p = visitor_p,
                     title = writing.title, description = writing.description, info_p = True)
 
     def post(self, projectid, writing_id):
@@ -401,6 +408,4 @@ class InfoPage(WritingPage):
             writing.description = kw["description"]
             self.log_and_put(writing)
             kw["success_message"] = 'Changes saved'
-        else:
-            kw["info_message"] = "There is nothing to save."
         self.render("writings_info.html", project = project, writing = writing, **kw)

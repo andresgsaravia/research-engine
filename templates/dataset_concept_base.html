@@ -7,11 +7,11 @@
 {% block p_content %}
 
 <ul class="nav nav-tabs">
-  <li{% if rev_p %} class="active"{% endif %}>
+  <li class="{% if rev_p %}active{% endif %}">
     <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">Revisions</a></li>
-  <li{% if new_p %} class="active"{% endif %}>
+  <li class="{% if new_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}">
     <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">New revision</a></li>
-  <li{% if inf_p %} class="active"{% endif %}>
+  <li class="{% if inf_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}">
     <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit" title="Edit info">
       <span class="glyphicon glyphicon-cog"></span></a></li>
 </ul>

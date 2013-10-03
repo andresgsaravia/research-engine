@@ -81,6 +81,7 @@ class GenericWikiPage(projects.ProjectPage):
 
 class ViewWikiPage(GenericWikiPage):
     def get(self, projectid, wikiurl):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -91,7 +92,8 @@ class ViewWikiPage(GenericWikiPage):
             wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), wikipage.content) 
         else:
             wikitext = '' 
-        self.render("wiki_view.html", project = project, viewClass = "active",
+        self.render("wiki_view.html", project = project, view_p = True, 
+                    visitor_p = not (user and project.user_is_author(user)),
                     wikiurl = wikiurl, wikipage = wikipage, wikitext = wikitext)
 
 
@@ -105,8 +107,8 @@ class EditWikiPage(GenericWikiPage):
             return
         wikipage = self.get_wikipage(project, wikiurl)
         visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("wiki_edit.html", project = project, disabled_p = visitor_p,
-                    wikiurl = wikiurl, wikipage = wikipage, editClass = "active")
+        self.render("wiki_edit.html", project = project, visitor_p = visitor_p,
+                    wikiurl = wikiurl, wikipage = wikipage, edit_p = True)
 
     def post(self, projectid, wikiurl):
         user = self.get_login_user()
@@ -157,6 +159,7 @@ class EditWikiPage(GenericWikiPage):
 
 class HistoryWikiPage(GenericWikiPage):
     def get(self, projectid, wikiurl):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -164,12 +167,14 @@ class HistoryWikiPage(GenericWikiPage):
             return
         wikipage = self.get_wikipage(project, wikiurl)
         revisions = self.get_revisions(wikipage)
-        self.render("wiki_history.html", project = project, histClass = "active",
+        self.render("wiki_history.html", project = project, hist_p = True,
+                    visitor_p = not (user and project.user_is_author(user)),
                     wikiurl = wikiurl, wikipage = wikipage, revisions = revisions)
 
 
 class RevisionWikiPage(GenericWikiPage):
     def get(self, projectid, wikiurl, rev_id):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -189,5 +194,6 @@ class RevisionWikiPage(GenericWikiPage):
             wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), revision.content) 
         else:
             wikitext = ''
-        self.render("wiki_revision.html", project = project, histClass = "active",
+        self.render("wiki_revision.html", project = project, hist_p = True,
+                    visitor_p = not (user and project.user_is_author(user)),
                     wikiurl = wikiurl, revision = revision, wikitext = wikitext)

@@ -8,10 +8,10 @@
   
 <ul class="nav nav-tabs nav-justified">
   <li{% if curr_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">Current revision</a></li>
-  <li{% if edit_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">Edit</a></li>
+  <li class="{% if edit_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">Edit</a></li>
   <li{% if hist_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">History</a></li>
   <li{% if disc_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion">Discussion</a></li>
-  <li{% if info_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info">Info</a></li>
+  <li class="{% if info_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info"><span class="glyphicon glyphicon-cog"></span></a></li>
 </ul>
 
 <div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">

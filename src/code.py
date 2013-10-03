@@ -70,12 +70,14 @@ class CodePage(projects.ProjectPage):
 
 class CodesListPage(CodePage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        self.render("code_list.html", project = project, items = self.get_codes_list(project))
+        self.render("code_list.html", project = project, 
+                    items = self.get_codes_list(project), visitor_p = not (user and project.user_is_author(user)))
 
 
 class NewCodePage(CodePage):
@@ -182,7 +184,7 @@ class ViewCodePage(CodePage):
             return
         visitor_p = False if (user and project.user_is_author(user)) else True
         comments = self.get_comments(code)
-        self.render("code_view.html", project = project, code = code, comments = comments, disabled_p = visitor_p)
+        self.render("code_view.html", project = project, user = user, code = code, comments = comments, visitor_p = visitor_p)
 
     def post(self, projectid, code_id):
         user = self.get_login_user()

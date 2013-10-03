@@ -13,16 +13,17 @@
   <div class="form-group">
     <label for="descriptionText">Description of this revision</label>
     <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');" class="form-control" rows="10"
-	      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{meta}}</textarea>
+	      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if visitor_p %}disabled{% endif %}>{{meta}}</textarea>
   </div>
   <div class="form-group {{fClass}}">
     <label for="datafile">Data file</label>
-    <input type="file" name="file" id="datafile" class="form-control" {% if disabled_p %}disabled{% endif %}/>
+    <input type="file" name="file" id="datafile" class="form-control" {% if visitor_p %}disabled{% endif %}/>
   </div>
-  <button type="submit" class="btn btn-success" id="upload-button" {% if disabled_p %}disabled{% endif %}>Upload revision</button>
+  <button type="submit" class="btn btn-success" id="upload-button" {% if visitor_p %}disabled{% endif %}>Upload revision</button>
   <button onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'"
 	  type="button" class="btn btn-default">Cancel</button>
   {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
   <div class="help-block"><p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p></div>
 </form>
 

@@ -6,13 +6,14 @@
 
 {% block p_content %}
 
-
 <div class="page-header">
   <h3>{{dataset.name}}
+    {% if not visitor_p %}
     <a class="btn btn-default btn-sm pull-right" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">
       <span class="glyphicon glyphicon-cog"></span></a>
     <a class="btn btn-success btn-sm pull-right" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data" style=" margin-right:10px;">
       <span class="glyphicon glyphicon-plus"></span> New data concept</a>
+    {% endif %}
   </h3>
 </div>
 

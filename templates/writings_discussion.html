@@ -5,11 +5,12 @@
 
 <form method="post" role="form">
   <div class="form-group">
-    <textarea name="comment" class="form-control" rows="10" placeholder="Write a new comment here." {% if disabled_p %}disabled{% endif %}>{{comment}}</textarea>
+    <textarea name="comment" class="form-control" rows="10" placeholder="Write a new comment here." {% if visitor_p %}disabled{% endif %}>{{comment}}</textarea>
   </div>
   <div class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</div>
-  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Post comment</button>
-  <p class="text-danger">{{error_message}}</p>
+  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post comment</button>
+  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
 </form>
 
 <div class="list-group">

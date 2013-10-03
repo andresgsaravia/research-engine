@@ -101,7 +101,7 @@ class NotebooksListPage(NotebookPage):
                     my_notebooks.append(n)
                 else:
                     other_notebooks.append(n)
-        self.render("notebooks_list.html", project = project, user = user,
+        self.render("notebooks_list.html", project = project, user = user, visitor_p = (user and project.user_is_author(user)),
                     notebooks = notebooks, my_notebooks = my_notebooks, other_notebooks = other_notebooks)
 
 
@@ -307,14 +307,9 @@ class NotePage(NotebookPage):
             return
         comments = self.get_comments_list(note)
         visitor_p = True if not (user and project.user_is_author(user)) else False
-        error_message = ''
-        if visitor_p and not user:
-            error_message = "You must log in first to make a comment."
-        elif visitor_p and not project.user_is_author(user):
-            error_message = "You are not an author in this project."
-        self.render("notebook_note.html", project = project, visitor_p = visitor_p, error_message = error_message,
+        self.render("notebook_note.html", project = project, user = user,visitor_p = visitor_p,
                     notebook = notebook, note = note, comments = comments, new_comment = self.request.get("new_comment"),
-                    user_is_owner_p = True if (user and notebook.owner == user.key) else False)
+                    user_is_owner_p = (user and notebook.owner == user.key))
 
     def post(self, projectid, nbid, note_id):
         user = self.get_login_user()

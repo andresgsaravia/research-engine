@@ -41,10 +41,11 @@
   <div class="form-group{% if error_message %} has-error{% endif %}">
     <label for="commentText">Your comment</label>
     <textarea name="comment" id="commentText" class="form-control" rows="10"
-	      onKeyUp="Preview('commentText','previewArea');"{% if disabled_p %}disabled{% endif %}>{{comment_value}}</textarea>
+	      onKeyUp="Preview('commentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
   </div>
-  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Comment</button>
+  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Comment</button>
   <p class="text-danger">{{error_message}}</p>
+  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in to make a comment{% endif %}</p>{% endif %} 
   <div class="help-block">
     Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
   </div>

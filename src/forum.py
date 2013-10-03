@@ -66,12 +66,14 @@ class ForumPage(projects.ProjectPage):
 
 class MainPage(ForumPage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return            
-        self.render("forum_main.html", project = project, items = self.get_threads(project))
+        self.render("forum_main.html", project = project, user = user, items = self.get_threads(project),
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class NewThreadPage(ForumPage):
@@ -164,7 +166,8 @@ class ThreadPage(ForumPage):
             return
         comments = self.get_comments(thread)
         visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p)
+        self.render("forum_thread.html", project = project, user = user, thread = thread, 
+                    comments = comments, visitor_p = visitor_p)
 
     def post(self, projectid, thread_id):
         user = self.get_login_user()
@@ -204,5 +207,6 @@ class ThreadPage(ForumPage):
             self.redirect("/%s/forum/%s" % (projectid, thread_id))
         else:
             comments = self.get_comments(thread)
-            self.render("forum_thread.html", project = project, thread = thread, comments = comments, disabled_p = visitor_p,
-                        comment = comment, error_message = error_message)
+            self.render("forum_thread.html", project = project, thread = thread, user = user,
+                        comments = comments, visitor_p = visitor_p, comment = comment,
+                        error_message = error_message)

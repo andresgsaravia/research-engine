@@ -1,15 +1,17 @@
 {% extends "project_base.html" %}
 
 
-{% block title_bar_extra %}<li class="active">Datasets</li>{% endblock %}
+{% block breadcrumbs %}<li class="active">Datasets</li>{% endblock %}
 
 
 {% block p_content %}
  
 <div class="page-header">
   <h2>Datasets
+    {% if not visitor_p %}
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/datasets/new">
       <span class="glyphicon glyphicon-plus"></span> New dataset</a>
+    {% endif %}
   </h2>
 </div>
 

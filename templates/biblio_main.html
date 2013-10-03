@@ -8,8 +8,10 @@
  
 <div class="page-header">
   <h2>Bibliography
+    {% if not visitor_p %}
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/bibliography/new_item">
       <span class="glyphicon glyphicon-plus"></span> New entry</a>
+    {% endif %}
   </h2>
 </div>
 

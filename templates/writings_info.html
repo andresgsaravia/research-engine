@@ -7,20 +7,20 @@
   <div class="form-group {{tClass}}">
     <label for="tinput">Title</label>
     <input id="tinput" type="text" name="title" class="form-control" value="{{title}}" 
-	   placeholder="Title of the writing." {% if disabled_p %}disabled{% endif %}/>
+	   placeholder="Title of the writing." {% if visitor_p %}disabled{% endif %}/>
   </div>
   <div class="from-group {{dClass}}">
     <label for="dinput">Description</label>
     <textarea id="dinput" name="description" class="form-control" rows="15"
-	      placeholder="Description of the writing." {% if disabled_p %}disabled{% endif %}>{{description}}</textarea>
+	      placeholder="Description of the writing." {% if visitor_p %}disabled{% endif %}>{{description}}</textarea>
   </div>
   <br/>
-  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Save changes</button>
+  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Save changes</button>
   <button onClick="window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'"
 	  type="button" class="btn btn-default">Cancel</button>
-  <p class="text-danger">{{error_message}}</p>
-  <p class="text-warning">{{info_message}}</p>
-  <p class="text-success">{{success_message}}</p>
+  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+  {% if success_message %}<p class="text-success">{{success_message}}</p>{% endif %}
+  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
 </form>
 
 {% endblock %}

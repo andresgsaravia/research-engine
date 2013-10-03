@@ -8,9 +8,9 @@
 {% block p_content %}
 
 <ul class="nav nav-tabs">
-  <li class="pull-right {{histClass}}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">History</a></li>
-  <li class="pull-right {{editClass}}"><a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a></li>
-  <li class="pull-right {{viewClass}}"><a href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">View</a></li>
+  <li class="pull-right{% if hist_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">History</a></li>
+  <li class="pull-right{% if edit_p %} active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a></li>
+  <li class="pull-right{% if view_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">View</a></li>
 </ul>
 
 <div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">

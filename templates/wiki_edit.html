@@ -12,18 +12,19 @@
   <form method="post" role="form">
     <div class="form-group {{cClass}}">
       <textarea name="content" id="inputText" placeholder="Write the content of this page here." class="form-control" rows="20"
-		autofocus {% if disabled_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
+		autofocus {% if visitor_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
     </div>
     <div class="form-group">
       <label for="summary">Summary of changes (optional)</label>
       <input id="summary" type="text" name="summary" class="form-control"
-	     placeholder="Summary with at most 160 characters (optional)" maxlength="160" {% if disabled_p %}disabled{% endif %}/>
+	     placeholder="Summary with at most 160 characters (optional)" maxlength="160" {% if visitor_p %}disabled{% endif %}/>
     </div>
-    <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Save</button>
+    <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Save</button>
     <button type="button" class="btn btn-default"
 	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}'}">Cancel
     </button>
-    <p class="text-danger">{{error_message}}</p>
+    {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+    {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
 
     <div class="help-block">
       <p>You can link to another page in this wiki using the syntax: <code>[[another page]]</code> or, if you want a link to another page but displaying a different text link, you can write <code>[[another page | this text will be displayed]]</code>. This will not be rendered in the preview below.</p>

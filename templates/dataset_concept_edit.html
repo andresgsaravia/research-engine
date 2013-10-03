@@ -20,6 +20,7 @@
   <button onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'" 
 	  type="button" class="btn btn-default"{% if visitor_p %}disabled{% endif %}>Cancel</button>
   {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
 </form>
 
 <br/>
