@@ -20,10 +20,10 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-	<a href="/{{project.key.integer_id()}}/code/{{i.key.integer_id()}}">{{i.name}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of comments about this code" style="margin-right:10px;">{{i.get_number_of_comments()}}</span>
+	<a href="/{{project.key.integer_id()}}/code/{{i.key.integer_id()}}">{{i.name}}</a>
       </h4>
     </div>
     <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">

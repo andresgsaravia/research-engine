@@ -22,10 +22,9 @@
 	    <div class="panel panel-default">
 	      <div class="panel-heading">
 		<h4 class="panel-title">
-		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}} </a>
 		  <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
-		    <span class="glyphicon glyphicon-info-sign"></span>
-	      </a>
+		    <span class="glyphicon glyphicon-info-sign"></span></a>
+		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a>
 		</h4>
 	      </div>
 	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  

@@ -22,10 +22,10 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{i.key.integer_id()}}">{{i.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#daccordion" href="#{{i.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of revisions" style="margin-right:10px;">{{i.get_number_of_revisions()}}</span>
+	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{i.key.integer_id()}}">{{i.name | safe}}</a>
       </h4>
     </div>
     <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
