@@ -165,7 +165,7 @@ class ThreadPage(ForumPage):
             self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
             return
         comments = self.get_comments(thread)
-        visitor_p = False if (user and project.user_is_author(user)) else True
+        visitor_p = not (user and project.user_is_author(user))
         self.render("forum_thread.html", project = project, user = user, thread = thread, 
                     comments = comments, visitor_p = visitor_p)
 
@@ -188,7 +188,7 @@ class ThreadPage(ForumPage):
         have_error = False
         error_message = ''
         comment = self.request.get("comment")
-        visitor_p = False if project.user_is_author(user) else True
+        visitor_p = not (user and project.user_is_author(user))
         if visitor_p:
             have_error = True
             erro_message = "You are not an author in this project. "
@@ -210,3 +210,76 @@ class ThreadPage(ForumPage):
             self.render("forum_thread.html", project = project, thread = thread, user = user,
                         comments = comments, visitor_p = visitor_p, comment = comment,
                         error_message = error_message)
+
+
+class EditThreadPage(ForumPage):
+    def get(self, projectid, thread_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        thread = self.get_thread(project, thread_id)
+        if not thread:
+            self.error(404)
+            self.render("404.html", info = "Thread with key <em>%s</em> not found" % thread_id)
+            return
+        kw = {"visitor_p" : not (user and project.user_is_author(user)),
+              "title" : "Edit forum thread",
+              "name_value" : thread.title,
+              "name_placeholder" : "Brief description of the thread.",
+              "content_placeholder" : "Content of your thread.",
+              "content_value" : thread.content,
+              "submit_button_text" : "Save changes",
+              "cancel_url" : "/%s/forum/%s" % (projectid,thread_id),
+              "markdown_p" : True,
+              "breadcrumb" : '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)}
+        kw["disabled_p"] = kw["visitor_p"]
+        if kw["visitor_p"]: kw["pre_form_message"] = '<p class="text-danger">You can not edit this thread.</p>' 
+        self.render("project_form_2.html", user = user, project = project, **kw)
+
+    def post(self, projectid, thread_id):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        thread = self.get_thread(project, thread_id)
+        if not thread:
+            self.error(404)
+            self.render("404.html", info = "Thread with key <em>%s</em> not found" % thread_id)
+            return
+        have_error = False
+        kw = {"visitor_p" : not (user and project.user_is_author(user)),
+              "error_message" : '',
+              "name" : self.request.get("name"),
+              "description" : self.request.get("content")}
+        if kw["visitor_p"]:
+            have_error = True
+            kw["error_message"] = 'You can not edit this thread.'
+        if not kw["name"]:
+            have_error = True
+            kw["error_message"] = "Please provide a brief description for this thread. "
+        if not kw["description"]:
+            have_error = True
+            kw["error_message"] += "You need to write some content before publishing this forum thread. "
+        if have_error:
+            kw["title"] = "Edit forum thread"
+            kw["name_value"] = kw["name"]
+            kw["name_placeholder"] = "Brief description of the thread."
+            kw["content_placeholder"] = "Content of your thread."
+            kw["content_value"] = kw["description"]
+            kw["submit_button_text"] = "Save changes"
+            kw["cancel_url"] = "/%s/forum/%s" % (projectid,thread_id)
+            kw["markdown_p"] = True
+            kw["breadcrumb"] = '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)
+            kw["disabled_p"] = kw["visitor_p"]
+            self.render("project_form_2.html", user = user, project = project, **kw)
+        else:
+            if (thread.title != kw["name"] or thread.content != kw["description"]):
+                thread.title = kw["name"]
+                thread.content = kw["description"]
+                self.log_and_put(thread)
+            self.redirect("/%s/forum/%s" % (project.key.integer_id(), thread.key.integer_id()))

@@ -42,6 +42,7 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                # Forum
                                ('/([0-9]+)/forum', forum.MainPage),
                                ('/([0-9]+)/forum/new_thread', forum.NewThreadPage),
+                               ('/([0-9]+)/forum/([0-9]+)/edit', forum.EditThreadPage),
                                ('/([0-9]+)/forum/([0-9]+)', forum.ThreadPage),
                                # Wiki
                                ('/([0-9]+)/wiki/page/(.+)', wiki.ViewWikiPage),

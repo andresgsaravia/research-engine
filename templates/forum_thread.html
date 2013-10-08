@@ -20,6 +20,11 @@
     <h3 class="panel-title">{{thread.title}}</h3>
   </div>
   <div class="panel-body">
+    {% if user and user.key == thread.author %}
+    <a class="btn btn-default pull-right" href="/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}/edit">
+      <span class="glyphicon glyphicon-pencil"></span>
+    </a>
+    {% endif %}
     {{thread.content | md | safe}}
     <p class="text-muted pull-right">{{thread.date.strftime("%d-%b-%Y")}}</p>
     <ul class="nav nav-pills">
