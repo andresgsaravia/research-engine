@@ -14,7 +14,9 @@
 
     <div class="col-md-7">
       <h2>Recent activity</h2>
-      <p><em>Coming soon...</em></p>
+      {% for a in user.get_recent_activity() %}
+      <p>{{a.description_html() | safe}}</p>
+      {% endfor %}
     </div>
 
     <div class="col-md-5">

@@ -103,6 +103,13 @@ class ProjectPage(GenericPage):
         project = Projects.get_by_id(int(projectid))
         return project
 
+    def put_and_report(self, author, item, list_to_update):
+        self.log_and_put(item)
+        activity = UserActivities(parent = author.key, item = item.key, kind = "Projects")
+        for i in list_to_update:
+            self.log_and_put(i)
+        self.log_and_put(activity)
+
     def add_notifications(self, category, author, users_to_notify, html, txt):
         for u in users_to_notify:
             notification = EmailNotifications(author = author.key, category = category, html = html, txt = txt,

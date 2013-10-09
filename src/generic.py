@@ -24,6 +24,7 @@ APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
 
+MAX_RECENT_ACTIVITY_ITEMS = 20
 
 ##########################
 ##   Helper Functions   ##
@@ -97,6 +98,12 @@ class RegisteredUsers(ndb.Model):
         if size > 0: url += "?s=" + str(size)
         return url
 
+    def get_recent_activity(self, include_seen_p = False, max_items = MAX_RECENT_ACTIVITY_ITEMS):
+        if include_seen_p:
+            return UserActivities.query(ancestor = self.key).order(-UserActivities.date).fetch(max_items)
+        else:
+            return UserActivities.query(UserActivities.seen_p == False, ancestor = self.key).order(-UserActivities.date).fetch(max_items)
+
 # Each Notification should have as parent a RegisteredUser, this parent is the one who will receive the notification
 class EmailNotifications(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers)
@@ -105,6 +112,31 @@ class EmailNotifications(ndb.Model):
     txt = ndb.TextProperty(required = False)
     sent = ndb.BooleanProperty(required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
+
+
+# Each UserActivity should have a RegisteredUser as parent
+class UserActivities(ndb.Model):
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    kind = ndb.StringProperty(required = True)
+    item = ndb.KeyProperty(required = True)
+    seen_p = ndb.BooleanProperty(default = False) # Wether this activity has been seen by the parent RegisteredUser
+
+    def description_html(self):
+        html = ''
+        if self.kind == "Projects":
+            author = self.key.parent().get()
+            item = self.item.get()
+            html = '<a href="/%s">%s</a> ' % (author.username, author.username.capitalize())
+            if item.__class__.__name__ == "Notebooks":
+                html += "started a new notebook " 
+                html += '<a href="/%s/notebooks/%s">%s</a>' % (item.key.parent().integer_id(), item.key.integer_id(), item.name)
+            elif item.__class__.__name__ == "NotebookNotes":
+                html += 'made a new note: <a href="/%s/notebooks/%s/%s">%s</a> ' % (item.key.parent().parent().integer_id(), 
+                                                                                     item.key.parent().integer_id(), item.key.integer_id(),
+                                                                                     item.title)
+                html += 'in the notebook '
+                html += '<a href=/%s/notebooks/%s>%s</a>' % (item.key.parent().parent().integer_id(), item.key.parent().integer_id(), item.key.parent().get().name)
+        return html
 
 
 ######################
