@@ -13,16 +13,36 @@
     <div class="col-md-2">
       <h2>{{page_user.username.capitalize()}}</h2>
       <hr>
-      <img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}">
-      {% if page_user.about_me %}<hr><span class="text-muted">About</span><br><div>{{page_user.about_me | md | safe}}</div>{% endif %}
-      {% if self_user_p %}<a class="btn btn-default btn-block" href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a>{% endif %}
+      <img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" style="display:block;margin:0 auto;">
+      {% if page_user.about_me %}
+      <hr>
+      <a style="margin:0 auto;max-width:150px;" data-toggle="modal" href="#aboutInfo" class="btn btn-default btn-block">About</a>
+      <div class="modal fade" id="aboutInfo" tabindex="-1" role="dialog" aria-labelledby="abountInfoLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	      <button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
+	      <h4 class="modal-title">About</h4>
+	    </div>
+	    <div class="modal-body">
+	      {{page_user.about_me | md | safe}}
+	    </div>
+	    {% if self_user_p %}
+	    <div class="modal-footer">
+	      <a class="btn btn-default" href="/settings"><span class="glyphicon glyphicon-cog"></span> Edit settings</a>
+	    </div>
+	    {% endif %}
+	  </div>
+	</div>
+      </div>
+      {% endif %}
     </div>
 
-	  <div class="col-md-5">
-		  <h2>Recent activity</h2>
-		  <hr>
-		  <i>Coming soon...</i>
-	  </div>
+    <div class="col-md-5">
+      <h2>Recent activity</h2>
+      <hr>
+      <i>Coming soon...</i>
+    </div>
 
     <div class="col-md-5">
       <h2>{% if self_user_p %}Your projects{% else %}Projects{% endif %}</h2>
