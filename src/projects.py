@@ -84,8 +84,7 @@ class Projects(ndb.Model):
         for f in futures:
             results.extend(f.get_result())
         results.sort(key=lambda r: r.date, reverse = True)
-        return results[:n]
-#        return ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch_page(n)[0]
+        return results[:n]         # I query more than what I display. How could I improve this? o.O
 
 
 # Should have a Project as parent
