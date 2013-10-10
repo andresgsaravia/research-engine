@@ -26,7 +26,7 @@
   <h3>Latest activity</h3>
   <div class="list-group">
     {% for u in updates %}
-    <div class="list-group-item">{{u.get_description_html(project) | safe}}</div>
+    <div class="list-group-item">{{u.description_html() | safe}}</div>
     {% endfor %}
   </div>
 </div>

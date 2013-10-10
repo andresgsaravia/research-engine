@@ -76,7 +76,16 @@ class Projects(ndb.Model):
         assert type(n) == int
         assert n > 0
         requesting_handler.log_read(ProjectUpdates, "Requesting %s updates. " % n)
-        return ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch_page(n)[0]
+        # Making the query in parallel
+        futures = []
+        for a in self.authors:
+            futures.append(UserActivities.query(ancestor = a).order(-UserActivities.date).fetch_async(n))
+        results = []
+        for f in futures:
+            results.extend(f.get_result())
+        results.sort(key=lambda r: r.date, reverse = True)
+        return results[:n]
+#        return ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch_page(n)[0]
 
 
 # Should have a Project as parent
