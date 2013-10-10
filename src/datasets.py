@@ -41,14 +41,6 @@ class DataRevisions(ndb.Model):
     meta = ndb.TextProperty(required = False)
     datafile = ndb.BlobKeyProperty(required = True)
 
-    def notification_html_and_txt(self, author, project, dataset, datac):
-        kw = {"author" : author, "project" : project, "dataset" : dataset,
-              "datac" : datac, "rev" : self, 
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["dataset_absolute_link"] = kw["project_absolute_link"] + "/datasets/" + str(dataset.key.integer_id())
-        kw["datac_absolute_link"] = kw["dataset_absolute_link"] + "/" + str(datac.key.integer_id())
-        return (render_str("emails/datarev.html", **kw), render_str("emails/datarev.txt", **kw))
 
 ######################
 ##   Web Handlers   ##
@@ -162,7 +154,7 @@ class NewDataSetPage(DataPage):
             new_dataset = DataSets(name = kw["name_value"],
                                    description = kw["content_value"],
                                    parent  = project.key)
-            project.put_and_notify(self, new_dataset, user)
+            self.put_and_report(user, new_dataset, [project])
             self.redirect("/%s/datasets/%s" % (project.key.integer_id(), new_dataset.key.integer_id()))
 
 
@@ -261,7 +253,6 @@ class EditDataSetPage(DataPage):
                 dataset.name = kw["name_value"]
                 dataset.description = kw["content_value"]
                 self.log_and_put(dataset)
-                self.log_and_put(project, "Updating last_updated property. ")
             self.redirect("/%s/datasets/%s" % (project.key.integer_id(), dataset.key.integer_id()))
 
 
@@ -340,7 +331,7 @@ class NewDataConceptPage(DataPage):
             new_dataconcept = DataConcepts(name = kw["name_value"], 
                                            description = kw["content_value"], 
                                            parent  = dataset.key)
-            project.put_and_notify(self, new_dataconcept, user)
+            self.put_and_report(user, new_dataconcept, [project, dataset])
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, new_dataconcept.key.integer_id()))
 
 
@@ -517,6 +508,12 @@ class DataSetBlobstoreUpload(GenericBlobstoreUpload):
         self.log_read(DataRevisions, log_message)
         return DataRevisions.get_by_id(int(rev_id), parent = datac.key)
 
+    def put_and_report(self, author, item, list_to_update):
+        self.log_and_put(item)
+        activity = UserActivities(parent = author.key, item = item.key, kind = "Projects")
+        for i in list_to_update:
+            self.log_and_put(i)
+        self.log_and_put(activity)
 
 
 class UploadDataRevisionHandler(DataSetBlobstoreUpload):
@@ -556,14 +553,7 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
             self.redirect("/%s/datasets/%s/%s/new?error_message=%s&fClass=%s" % (projectid, dataset_id, datac_id, error_message, fClass))
         else:
             new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac.key)
-            project.put_and_notify(self, new_revision, user)
-            html, txt = new_revision.notification_html_and_txt(user, project, dataset, datac)
-            self.add_notifications(category = new_revision.__class__.__name__,
-                                   author = user,
-                                   users_to_notify = project.datasets_notifications_list,
-                                   html = html, txt = txt)
-            self.log_and_put(dataset, "Updating last_updated property. ")
-            self.log_and_put(datac, "Updating last_updated property. ")
+            self.put_and_report(user, new_revision, [project, dataset, datac])
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))
 
 

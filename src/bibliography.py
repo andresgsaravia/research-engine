@@ -199,7 +199,7 @@ class NewItemPage(BiblioPage):
                                    identifier = identifier,
                                    metadata = metadata,
                                    parent = project.key)
-            project.put_and_notify(self, new_item, user)
+            self.put_and_report(user, new_item, [project])
             self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))
 
 
@@ -253,8 +253,7 @@ class ItemPage(BiblioPage):
             new_comment = BiblioComments(author = user.key,
                                          content = comment,
                                          parent = item.key)
-            project.put_and_notify(self, new_comment, user)
-            self.log_and_put(item, "Updating last_updated property. ")
+            self.put_and_report(user, new_comment, [project, item])
             self.redirect("/%s/bibliography/%s" % (projectid, itemid))
 
 class CommentPage(BiblioPage):

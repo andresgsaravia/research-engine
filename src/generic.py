@@ -126,16 +126,7 @@ class UserActivities(ndb.Model):
         if self.kind == "Projects":
             author = self.key.parent().get()
             item = self.item.get()
-            html = '<a href="/%s">%s</a> ' % (author.username, author.username.capitalize())
-            if item.__class__.__name__ == "Notebooks":
-                html += "started a new notebook " 
-                html += '<a href="/%s/notebooks/%s">%s</a>' % (item.key.parent().integer_id(), item.key.integer_id(), item.name)
-            elif item.__class__.__name__ == "NotebookNotes":
-                html += 'made a new note: <a href="/%s/notebooks/%s/%s">%s</a> ' % (item.key.parent().parent().integer_id(), 
-                                                                                     item.key.parent().integer_id(), item.key.integer_id(),
-                                                                                     item.title)
-                html += 'in the notebook '
-                html += '<a href=/%s/notebooks/%s>%s</a>' % (item.key.parent().parent().integer_id(), item.key.parent().integer_id(), item.key.parent().get().name)
+            html = render_str("project_activity.html", author = author, item = item)
         return html
 
 
@@ -163,14 +154,6 @@ class GenericPage(webapp2.RequestHandler):
                       % (self.__class__.__name__, instance.__class__.__name__, message))
         instance.key.delete()
         return
-
-    def add_notifications(self, category, author, users_to_notify, html, txt):
-        for u in users_to_notify:
-            notification = EmailNotifications(author = author, category = category, html = html, txt = txt,
-                                              sent = False, parent = u.key)
-            self.log_and_put(notification)
-        return
-
 
     # Cookies
     def get_cookie_val(self, cookie_name, salt):
@@ -246,13 +229,6 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
         if DEBUG: logging.debug("DB WRITE: Handler %s is deleting an instance of %s. %s"
                                 % (self.__class__.__name__, instance.__class__.__name__, message))
         instance.key.delete()
-        return
-
-    def add_notifications(self, category, author, users_to_notify, html, txt):
-        for u in users_to_notify:
-            notification = EmailNotifications(author = author.key, category = category, html = html, txt = txt,
-                                              sent = False, parent = u)
-            self.log_and_put(notification)
         return
 
     # Users

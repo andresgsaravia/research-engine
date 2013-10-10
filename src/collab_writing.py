@@ -23,14 +23,6 @@ class WritingRevisions(ndb.Model):
     content = ndb.TextProperty(required = True)
     summary = ndb.TextProperty(required = False)
 
-    def notification_html_and_txt(self, author, project, writing):
-        kw = {"author" : author, "project" : project, "writing" : writing, "revision" : self,
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["writing_absolute_link"] = kw["project_absolute_link"] + "/writings/" + str(writing.key.integer_id())
-        kw["revision_absolute_link"] = kw["writing_absolute_link"] + "/rev/" + str(self.key.integer_id())
-        return (render_str("emails/writing.html", **kw), render_str("emails/writing.txt", **kw))
-
 
 # Should have as parent a CollaborativeWriting
 class WritingComments(ndb.Model):
@@ -161,7 +153,7 @@ class NewWritingPage(WritingPage):
                                                 description = w_description,
                                                 status = "In progress",
                                                 parent = project.key)
-            project.put_and_notify(self, new_writing, user)
+            self.put_and_report(user, new_writing, [project])
             self.redirect("/%s/writings/%s" % (project.key.integer_id(), new_writing.key.integer_id()))
 
 
@@ -248,13 +240,8 @@ class EditWritingPage(WritingPage):
                         content = content, status = status, summary = summary, error_message = error_message, user = user)
         else:
             new_revision = WritingRevisions(author = user.key, content = content, summary = summary, parent = writing.key)
-            project.put_and_notify(self, new_revision, user)
-            html, txt = new_revision.notification_html_and_txt(user, project, writing)
-            self.add_notifications(category = new_revision.__class__.__name__,
-                                   author = user, html = html, txt = txt,
-                                   users_to_notify = project.writings_notifications_list)
             if status: writing.status = status
-            self.log_and_put(writing, "Updating its last_updated and status property. ")
+            self.put_and_report(user, new_revision, [project, writing])
             self.redirect("/%s/writings/%s" % (projectid, writing_id))
 
 
@@ -344,7 +331,7 @@ class DiscussionPage(WritingPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
-            project.put_and_notify(self, new_comment, user)
+            self.put_and_report(user, new_comment, [project, writing])
             self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
             return
         else:

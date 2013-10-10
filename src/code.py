@@ -22,13 +22,6 @@ class CodeRepositories(ndb.Model):
     link = ndb.StringProperty(required = True)
     github_json = ndb.JsonProperty()
 
-    def notification_html_and_txt(self, author, project):
-        kw = {"author" : author, "project" : project, "code" : self,
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(self.key.integer_id())
-        return (render_str("emails/code.html", **kw), render_str("emails/code.txt", **kw))
-
     def get_number_of_comments(self):
         return CodeComments.query(ancestor = self.key).count()
 
@@ -38,13 +31,6 @@ class CodeComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
-
-    def notification_html_and_txt(self, author, project, code):
-        kw = {"author" : author, "project" : project, "code" : code, "comment" : self,
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["code_absolute_link"] = kw["project_absolute_link"] + "/code/" + str(code.key.integer_id())
-        return (render_str("emails/code_comment.html", **kw), render_str("emails/code_comment.txt", **kw))
 
 
 ######################
@@ -159,14 +145,8 @@ class NewCodePage(CodePage):
             repo_json = json.loads(repo_fetch.content)
             new_repo = CodeRepositories(link = kw["link"], description = kw["description"], parent = project.key,
                                         name = repo_json["full_name"], github_json = repo_json)
-            project.put_and_notify(self, new_repo, user)
-            html, txt = new_repo.notification_html_and_txt(user, project)
-            self.add_notifications(category = new_repo.__class__.__name__,
-                                   author = user,
-                                   users_to_notify = project.code_notifications_list,
-                                   html = html, txt = txt)
-            self.redirect("/%s/code/%s" 
-                          % (projectid, new_repo.key.integer_id()))
+            self.put_and_report(user, new_repo, [project])
+            self.redirect("/%s/code/%s" % (projectid, new_repo.key.integer_id()))
 
 
 class ViewCodePage(CodePage):
@@ -214,13 +194,7 @@ class ViewCodePage(CodePage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = CodeComments(author = user.key, comment = comment, parent = code.key)
-            project.put_and_notify(self, new_comment, user)
-            html, txt = new_comment.notification_html_and_txt(user, project, code)
-            self.add_notifications(category = new_comment.__class__.__name__,
-                                   author = user,
-                                   users_to_notify = project.code_notifications_list,
-                                   html = html, txt = txt)
-            self.log_and_put(code, "Updating it's last_updated property. ")
+            self.put_and_report(user, new_comment, [project, code])
             comment = ''
         comments = self.get_comments(code)
         self.render("code_view.html", project = project, code = code, comments = comments,

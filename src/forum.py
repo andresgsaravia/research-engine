@@ -21,26 +21,12 @@ class ForumThreads(ndb.Model):
     def get_number_of_comments(self):
         return ForumComments.query(ancestor = self.key).count()
 
-    def notification_html_and_txt(self, author, project):
-        kw = {"author" : author, "project" : project, "thread" : self,
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["thread_absolute_link"] = kw["project_absolute_link"] + "/forum/" + str(self.key.integer_id())
-        return (render_str("emails/forum_thread.html", **kw), render_str("emails/forum_thread.txt", **kw))
-
 
 # each ForumComment should have a ForumThread as parent.
 class ForumComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
-
-    def notification_html_and_txt(self, author, project, thread):
-        kw = {"author" : author, "project" : project, "thread" : thread, "comment" : self,
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["thread_absolute_link"] = kw["project_absolute_link"] + "/forum/" + str(self.key.integer_id())
-        return (render_str("emails/forum_comment.html", **kw), render_str("emails/forum_comment.txt", **kw))
 
 
 ######################
@@ -142,12 +128,7 @@ class NewThreadPage(ForumPage):
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
-            project.put_and_notify(self, new_thread, user)
-            html, txt = new_thread.notification_html_and_txt(user, project)
-            self.add_notifications(category = new_thread.__class__.__name__,
-                                   author = user,
-                                   users_to_notify = project.forum_threads_notifications_list,
-                                   html = html, txt = txt)
+            self.put_and_report(user, new_thread, [project])
             self.redirect("/%s/forum/%s" % (projectid, new_thread.key.integer_id()))
 
 
@@ -197,13 +178,7 @@ class ThreadPage(ForumPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
-            project.put_and_notify(self, new_comment, user)
-            html, txt = new_comment.notification_html_and_txt(user, project, thread)
-            self.add_notifications(category = new_comment.__class__.__name__,
-                                   author = user,
-                                   users_to_notify = project.forum_posts_notifications_list,
-                                   html = html, txt = txt)
-            self.log_and_put(thread, "Updating last_updated property. ")
+            self.put_and_report(user, new_comment, [project, thread])
             self.redirect("/%s/forum/%s" % (projectid, thread_id))
         else:
             comments = self.get_comments(thread)

@@ -45,13 +45,6 @@ class WikiRevisions(ndb.Model):
     content = ndb.TextProperty(required = True)
     summary = ndb.StringProperty(required = False)
 
-    def notification_html_and_txt(self, author, project, wikipage):
-        kw = {"author" : author, "project" : project, "wikipage" : wikipage, "revision" : self,
-              "author_absolute_link" : APP_URL + "/" + author.username}
-        kw["project_absolute_link"] = APP_URL + "/" + str(project.key.integer_id())
-        kw["wikipage_absolute_link"] = kw["project_absolute_link"] + "/wiki/page/" + wikipage.url
-        return (render_str("emails/wiki.html", **kw), render_str("emails/wiki.txt", **kw))
-
 
 ######################
 ##   Web Handlers   ##
@@ -145,12 +138,7 @@ class EditWikiPage(GenericWikiPage):
                 self.log_and_put(wikipage, "Changing content." )
             new_revision = WikiRevisions(author = user.key, content = content, summary = summary,
                                          parent = wikipage.key)
-            project.put_and_notify(self, new_revision, user)
-            html, txt = new_revision.notification_html_and_txt(user, project, wikipage)
-            self.add_notifications(category = new_revision.__class__.__name__,
-                                   author = user,
-                                   users_to_notify = project.wiki_notifications_list,
-                                   html = html, txt = txt)
+            self.put_and_report(user, new_revision, [project])
             self.redirect("/%s/wiki/page/%s" % (projectid, wikiurl))
         else:
             self.render("wiki_edit.html", project = project, wikipage = wikipage, disabled_p = visitor_p,
