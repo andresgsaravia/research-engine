@@ -13,17 +13,29 @@
   <div class="row">
 
     <div class="col-md-7">
+      {% if recent_actv["Projects"] %}
+      <form role="form" method="post">
+	<button type="submit" class="btn btn-default pull-right">Mark everything as read</button>
+	<input type="hidden" name="action" value="MarkProjectActvAsRead" />
+      </form>
+      {% endif %}
       <h2>Recent activity</h2>
+      {% if recent_actv["Projects"] %}
       {% for p_key in recent_actv["Projects"] %}
       <div class="panel panel-default">
-	<div class="panel-heading"><h3 class="panel-title">{{recent_actv["Projects"][p_key][0].name | safe}}</h3></div>
+	<div class="panel-heading">
+	  <a href="/{{recent_actv['Projects'][p_key][0].key.integer_id()}}" 
+	     class="panel-title">{{recent_actv["Projects"][p_key][0].name | safe}}</a></div>
 	<ul class="list-group">
 	  {% for a in recent_actv["Projects"][p_key][1] %}
-	  <li class="list-group-item">{{a.description_html() | safe}}</li>
+	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html() | safe}}</li>
 	  {% endfor %}
 	</ul>
       </div>
       {% endfor %}
+      {% else %}
+      <p>There's no recent activity in your projects</p>
+      {% endif %}
     </div>
 
     <div class="col-md-5">

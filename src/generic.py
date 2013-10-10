@@ -112,23 +112,24 @@ class RegisteredUsers(ndb.Model):
                 acts_dict[str(a.kind)] = [a]
         # Sort Project updates into each project
         p_updates = {}   # p_updates is of the form (project, [list_of_updates]) and the key if project.key.integer_id()
-        for a in acts_dict["Projects"]:
-            item = a.item.get()
-            if item.__class__.__name__ in ["Notebooks", "CodeRepositories","DataSets", "CollaborativeWritings",
-                                        "ForumThreads", "BiblioItems"]:
-                project = item.key.parent().get()
-            elif item.__class__.__name__ in ["NotebookNotes", "CodeComments", "DataConcepts", "WikiRevisions", 
-                                          "WritingRevisions", "WritingComments", "ForumComments", "BiblioComments"]:
-                project = item.key.parent().parent().get()
-            elif item.__class__.__name__ in ["NoteComments", "DataRevisions"]:
-                project = item.key.parent().parent().parent().get()
-            else:
-                logging.error("ERROR getting the project from activity %s" % repr(a))
+        if "Projects" in acts_dict:
+            for a in acts_dict["Projects"]:
+                item = a.item.get()
+                if item.__class__.__name__ in ["Notebooks", "CodeRepositories","DataSets", "CollaborativeWritings",
+                                               "ForumThreads", "BiblioItems"]:
+                    project = item.key.parent().get()
+                elif item.__class__.__name__ in ["NotebookNotes", "CodeComments", "DataConcepts", "WikiRevisions", 
+                                                 "WritingRevisions", "WritingComments", "ForumComments", "BiblioComments"]:
+                    project = item.key.parent().parent().get()
+                elif item.__class__.__name__ in ["NoteComments", "DataRevisions"]:
+                    project = item.key.parent().parent().parent().get()
+                else:
+                    logging.error("ERROR getting the project from activity %s" % repr(a))
 
-            if str(project.key.integer_id()) in p_updates:
-                p_updates[str(project.key.integer_id())][1].append(a)
-            else:
-                p_updates[str(project.key.integer_id())] = (project,[a])
+                if str(project.key.integer_id()) in p_updates:
+                    p_updates[str(project.key.integer_id())][1].append(a)
+                else:
+                    p_updates[str(project.key.integer_id())] = (project,[a])
         r = {"Projects" : p_updates}
         return r
 
