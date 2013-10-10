@@ -14,8 +14,15 @@
 
     <div class="col-md-7">
       <h2>Recent activity</h2>
-      {% for a in user.get_recent_activity() %}
-      <p>{{a.description_html() | safe}}</p>
+      {% for p_key in recent_actv["Projects"] %}
+      <div class="panel panel-default">
+	<div class="panel-heading"><h3 class="panel-title">{{recent_actv["Projects"][p_key][0].name | safe}}</h3></div>
+	<ul class="list-group">
+	  {% for a in recent_actv["Projects"][p_key][1] %}
+	  <li class="list-group-item">{{a.description_html() | safe}}</li>
+	  {% endfor %}
+	</ul>
+      </div>
       {% endfor %}
     </div>
 
