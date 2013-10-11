@@ -154,7 +154,7 @@ class NewDataSetPage(DataPage):
             new_dataset = DataSets(name = kw["name_value"],
                                    description = kw["content_value"],
                                    parent  = project.key)
-            self.put_and_report(user, new_dataset, [project])
+            self.put_and_report(new_dataset, user, project)
             self.redirect("/%s/datasets/%s" % (project.key.integer_id(), new_dataset.key.integer_id()))
 
 
@@ -331,7 +331,7 @@ class NewDataConceptPage(DataPage):
             new_dataconcept = DataConcepts(name = kw["name_value"], 
                                            description = kw["content_value"], 
                                            parent  = dataset.key)
-            self.put_and_report(user, new_dataconcept, [project, dataset])
+            self.put_and_report(new_dataconcept, user, project, dataset)
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, new_dataconcept.key.integer_id()))
 
 
@@ -508,12 +508,17 @@ class DataSetBlobstoreUpload(GenericBlobstoreUpload):
         self.log_read(DataRevisions, log_message)
         return DataRevisions.get_by_id(int(rev_id), parent = datac.key)
 
-    def put_and_report(self, author, item, list_to_update):
+    def put_and_report(self, item, author, project, list_of_things_to_update = []):
         self.log_and_put(item)
-        activity = UserActivities(parent = author.key, item = item.key, kind = "Projects")
-        for i in list_to_update:
+        # Log user activity
+        u_activity = UserActivities(parent = author.key, item = item.key, relative_to = project.key, kind = "Projects")
+        self.log_and_put(u_activity)
+        # Log project update
+        p_update = projects.ProjectUpdates(parent = project.key, author = author.key, item = item.key)
+        self.log_and_put(p_update)
+        for i in list_of_things_to_update:
             self.log_and_put(i)
-        self.log_and_put(activity)
+        return
 
 
 class UploadDataRevisionHandler(DataSetBlobstoreUpload):
@@ -553,7 +558,7 @@ class UploadDataRevisionHandler(DataSetBlobstoreUpload):
             self.redirect("/%s/datasets/%s/%s/new?error_message=%s&fClass=%s" % (projectid, dataset_id, datac_id, error_message, fClass))
         else:
             new_revision = DataRevisions(author = user.key, meta = meta, datafile = datafile[0].key(), parent = datac.key)
-            self.put_and_report(user, new_revision, [project, dataset, datac])
+            self.put_and_report(new_revision, user, project, [dataset, datac])
             self.redirect("/%s/datasets/%s/%s" % (projectid, dataset_id, datac_id))
 
 

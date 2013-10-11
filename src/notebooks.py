@@ -157,7 +157,7 @@ class NewNotebookPage(NotebookPage):
                                      name = n_name, 
                                      description = n_description, 
                                      parent  = project.key)
-            self.put_and_report(user, new_notebook, [project])
+            self.put_and_report(new_notebook, user, project)
             self.redirect("/%s/notebooks/%s" % (project.key.integer_id(), new_notebook.key.id()))
 
 
@@ -261,7 +261,7 @@ class NewNotePage(NotebookPage):
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key)
-            self.put_and_report(user, new_note, [project, notebook])
+            self.put_and_report(new_note, user, project, notebook)
             self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, new_note.key.integer_id()))
 
 
@@ -322,7 +322,7 @@ class NotePage(NotebookPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
-            self.put_and_report(user, new_comment, [project, notebook])
+            self.put_and_report(new_comment, user, project, notebook)
             comment = ''
         comments = self.get_comments_list(note)
         self.render("notebook_note.html", project = project, visitor_p = visitor_p,

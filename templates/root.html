@@ -7,28 +7,21 @@
 
 {% block content %}
 
-{% if user %}
-
 <div class="container">
+  {% if user %}
   <div class="row">
 
     <div class="col-md-7">
-      {% if recent_actv["Projects"] %}
-      <form role="form" method="post">
-	<button type="submit" class="btn btn-default pull-right">Mark everything as read</button>
-	<input type="hidden" name="action" value="MarkProjectActvAsRead" />
-      </form>
-      {% endif %}
       <h2>Recent activity</h2>
-      {% if recent_actv["Projects"] %}
-      {% for p_key in recent_actv["Projects"] %}
+      {% if p_updates %}
+      {% for p_tuple in p_updates %}
       <div class="panel panel-default">
 	<div class="panel-heading">
-	  <a href="/{{recent_actv['Projects'][p_key][0].key.integer_id()}}" 
-	     class="panel-title">{{recent_actv["Projects"][p_key][0].name | safe}}</a></div>
+	  <a href="/{{p_tuple[0].key.integer_id()}}" 
+	     class="panel-title">{{p_tuple[0].name | safe}}</a></div>
 	<ul class="list-group">
-	  {% for a in recent_actv["Projects"][p_key][1] %}
-	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html() | safe}}</li>
+	  {% for a in p_tuple[1] %}
+	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html(p_tuple[0]) | safe}}</li>
 	  {% endfor %}
 	</ul>
       </div>
@@ -37,7 +30,7 @@
       <p>There's no recent activity in your projects</p>
       {% endif %}
     </div>
-
+    
     <div class="col-md-5">
 
 
@@ -75,11 +68,11 @@
     </div>
     
   </div>
+
+
+  {% else %}
+  <p style="text-align:right; font-size:0.9em; ">You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
+  {% endif %}
 </div>
-
-{% else %}
-<p style="text-align:right; font-size:0.9em; ">You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
-
-{% endif %}
 
 {% endblock %}

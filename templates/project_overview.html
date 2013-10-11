@@ -24,11 +24,15 @@
 <div>
   <div class="pull-right text-muted">Last updated: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
   <h3>Latest activity</h3>
+  {% if updates %}
   <div class="list-group">
     {% for u in updates %}
-    <div class="list-group-item">{{u.description_html() | safe}}</div>
+    <div class="list-group-item">{{u.description_html(project) | safe}}</div>
     {% endfor %}
   </div>
+  {% else %}
+  <em>There has been no activity in this project yet</em>
+  {% endif %}
 </div>
 
 
