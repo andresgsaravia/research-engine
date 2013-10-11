@@ -511,7 +511,7 @@ class DataSetBlobstoreUpload(GenericBlobstoreUpload):
     def put_and_report(self, item, author, project, list_of_things_to_update = []):
         self.log_and_put(item)
         # Log user activity
-        u_activity = UserActivities(parent = author.key, item = item.key, kind = "Projects")
+        u_activity = UserActivities(parent = author.key, item = item.key, relative_to = project.key, kind = "Projects")
         self.log_and_put(u_activity)
         # Log project update
         p_update = projects.ProjectUpdates(parent = project.key, author = author.key, item = item.key)

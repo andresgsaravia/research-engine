@@ -99,35 +99,8 @@ class RegisteredUsers(ndb.Model):
         return url
 
     def get_recent_activity(self, max_items = MAX_RECENT_ACTIVITY_ITEMS):
-        acts = UserActivities.query(ancestor = self.key).order(-UserActivities.date).fetch(max_items)
-        # Sort into a dict by "UserActivities.kind"
-        acts_dict = {}
-        for a in acts:
-            if str(a.kind) in acts_dict:
-                acts_dict[str(a.kind)].append(a)
-            else:
-                acts_dict[str(a.kind)] = [a]
-        # Sort Project updates into each project
-        p_updates = {}   # p_updates is of the form (project, [list_of_updates]) and the key if project.key.integer_id()
-        if "Projects" in acts_dict:
-            for a in acts_dict["Projects"]:
-                item = a.item.get()
-                if item.__class__.__name__ in ["Notebooks", "CodeRepositories","DataSets", "CollaborativeWritings",
-                                               "ForumThreads", "BiblioItems"]:
-                    project = item.key.parent().get()
-                elif item.__class__.__name__ in ["NotebookNotes", "CodeComments", "DataConcepts", "WikiRevisions", 
-                                                 "WritingRevisions", "WritingComments", "ForumComments", "BiblioComments"]:
-                    project = item.key.parent().parent().get()
-                elif item.__class__.__name__ in ["NoteComments", "DataRevisions"]:
-                    project = item.key.parent().parent().parent().get()
-                else:
-                    logging.error("ERROR getting the project from activity %s" % repr(a))
-
-                if str(project.key.integer_id()) in p_updates:
-                    p_updates[str(project.key.integer_id())][1].append(a)
-                else:
-                    p_updates[str(project.key.integer_id())] = (project,[a])
-        r = {"Projects" : p_updates}
+        project_actvs = UserActivities.query(UserActivities.kind == "Projects", ancestor = self.key).order(-UserActivities.date).fetch(max_items)
+        r = {"Projects" : project_actvs}
         return r
 
 # Each Notification should have as parent a RegisteredUser, this parent is the one who will receive the notification
@@ -143,15 +116,17 @@ class EmailNotifications(ndb.Model):
 # Each UserActivity should have a RegisteredUser as parent
 class UserActivities(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
-    kind = ndb.StringProperty(required = True)    # For example if related to a Project update or (in the future) something else
+    kind = ndb.StringProperty(required = True)  # Wether is a "Project" update or, in the future, something else
+    relative_to = ndb.KeyProperty(required = True) # For now this is only the project the activity is related to. In the future might be something else
     item = ndb.KeyProperty(required = True)
 
     def description_html(self):
         html = ''
-        if self.kind == "Projects":
-            author = self.key.parent().get()
-            item = self.item.get()
-            html = render_str("project_activity.html", author = author, item = item)
+        relative_to = self.relative_to.get()
+        author = self.key.parent().get()
+        item = self.item.get()
+        if relative_to.__class__.__name__ == "Projects":
+            html = render_str("project_activity.html", author = author, item = item, project = relative_to)
         return html
 
 

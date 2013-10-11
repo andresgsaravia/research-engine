@@ -42,18 +42,13 @@
       <h2>Recent activity</h2>
       <hr>
       {% if recent_actv["Projects"] %}
-      {% for p_key in recent_actv["Projects"] %}
       <div class="panel panel-default">
-	<div class="panel-heading">
-	  <a href="/{{recent_actv['Projects'][p_key][0].key.integer_id()}}" 
-	     class="panel-title">{{recent_actv["Projects"][p_key][0].name | safe}}</a></div>
 	<ul class="list-group">
-	  {% for a in recent_actv["Projects"][p_key][1] %}
+	  {% for a in recent_actv["Projects"] %}
 	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html() | safe}}</li>
 	  {% endfor %}
 	</ul>
       </div>
-      {% endfor %}
       {% else %}
       <p>There's no recent activity in your projects</p>
       {% endif %}

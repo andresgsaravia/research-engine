@@ -111,17 +111,12 @@ indexes:
   ancestor: yes
   properties:
   - name: date
-
-- kind: UserActivities
-  ancestor: yes
-  properties:
-  - name: date
     direction: desc
 
 - kind: UserActivities
   ancestor: yes
   properties:
-  - name: seen_p
+  - name: kind
   - name: date
     direction: desc
 
