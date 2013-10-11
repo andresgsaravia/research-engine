@@ -138,7 +138,7 @@ class EditWikiPage(GenericWikiPage):
                 self.log_and_put(wikipage, "Changing content." )
             new_revision = WikiRevisions(author = user.key, content = content, summary = summary,
                                          parent = wikipage.key)
-            self.put_and_report(user, new_revision, [project])
+            self.put_and_report(new_revision, user, project)
             self.redirect("/%s/wiki/page/%s" % (projectid, wikiurl))
         else:
             self.render("wiki_edit.html", project = project, wikipage = wikipage, disabled_p = visitor_p,

@@ -145,7 +145,7 @@ class NewCodePage(CodePage):
             repo_json = json.loads(repo_fetch.content)
             new_repo = CodeRepositories(link = kw["link"], description = kw["description"], parent = project.key,
                                         name = repo_json["full_name"], github_json = repo_json)
-            self.put_and_report(user, new_repo, [project])
+            self.put_and_report(new_repo, user, project)
             self.redirect("/%s/code/%s" % (projectid, new_repo.key.integer_id()))
 
 
@@ -194,7 +194,7 @@ class ViewCodePage(CodePage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = CodeComments(author = user.key, comment = comment, parent = code.key)
-            self.put_and_report(user, new_comment, [project, code])
+            self.put_and_report(new_comment, user, project, code)
             comment = ''
         comments = self.get_comments(code)
         self.render("code_view.html", project = project, code = code, comments = comments,

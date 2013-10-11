@@ -153,7 +153,7 @@ class NewWritingPage(WritingPage):
                                                 description = w_description,
                                                 status = "In progress",
                                                 parent = project.key)
-            self.put_and_report(user, new_writing, [project])
+            self.put_and_report(new_writing, user, project)
             self.redirect("/%s/writings/%s" % (project.key.integer_id(), new_writing.key.integer_id()))
 
 
@@ -241,7 +241,7 @@ class EditWritingPage(WritingPage):
         else:
             new_revision = WritingRevisions(author = user.key, content = content, summary = summary, parent = writing.key)
             if status: writing.status = status
-            self.put_and_report(user, new_revision, [project, writing])
+            self.put_and_report(new_revision, user, project, writing)
             self.redirect("/%s/writings/%s" % (projectid, writing_id))
 
 
@@ -331,7 +331,7 @@ class DiscussionPage(WritingPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
-            self.put_and_report(user, new_comment, [project, writing])
+            self.put_and_report(new_comment, user, project, writing)
             self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
             return
         else:

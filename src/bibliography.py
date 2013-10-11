@@ -199,7 +199,7 @@ class NewItemPage(BiblioPage):
                                    identifier = identifier,
                                    metadata = metadata,
                                    parent = project.key)
-            self.put_and_report(user, new_item, [project])
+            self.put_and_report(new_item, user, project)
             self.redirect("/%s/bibliography/%s" % (projectid, new_item.key.integer_id()))
 
 
@@ -253,7 +253,7 @@ class ItemPage(BiblioPage):
             new_comment = BiblioComments(author = user.key,
                                          content = comment,
                                          parent = item.key)
-            self.put_and_report(user, new_comment, [project, item])
+            self.put_and_report(new_comment, user, project, item)
             self.redirect("/%s/bibliography/%s" % (projectid, itemid))
 
 class CommentPage(BiblioPage):

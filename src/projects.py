@@ -66,25 +66,11 @@ class Projects(ndb.Model):
         requesting_handler.log_and_put(user, "Adding a new project to my_projects property")
         return True
 
-    def put_and_notify(self, handler, instance, author):
-        handler.log_and_put(instance)
-        new_update = ProjectUpdates(author = author.key, item = instance.key, parent = self.key)
-        handler.log_and_put(new_update)
-        handler.log_and_put(self, "Updating its last_updated property")
-
     def list_updates(self, requesting_handler, n = UPDATES_TO_DISPLAY):
         assert type(n) == int
         assert n > 0
         requesting_handler.log_read(ProjectUpdates, "Requesting %s updates. " % n)
-        # Making the query in parallel
-        futures = []
-        for a in self.authors:
-            futures.append(UserActivities.query(ancestor = a).order(-UserActivities.date).fetch_async(n))
-        results = []
-        for f in futures:
-            results.extend(f.get_result())
-        results.sort(key=lambda r: r.date, reverse = True)
-        return results[:n]         # I query more than what I display. How could I improve this? o.O
+        return ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch(n)
 
 
 # Should have a Project as parent
@@ -92,13 +78,9 @@ class ProjectUpdates(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     item = ndb.KeyProperty(required = True)
-    description_html = ndb.TextProperty(required = False, default = None)
 
-    def get_description_html(self, project):
-        if not self.description_html:
-            self.description_html = render_str("project_update.html", update = self, item = self.item.get(), author = self.author.get(), project = project)
-            self.put()
-        return self.description_html
+    def description_html(self, project):
+        return render_str("project_update.html", update = self, item = self.item.get(), author = self.author.get(), project = project)
 
 
 ######################
@@ -111,12 +93,16 @@ class ProjectPage(GenericPage):
         project = Projects.get_by_id(int(projectid))
         return project
 
-    def put_and_report(self, author, item, list_to_update):
+    def put_and_report(self, item, author, project, other_to_update = None):
         self.log_and_put(item)
-        activity = UserActivities(parent = author.key, item = item.key, kind = "Projects")
-        for i in list_to_update:
-            self.log_and_put(i)
-        self.log_and_put(activity)
+        # Log user activity
+        u_activity = UserActivities(parent = author.key, item = item.key, kind = "Projects")
+        self.log_and_put(u_activity)
+        # Log project update
+        p_update = ProjectUpdates(parent = project.key, author = author.key, item = item.key)
+        self.log_and_put(p_update)
+        if other_to_update: self.log_and_put(other_to_update)
+        return
 
 
 class OverviewPage(ProjectPage):

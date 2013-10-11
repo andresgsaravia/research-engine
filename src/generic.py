@@ -98,11 +98,8 @@ class RegisteredUsers(ndb.Model):
         if size > 0: url += "?s=" + str(size)
         return url
 
-    def get_recent_activity(self, include_seen_p = False, max_items = MAX_RECENT_ACTIVITY_ITEMS):
-        if include_seen_p:
-            acts = UserActivities.query(ancestor = self.key).order(-UserActivities.date).fetch(max_items)
-        else:
-            acts = UserActivities.query(UserActivities.seen_p == False, ancestor = self.key).order(-UserActivities.date).fetch(max_items)
+    def get_recent_activity(self, max_items = MAX_RECENT_ACTIVITY_ITEMS):
+        acts = UserActivities.query(ancestor = self.key).order(-UserActivities.date).fetch(max_items)
         # Sort into a dict by "UserActivities.kind"
         acts_dict = {}
         for a in acts:
@@ -148,7 +145,6 @@ class UserActivities(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
     kind = ndb.StringProperty(required = True)    # For example if related to a Project update or (in the future) something else
     item = ndb.KeyProperty(required = True)
-    seen_p = ndb.BooleanProperty(default = False) # Wether this activity has been seen by the parent RegisteredUser
 
     def description_html(self):
         html = ''

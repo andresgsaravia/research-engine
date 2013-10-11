@@ -128,7 +128,7 @@ class NewThreadPage(ForumPage):
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
-            self.put_and_report(user, new_thread, [project])
+            self.put_and_report(new_thread, user, project)
             self.redirect("/%s/forum/%s" % (projectid, new_thread.key.integer_id()))
 
 
@@ -178,7 +178,7 @@ class ThreadPage(ForumPage):
             error_message = "You can't submit an empty comment. "
         if not have_error:
             new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
-            self.put_and_report(user, new_comment, [project, thread])
+            self.put_and_report(new_comment, user, project, thread)
             self.redirect("/%s/forum/%s" % (projectid, thread_id))
         else:
             comments = self.get_comments(thread)
