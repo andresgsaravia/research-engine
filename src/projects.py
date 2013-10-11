@@ -80,7 +80,7 @@ class ProjectUpdates(ndb.Model):
     item = ndb.KeyProperty(required = True)
 
     def description_html(self, project):
-        return render_str("project_update.html", update = self, item = self.item.get(), author = self.author.get(), project = project)
+        return render_str("project_activity.html", author = self.author.get(), item = self.item.get(), project = project)
 
 
 ######################
@@ -101,6 +101,7 @@ class ProjectPage(GenericPage):
         # Log project update
         p_update = ProjectUpdates(parent = project.key, author = author.key, item = item.key)
         self.log_and_put(p_update)
+        self.log_and_put(project)
         if other_to_update: self.log_and_put(other_to_update)
         return
 
