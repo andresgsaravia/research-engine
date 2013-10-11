@@ -1,0 +1,13 @@
+.well {
+    border-radius: 0 !important;
+    background: #fff;
+    padding: 12px 15px;
+}
+
+.well a {
+    border-radius: 0 !important;
+}
+
+.page-header {
+    margin-top: 0;
+}

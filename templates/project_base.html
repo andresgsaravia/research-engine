@@ -2,6 +2,7 @@
 
 
 {% block head %}
+    <link href="/css/project.css" rel="stylesheet" />
     <title>{{project.name}}</title>
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript">
@@ -28,8 +29,8 @@
   <div class="row">
 
     <!-- Project menu -->
-    <div class="col-md-3 panel panel-default">
-      <div class="panel-body">
+    <div class="col-md-3 pull-right">
+      <div class="well">
 	<ul class="nav nav-pills nav-stacked">
 	  <li class="{{overview_tab_class}}"><a href="/{{project.key.integer_id()}}">Overview</a></li>
 	  <li class="{{notebooks_tab_class}}"><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li>

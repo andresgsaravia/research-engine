@@ -10,11 +10,9 @@
   <div class="page-header"><h2>{{user.username.capitalize()}}</h2></div>
 
   <div class="row">
-    <div class="col-md-4 panel panel-default">
-      <div class="panel-body">
-	<img src="{{user.get_profile_image(200)}}" class="img-responsive">
+    <div class="col-md-4">
+	<img src="{{user.get_profile_image(200)}}" class="img-responsive img-thumbnail" style="margin-bottom: 10px;">
 	<p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
-      </div>
     </div>
 
     <div class="col-md-8">
