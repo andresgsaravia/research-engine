@@ -45,7 +45,7 @@
       <div class="panel panel-default">
 	<ul class="list-group">
 	  {% for a in recent_actv["Projects"] %}
-	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html() | safe}}</li>
+	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html(hide_username_p = True) | safe}}</li>
 	  {% endfor %}
 	</ul>
       </div>

@@ -21,7 +21,8 @@
 	     class="panel-title">{{p_tuple[0].name | safe}}</a></div>
 	<ul class="list-group">
 	  {% for a in p_tuple[1] %}
-	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d-%b-%Y")}}</small> {{a.description_html(p_tuple[0]) | safe}}</li>
+	  <li class="list-group-item"><small class="text-muted pull-right">{{a.date.strftime("%d-%b-%Y")}}</small>
+	    <img src="{{a.author.get().get_profile_image(20)}}" /> {{a.description_html(p_tuple[0]) | safe}}</li>
 	  {% endfor %}
 	</ul>
       </div>

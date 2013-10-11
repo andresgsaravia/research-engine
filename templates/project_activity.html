@@ -1,4 +1,4 @@
-<a href="/{{author.username}}">{{author.username.capitalize()}}</a>
+{% if not hide_username_p %}<a href="/{{author.username}}">{{author.username.capitalize()}}</a>{% endif %}
 
 {% if item.__class__.__name__ == "Notebooks" %}
 started a new notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.integer_id()}}">{{item.name | safe}}</a>

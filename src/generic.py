@@ -120,13 +120,13 @@ class UserActivities(ndb.Model):
     relative_to = ndb.KeyProperty(required = True) # For now this is only the project the activity is related to. In the future might be something else
     item = ndb.KeyProperty(required = True)
 
-    def description_html(self):
+    def description_html(self, hide_username_p = False):
         html = ''
         relative_to = self.relative_to.get()
         author = self.key.parent().get()
         item = self.item.get()
         if relative_to.__class__.__name__ == "Projects":
-            html = render_str("project_activity.html", author = author, item = item, project = relative_to)
+            html = render_str("project_activity.html", author = author, item = item, project = relative_to, hide_username_p = hide_username_p)
         return html
 
 

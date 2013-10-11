@@ -27,7 +27,7 @@
   {% if updates %}
   <div class="list-group">
     {% for u in updates %}
-    <div class="list-group-item">{{u.description_html(project) | safe}}</div>
+    <div class="list-group-item"><img src="{{u.author.get().get_profile_image(20)}}" /> {{u.description_html(project) | safe}}</div>
     {% endfor %}
   </div>
   {% else %}
