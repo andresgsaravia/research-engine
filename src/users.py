@@ -72,7 +72,7 @@ class UserPage(GenericPage):
         user = self.get_login_user()
         projects = page_user.list_of_projects()
         self_user_p = True if (user and user.key == page_user.key) else False
-        recent_actv = user.get_recent_activity() if user else []
+        recent_actv = page_user.get_recent_activity()
         self.render("user.html", page_user = page_user, projects = projects, recent_actv = recent_actv, self_user_p = self_user_p)
 
 
