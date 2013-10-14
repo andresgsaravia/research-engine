@@ -1,7 +1,7 @@
 {% extends "project_base.html" %}
 
 
-{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></li><li><a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name}}</a></li><li class="active">{{datac.name | truncate(40, True)}}</li>{% endblock %}
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></li><li><a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">{{dataset.name | truncate(40, True)}}</a></li><li class="active">{{datac.name | truncate(40, True)}}</li>{% endblock %}
 
 
 {% block p_content %}
