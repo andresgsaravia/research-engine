@@ -11,7 +11,7 @@ class RootPage(GenericPage):
             for p in projects:
                 p_updates += p.list_updates(self)          # I query more items than needed... there should be a smart way to do this.
         p_updates.sort(key=lambda u: u.date, reverse = True)
-        self.render("root.html", user = user, projects = projects, p_updates = p_updates[:MAX_RECENT_ACTIVITY_ITEMS])
+        self.render("root.html", user = user, projects = projects, p_updates = p_updates[:30])
 
 
 class UnderConstructionPage(GenericPage):
