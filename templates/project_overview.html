@@ -22,12 +22,12 @@
 </ul>
 
 <div>
-  <div class="pull-right text-muted">Last updated: <em>{{project.last_updated.strftime("%d-%b-%Y")}}</em></div>
+  <div class="pull-right text-muted">Last updated: <em>{{project.last_updated.strftime("%d %b %Y")}}</em></div>
   <h3>Latest activity</h3>
   {% if updates %}
   <div class="list-group">
     {% for u in updates %}
-    <div class="list-group-item"><img src="{{u.author.get().get_profile_image(20)}}" /> {{u.description_html(project) | safe}}</div>
+    <div class="list-group-item"><img src="{{u.author.get().get_profile_image(20)}}" /><em class="text-muted pull-right">{{u.date.strftime("%d %b %H:%M")}}</em> {{u.description_html(project) | safe}}</div>
     {% endfor %}
   </div>
   {% else %}

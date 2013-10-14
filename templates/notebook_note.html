@@ -21,7 +21,7 @@
   </div>
   <div class="panel-body">
     {{note.content | md | safe}}
-    <small class="text-muted">{{note.date.strftime("%d-%b-%Y")}}</small>
+    <small class="text-muted">{{note.date.strftime("%d %b %Y")}}</small>
   </div>
 </div>
 
@@ -31,7 +31,7 @@
   <div class="list-group-item">
     {{c.comment | md | safe}}
     <a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}" /> {{c.author.get().username.capitalize()}}</a>
-    <small class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</small>
+    <small class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</small>
   </div>
   {% endfor %}
 </div>

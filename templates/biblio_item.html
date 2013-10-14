@@ -41,7 +41,7 @@
     <small><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" class="pull-right"
 	      title="link to this comment only"><span class="glyphicon glyphicon-new-window"></span></a></small>
     {{c.content | md | safe}}
-    <p class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</p>
+    <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
       <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
     </ul>

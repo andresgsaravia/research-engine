@@ -18,7 +18,7 @@
   </div>
   <div class="panel-body">
     {{code.description | md | safe}}
-    <p class="text-muted pull-right">Last comment: {{code.last_updated.strftime("%d-%b-%Y")}}</p>
+    <p class="text-muted pull-right">Last comment: {{code.last_updated.strftime("%d %b %Y")}}</p>
     <a href="{{code.link}}">External link</a>
   </div>
 </div>
@@ -29,7 +29,7 @@
   {% for c in comments %}
   <div class="list-group-item">
     {{c.comment | md | safe}}
-    <p class="text-muted pull-right">{{c.date.strftime("%d-%b-%Y")}}</p>
+    <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
       <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
     </ul>

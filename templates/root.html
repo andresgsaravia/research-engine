@@ -16,7 +16,7 @@
       {% if p_updates %}
       <ul class="list-group">
 	{% for u in p_updates %}
-	<li class="list-group-item"><small class="text-muted pull-right">{{u.date.strftime("%d-%b-%Y")}}</small>
+	<li class="list-group-item"><small class="text-muted pull-right">{{u.date.strftime("%d %b %Y")}}</small>
 	  <img src="{{u.author.get().get_profile_image(20)}}" /> {{u.description_html(u.key.parent().get()) | safe}}</li>
 	{% endfor %}
       </ul>
@@ -47,7 +47,7 @@
 	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  
 		<div class="panel-body">
 		  {{p.description | md | safe}}
-		  <p class="text-muted pull-right">Last updated: {{p.last_updated.strftime("%d-%b-%Y")}}</p>
+		  <p class="text-muted pull-right">Last updated: {{p.last_updated.strftime("%d %b %Y")}}</p>
 		</div>
 	      </div>
 	    </div>

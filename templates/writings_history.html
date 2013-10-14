@@ -6,7 +6,7 @@
   {% for rev in revisions %}
   <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/rev/{{rev.key.integer_id()}}" class="list-group-item">
     {% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
-    <p class="text-muted pull-right">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d-%b-%Y")}}</em></p>
+    <p class="text-muted pull-right">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d %b %Y")}}</em></p>
   </a>
   {% endfor %}
 </div>

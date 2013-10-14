@@ -3,7 +3,7 @@
     
 {% block w_content %}
 
-<p class="text-muted">Revision from day: {{revision.date.strftime("%d-%b-%Y")}}</p>
+<p class="text-muted">Revision from day: {{revision.date.strftime("%d %b %Y")}}</p>
 {{revision.content | md | safe}}
 
 {% endblock %}

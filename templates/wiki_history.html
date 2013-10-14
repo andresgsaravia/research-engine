@@ -6,7 +6,7 @@
 <div class="list-group">
   {% for rev in revisions %}
   <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key.id()}}" class="list-group-item">
-    <span class="text-muted">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d-%b-%Y")}}</em></span>
+    <span class="text-muted">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d %b %Y")}}</em></span>
     {% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
   </a>
   {% endfor %}
