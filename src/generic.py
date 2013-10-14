@@ -4,7 +4,7 @@
 
 import webapp2 
 import jinja2
-import os, re, string, hashlib, logging
+import os, re, string, hashlib, logging, datetime
 from google.appengine.ext import ndb, db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
@@ -24,7 +24,6 @@ APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
 
-MAX_RECENT_ACTIVITY_ITEMS = 20
 
 ##########################
 ##   Helper Functions   ##
@@ -98,8 +97,10 @@ class RegisteredUsers(ndb.Model):
         if size > 0: url += "?s=" + str(size)
         return url
 
-    def get_recent_activity(self, max_items = MAX_RECENT_ACTIVITY_ITEMS):
-        project_actvs = UserActivities.query(UserActivities.kind == "Projects", ancestor = self.key).order(-UserActivities.date).fetch(max_items)
+    def get_recent_activity(self, days = 7):
+        project_actvs = UserActivities.query(UserActivities.kind == "Projects", 
+                                             UserActivities.date > (datetime.datetime.now() - datetime.timedelta(days=days)),
+                                             ancestor = self.key).order(-UserActivities.date).fetch()
         r = {"Projects" : project_actvs}
         return r
 
