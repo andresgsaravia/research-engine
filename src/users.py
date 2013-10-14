@@ -70,10 +70,19 @@ class UserPage(GenericPage):
             self.render("404.html", info = "User <em>%s</em> not found." % username)
             return
         user = self.get_login_user()
-        projects = page_user.list_of_projects()
-        self_user_p = True if (user and user.key == page_user.key) else False
-        recent_actv = page_user.get_recent_activity()
-        self.render("user.html", page_user = page_user, projects = projects, recent_actv = recent_actv, self_user_p = self_user_p)
+        kw = {"projects" : page_user.list_of_projects(),
+              "self_user_p" : True if (user and user.key == page_user.key) else False,
+              "recent_actv" : page_user.get_recent_activity(days=7),
+              "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0}}
+        for a in kw["recent_actv"]["Projects"]:
+            if a.item.kind() in ["Notebooks", "NotebookNotes", "NoteComments"]: kw["p_stats"]["Notebooks"] += 1
+            elif a.item.kind() in ["CodeRepositories", "CodeComments"]: kw["p_stats"]["Code"] += 1
+            elif a.item.kind() in ["DataSets", "DataConcepts", "DataRevisions"]: kw["p_stats"]["Datasets"] += 1
+            elif a.item.kind() in ["WikiRevisions"]: kw["p_stats"]["Wiki"] += 1
+            elif a.item.kind() in ["CollaborativeWritings", "WritingRevisions", "WritingComments"]: kw["p_stats"]["Writings"] += 1
+            elif a.item.kind() in ["ForumThreads", "ForumComments"]: kw["p_stats"]["Forum"] += 1
+            elif a.item.kind() in ["BiblioItems", "BiblioComments"]: kw["p_stats"]["Bibliography"] += 1
+        self.render("user.html", page_user = page_user, **kw)
 
 
 class SignupPage(GenericPage):

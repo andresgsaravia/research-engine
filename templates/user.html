@@ -1,7 +1,67 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Research Engine | {{page_user.username.capitalize()}}</title>
+<title>Research Engine | {{page_user.username.capitalize()}}</title>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+var mergeNodes = function (a,b) { return [].slice.call(a).concat([].slice.call(b)); }
+var showAllActvs = function () {
+  p_actvs = document.getElementsByClassName('p_actv_item');
+  for (var i=0; i < p_actvs.length; i++) {p_actvs[i].style.display = ''}
+  $('#showAllButton').addClass('hide');
+}
+
+google.load("visualization", "1", {packages:["corechart"]});
+google.setOnLoadCallback(drawChart);
+function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+        ['Kind', 'Counts'],
+        {% for s in p_stats %}{% if p_stats[s] %}['{{s}}', {{p_stats[s]}}],{% endif %}{% endfor %}
+    ]);
+    var options = {legend: 'none'};
+    var chart = new google.visualization.ColumnChart(document.getElementById('p_stats'));
+    
+    function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        if (selectedItem) 
+	{
+            var u_kind = data.getValue(selectedItem.row, 0);
+            var p_actvs = document.getElementsByClassName('p_actv_item');
+            for (var i=0; i < p_actvs.length; i++) {p_actvs[i].style.display = 'none';}
+	    var visible_actvs = [];
+	    if (u_kind == 'Notebooks') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('Notebooks'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('NotebookNotes'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('NoteComments'));}
+	    else if (u_kind == 'Code') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('CodeRepositories'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('CodeComments'));}
+	    else if (u_kind == 'Datasets') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('DataSets'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('DataConcepts'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('DataRevisions'));}
+	    else if (u_kind == 'Wiki') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('WikiRevisions'));}
+	    else if (u_kind == 'Writings') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('CollaborativeWritings'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('WritingRevisions'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('WritingComments'));}
+	    else if (u_kind == 'Forum') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('ForumThreads'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('ForumComments'));}
+	    else if (u_kind == 'Bibliography') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('BiblioItems'));
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('BiblioComments'));}
+	    else {console.log('Error, unrecognized kind' + u_kind);}
+	    for (var i=0; i < visible_actvs.length; i++) { visible_actvs[i].style.display = '';}
+            $('#showAllButton').removeClass('hide');
+        }
+    }
+    
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+    chart.draw(data, options);
+}
+</script>
 {% endblock %}
 
 
@@ -38,23 +98,28 @@
       {% endif %}
     </div>
 
-    <div class="col-md-5">
-      <h2>Recent activity</h2>
+    <div class="col-md-6">
+      <h2>Last week summary</h2>
       <hr>
       {% if recent_actv["Projects"] %}
+      <div id="p_stats"></div>
+      <small class="help-block">Click the chart's columns to filter the activities list below</small>
+      <button type="button" class="btn btn-default btn-sm hide" id="showAllButton" onClick="showAllActvs();" >Show All</button>
       <div class="panel panel-default">
 	<ul class="list-group">
 	  {% for a in recent_actv["Projects"] %}
-	  <li class="list-group-item"><small class="text-muted">{{a.date.strftime("%d %b %Y")}}</small> {{a.description_html(hide_username_p = True) | safe}}</li>
+	  <li class="list-group-item p_actv_item {{a.item.kind()}}">
+	    <small class="text-muted">{{a.date.strftime("%d %b %Y")}}</small> {{a.description_html(hide_username_p = True) | safe}}
+	  </li>
 	  {% endfor %}
 	</ul>
       </div>
       {% else %}
-      <p>There's no recent activity for {{page_user.username.capitalize()}}</p>
+      <p>There has been no activity for 7 days or more</p>
       {% endif %}
     </div>
 
-    <div class="col-md-5">
+    <div class="col-md-4">
       <h2>{% if self_user_p %}Your projects{% else %}Projects{% endif %}</h2>
       <hr>
       {% for p in projects %}
