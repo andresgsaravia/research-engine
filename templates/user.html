@@ -122,23 +122,27 @@ function drawChart() {
     <div class="col-md-4">
       <h2>{% if self_user_p %}Your projects{% else %}Projects{% endif %}</h2>
       <hr>
-      {% for p in projects %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
-            <span class="glyphicon glyphicon-info-sign"></span></a>
-            <a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a>
-          </h4>
-        </div>
-        <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">
-          <div class="panel-body">
-            {{p.description | md | safe}}
-            <p class="muted">Last updated: {{p.last_updated.strftime("%d %b %Y")}}</p>
-          </div>
-        </div>
+      <div class="panel-body">
+	<div class="panel-group" id="accordion1">
+	  {% for p in projects %}
+	  <div class="panel panel-default">
+            <div class="panel-heading">
+	      <h4 class="panel-title">
+		<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}">
+		  <span class="glyphicon glyphicon-info-sign"></span></a>
+		<a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a>
+	      </h4>
+            </div>
+            <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">
+		<div class="panel-body">
+		  {{p.description | md | safe}}
+		  <p class="muted">Last updated: {{p.last_updated.strftime("%d %b %Y")}}</p>
+		</div>
+            </div>
+	  </div>
+	  {% endfor %}
+	</div>
       </div>
-      {% endfor %}
       {% if self_user_p %}
       <a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
       {% endif %}
