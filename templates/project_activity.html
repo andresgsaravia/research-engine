@@ -7,7 +7,7 @@ started a new notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.k
 made a new note <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().integer_id()}}/{{item.key.integer_id()}}">{{item.title | safe}}</a> in the notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().integer_id()}}">{{item.key.parent().get().name | safe}}</a>
 
 {% elif item.__class__.__name__ == "NoteComments" %}
-made a new comment to the note <a href="/project.key.integer_id()}}/notebooks/{{item.key.parent().integer_id()}}/{{item.key.integer_id()}}">{{item.key.parent().get().title | safe}}</a> in the notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().integer_id()}}">{{item.key.parent().parent().get().name | safe}}</a>
+made a new comment to the note <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().parent().integer_id()}}/{{item.key.parent().integer_id()}}">{{item.key.parent().get().title | safe}}</a> in the notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.key.parent().parent().integer_id()}}">{{item.key.parent().parent().get().name | safe}}</a>
 
 {% elif item.__class__.__name__ == "CodeRepositories" %}
 added a new code repository <a href="/{{project.key.integer_id()}}/code/{{item.key.integer_id()}}">{{item.name}}</a>
