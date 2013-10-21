@@ -22,11 +22,12 @@
 	</a>
       </div>
       {% endif %}
+      {% if notebook.is_open_p() %}<img src="{{notebook.claims_logo('icons')}}" title="{{notebook.claims_text()}}"/>{% else %}<span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span>{% endif %}
       {{notebook.name | safe}}
     </h3>
   </div>
 
-
+  {% if nb_visible_p %}
   {% for note in notes %}
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -64,7 +65,10 @@
     </a>
   </li>
   {% endif %}
+  {% endif %}
 
+  {% else %}<!--not nb_visible_p-->
+  <div class="alert alert-danger">{{error_message}}</div>
   {% endif %}
 </div>
 {% endblock %}

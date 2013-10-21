@@ -25,7 +25,7 @@ class Notebooks(ndb.Model):
         return NotebookNotes.query(ancestor = self.key).count()
 
     def is_open_p(self):
-        return self.claims[0] == "O"
+        return not self.claims == "CNS"
 
     def claims_logo(self, size = ""):         # size should be "", "icons" or "small"
         if not self.is_open_p(): return ""
@@ -189,16 +189,22 @@ class NotebookMainPage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        page = self.request.get("page")
-        try:
-            page = int(page)
-        except ValueError:
-            page = 0
-        notes, next_page_cursor, more_p = self.get_notes_list(notebook, page)
+        kw = {"nb_visible_p" : notebook.is_open_p() or (user and project.user_is_author(user))}
+        if not kw["nb_visible_p"]:
+            if user: 
+                kw["error_message"] = "You can't view this notebook because it's a closed notebook and you are not a member of its project."
+            else:
+                kw["error_message"] = "This is a closed notebook, you must log in and become a member of it's project to view it."
+        else:
+            kw["page"] = self.request.get("page")
+            try:
+                kw["page"] = int(kw["page"])
+            except ValueError:
+                kw["page"] = 0
+            kw["notes"], kw["next_page_cursor"], kw["more_p"] = self.get_notes_list(notebook, kw["page"])
         self.render("notebook_main.html", project = project, notebook = notebook, 
-                    notes = notes, page = page, more_p = more_p,
-                    user_is_owner_p = True if (user and notebook.owner == user.key) else False,
-                    owner = notebook.owner.get())
+                    user_is_owner_p = user and notebook.owner == user.key,
+                    owner = notebook.owner.get(), **kw)
 
 
 class NewNotePage(NotebookPage):
