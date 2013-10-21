@@ -1,0 +1,85 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+<script type="text/javascript" src="/js/showdown.js"></script>
+<script type="text/javascript" src="/js/preview.js"></script>
+{% endblock %}
+
+{% block breadcrumbs %}<li class="active">Notebooks</li>{% endblock %}
+
+{% block p_content %}
+
+<div class="container">
+  <h2 class="page-header">New notebook</h2>
+  {{pre_form_message | safe}}
+
+  <form method="post" role="form">
+    <div class="form-group {{nClass}}">
+      <input type="text" name="name" class="form-control"
+	     value="{{n_name}}" placeholder="Title of the new notebook" autofocus {% if visitor_p %}disabled{% endif %}/>
+    </div>
+    <div class="form-group {{cClass}}">
+      <textarea name="description" id="inputText" placeholder="Description of the new notebook" 
+		class="form-control" rows="10"{% if visior_p %} disabled{% endif %}>{{n_description}}</textarea>
+    </div>
+    <small><a href="https://en.wikipedia.org/wiki/Open_Notebook_Science" target="_blank">
+	About the Open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a></small>
+    <div class="radio">
+      <label>
+	<input type="radio" name="claims" value="ONS-ACI" {% if n_claims == "ONS-ACI" %}checked{% endif %}/>
+	<img src="/static/ONS/ONS-ACI-icons.png" />
+	<strong>Open notebook:</strong> All content is reported as close to real life as possible.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="claims" value="ONS-ACD" {% if n_claims == "ONS-ACD" %}checked{% endif %}/>
+	<img src="/static/ONS/ONS-ACD-icons.png" />
+	<strong>Open notebook:</strong> All content is reported but with a significant delay.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="claims" value="ONS-SCI" {% if n_claims == "ONS-SCI" %}checked{% endif %}/>
+	<img src="/static/ONS/ONS-SCI-icons.png" />
+	<strong>Open notebook:</strong> Only some selected content is reported as close to real life as possible.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="claims" value="ONS-SCD" {% if n_claims == "ONS-SCD" %}checked{% endif %}/>
+	<img src="/static/ONS/ONS-SCD-icons.png" />
+	<strong>Open notebook:</strong> Only some selected content is reported and with a significant delay.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="claims" value="CNS" {% if n_claims == "CNS" %}checked{% endif %}/>
+	<strong>Closed notebook:</strong> Only members of this project will be able to see the content.
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>Create notebook</button>
+    <button type="button" class="btn btn-default"
+	    onClick="if (confirm('Really cancel the creation of a new notebook?')) {window.location = '/{{project.key.integer_id()}}/notebooks'}">Cancel</button>
+    {% if error_message %}<div class="alert alert-danger" style="margin-top:5px;">{{error_message | safe}}</div>{% endif %}
+    <span class="help-block">
+      Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+    </span>
+  </form>
+
+
+  <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
+	Render preview
+      </button>
+    </div>
+    <div class="panel-body" id="previewArea">
+      Click the <em>Render preview</em> button to see a preview here.
+    </div>
+  </div>
+
+</div>
+{% endblock %}

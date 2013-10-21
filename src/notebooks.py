@@ -129,17 +129,10 @@ class NewNotebookPage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        visitor_p = False if project.user_is_author(user) else True
-        kw = {"title" : "New notebook",
-              "name_placeholder" : "Title of the new notebook",
-              "content_placeholder" : "Description of the new notebook",
-              "submit_button_text" : "Create notebook",
-              "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-              "breadcrumb" : '<li class="active">Notebooks</li>',
-              "markdown_p" : True,
-              "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
-        self.render("project_form_2.html", project = project, **kw)
+        visitor_p = not project.user_is_author(user)
+        pre_form_message = """<p class="text-danger">You can't create a notebook unless you are a member of this project and are logged in.</p>""" if visitor_p else ""
+        self.render("notebook_new.html", project = project, visitor_p = visitor_p,
+                    pre_form_message = pre_form_message, n_claims = "CNS")
 
     def post(self, projectid):
         user = self.get_login_user()
@@ -159,32 +152,26 @@ class NewNotebookPage(NotebookPage):
             have_error = True
             error_message = "You are not an author in this project. "
         n_name = self.request.get("name")
-        n_description = self.request.get("content")
+        n_description = self.request.get("description")
+        n_claims = self.request.get("claims")
         if not n_name:
             have_error = True
             error_message = "You must provide a name for your new notebook. "
         if not n_description:
             have_error = True
             error_message += "Please provide a description of this notebook. "
+        if not n_claims in ["ONS-ACI","ONS-ACD","ONS-SCI","ONS-SCD","CNS"]:
+            have_error = True
+            error_message += "There was an error procesing your request, please try again."
         if have_error:
-            kw = {"title" : "New notebook",
-                  "name_placeholder" : "Title of the new notebook",
-                  "content_placeholder" : "Description of the new notebook",
-                  "submit_button_text" : "Create notebook",
-                  "cancel_url" : "/%s/notebooks" % project.key.integer_id(),
-                  "breadcrumb" : '<li class="active">Notebooks</li>',
-                  "markdown_p" : True,
-                  "name_value" : n_name,
-                  "content_value" : n_description,
-                  "error_message" : error_message,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
-            self.render("project_form_2.html", project = project, **kw)
+            self.render("notebook_new.html", project = project, visitor_p = visitor_p, error_message = error_message,
+                        n_name = n_name, n_description = n_description, n_claims = n_claims)
         else:
             new_notebook = Notebooks(owner = user.key, 
                                      name = n_name, 
                                      description = n_description, 
-                                     parent  = project.key)
+                                     parent  = project.key,
+                                     claims = n_claims)
             self.put_and_report(new_notebook, user, project)
             self.redirect("/%s/notebooks/%s" % (project.key.integer_id(), new_notebook.key.id()))
 
