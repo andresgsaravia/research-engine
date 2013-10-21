@@ -465,12 +465,15 @@ class EditNotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
+        if not project.user_is_author(user):
+            self.write("You are not authorized to edit this note.")
+            return
         note = self.get_note(notebook, note_id)
         if not note:
             self.error(404)
             self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
-        visitor_p = False if notebook.owner.get().key == user.key else True
+        visitor_p = not notebook.owner.get().key == user.key
         nbs_url = "/%s/notebooks" % projectid
         nb_url = nbs_url + "/" + nbid
         note_url = nb_url + "/" + note_id
@@ -502,6 +505,9 @@ class EditNotePage(NotebookPage):
         if not notebook:
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
+            return
+        if not project.user_is_author(user):
+            self.write("You are not authorized to edit this note.")
             return
         note = self.get_note(notebook, note_id)
         if not note:
