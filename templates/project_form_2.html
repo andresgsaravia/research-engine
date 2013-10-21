@@ -27,7 +27,7 @@
     <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
     <button type="button" class="btn btn-default"
 	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
-    <div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>
+    {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
     {% if markdown_p %}
     <span class="help-block">
       Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
