@@ -23,7 +23,9 @@
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">{{n.name | safe}}</a>
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
+	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {{n.name | safe}}</a>
       </h4>
     </div>
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
@@ -49,7 +51,9 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name | safe}}</a>
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
+	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {{n.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span>
 	</a>
@@ -80,7 +84,9 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">{{n.name | safe}}</a>
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
+	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {{n.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anaccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span>
 	</a>

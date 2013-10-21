@@ -17,9 +17,37 @@ class Notebooks(ndb.Model):
     description = ndb.TextProperty(required = True)
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
+    # For an open notebook it's one of ONS-ACI, ONS-ACD, ONS-SCI, ONS-SCD according in its (A)ll or (S)elected content and (I)mmediately or (D)elayed. 
+    # Another option is "CNS" for closed notebooks.
+    claims = ndb.StringProperty(required = True, default = 'ONS-ACI')
 
     def get_number_of_notes(self):
         return NotebookNotes.query(ancestor = self.key).count()
+
+    def is_open_p(self):
+        return self.claims[0] == "O"
+
+    def claims_logo(self, size = ""):         # size should be "", "icons" or "small"
+        if not self.is_open_p(): return ""
+        url = "/static/ONS/" + self.claims
+        if size: url += "-" + size
+        url += ".png"
+        return url
+
+    def claims_text(self):
+        if not self.is_open_p(): return ""
+        text = "This is an open notebook. "
+        if self.claims[4] == "A":
+            text += "All relevant content is reported here "
+        else:
+            text += "Only some part of the relevant content is reported here "
+        if self.claims[6] == "I":
+            text += "in as close as real time as possible."
+        else:
+            text += "after a significant delay."
+        return text
+        
+
 
 # Each note should be a child of a Notebook.
 class NotebookNotes(ndb.Model):
