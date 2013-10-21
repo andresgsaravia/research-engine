@@ -132,6 +132,7 @@ class NewNotebookPage(NotebookPage):
         visitor_p = not project.user_is_author(user)
         pre_form_message = """<p class="text-danger">You can't create a notebook unless you are a member of this project and are logged in.</p>""" if visitor_p else ""
         self.render("notebook_new.html", project = project, visitor_p = visitor_p,
+                    action = "New", button_text = "Create notebook", visible_p = True,
                     pre_form_message = pre_form_message, n_claims = "CNS")
 
     def post(self, projectid):
@@ -156,16 +157,16 @@ class NewNotebookPage(NotebookPage):
         n_claims = self.request.get("claims")
         if not n_name:
             have_error = True
-            error_message = "You must provide a name for your new notebook. "
+            error_message = "Provide a name for your new notebook. "
         if not n_description:
             have_error = True
-            error_message += "Please provide a description of this notebook. "
+            error_message += "Provide a description of this notebook. "
         if not n_claims in ["ONS-ACI","ONS-ACD","ONS-SCI","ONS-SCD","CNS"]:
             have_error = True
             error_message += "There was an error procesing your request, please try again."
         if have_error:
-            self.render("notebook_new.html", project = project, visitor_p = visitor_p, error_message = error_message,
-                        n_name = n_name, n_description = n_description, n_claims = n_claims)
+            self.render("notebook_new.html", project = project, visitor_p = visitor_p, error_message = error_message, visible_p = True,
+                        n_name = n_name, n_description = n_description, n_claims = n_claims, action = "New", button_text = "Create notebook")
         else:
             new_notebook = Notebooks(owner = user.key, 
                                      name = n_name, 
@@ -385,20 +386,14 @@ class EditNotebookPage(NotebookPage):
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         visitor_p = False if notebook.owner.get().key == user.key else True
-        nbs_url = "/%s/notebooks" % projectid
-        kw = {"title" : "Editing notebook <br/> <small>%s</small>" % notebook.name,
-              "name_placeholder" : "Title of the notebook",
-              "content_placeholder" : "Description of the notebook",
-              "submit_button_text" : "Save Changes",
-              "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-              "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>' 
-              % (nbs_url, notebook.name),
-              "name_value" : notebook.name,
-              "content_value" : notebook.description,
-              "markdown_p" : True,
-              "disabled_p" : True if visitor_p else False,
-              "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
-        self.render("project_form_2.html", project = project, **kw)
+        kw = {"action" : "Edit",
+              "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else "",
+              "button_text" : "Save Changes",
+              "n_name" : notebook.name,
+              "n_description" : notebook.description,
+              "n_claims" : notebook.claims,
+              "visible_p" : user and project.user_is_author(user)}
+        self.render("notebook_new.html", project = project, notebook = notebook, **kw)
 
     def post(self, projectid, nbid):
         user = self.get_login_user()
@@ -423,32 +418,32 @@ class EditNotebookPage(NotebookPage):
             have_error = True
             error_message = "You are not the owner of this notebook. "
         n_name = self.request.get("name")
-        n_description = self.request.get("content")
+        n_description = self.request.get("description")
+        n_claims = self.request.get("claims")
         if not n_name:
             have_error = True
             error_message = "You must provide a name for the notebook. "
         if (not n_description) or (len(n_description.strip()) == 0):
             have_error = True
             error_message += "Please provide a description of this notebook. "
+        if not n_claims in ["ONS-ACI","ONS-ACD","ONS-SCI","ONS-SCD","CNS"]:
+            have_error = True
+            error_message = "There was an error with your request, please try again. "
         if have_error:
             nbs_url = "/%s/notebooks" % (projectid)
-            kw = {"title" : "Editing notebook <br/><small>%s</small>" % notebook.name,
-                  "name_placeholder" : "Title of the notebook",
-                  "content_placeholder" : "Description of the notebook",
-                  "submit_button_text" : "Save Changes",
-                  "cancel_url" : "/%s/notebooks/%s" % (projectid, nbid),
-                  "breadcrumb" : '<li><a href="%s">Notebooks</a></li><li class="active">%s</li>'
-                  % (nbs_url, notebook.name),
-                  "name_value" : n_name,
-                  "content_value" : n_description,
-                  "error_message" : error_message,
-                  "markdown_p" : True,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else ""}
-            self.render("project_form_2.html", project = project, **kw)
+            kw = {"action" : "Edit",
+                  "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else "",
+                  "button_text" : "Save Changes",
+                  "n_name" : n_name,
+                  "n_description" : n_description,
+                  "n_claims" : n_claims,
+                  "visible_p" : user and project.user_is_author(user),
+                  "error_message" : error_message}
+            self.render("notebook_new.html", project = project, **kw)
         else:
             notebook.name = n_name
             notebook.description = n_description
+            notebook.claims = n_claims
             self.log_and_put(notebook)
             self.redirect("/%s/notebooks/%s" % (projectid, nbid))
 

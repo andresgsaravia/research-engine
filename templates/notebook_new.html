@@ -5,21 +5,23 @@
 <script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
-{% block breadcrumbs %}<li class="active">Notebooks</li>{% endblock %}
+{% block breadcrumbs %}{% if action=="New" %}<li class="active">Notebooks</li>{% else %}<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li><li class="active">{{notebook.name}}</li>{% endif %}{% endblock %}
 
 {% block p_content %}
 
 <div class="container">
-  <h2 class="page-header">New notebook</h2>
+  <h2 class="page-header">{{action}} notebook</h2>
+  {% if visible_p %}
+
   {{pre_form_message | safe}}
 
   <form method="post" role="form">
-    <div class="form-group {{nClass}}">
+    <div class="form-group">
       <input type="text" name="name" class="form-control"
-	     value="{{n_name}}" placeholder="Title of the new notebook" autofocus {% if visitor_p %}disabled{% endif %}/>
+	     value="{{n_name}}" placeholder="Title of the notebook" autofocus {% if visitor_p %}disabled{% endif %}/>
     </div>
-    <div class="form-group {{cClass}}">
-      <textarea name="description" id="inputText" placeholder="Description of the new notebook" 
+    <div class="form-group">
+      <textarea name="description" id="inputText" placeholder="Description of the notebook" 
 		class="form-control" rows="10"{% if visior_p %} disabled{% endif %}>{{n_description}}</textarea>
     </div>
     <small><a href="https://en.wikipedia.org/wiki/Open_Notebook_Science" target="_blank">
@@ -60,10 +62,13 @@
       </label>
     </div>
 
-    <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>Create notebook</button>
+    <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>{{button_text}}</button>
     <button type="button" class="btn btn-default"
-	    onClick="if (confirm('Really cancel the creation of a new notebook?')) {window.location = '/{{project.key.integer_id()}}/notebooks'}">Cancel</button>
-    {% if error_message %}<div class="alert alert-danger" style="margin-top:5px;">{{error_message | safe}}</div>{% endif %}
+	    onClick="if (confirm('Are you sure you want to cancel?')) {window.location = '/{{project.key.integer_id()}}/notebooks'}">Cancel</button>
+    {% if error_message %}
+    <div class="alert alert-danger alert-dismissable" style="margin-top:5px;">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{error_message | safe}}</div>{% endif %}
     <span class="help-block">
       Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
     </span>
@@ -81,6 +86,10 @@
       Click the <em>Render preview</em> button to see a preview here.
     </div>
   </div>
+
+  {% else %}<!-- not visible_p  -->
+  <div class="alert alert-danger">You can't edit this notebook.</div>
+  {% endif %}
 
 </div>
 {% endblock %}
