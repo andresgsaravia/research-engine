@@ -306,11 +306,18 @@ class NotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
-        comments = self.get_comments_list(note)
-        visitor_p = True if not (user and project.user_is_author(user)) else False
-        self.render("notebook_note.html", project = project, user = user,visitor_p = visitor_p,
-                    notebook = notebook, note = note, comments = comments, new_comment = self.request.get("new_comment"),
-                    user_is_owner_p = (user and notebook.owner == user.key))
+        kw = {"visible_p" : notebook.is_open_p() or (user and project.user_is_author(user))}
+        if kw["visible_p"]:
+            kw["comments"] = self.get_comments_list(note)
+        else:
+            if user:
+                kw["error_message"] = "You can't view this notebook because it's a closed notebook and you are not a member of its project."
+            else:
+                kw["error_message"] = "This is a closed notebook, you must log in and become a member of it's project to view it."
+        kw["visitor_p"] = not (user and project.user_is_author(user))
+        self.render("notebook_note.html", project = project, user = user,
+                    notebook = notebook, note = note, new_comment = self.request.get("new_comment"),
+                    user_is_owner_p = (user and notebook.owner == user.key), **kw)
 
     def post(self, projectid, nbid, note_id):
         user = self.get_login_user()
@@ -334,24 +341,30 @@ class NotePage(NotebookPage):
             self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
             return
         have_error = False
-        error_message = ''
-        visitor_p = not project.user_is_author(user)
-        if visitor_p:
+        kw = {"visible_p" : notebook.is_open_p() or (user and project.user_is_author(user))}
+        if not kw["visible_p"]:
             have_error = True
-            error_message = "You are not an author in this project."
-        comment = self.request.get("comment")
-        if not comment:
-            have_error = True
-            error_message = "You can't submit an empty comment. "
-        if not have_error:
-            new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
-            self.put_and_report(new_comment, user, project, notebook)
-            comment = ''
-        comments = self.get_comments_list(note)
-        self.render("notebook_note.html", project = project, visitor_p = visitor_p,
-                    notebook = notebook, note = note, comments = comments, 
-                    comment = comment, error_message = error_message,
-                    user_is_owner_p = True if (user and notebook.owner == user.key) else False)
+            if user:
+                kw["error_message"] = "You can't view this notebook because it's a closed notebook and you are not a member of its project."
+            else:
+                kw["error_message"] = "This is a closed notebook, you must log in and become a member of it's project to view it."
+        else:
+            kw["visitor_p"] = not project.user_is_author(user)
+            if kw["visitor_p"]:
+                have_error = True
+                kw["error_message"] = "You are not an author in this project."
+            comment = self.request.get("comment")
+            if not comment:
+                have_error = True
+                kw["error_message"] = "You can't submit an empty comment. "
+            if not have_error:
+                new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
+                self.put_and_report(new_comment, user, project, notebook)
+                comment = ''
+            kw["comments"] = self.get_comments_list(note)
+            self.render("notebook_note.html", project = project,
+                        notebook = notebook, note = note, comment = comment,
+                        user_is_owner_p = True if (user and notebook.owner == user.key) else False, **kw)
 
 
 class EditNotebookPage(NotebookPage):

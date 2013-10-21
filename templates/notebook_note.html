@@ -2,14 +2,15 @@
 
 
 {% block p_head %}
-  <script type="text/javascript" src="/js/showdown.js"></script>
-  <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/showdown.js"></script>
+<script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
 {% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li><li><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">{{notebook.name | safe | truncate(40, True)}}</a></li><li class="active">{{note.title | safe | truncate(40, True)}}</li>
 {% endblock %}
 
 {% block p_content %}
+{% if visible_p %}
 <div class="panel panel-default">
   <div class="panel-heading" style="overflow:auto;">
     {% if user_is_owner_p %}
@@ -43,7 +44,9 @@
   </div>
   <span class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</span>
   <button type="submit" class="btn btn-success"{% if visitor_p %}disabled{% endif %}>Comment</button>
-  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+  {% if error_message %}
+  <div class="alert alert-danger alert-dismissable" style="margin-top:10px;">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{{error_message}}</div>{% endif %}
   {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in to make a comment{% endif %}</p>{% endif %} 
 </form>
 
@@ -52,4 +55,7 @@
   <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.</em></div>
 </div>
 
+{% else %}<!-- not visible_p -->
+<div class="alert alert-danger">{{error_message}}</div>
+{% endif %}
 {% endblock %}
