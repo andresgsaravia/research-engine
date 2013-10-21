@@ -227,6 +227,7 @@ class NewNotePage(NotebookPage):
         visitor_p = False if notebook.owner.get().key == user.key else True
         parent_url = "/%s/notebooks" % project.key.integer_id()
         kw = {"title" : "New note",
+              "subtitle" : notebook.name,
               "name_placeholder" : "Title of the new note",
               "content_placeholder" : "Content of the note",
               "submit_button_text" : "Create note",
@@ -270,6 +271,7 @@ class NewNotePage(NotebookPage):
         if have_error:
             parent_url = "/%s/notebooks" % (project.key.integer_id())
             kw = {"title" : "New note",
+                  "subtitle" : notebook.name,
                   "name_placeholder" : "Title of the new note",
                   "content_placeholder" : "Content of the note",
                   "submit_button_text" : "Create note",

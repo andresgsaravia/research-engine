@@ -12,7 +12,7 @@
 {% block p_content %}
 
 <div class="container">
-  <h2 class="page-header">{{title | safe}}</h2>
+  <h3 class="page-header">{{title | safe}}{% if subtitle %}<br/><small>{{subtitle | safe}}</small>{% endif %}</h3>
   {{pre_form_message | safe}}
 
   <form method="post" role="form">
@@ -27,7 +27,7 @@
     <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
     <button type="button" class="btn btn-default"
 	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
-    <p class="text-danger">{{error_message | safe}}</p>
+    <div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>
     {% if markdown_p %}
     <span class="help-block">
       Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
