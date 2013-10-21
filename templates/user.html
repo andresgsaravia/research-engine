@@ -8,7 +8,6 @@ var mergeNodes = function (a,b) { return [].slice.call(a).concat([].slice.call(b
 var showAllActvs = function () {
   p_actvs = document.getElementsByClassName('p_actv_item');
   for (var i=0; i < p_actvs.length; i++) {p_actvs[i].style.display = ''}
-  $('#showAllButton').addClass('hide');
 }
 
 google.load("visualization", "1", {packages:["corechart"]});
@@ -54,7 +53,9 @@ function drawChart() {
 		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('BiblioComments'));}
 	    else {console.log('Error, unrecognized kind' + u_kind);}
 	    for (var i=0; i < visible_actvs.length; i++) { visible_actvs[i].style.display = '';}
-            $('#showAllButton').removeClass('hide');
+        }
+        else {
+            showAllActvs();
         }
     }
     
@@ -104,7 +105,6 @@ function drawChart() {
       {% if recent_actv["Projects"] %}
       <div id="p_stats"></div>
       <small class="help-block">Click the chart's columns to filter the activities list below</small>
-      <button type="button" class="btn btn-default btn-sm hide" id="showAllButton" onClick="showAllActvs();" >Show All</button>
       <div class="panel panel-default">
 	<ul class="list-group">
 	  {% for a in recent_actv["Projects"] %}
