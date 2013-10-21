@@ -24,7 +24,7 @@
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% endif %}
 	  {{n.name | safe}}</a>
       </h4>
     </div>
@@ -52,7 +52,7 @@
     <div class="panel-heading">
       <h4 class="panel-title">
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
-	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% endif %}
 	  {{n.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span>
@@ -85,7 +85,7 @@
     <div class="panel-heading">
       <h4 class="panel-title">
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
-	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% endif %}
 	  {{n.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anaccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span>
