@@ -24,7 +24,7 @@
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% endif %}
+	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% else %}<span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span>{% endif %}
 	  {{n.name | safe}}</a>
       </h4>
     </div>
@@ -40,7 +40,7 @@
   </div>
   {% endfor %}
   {% endif %}
-</div>    
+</div>
 
 {% if other_notebooks %}
 
@@ -52,7 +52,7 @@
     <div class="panel-heading">
       <h4 class="panel-title">
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}">
-	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% endif %}
+	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% else %}<span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span>{% endif %}
 	  {{n.name | safe}}</a>
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span>
@@ -77,10 +77,11 @@
 
 {% else %}
 
-<div class="page-header"><h2>Notebooks</h2></div>
+<div class="page-header"><h2>Open notebooks</h2></div>
 
 <div class="panel-group" id="anaccordion">
   {% for n in notebooks %}
+  {% if n.is_open_p() %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
@@ -103,6 +104,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
   {% endfor %}
 </div>    
 
