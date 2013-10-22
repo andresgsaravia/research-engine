@@ -39,7 +39,7 @@
   {% for c in comments %}
   <div class="list-group-item">
     <small><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" class="pull-right"
-	      title="link to this comment only"><span class="glyphicon glyphicon-new-window"></span></a></small>
+	      title="link to this comment only"><span class="glyphicon glyphicon-link"></span></a></small>
     {{c.content | md | safe}}
     <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
