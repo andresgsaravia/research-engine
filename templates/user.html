@@ -2,6 +2,13 @@
 
 {% block head %}
 <title>Research Engine | {{page_user.username.capitalize()}}</title>
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript">
+  MathJax.Hub.Config({
+  "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+  TeX: {equationNumbers: {autoNumber: "AMS"} }
+  });
+</script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 var mergeNodes = function (a,b) { return [].slice.call(a).concat([].slice.call(b)); }
