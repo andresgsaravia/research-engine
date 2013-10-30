@@ -14,8 +14,8 @@
 
 {% block content %}
 
+{% if user %}
 <div class="container">
-  {% if user %}
   <div class="row">
 
     <div class="col-md-7">
@@ -70,10 +70,46 @@
     
   </div>
 
-
-  {% else %}
-  <p style="text-align:right; font-size:0.9em; ">You are not logged in. You can <a href="/login">login here</a> or <a href="/signup">signup</a> for a new account. It's free!</p>
-  {% endif %}
 </div>
+
+{% else %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>Research Engine</h1>
+
+    <p>All your research neatly organized in one place, easy to share and reuse.</p>
+    <p>
+      <a class="btn btn-success" href="/login" role="button">Log in</a>
+      <a class="btn btn-primary" href="/signup" role="button">Create an account</a>
+    </p>
+  </div>
+</div>
+
+<div class="container">
+  <p class="lead">Here will be a statement of the broad idea behind this project. The sections below will describe in more detail some of the functionalities. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p>
+
+  <div class="row">
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-file"></span> Notebooks</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-align-justify"></span> Code</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-stats"></span> Datasets</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-book"></span> Wiki</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-font"></span> Writings</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-fire"></span> Forum</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-folder-open"></span> Bibliography</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-copyright-mark"></span> Reusable content</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-user"></span> Easy sharing</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur.</p></div>
+  </div>
+</div>
+
+{% endif %}
 
 {% endblock %}
