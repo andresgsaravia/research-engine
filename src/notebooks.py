@@ -359,8 +359,16 @@ class NotePage(NotebookPage):
                 have_error = True
                 kw["error_message"] = "You can't submit an empty comment. "
             if not have_error:
-                new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
-                self.put_and_report(new_comment, user, project, notebook)
+                comment_id = self.request.get("comment_id")   # If this is present, we are editing a comment, otherwise it's a new comment
+                if comment_id:
+                    # Edit comment
+                    c = NoteComments.get_by_id(int(comment_id), parent = note.key)
+                    c.comment = comment
+                    self.log_and_put(c)
+                else:
+                    # New comment
+                    new_comment = NoteComments(author = user.key, comment = comment, parent = note.key)
+                    self.put_and_report(new_comment, user, project, notebook)
                 comment = ''
             kw["comments"] = self.get_comments_list(note)
             self.render("notebook_note.html", project = project,

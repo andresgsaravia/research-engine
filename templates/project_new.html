@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container" style="max-width:720px;">
   <h2 class="page-header">New project</h2>
 
   <form method="post" action="/new_project" role="form">
@@ -18,7 +18,7 @@
     </div>
     <div class="form-group {{description_class}}">
       <label for="pDescription">Description</label>
-      <textarea class="form-control" rows="10" name="p_description" id="pDescription"
+      <textarea class="form-control" rows="15" name="p_description" id="pDescription"
 		placeholder="Enter a description of the project">{{p_description}}</textarea>
     </div>
     <button type="submit" class="btn btn-success">Create new project</button>

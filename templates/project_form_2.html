@@ -21,7 +21,7 @@
 	     value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
     </div>
     <div class="form-group {{cClass}}">
-      <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="10"
+      <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="20"
 		{% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
     </div>
     <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
@@ -37,7 +37,7 @@
   </form>
 
 
-  <p class="info">{{info_message | safe}}</p>
+  {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
 
 {% if markdown_p %}
   <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
