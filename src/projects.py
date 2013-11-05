@@ -302,9 +302,9 @@ class InvitePage(ProjectPage):
               "content_placeholder" : "Write here a brief invitation message.",
               "submit_button_text" : "Send invitation",
               "cancel_url" : "/%s/admin" % projectid,
-              "title_bar_extra" : '/ <a href="/%s/admin">Admin</a>' % projectid,
-              "more_head" : "<style>#admin-tab {background: white;}</style>"}
-        self.render("project_form_2.html", project = project, **kw)
+              "breadcrumb" : '<li class="active">Admin</li>',
+              "markdown_p" : True}
+        self.render("project_form_2.html", project = project, admin_tab_class = "acctive", **kw)
 
     def post(self, projectid):
         user = self.get_login_user()
@@ -326,8 +326,8 @@ class InvitePage(ProjectPage):
               "content_placeholder" : "Write here a brief invitation message.",
               "submit_button_text" : "Send invitation",
               "cancel_url" : "/%s/admin" % projectid,
-              "title_bar_extra" : '/ <a href="/%s/admin">Admin</a>' % projectid,
-              "more_head" : "<style>#admin-tab {background: white;}</style>"}
+              "breadcrumb" : '<li class="active">Admin</li>',
+              "markdown_p" : True}
         have_error = False
         kw["name_value"] = self.request.get("name")
         kw["content_value"] = self.request.get("content")
@@ -342,8 +342,8 @@ class InvitePage(ProjectPage):
             have_error = True
             kw["error_message"] = "User <em>%s</em> is already a collaborator in this project. " % kw["name_value"]
         if not have_error:
-            email_messages.send_invitation_to_project(project = project, inviting = user, invited = i_user)
+            email_messages.send_invitation_to_project(project = project, inviting = user, invited = i_user, message = kw["content_value"])
             kw["info_message"] = "Invitation sent"
             kw["name_value"] = ''
             kw["content_value"] = ''
-        self.render("project_form_2.html", project = project, **kw)
+        self.render("project_form_2.html", project = project, admin_tab_class = "active", **kw)

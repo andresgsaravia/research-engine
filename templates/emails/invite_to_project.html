@@ -21,7 +21,10 @@
       <p>If you want to accept the invitation please click on the following link:</p>
       <p><a href="{{accept_link}}">{{accept_link}}</a></p>
       <p>If you don't want to start this collaboration now please just disregard this email.</p>
-	    
+      {% if message %}
+      <p>{{inviting.username.capitalize()}} wrote:</p>
+      <p><em>{{message | md | safe}}</em></p>
+      {% endif %}
     </div>
 
   </body>

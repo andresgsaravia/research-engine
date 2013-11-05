@@ -61,11 +61,12 @@ def send_verify_email(user):
     return
 
 
-def send_invitation_to_project(project, inviting, invited):
+def send_invitation_to_project(project, inviting, invited, message):
     h = hash_str(invited.salt + str(project.key))
     kw = {"project" : project,
           "inviting" : inviting,
           "invited" : invited,
+          "message" : message,
           "APP_URL" : APP_URL,
           "accept_link" : "%s/%s/admin?h=%s" % (APP_URL, project.key.integer_id(), h)}
     message = mail.EmailMessage(sender = PRETTY_ADMIN_EMAIL,

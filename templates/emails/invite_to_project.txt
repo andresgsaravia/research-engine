@@ -6,3 +6,6 @@ If you want to accept the invitation please click on the following link:
 <{{accept_link}}>
 
 If you don't want to start this collaboration now please just disregard this email.
+
+{% if message %}{{inviting.username.capitalize()}} wrote:
+    {{message | safe}}{% endif %}
