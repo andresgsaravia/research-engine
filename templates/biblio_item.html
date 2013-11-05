@@ -16,6 +16,12 @@
     <h3 class="panel-title">{{item.title}}</h3>
   </div>
   <div class="panel-body">
+    <form method="post" role="form">
+      <button class="btn btn-xs btn-default pull-right" title="This bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible. Click to toggle" 
+	      type="submit">
+	<span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"></span></button>
+      <input type="hidden" name="action" value="toggle_visibility" />
+    </form>
     {% if item.kind == "article" %} 
     <strong>{{item.metadata["publication"]}}</strong> <em>({{item.metadata["date"]}})</em>
     <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
@@ -65,6 +71,7 @@
   <div class="help-block">
     Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
   </div>
+  <input type="hidden" name="action" value="make_comment" />
 </form>
 
 <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>

@@ -17,13 +17,16 @@
 
 <div class="panel-group" id="baccordion">
   {% for i in items %}
+  {% if i.is_open_p() or (user and project.user_is_author(user)) %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#baccordion" href="#{{i.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of comments" style="margin-right:10px;">{{i.get_number_of_comments()}}</span>
-	<a href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">{{i.title | safe}}</a>
+	<a href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
+	  <span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"></span>
+	  {{i.title | safe}}</a>
       </h4>
     </div>
     <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
@@ -45,6 +48,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
   {% endfor %}
 </div>
 

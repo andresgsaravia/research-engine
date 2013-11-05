@@ -93,15 +93,22 @@ class BiblioItems(ndb.Model):
     added = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
     metadata = ndb.JsonProperty(required = True)
+    open_p = ndb.BooleanProperty(default = True)
 
     def get_number_of_comments(self):
         return BiblioComments.query(ancestor = self.key).count()
+        
+    def is_open_p(self):
+        return self.open_p
 
 # Each BiblioComment should have a BiblioItem as parent
 class BiblioComments(ndb.Model):
     content = ndb.TextProperty(required = True)
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
+
+    def is_open_p(self):
+        return self.key.parent().get().open_p
 
 ######################
 ##   Web Handlers   ##
@@ -216,9 +223,13 @@ class ItemPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
             return
-        self.render("biblio_item.html", project = project, item = item, user = user,
-                    visitor_p = not (user and  project.user_is_author(user)),
-                    comments = self.get_comments_list(item))
+        visible_p = (item.is_open_p()) or (user and project.user_is_author(user))
+        if visible_p:
+            self.render("biblio_item.html", project = project, item = item, user = user,
+                        visitor_p = not (user and  project.user_is_author(user)),
+                        comments = self.get_comments_list(item))
+        else:
+            self.render("project_page_not_visible.html", project = project, user = user)
 
     def post(self, projectid, itemid):
         user = self.get_login_user()
@@ -235,26 +246,37 @@ class ItemPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
             return
+        action = self.request.get("action")
         have_error = False
         error_message = ''
+        if not action: have_error = True
         if not project.user_is_author(user):
             have_error = True
             error_message = "You are not a member of this project. "
-        comment = self.request.get("comment").strip()
-        if not comment:
-            have_error = True
-            error_message = "You can not make an empty comment."
-        if have_error:
-            self.render("biblio_item.html", project = project, item = item, user = user,
-                        visitor_p = not (user and project.user_is_author(user)),
-                        comment = self.get_comments_list(item),
-                        error_message = error_message)
-        else:
-            new_comment = BiblioComments(author = user.key,
-                                         content = comment,
-                                         parent = item.key)
-            self.put_and_report(new_comment, user, project, item)
+        if action == "make_comment":
+            comment = self.request.get("comment").strip()
+            if not comment:
+                have_error = True
+                error_message = "You can not make an empty comment."
+            if not have_error:
+                new_comment = BiblioComments(author = user.key,
+                                             content = comment,
+                                             parent = item.key)
+                self.put_and_report(new_comment, user, project, item)
+                self.redirect("/%s/bibliography/%s" % (projectid, itemid))
+                return
+        elif action == "toggle_visibility":
+            logging.error(item.open_p)
+            item.open_p = not item.open_p
+            logging.error(item.open_p)
+            self.log_and_put(item)
             self.redirect("/%s/bibliography/%s" % (projectid, itemid))
+            return
+        self.render("biblio_item.html", project = project, item = item, user = user,
+                    visitor_p = not (user and project.user_is_author(user)),
+                    comment = self.get_comments_list(item),
+                    error_message = error_message)
+
 
 class CommentPage(BiblioPage):
     def get(self, projectid, itemid, commentid):

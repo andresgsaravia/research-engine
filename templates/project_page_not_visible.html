@@ -1,0 +1,10 @@
+{% extends "project_base.html" %}
+
+
+{% block p_content %}
+<div class="alert alert-danger">You can't view the current page. 
+  {% if user %}You are not a member of this project and its authors decided to hide this page from public view.
+  {% else %}If you are a member of this project, log in with the form in the top menu.
+  {% endif%}
+</div>
+{% endblock %}
