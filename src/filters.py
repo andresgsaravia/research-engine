@@ -1,6 +1,6 @@
 # Definitions for my own filters
 
-import markdown, re, urllib
+import markdown, re, urllib, bleach
 
 
 # Parsing doi (digital object identifier
@@ -14,5 +14,9 @@ def make_doi_link(doi_match_object):
     return "[%s](http://dx.doi.org/%s)" % (s, urllib.quote(s[4:]))
 
 def md(value):
+    allowed_tags = bleach.ALLOWED_TAGS + ['br', 'img', 'mathjax', 'p', 'pre', 'sub', 'sup','table', 'tbody', 'td', 'th', 'thead', 'tr']
+    allowed_attrs = dict(bleach.ALLOWED_ATTRIBUTES.items() + {'*' : ['class'], 'img': ['alt', 'src', 'title']}.items())
     value = re.sub(DOI_REGEXP, make_doi_link, value)     # doi links
-    return markdown.markdown(value, extensions = ['extra', 'toc', 'nl2br', 'mathjax', 'tables'])
+    value = markdown.markdown(value, extensions = ['extra', 'toc', 'nl2br', 'mathjax', 'tables'])
+    value = bleach.clean(value, tags = allowed_tags, attributes = allowed_attrs)
+    return value
