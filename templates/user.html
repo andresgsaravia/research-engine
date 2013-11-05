@@ -115,9 +115,11 @@ function drawChart() {
       <div class="panel panel-default">
 	<ul class="list-group">
 	  {% for a in recent_actv["Projects"] %}
+	  {% if a.is_open_p() or (user and a.kind == "Projects" and a.relative_to.get().user_is_author(user)) %}
 	  <li class="list-group-item p_actv_item {{a.item.kind()}}">
 	    <small class="text-muted">{{a.date.strftime("%d %b %Y")}}</small> {{a.description_html(hide_username_p = True) | safe}}
 	  </li>
+	  {% endif %}
 	  {% endfor %}
 	</ul>
       </div>

@@ -130,6 +130,13 @@ class UserActivities(ndb.Model):
             html = render_str("project_activity.html", author = author, item = item, project = relative_to, hide_username_p = hide_username_p)
         return html
 
+    def is_open_p(self):
+        try:
+            val = self.item.get().is_open_p()
+        except:
+            val = False
+        return val
+
 
 ######################
 ##   Web Handlers   ##
