@@ -58,12 +58,17 @@ class NotebookNotes(ndb.Model):
     def get_number_of_comments(self):
         return NoteComments.query(ancestor = self.key).count()
 
+    def is_open_p(self):
+        return self.key.parent().get().is_open_p()
 
 # Each comment should be a child of a NotebookNote
 class NoteComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
+
+    def is_open_p(self):
+        return self.key.parent().get().is_open_p()
 
 
 ######################

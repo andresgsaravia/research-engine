@@ -82,6 +82,13 @@ class ProjectUpdates(ndb.Model):
     def description_html(self, project):
         return render_str("project_activity.html", author = self.author.get(), item = self.item.get(), project = project)
 
+    def is_open_p(self):
+        try:
+            val = self.item.get().is_open_p()
+        except:
+            val = False
+        return val
+
 
 ######################
 ##   Web Handlers   ##
@@ -108,6 +115,7 @@ class ProjectPage(GenericPage):
 
 class OverviewPage(ProjectPage):
     def get(self, projectid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -116,7 +124,8 @@ class OverviewPage(ProjectPage):
         self.render("project_overview.html", project = project, 
                     overview_tab_class = "active",
                     authors = project.list_of_authors(self),
-                    updates = project.list_updates(self, UPDATES_TO_DISPLAY))
+                    updates = project.list_updates(self, UPDATES_TO_DISPLAY),
+                    visitor_p = not (user and project.user_is_author(user)))
 
 
 class NewProjectPage(GenericPage):
