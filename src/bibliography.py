@@ -280,6 +280,7 @@ class ItemPage(BiblioPage):
 
 class CommentPage(BiblioPage):
     def get(self, projectid, itemid, commentid):
+        user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -289,6 +290,9 @@ class CommentPage(BiblioPage):
         if not item:
             self.error(404)
             self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
+            return
+        if not (item.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
             return
         comment = self.get_comment(item, commentid)
         if not comment:
