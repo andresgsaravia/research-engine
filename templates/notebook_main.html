@@ -27,7 +27,6 @@
     </h3>
   </div>
 
-  {% if nb_visible_p %}
   {% for note in notes %}
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -67,8 +66,5 @@
   {% endif %}
   {% endif %}
 
-  {% else %}<!--not nb_visible_p-->
-  <div class="alert alert-danger">{{error_message}}</div>
-  {% endif %}
 </div>
 {% endblock %}
