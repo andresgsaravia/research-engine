@@ -7,8 +7,10 @@
 {% block p_content %}
 
 <div class="page-header">
-  <h3>{{dataset.name}}
-    {% if not visitor_p %}
+  <h3><small><span class="glyphicon glyphicon-eye-{% if dataset.is_open_p() %}open{% else %}close{% endif %}"
+		   title="This dataset is {% if not dataset.is_open_p() %}not {% endif %}publicly visible."></span></small>
+    {{dataset.name}}
+    {% if user and project.user_is_author(user) %}
     <a class="btn btn-default btn-sm pull-right" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">
       <span class="glyphicon glyphicon-cog"></span></a>
     <a class="btn btn-success btn-sm pull-right" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data" style=" margin-right:10px;">

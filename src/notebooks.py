@@ -391,7 +391,6 @@ class EditNotebookPage(NotebookPage):
             self.redirect("/%s/notebooks/%s" % (projectid, nbid))
             return
         kw = {"action" : "Edit",
-              "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else "",
               "button_text" : "Save Changes",
               "n_name" : notebook.name,
               "n_description" : notebook.description,
@@ -434,7 +433,6 @@ class EditNotebookPage(NotebookPage):
         if have_error:
             nbs_url = "/%s/notebooks" % (projectid)
             kw = {"action" : "Edit",
-                  "pre_form_message" : '<p class="text-danger">You are not the owner of this notebook.</p>' if visitor_p else "",
                   "button_text" : "Save Changes",
                   "n_name" : n_name,
                   "n_description" : n_description,

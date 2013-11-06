@@ -24,7 +24,10 @@
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-	  {% if n.is_open_p() %}<img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>{% else %}<span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span>{% endif %}
+	  {% if n.is_open_p() %}
+	  <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+	  {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
+	  {% endif %}
 	  {{n.name | safe}}</a>
       </h4>
     </div>

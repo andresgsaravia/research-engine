@@ -24,6 +24,24 @@
       <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="20"
 		{% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
     </div>
+
+    {% if open_choice_p %}
+    <div class="radio">
+      <label>
+	<input type="radio" name="open_choice" value="True" {% if open_p  %}checked{% endif %}/>
+	<span class="glyphicon glyphicon-eye-open"></span>
+	Visible to the general public.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="open_choice" value="False" {% if not open_p %}checked{% endif %}/>
+	<span class="glyphicon glyphicon-eye-close"></span>
+	Visible only to members of this project.
+      </label>
+    </div>
+    {% endif %}
+
     <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
     <button type="button" class="btn btn-default"
 	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
