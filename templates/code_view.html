@@ -14,9 +14,20 @@
  
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{code.name}}</h3>
+    <h3 class="panel-title">
+      <small><span class="glyphicon glyphicon-eye-{% if code.is_open_p() %}open{% else %}close{% endif %}"
+		   title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible."></span></small>
+      {{code.name}}</h3>
   </div>
   <div class="panel-body">
+    {% if user and project.user_is_author(user) %}
+    <form method="post" role="form">
+      <button class="btn btn-xs btn-default pull-right" title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible. Click to toggle" 
+	      type="submit">
+	<span class="glyphicon glyphicon-eye-{% if code.is_open_p() %}open{% else %}close{% endif %}"></span></button>
+      <input type="hidden" name="action" value="toggle_visibility" />
+    </form>
+    {% endif %}
     {{code.description | md | safe}}
     <p class="text-muted pull-right">Last comment: {{code.last_updated.strftime("%d %b %Y")}}</p>
     <a href="{{code.link}}">External link</a>
@@ -37,15 +48,16 @@
   {% endfor %}
 </div>
 
+{% if user and project.user_is_author(user) %}
 <form method="post" role="form">
   <div class="form-group{% if error_message %} has-error{% endif %}">
     <label for="commentText">Your comment</label>
     <textarea name="comment" id="commentText" class="form-control" rows="10"
-	      onKeyUp="Preview('commentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
+	      onKeyUp="Preview('commentText','previewArea');">{{comment_value}}</textarea>
   </div>
-  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Comment</button>
+  <button type="submit" class="btn btn-success">Comment</button>
+  <input type="hidden" name="action" value="new_comment" />
   <p class="text-danger">{{error_message}}</p>
-  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in to make a comment{% endif %}</p>{% endif %} 
   <div class="help-block">
     Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
   </div>
@@ -55,5 +67,6 @@
 <div class="panel panel-default">
   <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.</em></div>
 </div>
+{% endif %}
 
 {% endblock %}
