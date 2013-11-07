@@ -13,15 +13,20 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{item.title}}</h3>
+    <h3 class="panel-title">
+      <small><span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"
+		   title="This forum bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible."></span></small>
+      {{item.title}}</h3>
   </div>
   <div class="panel-body">
+    {% if (user and project.user_is_author(user)) %}
     <form method="post" role="form">
       <button class="btn btn-xs btn-default pull-right" title="This bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible. Click to toggle" 
 	      type="submit">
 	<span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"></span></button>
       <input type="hidden" name="action" value="toggle_visibility" />
     </form>
+    {% endif %}
     {% if item.kind == "article" %} 
     <strong>{{item.metadata["publication"]}}</strong> <em>({{item.metadata["date"]}})</em>
     <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
@@ -58,16 +63,15 @@
   {% endif %}
 </div>
 
+{% if (user and project.user_is_author(user)) %}
 <form method="post" role="form">
   <div class="form-group{% if error_message %}has-error{% endif %}">
     <label for="inputText">Your comment</label>
     <textarea name="comment" id="inputText" class="form-control" rows="20"
-	    placeholder="What do you think about this {% if item.kind=='article' %}article{% endif %}?"
-	    {% if visitor_p %}disabled{% endif %}>{{content_value}}</textarea>
+	    placeholder="What do you think about this {% if item.kind=='article' %}article{% endif %}?">{{content_value}}</textarea>
   </div>
-  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post comment</button>
+  <button type="submit" class="btn btn-success">Post comment</button>
   {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
-  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
   <div class="help-block">
     Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
   </div>
@@ -85,4 +89,5 @@
     Click the <em>Render preview</em> button to see a preview here.
   </div>
 </div>
+{% endif %}
 {% endblock %}

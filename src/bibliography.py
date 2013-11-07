@@ -151,16 +151,17 @@ class NewItemPage(BiblioPage):
     def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = "/" + projectid + "/bibliography/new_item"
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/bibliography/new" % projectid)
             return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found." % projectid)
             return
-        self.render("biblio_new.html", 
-                    project = project, disabled_p = not project.user_is_author(user))
+        if not project.user_is_author(user):
+            self.redirect("/%s/bibliography" % projectid)
+            return
+        self.render("biblio_new.html", project = project)
 
     def post(self, projectid):
         user = self.get_login_user()
@@ -173,15 +174,15 @@ class NewItemPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found." % projectid)
             return
+        if not project.user_is_author(user):
+            self.redirect("/%s/bibliography" % projectid)
+            return
         have_error = False
-        visitor_p = not project.user_is_author(user)
         identifier = self.request.get("identifier").strip()
         kind = self.request.get("kind")
+        open_p = self.request.get("open_p") == "True"
         error_message = ''
-        if visitor_p:
-            have_error = True
-            error_message = 'You are not a member of this project.'
-        elif not identifier:
+        if not identifier:
             have_error = True
             error_message = "Please write an appropiate value on the seach field. "
         else:
@@ -204,6 +205,7 @@ class NewItemPage(BiblioPage):
                                    link = make_link(identifier, kind),
                                    kind = kind,
                                    identifier = identifier,
+                                   open_p = open_p,
                                    metadata = metadata,
                                    parent = project.key)
             self.put_and_report(new_item, user, project)
@@ -223,13 +225,12 @@ class ItemPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
             return
-        visible_p = (item.is_open_p()) or (user and project.user_is_author(user))
-        if visible_p:
-            self.render("biblio_item.html", project = project, item = item, user = user,
-                        visitor_p = not (user and  project.user_is_author(user)),
-                        comments = self.get_comments_list(item))
-        else:
+        if not ((item.is_open_p()) or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
+            return
+        self.render("biblio_item.html", project = project, item = item, user = user,
+                    comments = self.get_comments_list(item))
+
 
     def post(self, projectid, itemid):
         user = self.get_login_user()
@@ -241,41 +242,27 @@ class ItemPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found. " % projectid)
             return
+        if not project.user_is_author(user):
+            self.redirect("/%s/bibliography/%s" % (projectid, itemid))
+            return
         item = self.get_item(project, itemid)
         if not item:
             self.error(404)
             self.render("404.html", info = "Bibliographt item with key <em>%s</em> not found. " % itemid)
             return
         action = self.request.get("action")
-        have_error = False
         error_message = ''
-        if not action: have_error = True
-        if not project.user_is_author(user):
-            have_error = True
-            error_message = "You are not a member of this project. "
         if action == "make_comment":
             comment = self.request.get("comment").strip()
-            if not comment:
-                have_error = True
-                error_message = "You can not make an empty comment."
-            if not have_error:
+            if comment:
                 new_comment = BiblioComments(author = user.key,
                                              content = comment,
                                              parent = item.key)
                 self.put_and_report(new_comment, user, project, item)
-                self.redirect("/%s/bibliography/%s" % (projectid, itemid))
-                return
         elif action == "toggle_visibility":
-            logging.error(item.open_p)
             item.open_p = not item.open_p
-            logging.error(item.open_p)
             self.log_and_put(item)
-            self.redirect("/%s/bibliography/%s" % (projectid, itemid))
-            return
-        self.render("biblio_item.html", project = project, item = item, user = user,
-                    visitor_p = not (user and project.user_is_author(user)),
-                    comment = self.get_comments_list(item),
-                    error_message = error_message)
+        self.redirect("/%s/bibliography/%s" % (projectid, itemid))
 
 
 class CommentPage(BiblioPage):
@@ -299,5 +286,4 @@ class CommentPage(BiblioPage):
             self.error(404)
             self.render("404.html", info = "Comment with key <em>%s</em> not found. " % commentid)
             return
-        user = self.get_login_user()
         self.render("biblio_comment.html", user = user, project = project, item = item, comment = comment)
