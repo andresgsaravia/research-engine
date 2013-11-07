@@ -17,7 +17,10 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{thread.title}}</h3>
+    <h3 class="panel-title">
+      <small><span class="glyphicon glyphicon-eye-{% if thread.is_open_p() %}open{% else %}close{% endif %}"
+		   title="This forum thread is {% if not thread.is_open_p() %}not {% endif %}publicly visible."></span></small>
+      {{thread.title}}</h3>
   </div>
   <div class="panel-body">
     {% if user and user.key == thread.author %}

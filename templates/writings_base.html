@@ -22,7 +22,10 @@
   </div>
   <div class="panel-footer">
     <p class="text-muted pull-right">Last Updated: {{writing.last_updated.strftime("%d %b %Y")}}</p>
-    <p class="text-muted">Status: <em>{{writing.status}}</em></p>
+    <p class="text-muted">
+      <small><span class="glyphicon glyphicon-eye-{% if writing.is_open_p() %}open{% else %}close{% endif %}"
+		   title="This writing is {% if not writing.is_open_p() %}not {% endif %}publicly visible."></span></small> |
+      Status: <em>{{writing.status}}</em></p>
   </div>
 </div>
 {% endblock %}

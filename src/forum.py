@@ -17,16 +17,22 @@ class ForumThreads(ndb.Model):
     started = ndb.DateTimeProperty(auto_now_add = True)
     date = ndb.DateTimeProperty(auto_now = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
+    open_p = ndb.BooleanProperty(default = True)
 
     def get_number_of_comments(self):
         return ForumComments.query(ancestor = self.key).count()
 
+    def is_open_p(self):
+        return self.open_p
 
 # each ForumComment should have a ForumThread as parent.
 class ForumComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
+
+    def is_open_p(self):
+        return self.key.parent().get().open_p
 
 
 ######################
@@ -66,15 +72,16 @@ class NewThreadPage(ForumPage):
     def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/forum/new_thread'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/forum/new_thread" % projectid)
             return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        visitor_p = not project.user_is_author(user)
+        if not project.user_is_author(user):
+            self.redirect("/%s/forum" % projectid)
+            return
         kw = {"title" : "New forum thread",
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
@@ -82,52 +89,49 @@ class NewThreadPage(ForumPage):
               "cancel_url" : "/%s/forum" % projectid,
               "more_head" : "<style>#forum-tab {background: white;}</style>",
               "markdown_p" : True,
-              "title_bar_extra" : '/ <a href="/%s/forum">Forum</a>' % projectid,
-              "disabled_p" : visitor_p,
-              "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+              "open_choice_p": True,
+              "breadcrumb" : '<li class="active">Forum</li>'}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/forum/new_thread'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/forum/new_thread" % projectid)
             return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        if not project.user_is_author(user):
+            self.redirect("/%s/forum" % projectid)
+            return
         have_error = False
-        error_message = ''
-        t_title = self.request.get("name")
-        t_content = self.request.get("content")
-        visitor_p = not project.user_is_author(user)
-        if visitor_p:
+        kw = {"error_message" : '',
+              "name_value" : self.request.get("name"),
+              "content_value" : self.request.get("content"),
+              "open_p": self.request.get("open_p") == "True"}
+        if not kw["name_value"]:
             have_error = True
-            error_message = "You are not an author for this project. "
-        else:
-            if not t_title:
-                have_error = True
-                error_message = "Please provide a brief description for this thread. "
-            if not t_content:
-                have_error = True
-                error_message += "You need to write some content before publishing this forum thread. "
+            kw["error_message"] += "Please provide a brief description for this thread. "
+            kw["nClass"] = "has-error"
+        if not kw["content_value"]:
+            have_error = True
+            kw["error_message"] += "You need to write some content before publishing this forum thread. "
+            kw["cClass"] = "has-error"
         if have_error:
-            kw = {"title" : "New forum thread",
-                  "name_placeholder" : "Brief description of the thread. ",
-                  "content_placeholder" : "Content of the thread",
-                  "submit_button_text" : "Create thread",
-                  "markdown_p" : True,
-                  "cancel_url" : "/%s/forum" % projectid,
-                  "more_head" : "<style>#forum-tab {background: white;}</style>",
-                  "name_value": t_title, "content_value": t_content, "error_message" : error_message,
-                  "title_bar_extra" : '/ <a href="/%s/forum">Forum</a>' % projectid,
-                  "disabled_p" : True if visitor_p else False,
-                  "pre_form_message" : '<span style="color:red;">You are not an author in this project.</span>' if visitor_p else ""}
+            kw["title"] = "New forum thread"
+            kw["name_placeholder"] = "Brief description of the thread. "
+            kw["content_placeholder"] = "Content of the thread"
+            kw["submit_button_text"] = "Create thread"
+            kw["markdown_p"] = True
+            kw["open_choice_p"] = True
+            kw["cancel_url"] = "/%s/forum" % projectid
+            kw["breadcrumb"] = '<li class="active">Forum</li>'
             self.render("project_form_2.html", project = project, **kw)
         else:
-            new_thread = ForumThreads(author = user.key, title = t_title, content = t_content, parent = project.key)
+            new_thread = ForumThreads(author = user.key, parent = project.key,
+                                      title = kw["name_value"], content = kw["content_value"], open_p = kw["open_p"])
             self.put_and_report(new_thread, user, project)
             self.redirect("/%s/forum/%s" % (projectid, new_thread.key.integer_id()))
 
@@ -145,16 +149,17 @@ class ThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
             return
+        if not (thread.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
         comments = self.get_comments(thread)
-        visitor_p = not (user and project.user_is_author(user))
         self.render("forum_thread.html", project = project, user = user, thread = thread, 
-                    comments = comments, visitor_p = visitor_p)
+                    comments = comments)
 
     def post(self, projectid, thread_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/forum/' + thread_id
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/forum/%s" % (projectid, thread_id))
             return
         project = self.get_project(projectid)
         if not project: 
@@ -166,30 +171,24 @@ class ThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
             return
+        if not (thread.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
         have_error = False
         error_message = ''
         comment = self.request.get("comment")
-        visitor_p = not (user and project.user_is_author(user))
-        if visitor_p:
-            have_error = True
-            erro_message = "You are not an author in this project. "
-        if not comment:
-            have_error = True
-            error_message = "You can't submit an empty comment. "
-        if not have_error:
+        if comment:
             new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
             self.put_and_report(new_comment, user, project, thread)
-            self.redirect("/%s/forum/%s" % (projectid, thread_id))
-        else:
-            comments = self.get_comments(thread)
-            self.render("forum_thread.html", project = project, thread = thread, user = user,
-                        comments = comments, visitor_p = visitor_p, comment = comment,
-                        error_message = error_message)
+        self.redirect("/%s/forum/%s" % (projectid, thread_id))
 
 
 class EditThreadPage(ForumPage):
     def get(self, projectid, thread_id):
         user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/forum/%s/edit" % (projectid, thread_id))
+            return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -200,22 +199,27 @@ class EditThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = "Thread with key <em>%s</em> not found" % thread_id)
             return
-        kw = {"visitor_p" : not (user and project.user_is_author(user)),
-              "title" : "Edit forum thread",
+        if not thread.author == user.key:
+            self.redirect("/%s/forum/%s" % (projectid, thread_id))
+            return
+        kw = {"title" : "Edit forum thread",
               "name_value" : thread.title,
+              "content_value" : thread.content,
+              "open_p" : thread.open_p,
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
-              "content_value" : thread.content,
               "submit_button_text" : "Save changes",
               "cancel_url" : "/%s/forum/%s" % (projectid,thread_id),
               "markdown_p" : True,
+              "open_choice_p": True,
               "breadcrumb" : '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)}
-        kw["disabled_p"] = kw["visitor_p"]
-        if kw["visitor_p"]: kw["pre_form_message"] = '<p class="text-danger">You can not edit this thread.</p>' 
         self.render("project_form_2.html", user = user, project = project, **kw)
 
     def post(self, projectid, thread_id):
         user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/forum/%s/edit" % (projectid, thread_id))
+            return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
@@ -226,35 +230,36 @@ class EditThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = "Thread with key <em>%s</em> not found" % thread_id)
             return
+        if not thread.author == user.key:
+            self.redirect("/%s/forum/%s" % (projectid, thread_id))
+            return
         have_error = False
-        kw = {"visitor_p" : not (user and project.user_is_author(user)),
-              "error_message" : '',
-              "name" : self.request.get("name"),
-              "description" : self.request.get("content")}
-        if kw["visitor_p"]:
-            have_error = True
-            kw["error_message"] = 'You can not edit this thread.'
-        if not kw["name"]:
+        kw = {"error_message" : '',
+              "name_value" : self.request.get("name"),
+              "content_value" : self.request.get("content"),
+              "open_p" : self.request.get("open_p") == "True"}
+        if not kw["name_value"]:
             have_error = True
             kw["error_message"] = "Please provide a brief description for this thread. "
-        if not kw["description"]:
+            kw["nClass"] = "has-error"
+        if not kw["content_value"]:
             have_error = True
             kw["error_message"] += "You need to write some content before publishing this forum thread. "
+            kw["cClass"] = "has-error"
         if have_error:
             kw["title"] = "Edit forum thread"
-            kw["name_value"] = kw["name"]
             kw["name_placeholder"] = "Brief description of the thread."
             kw["content_placeholder"] = "Content of your thread."
-            kw["content_value"] = kw["description"]
             kw["submit_button_text"] = "Save changes"
             kw["cancel_url"] = "/%s/forum/%s" % (projectid,thread_id)
             kw["markdown_p"] = True
+            kw["open_choice_p"] = True
             kw["breadcrumb"] = '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)
-            kw["disabled_p"] = kw["visitor_p"]
             self.render("project_form_2.html", user = user, project = project, **kw)
         else:
-            if (thread.title != kw["name"] or thread.content != kw["description"]):
-                thread.title = kw["name"]
-                thread.content = kw["description"]
+            if (thread.title != kw["name_value"] or thread.content != kw["content_value"] or thread.open_p != kw["open_p"]):
+                thread.title = kw["name_value"]
+                thread.content = kw["content_value"]
+                thread.open_p = kw["open_p"]
                 self.log_and_put(thread)
             self.redirect("/%s/forum/%s" % (project.key.integer_id(), thread.key.integer_id()))

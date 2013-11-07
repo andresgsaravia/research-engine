@@ -25,7 +25,7 @@
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
 	<a href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">
 	  <small><span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
-		       title="This dataset is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
+		       title="This writing is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
 	  {{i.title | safe}}</a>
       </h4>
     </div>
