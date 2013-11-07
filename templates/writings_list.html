@@ -17,12 +17,16 @@
 
 <div class="panel-group" id="myaccordion">
   {% for i in items %}
+  {% if i.is_open_p() or (user and project.user_is_author(user)) %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{i.key.integer_id()}}">
 	  <span class="glyphicon glyphicon-info-sign"></span></a>
-	<a href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">{{i.title | safe}}</a>
+	<a href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">
+	  <small><span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
+		       title="This dataset is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
+	  {{i.title | safe}}</a>
       </h4>
     </div>
     <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
@@ -33,6 +37,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
   {% endfor %}
 </div>    
 

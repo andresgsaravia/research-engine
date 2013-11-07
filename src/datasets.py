@@ -140,7 +140,7 @@ class NewDataSetPage(DataPage):
         kw = {"error_message" : '',
               "name_value" : self.request.get("name"),
               "content_value" : self.request.get("content"),
-              "open_p" : self.request.get("open_choice") == "True"}
+              "open_p" : self.request.get("open_p") == "True"}
         if not kw["name_value"]:
             have_error = True
             kw["error_message"] = "You must provide a name for your new dataset. "
@@ -242,7 +242,7 @@ class EditDataSetPage(DataPage):
         kw = {"error_message" : '',
               "name_value" : self.request.get("name"),
               "content_value" : self.request.get("content"),
-              "open_p" : self.request.get("open_choice") == "True"}
+              "open_p" : self.request.get("open_p") == "True"}
         if not kw["name_value"]:
             have_error = True
             kw["error_message"] = "You must provide a name for your dataset. "

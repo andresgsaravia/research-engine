@@ -14,7 +14,10 @@ class CollaborativeWritings(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
     status = ndb.StringProperty(required = False)
+    open_p = ndb.BooleanProperty(default = True)
 
+    def is_open_p(self):
+        return self.open_p
 
 # Should have as parent a CollaborativeWriting
 class WritingRevisions(ndb.Model):
@@ -23,12 +26,18 @@ class WritingRevisions(ndb.Model):
     content = ndb.TextProperty(required = True)
     summary = ndb.TextProperty(required = False)
 
+    def is_open_p(self):
+        return self.key.parent().get().open_p
+
 
 # Should have as parent a CollaborativeWriting
 class WritingComments(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
     comment = ndb.TextProperty(required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
+
+    def is_open_p(self):
+        return self.key.parent().get().open_p
 
 
 ######################
@@ -89,24 +98,24 @@ class NewWritingPage(WritingPage):
     def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/writings/new'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/writings/new" % projetid)
             return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        visitor_p = False if project.user_is_author(user) else True
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings" % projetid)
+            return
         kw = {"title" : "New collaborative writing",
               "name_placeholder" : "Title of the new writing",
               "content_placeholder" : "Description of the new writing",
               "submit_button_text" : "Create writing",
               "cancel_url" : "/%s/writings" % projectid,
               "breadcrumb" : '<li class="active">Collaborative writings</li>',
-              "disabled_p" : True if visitor_p else False,
               "markdown_p" : True,
-              "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
+              "open_choice_p" : True}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
@@ -120,38 +129,37 @@ class NewWritingPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings" % projectid)
+            return
         have_error = False
-        error_message = ''
-        visitor_p = False if project.user_is_author(user) else True
-        if visitor_p:
+        kw = {"error_message" : '',
+              "name_value" : self.request.get("name"),
+              "content_value" : self.request.get("content"),
+              "open_p" : self.request.get("open_p") == "True"}
+        if not kw["name_value"]:
             have_error = True
-            error_message = "You are not an author of this project. "
-        w_name = self.request.get("name")
-        w_description = self.request.get("content")
-        if not w_name:
+            kw["error_message"] += "You must provide a name for your new writing. "
+            kw["nClass"] = "has-error"
+        if not kw["content_value"]:
             have_error = True
-            error_message = "You must provide a name for your new writing. "
-        if not w_description:
-            have_error = True
-            error_message += "Please provide a description of this writing. "
+            kw["error_message"] += "Please provide a description of this writing. "
+            kw["cClass"] = "has-error"
         if have_error:
-            kw = {"title" : "New collaborative writing",
-                  "name_placeholder" : "Title of the new writing",
-                  "content_placeholder" : "Description of the new writing",
-                  "submit_button_text" : "Create writing",
-                  "cancel_url" : "/%s/%s/writings" % projectid,
-                  "breadcrumb" : '<li class="active">Collaborative writings</li>',
-                  "name_value" : w_name,
-                  "content_value" : w_description,
-                  "error_message" : error_message,
-                  "disabled_p" : True if visitor_p else False,
-                  "markdown_p" : True,
-                  "pre_form_message" : '<p class="text-danger">You are not an author in this project.</p>' if visitor_p else ""}
+            kw["title"] = "New collaborative writing"
+            kw["name_placeholder"] = "Title of the new writing"
+            kw["content_placeholder"] = "Description of the new writing"
+            kw["submit_button_text"] = "Create writing"
+            kw["cancel_url"] = "/%s/writings" % projectid
+            kw["breadcrumb"] = '<li class="active">Collaborative writings</li>'
+            kw["markdown_p"] = True
+            kw["open_choice_p"] = True
             self.render("project_form_2.html", project = project, **kw)
         else:
-            new_writing = CollaborativeWritings(title = w_name,
-                                                description = w_description,
+            new_writing = CollaborativeWritings(title = kw["name_value"],
+                                                description = kw["content_value"],
                                                 status = "In progress",
+                                                open_p = kw["open_p"],
                                                 parent = project.key)
             self.put_and_report(new_writing, user, project)
             self.redirect("/%s/writings/%s" % (project.key.integer_id(), new_writing.key.integer_id()))
@@ -170,6 +178,9 @@ class ViewWritingPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
+        if not (writing.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
         last_revision = self.get_last_revision(writing)
         self.render("writings_view.html", project = project, writing = writing, last_revision = last_revision, curr_p = True,
                     visitor_p = not (user and project.user_is_author(user)))
@@ -178,10 +189,16 @@ class ViewWritingPage(WritingPage):
 class EditWritingPage(WritingPage):
     def get(self, projectid, writing_id):
         user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/writings/%s/edit" % (projectid, writing_id))
+            return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings/%s" % (projectid, writing_id))
             return
         writing = self.get_writing(project, writing_id)
         if not writing:
@@ -193,26 +210,21 @@ class EditWritingPage(WritingPage):
             content = last_revision.content
         else:
             content = ''
-        visitor_p = False if (user and project.user_is_author(user)) else True
-        if user and visitor_p:
-            edit_warning = "You are not an author in this project. You can't make changes to this writing."
-        elif visitor_p:
-            edit_warning = "Please log in to save your changes."
-        else:
-            edit_warning = ''
-        self.render("writings_edit.html", project = project, writing = writing, visitor_p = visitor_p, edit_p = True,
+        self.render("writings_edit.html", project = project, writing = writing, edit_p = True,
                     content = content, status = writing.status, user = user)
 
     def post(self, projectid, writing_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/writings/' + writing_id + '/edit'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/writings/%s/edit" % (projectid, writing_id))
             return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings/%s" % (projectid, writing_id))
             return
         writing = self.get_writing(project, writing_id)
         if not writing:
@@ -220,27 +232,23 @@ class EditWritingPage(WritingPage):
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
         last_revision = self.get_last_revision(writing)
-        content = self.request.get("content")
-        status = self.request.get("status")
-        summary = self.request.get("summary")
+        kw = {"content" : self.request.get("content"),
+              "status" : self.request.get("status"),
+              "summary" : self.request.get("summary"),
+              "error_message" : ''}
         have_error = False
-        error_message = ''
-        visitor_p = False if (user and project.user_is_author(user)) else True
-        if visitor_p:
+        if not kw["content"]:
             have_error = True
-            error_message = "You are not an author of this project. "
-        if not content:
-            have_error = True
-            error_message = "Please write some content before saving. "
-        if last_revision and (content == last_revision.content) and (status == writing.status):
+            kw["error_message"] = "Please write some content before saving. "
+            kw["cClass"] = "has-error"
+        if last_revision and (kw["content"] == last_revision.content) and (kw["status"] == writing.status):
             have_error = True
             error_message = "There aren't any changes to save. "
         if have_error:
-            self.render("writings_edit.html", project = project, writing = writing, disabled_p = visitor_p, edit_p = True,
-                        content = content, status = status, summary = summary, error_message = error_message, user = user)
+            self.render("writings_edit.html", project = project, writing = writing, edit_p = True, user = user, **kw)
         else:
-            new_revision = WritingRevisions(author = user.key, content = content, summary = summary, parent = writing.key)
-            if status: writing.status = status
+            new_revision = WritingRevisions(author = user.key, content = kw["content"], summary = kw["summary"], parent = writing.key)
+            if kw["status"]: writing.status = kw["status"]
             self.put_and_report(new_revision, user, project, writing)
             self.redirect("/%s/writings/%s" % (projectid, writing_id))
 
@@ -258,9 +266,12 @@ class HistoryWritingPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
+        if not (writing.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
         revisions = self.get_revisions(writing)
-        self.render("writings_history.html", project = project, user = user, writing = writing, revisions = revisions, 
-                    hist_p = True, visitor_p = not (user and project.user_is_author(user)))
+        self.render("writings_history.html", project = project, user = user, writing = writing, hist_p = True, 
+                    visitor_p = not (user and project.user_is_author(user)), revisions = revisions)
 
 
 class ViewRevisionPage(WritingPage):
@@ -275,6 +286,9 @@ class ViewRevisionPage(WritingPage):
         if not writing:
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            return
+        if not (writing.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
             return
         revision = self.get_revision(writing, rev_id)
         if not revision:
@@ -298,16 +312,17 @@ class DiscussionPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
+        if not (writing.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
         comments = self.get_comments(writing)
-        visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("writings_discussion.html", project = project, visitor_p = visitor_p, disc_p = True,
-                    writing = writing, comments = comments)
+        self.render("writings_discussion.html", project = project, user = user, disc_p = True, writing = writing,
+                    visitor_p = not (user and project.user_is_author(user)), comments = comments)
 
     def post(self, projectid, writing_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/writings/' + writing_id + '/discussion'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/writings/%s/discussion" % (projectid, writing_id))
             return
         project = self.get_project(projectid)
         if not project:
@@ -319,31 +334,24 @@ class DiscussionPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
-        have_error = False
-        error_message = ""
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings/%s/discusison" % (projectid, writing_id))
+            return
         comment = self.request.get("comment")
-        visitor_p = False if project.user_is_author(user) else True
-        if visitor_p:
-            have_error = True
-            error_message = "You are not an author of this project. "
         if not comment:
-            have_error = True
-            error_message = "You can't submit an empty comment. "
-        if not have_error:
-            new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
-            self.put_and_report(new_comment, user, project, writing)
             self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
             return
-        else:
-            comments = self.get_comments(writing)
-            self.render("writings_discussion.html", project = project, visitor_p = visitor_p, user = user,
-                        writing = writing, comments = comments, comment = comment, disc_p = True,
-                        error_message = error_message)
+        new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
+        self.put_and_report(new_comment, user, project, writing)
+        self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
 
 
 class InfoPage(WritingPage):
     def get(self, projectid, writing_id):
         user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/writings/%s/info" % (projectid, writing_id))
+            return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
@@ -354,8 +362,10 @@ class InfoPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
-        visitor_p = False if (user and project.user_is_author(user)) else True
-        self.render("writings_info.html", project = project, writing = writing, visitor_p = visitor_p,
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            return
+        self.render("writings_info.html", project = project, writing = writing, open_p = writing.open_p,
                     title = writing.title, description = writing.description, info_p = True)
 
     def post(self, projectid, writing_id):
@@ -374,14 +384,14 @@ class InfoPage(WritingPage):
             self.error(404)
             self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
             return
+        if not project.user_is_author(user):
+            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            return        
         have_error = False
         kw = {"title" : self.request.get("title"),
               "description" : self.request.get("description"),
-              "visitor_p" : False if project.user_is_author(user) else True,
+              "open_p" : self.request.get("open_p") == "True",
               "info_p": True}
-        if kw["visitor_p"]:
-            have_error = True
-            kw["error_message"] = "You are not an author of this project. "
         if not kw["title"]:
             have_error = True
             kw["error_message"] = "Please provide a title for this writing before saving. "
@@ -390,9 +400,10 @@ class InfoPage(WritingPage):
             have_error = True
             kw["error_message"] = "Please provide a description for this writing before saving. "
             kw["dClass"] = "has-error"
-        if (not have_error) and (kw["title"] != writing.title or kw["description"] != writing.description):
+        if (not have_error) and (kw["title"] != writing.title or kw["description"] != writing.description or kw["open_p"] != writing.open_p):
             writing.title = kw["title"]
             writing.description = kw["description"]
+            writing.open_p = kw["open_p"]
             self.log_and_put(writing)
-            kw["success_message"] = 'Changes saved'
+        kw["success_message"] = 'Changes saved'
         self.render("writings_info.html", project = project, writing = writing, **kw)

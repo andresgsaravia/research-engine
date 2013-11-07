@@ -28,14 +28,14 @@
     {% if open_choice_p %}
     <div class="radio">
       <label>
-	<input type="radio" name="open_choice" value="True" {% if open_p  %}checked{% endif %}/>
+	<input type="radio" name="open_p" value="True" {% if open_p %}checked{% endif %}/>
 	<span class="glyphicon glyphicon-eye-open"></span>
 	Visible to the general public.
       </label>
     </div>
     <div class="radio">
       <label>
-	<input type="radio" name="open_choice" value="False" {% if not open_p %}checked{% endif %}/>
+	<input type="radio" name="open_p" value="False" {% if not open_p %}checked{% endif %}/>
 	<span class="glyphicon glyphicon-eye-close"></span>
 	Visible only to members of this project.
       </label>

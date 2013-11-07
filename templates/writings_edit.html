@@ -5,22 +5,20 @@
 
 <form method="post" role="form">
   <div class="form-group {{cClass}}">
-    <textarea name="content" id="inputText" class="form-control" rows="20" autofocus
-	      {% if visitor_p %}disabled{% endif %}>{{content}}</textarea>
+    <textarea name="content" id="inputText" class="form-control" rows="20" autofocus>{{content}}</textarea>
   </div>
-  <div class="form-group {{sClass}}">
+  <div class="form-group">
     <label for="stinput">Status:</label>
-    <input id="stinput" type="text" name="status" value="{{status}}" class="form-control" placeholder="Status of the writing (optional)" {% if visitor_p %}disabled{% endif %}/>
+    <input id="stinput" type="text" name="status" value="{{status}}" class="form-control" placeholder="Status of the writing (optional)"/>
   </div>
   <div class="form-group">
     <label for="chinput">Changes:</label>
-    <input id="chinput" type="text" name="summary" value="{{summary}}" class="form-control" placeholder="Summary of changes (optional)" {% if visitor_p %}disabled{% endif %}/>
+    <input id="chinput" type="text" name="summary" value="{{summary}}" class="form-control" placeholder="Summary of changes (optional)"/>
   </div>
-  <button type="submit" class="btn btn-success"{% if visitor_p %}disabled{% endif %}>Save changes</button>
+  <button type="submit" class="btn btn-success">Save changes</button>
   <button onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'}"
 	  type="button" class="btn btn-default">Cancel</button>
-  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
-  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
+  {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message}}</div>{% endif %}
   <div class="help-block">
     <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p> 
   </div>
