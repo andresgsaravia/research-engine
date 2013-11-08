@@ -67,11 +67,15 @@ class Projects(ndb.Model):
         requesting_handler.log_and_put(user, "Adding a new project to my_projects property")
         return True
 
-    def list_updates(self, requesting_handler, n = UPDATES_TO_DISPLAY):
+    def list_updates(self, requesting_handler, user = None, n = UPDATES_TO_DISPLAY):
         assert type(n) == int
         assert n > 0
         requesting_handler.log_read(ProjectUpdates, "Requesting %s updates. " % n)
-        return ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).fetch(n)
+        updates = []
+        for u in ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).iter():
+            if u.is_open_p() or (user and self.user_is_author(user)): updates.append(u)
+            if len(updates) >= n: break            
+        return updates
 
 
 # Should have a Project as parent
@@ -125,7 +129,7 @@ class OverviewPage(ProjectPage):
         self.render("project_overview.html", project = project, 
                     overview_tab_class = "active",
                     authors = project.list_of_authors(self),
-                    updates = project.list_updates(self, UPDATES_TO_DISPLAY),
+                    updates = project.list_updates(self, user, UPDATES_TO_DISPLAY),
                     visitor_p = not (user and project.user_is_author(user)))
 
 
