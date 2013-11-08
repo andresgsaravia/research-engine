@@ -8,10 +8,6 @@
 
 <h2 class="page-header">Project settings</h2>
 
-{% if visitor_p %}
-<p class="text-danger">You are not an author of this project.</p>
-{% else %}
-
 <form method="post" role="form">
   <div class="from-group {{nClass}}">
     <label for="projectName">Project name</label>
@@ -24,6 +20,42 @@
     <textarea id="projectDescription" name="p_description" class="form-control" rows="10"
 	      placeholder="Description of the project.">{{p_description}}</textarea>
   </div>
+
+  <div class="form-group">
+    <label>Default visibility</label>
+    <a data-toggle="modal" href="#openHelp"><span class="glyphicon glyphicon-info-sign"></span></a>
+    <div class="modal fade" id="openHelp" tabindex="-1" role="dialog" aria-labelledby="openHelpLabel" aria-hidden="true">
+      <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
+	    <h4 class="modal-title">Default visibility</h4>
+	  </div>
+	  <div class="modal-body">
+	    <p>Each activity inside a given project can be set as<br/> <em><span class="glyphicon glyphicon-eye-open"></span> Visible to the general public</em> (in which case everyone could see it)<br/> or<br/> <span class="glyphicon glyphicon-eye-close"></span> Visible only to members of this project (you need to be logged in and be a member of the project to view it). </p>
+	    <p>You can have a different visibility choice for each activity. This <strong>Default visibility</strong> option sets the default choice for new elements in this project. You can change this setting later and you can change also the visibility for each individual activity.</p>
+	    <p>Keep in mind that currently here at <em>Research Engine</em> the project's name and description are always publicly visible</p>
+	  </div>
+	</div>
+      </div>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="open_p" value="True" {% if project.default_open_p %}checked{% endif %}/>
+	<span class="glyphicon glyphicon-eye-open"></span>
+	Visible to the general public.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="open_p" value="False" {% if not project.default_open_p %}checked{% endif %}/>
+	<span class="glyphicon glyphicon-eye-close"></span>
+	Visible only to members of this project.
+      </label>
+    </div>
+  </div>
+
+
   <span class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</span>
     
   <p>You will receive an email notification for:</p>
@@ -59,8 +91,8 @@
   <button type="submit" class="btn btn-success">Save changes</button>
   <button type="button" class="btn btn-default" onClick="window.location = '/{{project.key.integer_id()}}'">Cancel</button>
 
-  {% if info_message %}<p class="text-success">{{info_message}}</p>{% endif %}
-  {% if error %}<p class="text-danger">{{error}}</p>{% endif %}
+  {% if info_message %}<div class="alert alert-success" style="margin-top:10px;">{{info_message}}</div>{% endif %}
+  {% if error %}<div class="alert alert-danger" style="margin-top:10px;">{{error}}</div>{% endif %}
   
 </form>
 
@@ -76,9 +108,8 @@
 <a class="btn btn-success" href="/{{project.key.integer_id()}}/invite">
   <span class=" glyphicon glyphicon-plus"></span> Invite a collaborator
 </a>
-<a class="btn btn-danger" href="#" onClick="alert('\'Leave this project\' is not implemented yet... sorry.')">
+<a class="btn btn-danger" href="#" onClick="alert('\'Leave this project\' is not implemented yet... we will fix this soon.')">
   <span class="glyphicon glyphicon-minus"></span> Leave this project
 </a>
 
-{% endif %}
 {% endblock %}

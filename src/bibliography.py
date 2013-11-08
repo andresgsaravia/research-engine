@@ -161,7 +161,7 @@ class NewItemPage(BiblioPage):
         if not project.user_is_author(user):
             self.redirect("/%s/bibliography" % projectid)
             return
-        self.render("biblio_new.html", project = project)
+        self.render("biblio_new.html", project = project, open_p = project.default_open_p)
 
     def post(self, projectid):
         user = self.get_login_user()

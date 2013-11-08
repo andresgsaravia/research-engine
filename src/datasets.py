@@ -119,7 +119,8 @@ class NewDataSetPage(DataPage):
               "markdown_p": True,
               "cancel_url" : "/%s/datasets" % projectid,
               "breadcrumb" : '<li class="active">Datasets</li>',
-              "open_choice_p" : True}
+              "open_choice_p" : True,
+              "open_p" : project.default_open_p}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
@@ -198,13 +199,13 @@ class EditDataSetPage(DataPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        if not project.user_is_author(user):
+            self.redirect("/%s/datasets/%s" % (projectid, dataset_id))
+            return
         dataset = self.get_dataset(project, dataset_id)
         if not dataset:
             self.error(404)
             self.render("404.html", info = 'Dataset with key <em>%s</em> not found' % dataset_id)
-            return
-        if not project.user_is_author(user):
-            self.redirect("/%s/datasets/%s" % (projectid, dataset_id))
             return
         base_url = "/%s/datasets" % projectid
         kw = {"title" : "Editing dataset <br/><small>%s</small>" % dataset.name,

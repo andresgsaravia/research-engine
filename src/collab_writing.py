@@ -115,14 +115,14 @@ class NewWritingPage(WritingPage):
               "cancel_url" : "/%s/writings" % projectid,
               "breadcrumb" : '<li class="active">Collaborative writings</li>',
               "markdown_p" : True,
-              "open_choice_p" : True}
+              "open_choice_p" : True,
+              "open_p" : project.default_open_p}
         self.render("project_form_2.html", project = project, **kw)
 
     def post(self, projectid):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/writings/new'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/writings/new" % projectid)
             return
         project = self.get_project(projectid)
         if not project:
@@ -371,8 +371,7 @@ class InfoPage(WritingPage):
     def post(self, projectid, writing_id):
         user = self.get_login_user()
         if not user:
-            goback = '/' + projectid + '/writings/' + writing_id + '/info'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/%s/writings/%s/info" % (projectid, writing_id))
             return
         project = self.get_project(projectid)
         if not project:

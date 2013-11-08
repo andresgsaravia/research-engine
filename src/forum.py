@@ -90,6 +90,7 @@ class NewThreadPage(ForumPage):
               "more_head" : "<style>#forum-tab {background: white;}</style>",
               "markdown_p" : True,
               "open_choice_p": True,
+              "open_p" : project.default_open_p,
               "breadcrumb" : '<li class="active">Forum</li>'}
         self.render("project_form_2.html", project = project, **kw)
 

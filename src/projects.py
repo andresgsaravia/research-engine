@@ -17,6 +17,7 @@ class Projects(ndb.Model):
     authors = ndb.KeyProperty(repeated = True)                        # There's no such thing as an "owner"
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
+    default_open_p = ndb.BooleanProperty(default = True)
     wiki_open_p = ndb.BooleanProperty(default = True)
     # Lists of authors to send notifications after an update
     wiki_notifications_list = ndb.KeyProperty(repeated = True)
@@ -137,21 +138,20 @@ class NewProjectPage(GenericPage):
     def get(self):
         user = self.get_login_user()
         if not user:
-            goback = '/new_project'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/new_project")
             return
         self.render("project_new.html", user = user)
 
     def post(self):
         user = self.get_login_user()
         if not user:
-            goback = '/new_project'
-            self.redirect("/login?goback=%s" % goback)
+            self.redirect("/login?goback=/new_project")
             return
         have_error = False
         kw = {"error_message" : ''}
         p_name = self.request.get('p_name').strip()
         p_description = self.request.get('p_description')
+        open_p = self.request.get("open_p") == "True"
         if not p_name:
             have_error = True
             kw["error_message"] = 'Please provide a name for your project. '
@@ -165,6 +165,8 @@ class NewProjectPage(GenericPage):
         else:
             new_project = Projects(name = p_name,
                                    description = p_description,
+                                   default_open_p = open_p,
+                                   wiki_open_p = open_p,
                                    authors = [user.key],
                                    wiki_notifications_list = [user.key],
                                    nb_notifications_list = [user.key],
@@ -201,9 +203,9 @@ class AdminPage(ProjectPage):
             project.add_author(self, user)
             self.redirect("/%s/admin" % projectid)
             return
-        visitor_p = False
         if not project.user_is_author(user):
-            visitor_p = True
+            self.redirect("/%s" % projectid)
+            return
         kw = {"wiki_p"          : "checked" if user.key in project.wiki_notifications_list else "",
               "notebooks_p"     : "checked" if user.key in project.nb_notifications_list else "",
               "writings_p"      : "checked" if user.key in project.writings_notifications_list else "",
@@ -214,7 +216,7 @@ class AdminPage(ProjectPage):
               "p_description"   : project.description,
               "p_name"          : project.name,
               "authors"         : project.list_of_authors(self)}
-        self.render('project_admin.html', visitor_p = visitor_p, project = project, **kw)
+        self.render('project_admin.html', project = project, **kw)
 
     def post(self, projectid):
         user = self.get_login_user()
@@ -236,13 +238,13 @@ class AdminPage(ProjectPage):
               "forum_posts_p"   : self.request.get('forum_posts_p'),
               "p_description"   : self.request.get('p_description'),
               "p_name"          : self.request.get('p_name'),
+              "default_open_p"  : self.request.get('open_p') == 'True',
               "authors"         : project.list_of_authors(self)}
         have_error = False
         kw["error"] = ''
         if not project.user_is_author(user):
-            have_error = True
-            kw["error"] = "You are not a member of this project. "
-
+            self.redirect("/%s" % projectid)
+            return
         ## Project's name and description
         if kw["p_name"]:
             project.name = kw["p_name"]
@@ -256,7 +258,7 @@ class AdminPage(ProjectPage):
             have_error = True
             kw["error"] += "You must provide a description for the project. "
             kw["dClass"] = "has-error"
-
+        project.default_open_p = kw["default_open_p"]
         ## Email notifications
         # Add to list
         if kw["wiki_p"] and not (user.key in project.wiki_notifications_list):

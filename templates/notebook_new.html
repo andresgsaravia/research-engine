@@ -15,16 +15,20 @@
   {{pre_form_message | safe}}
 
   <form method="post" role="form">
-    <div class="form-group">
+    <div class="form-group {{nClass}}">
       <input type="text" name="name" class="form-control"
 	     value="{{n_name}}" placeholder="Title of the notebook" autofocus {% if visitor_p %}disabled{% endif %}/>
     </div>
-    <div class="form-group">
+    <div class="form-group {{dClass}}">
       <textarea name="description" id="inputText" placeholder="Description of the notebook" 
 		class="form-control" rows="10"{% if visior_p %} disabled{% endif %}>{{n_description}}</textarea>
     </div>
-    <small><a href="https://en.wikipedia.org/wiki/Open_Notebook_Science" target="_blank">
-	About the Open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a></small>
+    <small>About
+      <a href="https://en.wikipedia.org/wiki/Open_Notebook_Science" target="_blank">
+	Open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a> and
+      <a href="https://onsclaims.wikispaces.com/" target="_blank">
+	this set of icons <span class="glyphicon glyphicon-new-window"></span></a>
+    </small>
     <div class="radio">
       <label>
 	<input type="radio" name="claims" value="ONS-ACI" {% if n_claims == "ONS-ACI" %}checked{% endif %}/>

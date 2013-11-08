@@ -21,6 +21,42 @@
       <textarea class="form-control" rows="15" name="p_description" id="pDescription"
 		placeholder="Enter a description of the project">{{p_description}}</textarea>
     </div>
+
+    <div class="form-group">
+      <label>Default visibility</label>
+      <a data-toggle="modal" href="#openHelp"><span class="glyphicon glyphicon-info-sign"></span></a>
+      <div class="modal fade" id="openHelp" tabindex="-1" role="dialog" aria-labelledby="openHelpLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	      <button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
+	      <h4 class="modal-title">Default visibility</h4>
+	    </div>
+	    <div class="modal-body">
+	      <p>Each activity inside a given project can be set as<br/> <em><span class="glyphicon glyphicon-eye-open"></span> Visible to the general public</em> (in which case everyone could see it)<br/> or<br/> <span class="glyphicon glyphicon-eye-close"></span> Visible only to members of this project (you need to be logged in and be a member of the project to view it). </p>
+	      <p>You can have a different visibility choice for each activity. This <strong>Default visibility</strong> option sets the default choice for new elements in this project. You can change this setting later and you can change also the visibility for each individual activity.</p>
+	      <p>Keep in mind that currently here at <em>Research Engine</em> the project's name and description are always publicly visible</p>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      <div class="radio">
+	<label>
+	  <input type="radio" name="open_p" value="True" checked/>
+	  <span class="glyphicon glyphicon-eye-open"></span>
+	  Visible to the general public.
+	</label>
+      </div>
+      <div class="radio">
+	<label>
+	  <input type="radio" name="open_p" value="False" />
+	  <span class="glyphicon glyphicon-eye-close"></span>
+	  Visible only to members of this project.
+	</label>
+      </div>
+    </div>
+
+
     <button type="submit" class="btn btn-success">Create new project</button>
     <button type="button" class="btn btn-default" onClick="window.location = '/{{user.username}}'">Cancel</button>
     <p class="text-danger" style="margin-top:10px;">{{error_message}}</p>

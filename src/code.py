@@ -94,6 +94,7 @@ class NewCodePage(CodePage):
               "submit_button_text" : "Add repository",
               "markdown_p" : True,
               "open_choice_p" : True,
+              "open_p" : project.default_open_p,
               "cancel_url" : "/%s/code" % projectid}
         self.render("project_form_2.html", project = project, **kw)
 
