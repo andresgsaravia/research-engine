@@ -21,8 +21,9 @@
   </div>
   <div class="panel-body">
     {% if user and project.user_is_author(user) %}
-    <form method="post" role="form">
-      <button class="btn btn-xs btn-default pull-right" title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible. Click to toggle" 
+    <form method="post" role="form"
+	  onsubmit="return confirm('Are you sure you want to make this source-code discussion {% if code.is_open_p() %}not {% endif %}publicly visible?');">
+      <button class="btn btn-sm btn-default pull-right" title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible. Click to toggle" 
 	      type="submit">
 	<span class="glyphicon glyphicon-eye-{% if code.is_open_p() %}open{% else %}close{% endif %}"></span></button>
       <input type="hidden" name="action" value="toggle_visibility" />
