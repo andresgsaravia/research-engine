@@ -85,7 +85,7 @@ class ViewWikiPage(GenericWikiPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        if not (project.wiki_open_p or (user and project.user_is_auhtor(user))):
+        if not (project.wiki_open_p or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
         wikipage = self.get_wikipage(project, wikiurl)
@@ -99,7 +99,24 @@ class ViewWikiPage(GenericWikiPage):
 
     def post(self, projectid, wikiurl):
         # Toggle visibility code here... tomorrow
-        pass
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/wiki/page/%s" % (projectid, wikiurl))
+            return
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        action = self.request.get("action")
+        if not (project.user_is_author(user) 
+                and action == "toggle_visibility" 
+                and wikiurl == "Main_Page"):
+            self.redirect("/%s/wiki/page/%s" % (projectid, wikiurl))
+            return
+        project.wiki_open_p = not project.wiki_open_p 
+        self.log_and_put(project)
+        self.redirect("/%s/wiki/page/Main_Page" % projectid)
 
 
 class EditWikiPage(GenericWikiPage):
