@@ -17,6 +17,7 @@ class Projects(ndb.Model):
     authors = ndb.KeyProperty(repeated = True)                        # There's no such thing as an "owner"
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
+    wiki_open_p = ndb.BooleanProperty(default = True)
     # Lists of authors to send notifications after an update
     wiki_notifications_list = ndb.KeyProperty(repeated = True)
     nb_notifications_list = ndb.KeyProperty(repeated = True)

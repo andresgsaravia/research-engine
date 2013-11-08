@@ -15,7 +15,17 @@
 
 <div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
   <div class="panel-body">
-    <h1 style="border-bottom:1px solid #B0B0B0;">{{wikiurl.replace("_", " ")}}</h1>
+    <h1 style="border-bottom:1px solid #B0B0B0;">
+      {% if wikiurl == "Main_Page" and (user and project.user_is_author(user)) %}
+      <form method="post" role="form">
+	<button class="btn btn-sm btn-default pull-right" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle." 
+		type="submit">
+	  <span class="glyphicon glyphicon-eye-{% if project.wiki_open_p %}open{% else %}close{% endif %}"></span></button>
+	<input type="hidden" name="action" value="toggle_visibility" />
+      </form>
+      {% endif %}
+      {{wikiurl.replace("_", " ")}}
+    </h1>
     {% block w_content %}
     {% endblock %}
   </div>
