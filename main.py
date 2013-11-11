@@ -64,6 +64,7 @@ app = webapp2.WSGIApplication([('/', frontend.RootPage),
                                # Code
                                ('/([0-9]+)/code', code.CodesListPage),
                                ('/([0-9]+)/code/new', code.NewCodePage),
+                               ('/([0-9]+)/code/([0-9]+)/edit', code.EditCodePage),
                                ('/([0-9]+)/code/([0-9]+)', code.ViewCodePage),
                                # Bibliography
                                ('/([0-9]+)/bibliography', bibliography.MainPage),
