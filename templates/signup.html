@@ -18,8 +18,8 @@
   <div class="page-header"><h2>Create an account</h2></div>
 
   {% if user %}
-  <p>Welcome back {{username}}, you are already logged in.</p>
-  <p>If you are not {{username}} you can <a href="/logout">Logout</a></p>
+  <p>Welcome back {{user.username}}, you are already logged in.</p>
+  <p>If you are not {{user.username}} you can <a href="/logout">Logout</a></p>
 
   {% else %}
   <form method="post" role="form" class="form-horizontal" style="margin-bottom:10px;">
@@ -47,7 +47,7 @@
       <div class="col-sm-offset-2 col-sm-10">
 	<div class="checkbox">
 	  <label>
-	    <input type="checkbox" id="TOScb" onClick="enableSignUp();"/> I have read and agree to {{APP_NAME}}'s <a href="/terms">Terms of service</a>.
+	    <input type="checkbox" id="TOScb" onClick="enableSignUp();"/> I have read and agree to {{APP_NAME}}'s <a href="/terms" target="_blank">Terms of service <span class="glyphicon glyphicon-new-window"></span></a>
 	  </label>
 	</div>
       </div>
