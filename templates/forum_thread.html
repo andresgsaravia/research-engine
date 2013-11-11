@@ -41,6 +41,35 @@
 <div class="list-group">
   {% for c in comments %}
   <div class="list-group-item">
+    {% if c.author == user.key %}
+    <!-- Button trigger modal -->
+    <button class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}" title="Edit">
+      <span class="glyphicon glyphicon-pencil"></span></button>
+    <!-- Modal -->
+    <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
+      <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit answer</h4>
+	  </div>
+	  <form method="post" role="form">
+	    <div class="modal-body">
+	      <div class="form-group">
+		<textarea id="commentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
+		<input type="hidden" name="answer_id" value="{{c.key.integer_id()}}" />
+		<input type="hidden" name="action" value="edit_answer" />
+	      </div>
+	    </div>
+	    <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+	    </div>
+	  </form>
+	</div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    {% endif %}
     {{c.comment | md | safe}}
     <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
@@ -57,6 +86,7 @@
 	      onKeyUp="Preview('commentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
   </div>
   <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post answer</button>
+  <input type="hidden" name="action" value="new_answer" />
   {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
   {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
   <div class="help-block">

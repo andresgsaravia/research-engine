@@ -55,6 +55,10 @@ class ForumPage(projects.ProjectPage):
         self.log_read(ForumComments, 'Fetching all the comments in a thread. ')
         return ForumComments.query(ancestor = thread.key).order(ForumComments.date).fetch()
 
+    def get_comment(self, thread, c_id):
+        self.log_read(ForumComments)
+        return ForumComments.get_by_id(int(c_id), parent = thread.key)
+
 
 class MainPage(ForumPage):
     def get(self, projectid):
@@ -172,15 +176,21 @@ class ThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
             return
-        if not (thread.is_open_p() or (user and project.user_is_author(user))):
-            self.render("project_page_not_visible.html", project = project, user = user)
+        if not project.user_is_author(user):
+            self.redirect("/%s/forum/%s" % (projectid, thread_id))
             return
         have_error = False
         error_message = ''
+        action = self.request.get("action")
         comment = self.request.get("comment")
-        if comment:
+        if comment and action == "new_answer":
             new_comment = ForumComments(author = user.key, comment = comment, parent = thread.key)
             self.put_and_report(new_comment, user, project, thread)
+        elif comment and action == "edit_answer":
+            a_id = self.request.get("answer_id")
+            answer= self.get_comment(thread, a_id)
+            answer.comment = comment
+            self.log_and_put(answer)
         self.redirect("/%s/forum/%s" % (projectid, thread_id))
 
 
