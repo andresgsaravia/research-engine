@@ -11,7 +11,7 @@ EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z][a-zA-Z0-9_-]{2,20}$'
 PASSWORD_RE = r'^.{3,20}$'
 FORBIDDEN_USERNAMES = ["login", "logout", "signup", "settings","recover_password","verify_email",
-                       "cron", "new_project", "file", "recover_password"]
+                       "cron", "new_project", "file", "recover_password", "terms"]
 
 class LoginPage(GenericPage):
     def get(self):

@@ -22,3 +22,8 @@ class UnderConstructionPage(GenericPage):
 class RemoveTrailingSlash(webapp2.RequestHandler):
     def get(self, url):
         self.redirect("/" + url)
+
+
+class TermsOfServicePage(GenericPage):
+    def get(self):
+        self.render("terms_of_service.html")

@@ -2,6 +2,14 @@
 
 {% block head %}
 <title>Research Engine | Signup</title>
+<script type="text/javascript">
+  var enableSignUp = function () {
+     var btn = document.getElementById("createAccBtn");
+     var cb = document.getElementById("TOScb");
+     if (cb.checked) { btn.disabled = false;}
+     else { btn.disabled = true;}
+  };
+</script>
 {% endblock %}
 
 {% block content %}
@@ -34,13 +42,22 @@
       <label for="usrInput" class="col-sm-2 control-label">Email</label>
       <div class="col-sm-10"><input type="text" name="email" value="{{email}}" placeholder="Email address" class="form-control"/></div>
     </div>
-    <button type="submit" class="btn btn-success col-sm-offset-2">Create account</button>
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+	<div class="checkbox">
+	  <label>
+	    <input type="checkbox" id="TOScb" onClick="enableSignUp();"/> I have read and agree to {{APP_NAME}}'s <a href="/terms">Terms of service</a>.
+	  </label>
+	</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success col-sm-offset-2" id="createAccBtn" disabled>Create account</button>
 
   </form>
   {% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
   {% if info %}<div class="alert alert-success">{{info | safe}}</div>{% endif %} 
 
-  <p>Signing up for an account here at Research Engine is free. Please have a look at our <a href="/terms_and_conditions">Terms and conditions</a> before creating a new account.</p>
 
   {% endif %}
 </div>
