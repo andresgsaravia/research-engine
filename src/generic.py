@@ -104,6 +104,20 @@ class RegisteredUsers(ndb.Model):
         r = {"Projects" : project_actvs}
         return r
 
+    def get_project_contributions_counts(self, days, self_user_p):
+        actvs = UserActivities.query(UserActivities.kind == "Projects", 
+                                             UserActivities.date > (datetime.datetime.now() - datetime.timedelta(days=days)),
+                                             ancestor = self.key).fetch()
+        counts = {}
+        for a in actvs:
+            if self_user_p or a.is_open_p():
+                if a.relative_to in counts:
+                    counts[a.relative_to] += 1
+                else:
+                    counts[a.relative_to] = 1
+        return counts
+
+
 # Each Notification should have as parent a RegisteredUser, this parent is the one who will receive the notification
 class EmailNotifications(ndb.Model):
     author = ndb.KeyProperty(kind = RegisteredUsers)

@@ -12,23 +12,23 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 var mergeNodes = function (a,b) { return [].slice.call(a).concat([].slice.call(b)); }
+google.load("visualization", "1", {packages:["corechart"]});
+<!-- Last Week Summary Chart  -->
 var showAllActvs = function () {
   p_actvs = document.getElementsByClassName('p_actv_item');
   for (var i=0; i < p_actvs.length; i++) {p_actvs[i].style.display = ''}
 }
-
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
-function drawChart() {
+google.setOnLoadCallback(drawLastWeekSummaryChart);
+function drawLastWeekSummaryChart() {
     var data = google.visualization.arrayToDataTable([
         ['Kind', 'Counts'],
         {% for s in p_stats %}{% if p_stats[s] %}['{{s}}', {{p_stats[s]}}],{% endif %}{% endfor %}
     ]);
     var options = {legend: 'none'};
-    var chart = new google.visualization.ColumnChart(document.getElementById('p_stats'));
+    var lastWeekSummaryChart = new google.visualization.ColumnChart(document.getElementById('p_stats'));
     
-    function selectHandler() {
-        var selectedItem = chart.getSelection()[0];
+    function lastWeekSummarySelectHandler() {
+        var selectedItem = lastWeekSummaryChart.getSelection()[0];
         if (selectedItem) 
 	{
             var u_kind = data.getValue(selectedItem.row, 0);
@@ -66,8 +66,19 @@ function drawChart() {
         }
     }
     
-    google.visualization.events.addListener(chart, 'select', selectHandler);
-    chart.draw(data, options);
+    google.visualization.events.addListener(lastWeekSummaryChart, 'select', lastWeekSummarySelectHandler);
+    lastWeekSummaryChart.draw(data, options);
+}
+<!-- Project contributions Chart  -->
+google.setOnLoadCallback(drawPieChart);
+function drawPieChart() {
+    var data = google.visualization.arrayToDataTable([
+        ['Project', 'Counts'],
+        {% for p in p_counts %}['{{p.get().name}}',{{p_counts[p]}}],{% endfor %}
+    ]);
+    var options = {title: '{% if self_user_p %}C{% else %}Public c{% endif %}ontributions in the last 30 days'};
+    var pieChart = new google.visualization.PieChart(document.getElementById('p_pie_chart'));
+    pieChart.draw(data, options);
 }
 </script>
 {% endblock %}
@@ -153,8 +164,9 @@ function drawChart() {
 	</div>
       </div>
       {% if self_user_p %}
-      <a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
+      <div class="container"><a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a></div>
       {% endif %}
+      <div id="p_pie_chart"></div>
     </div>
   </div>
 </div>

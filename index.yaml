@@ -118,6 +118,12 @@ indexes:
   properties:
   - name: kind
   - name: date
+
+- kind: UserActivities
+  ancestor: yes
+  properties:
+  - name: kind
+  - name: date
     direction: desc
 
 - kind: WikiRevisions
