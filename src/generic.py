@@ -98,14 +98,14 @@ class RegisteredUsers(ndb.Model):
         return url
 
     def get_recent_activity(self, days = 7):
-        project_actvs = UserActivities.query(UserActivities.kind == "Projects", 
+        project_actvs = UserActivities.query(UserActivities.actv_kind == "Projects", 
                                              UserActivities.date > (datetime.datetime.now() - datetime.timedelta(days=days)),
                                              ancestor = self.key).order(-UserActivities.date).fetch()
         r = {"Projects" : project_actvs}
         return r
 
     def get_project_contributions_counts(self, days, self_user_p):
-        actvs = UserActivities.query(UserActivities.kind == "Projects", 
+        actvs = UserActivities.query(UserActivities.actv_kind == "Projects", 
                                              UserActivities.date > (datetime.datetime.now() - datetime.timedelta(days=days)),
                                              ancestor = self.key).fetch()
         counts = {}
@@ -131,7 +131,7 @@ class EmailNotifications(ndb.Model):
 # Each UserActivity should have a RegisteredUser as parent
 class UserActivities(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
-    kind = ndb.StringProperty(required = True)  # Wether is a "Project" update or, in the future, something else
+    actv_kind = ndb.StringProperty(required = True)  # Wether is a "Project" update or, in the future, something else
     relative_to = ndb.KeyProperty(required = True) # For now this is only the project the activity is related to. In the future might be something else
     item = ndb.KeyProperty(required = True)
 
@@ -139,9 +139,8 @@ class UserActivities(ndb.Model):
         html = ''
         relative_to = self.relative_to.get()
         author = self.key.parent().get()
-        item = self.item.get()
         if relative_to.__class__.__name__ == "Projects":
-            html = render_str("project_activity.html", author = author, item = item, project = relative_to, hide_username_p = hide_username_p)
+            html = render_str("project_activity.html", author = author, item = self.item, project = relative_to, hide_username_p = hide_username_p)
         return html
 
     def is_open_p(self):

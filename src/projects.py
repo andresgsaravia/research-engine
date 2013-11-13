@@ -109,7 +109,7 @@ class ProjectPage(generic.GenericPage):
     def put_and_report(self, item, author, project, other_to_update = None):
         self.log_and_put(item)
         # Log user activity
-        u_activity = UserActivities(parent = author.key, item = item.key, relative_to = project.key, kind = "Projects")
+        u_activity = generic.UserActivities(parent = author.key, item = item.key, relative_to = project.key, actv_kind = "Projects")
         self.log_and_put(u_activity)
         # Log project update
         p_update = ProjectUpdates(parent = project.key, author = author.key, item = item.key)

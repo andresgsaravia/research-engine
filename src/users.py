@@ -1,8 +1,9 @@
 # users.py
 # All related to user login/signup and preferences storage.
 
-import generic, projects, email_messages
-import hashlib
+import generic, projects, email_messages, secrets, simpleauth
+import bibliography, code, collab_writing, datasets, forum, notebooks, wiki
+import hashlib, re
 from google.appengine.api import mail
 
 LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
@@ -38,7 +39,7 @@ class LoginPage(generic.GenericPage):
                 u = self.get_user_by_email(email_or_username, "Checking user's login information. ")
             else:
                 u = self.get_user_by_username(email_or_username.lower(), "Checking user's login information. ")
-            if (not u) or (u.password_hash != hash_str(password + u.salt)):
+            if (not u) or (u.password_hash != generic.hash_str(password + u.salt)):
                 kw["error_message"] = 'Invalid password. If you forgot your password try setting a new one with the form below.'
                 have_error = True
                 kw["pwd_error_p"] = True
@@ -46,7 +47,7 @@ class LoginPage(generic.GenericPage):
             self.render("login.html", **kw)
         else:
 #            u.salt = make_salt()
-#            u.password_hash = hash_str(password + u.salt)
+#            u.password_hash = generic.hash_str(password + u.salt)
 #            self.log_and_put(u, "Making new salt. ")
             self.set_cookie("username", u.username, u.salt, max_age = LOGIN_COOKIE_MAXAGE)
             if kw['goback']: 
@@ -75,7 +76,7 @@ class UserPage(generic.GenericPage):
               "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0},
               "p_counts" : page_user.get_project_contributions_counts(30, page_user.key == user.key if user else False)}
         for a in kw["recent_actv"]["Projects"]:
-            if a.is_open_p() or (user and a.kind == "Projects" and a.relative_to.get().user_is_author(user)):
+            if a.is_open_p() or (user and a.actv_kind == "Projects" and a.relative_to.get().user_is_author(user)):
                 if a.item.kind() in ["Notebooks", "NotebookNotes", "NoteComments"]: kw["p_stats"]["Notebooks"] += 1
                 elif a.item.kind() in ["CodeRepositories", "CodeComments"]: kw["p_stats"]["Code"] += 1
                 elif a.item.kind() in ["DataSets", "DataConcepts", "DataRevisions"]: kw["p_stats"]["Datasets"] += 1
@@ -148,7 +149,7 @@ class SignupPage(generic.GenericPage):
             self.render('signup.html', **kw)
         else:
             salt = make_salt()
-            ph = hash_str(password + salt)
+            ph = generic.hash_str(password + salt)
             u = UnverifiedUsers(username = usern, password_hash = ph, salt = salt, email = email)
             self.log_and_put(u, "New user registration")
             email_messages.send_verify_email(u)
@@ -216,7 +217,7 @@ class RecoverPasswordPage(generic.GenericPage):
             have_error = True
             error = "There's not a user with that email %s" % email            
         else:
-            if not key == hash_str(user.username + user.salt):
+            if not key == generic.hash_str(user.username + user.salt):
                 have_error = True
                 error = "Malformed url, please try again. "
         if have_error:
@@ -240,7 +241,7 @@ class RecoverPasswordPage(generic.GenericPage):
             if have_error:
                 self.redirect("/login?r_error_message=%s" % r_error_message)
             else:
-                link = '%s/recover_password?email=%s&k=%s' % (APP_URL, email, hash_str(user.username + user.salt))
+                link = '%s/recover_password?email=%s&k=%s' % (APP_URL, email, generic.hash_str(user.username + user.salt))
                 message = mail.EmailMessage(sender = APP_NAME + ' <' + ADMIN_EMAIL + '>',
                                             to = email,
                                             subject = 'Password recovery',
@@ -262,7 +263,7 @@ class RecoverPasswordPage(generic.GenericPage):
                 user = self.get_user_by_email(email)
                 if not user:
                     have_error = True
-                elif not key == hash_str(user.username + user.salt):
+                elif not key == generic.hash_str(user.username + user.salt):
                     have_error = True
             if have_error:
                 self.error(400)
@@ -271,7 +272,7 @@ class RecoverPasswordPage(generic.GenericPage):
             else:
                 salt = make_salt()
                 user.salt = salt
-                user.password_hash = hash_str(password + salt)
+                user.password_hash = generic.hash_str(password + salt)
                 self.log_and_put(user)
                 self.redirect("/login?info=Password successfully changed, you can login now with your new password.")
 
@@ -285,7 +286,7 @@ class VerifyEmailPage(generic.GenericPage):
             logging.warning("Handler VerifyEmailPage attempted to verify an email not in Datastore.")
             self.error(404)
             return 
-        if hash_str(username + u.salt) == h:
+        if generic.hash_str(username + u.salt) == h:
             new_user = generic.RegisteredUsers(username = u.username,
                                                password_hash = u.password_hash,
                                                salt = u.salt,

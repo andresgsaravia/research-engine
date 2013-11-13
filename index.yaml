@@ -110,19 +110,13 @@ indexes:
 - kind: UserActivities
   ancestor: yes
   properties:
-  - name: date
-    direction: desc
-
-- kind: UserActivities
-  ancestor: yes
-  properties:
-  - name: kind
+  - name: actv_kind
   - name: date
 
 - kind: UserActivities
   ancestor: yes
   properties:
-  - name: kind
+  - name: actv_kind
   - name: date
     direction: desc
 
