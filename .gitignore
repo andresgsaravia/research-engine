@@ -31,3 +31,6 @@ pip-log.txt
 
 # Emacs autosaves
 .#*
+
+# SimpleAuth
+secrets.py
