@@ -5,79 +5,82 @@ import os, sys
 lib_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'lib')
 sys.path.insert(0, lib_path)
 
-import webapp2
-from src import *
+from webapp2 import WSGIApplication, Route
 
-app = webapp2.WSGIApplication([('/', frontend.RootPage),
-                               ('/(.+)/', frontend.RemoveTrailingSlash),
-                               ('/terms', frontend.TermsOfServicePage),
-                               # Users
-                               ('/login', users.LoginPage),
-                               ('/logout', users.LogoutPage),
-                               ('/signup', users.SignupPage),
-                               ('/settings', users.SettingsPage),
-                               ('/recover_password', users.RecoverPasswordPage),                       # Needs review
-                               ('/verify_email', users.VerifyEmailPage),
-                               ('/recover_password', users.RecoverPasswordPage),
-                               # Cron jobs
-                               ('/cron/send_email_notifications', email_messages.SendNotifications),
-                               
-                               ('/new_project', projects.NewProjectPage),
-                               # Notebooks
-                               ('/([0-9]+)/notebooks', notebooks.NotebooksListPage),                  # Argument is projects' integer id
-                               ('/([0-9]+)/notebooks/new', notebooks.NewNotebookPage),
-                               ('/([0-9]+)/notebooks/(.+)/([0-9]+)/edit', notebooks.EditNotePage),    # Last argument is the note's integer id
-                               ('/([0-9]+)/notebooks/(.+)/([0-9]+)', notebooks.NotePage),    
-                               ('/([0-9]+)/notebooks/(.+)/new_note', notebooks.NewNotePage),          # Last argument is the notebook's integer id
-                               ('/([0-9]+)/notebooks/(.+)/edit', notebooks.EditNotebookPage), 
-                               ('/([0-9]+)/notebooks/(.+)', notebooks.NotebookMainPage),
-                               # Collaborative writings
-                               ('/([0-9]+)/writings', collab_writing.WritingsListPage),
-                               ('/([0-9]+)/writings/new', collab_writing.NewWritingPage),
-                               ('/([0-9]+)/writings/([0-9]+)/edit', collab_writing.EditWritingPage),
-                               ('/([0-9]+)/writings/([0-9]+)/discussion', collab_writing.DiscussionPage),
-                               ('/([0-9]+)/writings/([0-9]+)/history', collab_writing.HistoryWritingPage),
-                               ('/([0-9]+)/writings/([0-9]+)/info', collab_writing.InfoPage),
-                               ('/([0-9]+)/writings/([0-9]+)/rev/([0-9]+)', collab_writing.ViewRevisionPage),
-                               ('/([0-9]+)/writings/([0-9]+)', collab_writing.ViewWritingPage),
-                               # Forum
-                               ('/([0-9]+)/forum', forum.MainPage),
-                               ('/([0-9]+)/forum/new_thread', forum.NewThreadPage),
-                               ('/([0-9]+)/forum/([0-9]+)/edit', forum.EditThreadPage),
-                               ('/([0-9]+)/forum/([0-9]+)', forum.ThreadPage),
-                               # Wiki
-                               ('/([0-9]+)/wiki/page/(.+)', wiki.ViewWikiPage),
-                               ('/([0-9]+)/wiki/edit/(.+)', wiki.EditWikiPage),
-                               ('/([0-9]+)/wiki/history/(.+)/rev/([0-9]+)', wiki.RevisionWikiPage),
-                               ('/([0-9]+)/wiki/history/(.+)', wiki.HistoryWikiPage),
-                               # Datasets
-                               ('/([0-9]+)/datasets', datasets.MainPage),
-                               ('/([0-9]+)/datasets/new', datasets.NewDataSetPage),
-                               ('/([0-9]+)/datasets/([0-9]+)', datasets.DataSetPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/edit', datasets.EditDataSetPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/new_data', datasets.NewDataConceptPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/([0-9]+)', datasets.DataConceptPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/([0-9]+)/new', datasets.NewDataRevisionPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/([0-9]+)/edit', datasets.EditConceptPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/([0-9]+)/upload', datasets.UploadDataRevisionHandler),
-                               ('/([0-9]+)/datasets/([0-9]+)/([0-9]+)/edit/([0-9]+)', datasets.EditRevisionPage),
-                               ('/([0-9]+)/datasets/([0-9]+)/([0-9]+)/update/([0-9]+)', datasets.UpdateDataRevisionHandler),
-                               # Code
-                               ('/([0-9]+)/code', code.CodesListPage),
-                               ('/([0-9]+)/code/new', code.NewCodePage),
-                               ('/([0-9]+)/code/([0-9]+)/edit', code.EditCodePage),
-                               ('/([0-9]+)/code/([0-9]+)', code.ViewCodePage),
-                               # Bibliography
-                               ('/([0-9]+)/bibliography', bibliography.MainPage),
-                               ('/([0-9]+)/bibliography/new_item', bibliography.NewItemPage),
-                               ('/([0-9]+)/bibliography/([0-9]+)/([0-9]+)', bibliography.CommentPage),
-                               ('/([0-9]+)/bibliography/([0-9]+)', bibliography.ItemPage),
-                               # Admin projects
-                               ('/([0-9]+)/admin', projects.AdminPage),
-                               ('/([0-9]+)/invite', projects.InvitePage),
-                               ('/file/(.+)', datasets.DownloadDataRevisionHandler),                                    # Argument is the Blobstore key
+routes = [
+    Route('/', handler='src.frontend.RootPage'),
+    Route('/<:.+>/', 'src.frontend.RemoveTrailingSlash'),
+    Route('/terms', 'src.frontend.TermsOfServicePage'),
+    # Users
+    Route('/login', 'src.users.LoginPage'),
+    Route('/logout', 'src.users.LogoutPage'),
+    Route('/signup', 'src.users.SignupPage'),
+    Route('/settings', 'src.users.SettingsPage'),
+    Route('/recover_password', 'src.users.RecoverPasswordPage'),
+    Route('/verify_email', 'src.users.VerifyEmailPage'),
+    # Cron jobs
+    Route('/cron/send_email_notifications', 'src.email_messages.SendNotifications'),
+    ##
+    #  Projects
+    ##
+    Route('/new_project', 'src.projects.NewProjectPage'),
+    # Notebooks
+    Route('/<projectid:[0-9]+>/notebooks', 'src.notebooks.NotebooksListPage'),
+    Route('/<projectid:[0-9]+>/notebooks/new', 'src.notebooks.NewNotebookPage'),
+    Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/<noteid:[0-9]+>/edit', 'src.notebooks.EditNotePage'),
+    Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/<noteid:[0-9]+>', 'src.notebooks.NotePage'),
+    Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/new_note', 'src.notebooks.NewNotePage'),
+    Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/edit', 'src.notebooks.EditNotebookPage'),
+    Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>', 'src.notebooks.NotebookMainPage'),
+    # Collaborative writings
+    Route('/<projectid:[0-9]+>/writings', 'src.collab_writing.WritingsListPage'),
+    Route('/<projectid:[0-9]+>/writings/new', 'src.collab_writing.NewWritingPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/edit', 'src.collab_writing.EditWritingPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/discussion', 'src.collab_writing.DiscussionPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/history', 'src.collab_writing.HistoryWritingPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/info', 'src.collab_writing.InfoPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/rev/<revid:[0-9]+>', 'src.collab_writing.ViewRevisionPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>', 'src.collab_writing.ViewWritingPage'),
+    # Forum
+    Route('/<projectid:[0-9]+>/forum', 'src.forum.MainPage'),
+    Route('/<projectid:[0-9]+>/forum/new_thread', 'src.forum.NewThreadPage'),
+    Route('/<projectid:[0-9]+>/forum/<threadid:[0-9]+>/edit', 'src.forum.EditThreadPage'),
+    Route('/<projectid:[0-9]+>/forum/<threadid:[0-9]+>', 'src.forum.ThreadPage'),
+    # Wiki
+    Route('/<projectid:[0-9]+>/wiki/page/<wikiurl:.+>', 'src.wiki.ViewWikiPage'),
+    Route('/<projectid:[0-9]+>/wiki/edit/<wikiurl:.+>', 'src.wiki.EditWikiPage'),
+    Route('/<projectid:[0-9]+>/wiki/history/<wikiurl:.+>/rev/<revid:[0-9]+>', 'src.wiki.RevisionWikiPage'),
+    Route('/<projectid:[0-9]+>/wiki/history/<wikiurl:.+>', 'src.wiki.HistoryWikiPage'),
+    # Datasets
+    Route('/<projectid:[0-9]+>/datasets', 'src.datasets.MainPage'),
+    Route('/<projectid:[0-9]+>/datasets/new', 'src.datasets.NewDataSetPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>', 'src.datasets.DataSetPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/edit', 'src.datasets.EditDataSetPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/new_data', 'src.datasets.NewDataConceptPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>', 'src.datasets.DataConceptPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>/new', 'src.datasets.NewDataRevisionPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>/edit', 'src.datasets.EditConceptPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>/upload', 'src.datasets.UploadDataRevisionHandler'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>/edit/<revid:[0-9]+>', 'src.datasets.EditRevisionPage'),
+    Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>/update/<revid:[0-9]+>', 'src.datasets.UpdateDataRevisionHandler'),
+    # Code
+    Route('/<projectid:[0-9]+>/code', 'src.code.CodesListPage'),
+    Route('/<projectid:[0-9]+>/code/new', 'src.code.NewCodePage'),
+    Route('/<projectid:[0-9]+>/code/<codeid:[0-9]+>/edit', 'src.code.EditCodePage'),
+    Route('/<projectid:[0-9]+>/code/<codeid:[0-9]+>', 'src.code.ViewCodePage'),
+    # Bibliography
+    Route('/<projectid:[0-9]+>/bibliography', 'src.bibliography.MainPage'),
+    Route('/<projectid:[0-9]+>/bibliography/new_item', 'src.bibliography.NewItemPage'),
+    Route('/<projectid:[0-9]+>/bibliography/<itemid:[0-9]+>/<commentid:[0-9]+>', 'src.bibliography.CommentPage'),
+    Route('/<projectid:[0-9]+>/bibliography/<itemid:[0-9]+>', 'src.bibliography.ItemPage'),
+    # Admin projects
+    Route('/<projectid:[0-9]+>/admin', 'src.projects.AdminPage'),
+    Route('/<projectid:[0-9]+>/invite', 'src.projects.InvitePage'),
+    Route('/file/<blobkey:.+>', 'src.datasets.DownloadDataRevisionHandler'),                                    # Argument is the Blobstore key
+    
+    Route('/<projectid:[0-9]+>', 'src.frontend.OverviewPage'),
+    Route('/<username:.+>', 'src.users.UserPage')]
 
-                               ('/([0-9]+)', projects.OverviewPage),
-                               ('/(.+)', users.UserPage)],
-                              debug = True)
+
+app = WSGIApplication(routes, debug = True)
 

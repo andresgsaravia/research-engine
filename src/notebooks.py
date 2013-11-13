@@ -1,8 +1,8 @@
 # notebooks.py
 # All related to Notebooks and Notes inside a project.
 
-from generic import *
-import projects
+from google.appengine.ext import ndb
+import generic, projects
 
 NOTES_PER_PAGE = 5   # Number of notes displayed in a single page while viewing a notebook. Perhaps later this will be user-customizable.
 
@@ -12,7 +12,7 @@ NOTES_PER_PAGE = 5   # Number of notes displayed in a single page while viewing 
 
 # Notebooks have a Project as parent.
 class Notebooks(ndb.Model):
-    owner = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    owner = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     name = ndb.StringProperty(required = True)
     description = ndb.TextProperty(required = True)
     started = ndb.DateTimeProperty(auto_now_add = True)
@@ -63,7 +63,7 @@ class NotebookNotes(ndb.Model):
 
 # Each comment should be a child of a NotebookNote
 class NoteComments(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
 
@@ -89,9 +89,9 @@ class NotebookPage(projects.ProjectPage):
         self.log_read(NotebookNotes, "Fetching a page with %s results. %s" % (NOTES_PER_PAGE, log_message))
         return NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).fetch_page(NOTES_PER_PAGE, offset = NOTES_PER_PAGE * page)
 
-    def get_note(self, notebook, note_id, log_message = ''):
+    def get_note(self, notebook, noteid, log_message = ''):
         self.log_read(NotebookNotes, log_message)
-        return NotebookNotes.get_by_id(int(note_id), parent = notebook.key)
+        return NotebookNotes.get_by_id(int(noteid), parent = notebook.key)
 
     def get_comments_list(self, note):
         self.log_read(NoteComments, "Fetching all the comments for a note in a notebook. ")
@@ -284,7 +284,7 @@ class NewNotePage(NotebookPage):
 
 
 class NotePage(NotebookPage):
-    def get(self, projectid, nbid, note_id):
+    def get(self, projectid, nbid, noteid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
@@ -296,10 +296,10 @@ class NotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        note = self.get_note(notebook, note_id)
+        note = self.get_note(notebook, noteid)
         if not note:
             self.error(404)
-            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % noteid)
             return
         if not (notebook.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
@@ -310,10 +310,10 @@ class NotePage(NotebookPage):
                     notebook = notebook, note = note, new_comment = self.request.get("new_comment"),
                     user_is_owner_p = (user and notebook.owner == user.key), **kw)
 
-    def post(self, projectid, nbid, note_id):
+    def post(self, projectid, nbid, noteid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/notebooks/%s/%s" % (projectid, nbid, note_id))
+            self.redirect("/login?goback=/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
             return
         project = self.get_project(projectid)
         if not project:
@@ -321,17 +321,17 @@ class NotePage(NotebookPage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, note_id))
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
             return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        note = self.get_note(notebook, note_id)
+        note = self.get_note(notebook, noteid)
         if not note:
             self.error(404)
-            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % noteid)
             return
         have_error = False
         kw = {}
@@ -432,10 +432,10 @@ class EditNotebookPage(NotebookPage):
 
 
 class EditNotePage(NotebookPage):
-    def get(self, projectid, nbid, note_id):
+    def get(self, projectid, nbid, noteid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/notebooks/%s/%s/edit" % (projectid, nbid, note_id))
+            self.redirect("/login?goback=/%s/notebooks/%s/%s/edit" % (projectid, nbid, noteid))
             return
         project = self.get_project(projectid)
         if not project:
@@ -448,16 +448,16 @@ class EditNotePage(NotebookPage):
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         if not notebook.owner == user.key:
-            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, note_id))
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
             return
-        note = self.get_note(notebook, note_id)
+        note = self.get_note(notebook, noteid)
         if not note:
             self.error(404)
-            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % noteid)
             return
         nbs_url = "/%s/notebooks" % projectid
         nb_url = nbs_url + "/" + nbid
-        note_url = nb_url + "/" + note_id
+        note_url = nb_url + "/" + noteid
         kw = {"title" : "Edit note",
               "name_placeholder" : "Title of the note",
               "content_placeholder" : "Content of the note",
@@ -469,10 +469,10 @@ class EditNotePage(NotebookPage):
               "name_value" : note.title, "content_value" : note.content}
         self.render("project_form_2.html", project = project, **kw)
 
-    def post(self, projectid, nbid, note_id):
+    def post(self, projectid, nbid, noteid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/notebooks/%s/%s/edit" % (projectid, nbid, note_id))
+            self.redirect("/login?goback=/%s/notebooks/%s/%s/edit" % (projectid, nbid, noteid))
             return
         project = self.get_project(projectid)
         if not project:
@@ -485,12 +485,12 @@ class EditNotePage(NotebookPage):
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
         if not notebook.owner == user.key:
-            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, note_id))
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
             return
-        note = self.get_note(notebook, note_id)
+        note = self.get_note(notebook, noteid)
         if not note:
             self.error(404)
-            self.render("404.html", info = 'Note with key <em>%s</em> not found' % note_id)
+            self.render("404.html", info = 'Note with key <em>%s</em> not found' % noteid)
             return
         have_error = False
         error_message = ''
@@ -517,5 +517,5 @@ class EditNotePage(NotebookPage):
                 note.title = n_title
                 note.content = n_content
                 self.log_and_put(note)
-            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, note_id))
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
 

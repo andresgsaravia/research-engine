@@ -1,8 +1,7 @@
 # users.py
 # All related to user login/signup and preferences storage.
 
-from generic import *
-import email_messages
+import generic, projects, email_messages
 import hashlib
 from google.appengine.api import mail
 
@@ -13,7 +12,7 @@ PASSWORD_RE = r'^.{3,20}$'
 FORBIDDEN_USERNAMES = ["login", "logout", "signup", "settings","recover_password","verify_email",
                        "cron", "new_project", "file", "recover_password", "terms"]
 
-class LoginPage(GenericPage):
+class LoginPage(generic.GenericPage):
     def get(self):
         kw = {'user': self.get_login_user(),
               'goback' : self.request.get('goback'),
@@ -56,13 +55,13 @@ class LoginPage(GenericPage):
             self.redirect("/%s" % u.username)
 
 
-class LogoutPage(GenericPage):
+class LogoutPage(generic.GenericPage):
     def get(self):
         self.remove_cookie("username")
         self.redirect("/login")
 
 
-class UserPage(GenericPage):
+class UserPage(generic.GenericPage):
     def get(self, username):
         page_user = self.get_user_by_username(username)
         if not page_user:
@@ -71,7 +70,7 @@ class UserPage(GenericPage):
             return
         user = self.get_login_user()
         kw = {"projects" : page_user.list_of_projects(),
-              "self_user_p" : True if (user and user.key == page_user.key) else False,
+              "self_user_p" : user and (user.key == page_user.key),
               "recent_actv" : page_user.get_recent_activity(days=7),
               "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0},
               "p_counts" : page_user.get_project_contributions_counts(30, page_user.key == user.key if user else False)}
@@ -87,7 +86,7 @@ class UserPage(GenericPage):
         self.render("user.html", page_user = page_user, **kw)
 
 
-class SignupPage(GenericPage):
+class SignupPage(generic.GenericPage):
     def get(self):
         user = self.get_login_user()
         self.render("signup.html", user = user, info = self.request.get("info"))
@@ -156,7 +155,7 @@ class SignupPage(GenericPage):
             self.render('signup.html', info = "A message has been sent to your email, please follow the instructions provided there.")
 
 
-class SettingsPage(GenericPage):
+class SettingsPage(generic.GenericPage):
     def get(self):
         user = self.get_login_user()
         if not user:
@@ -204,7 +203,7 @@ class SettingsPage(GenericPage):
             self.redirect("/%s" % user.username)
 
 
-class RecoverPasswordPage(GenericPage):
+class RecoverPasswordPage(generic.GenericPage):
     def get(self):
         email = self.request.get('email')
         key = self.request.get('k')
@@ -276,7 +275,7 @@ class RecoverPasswordPage(GenericPage):
                 self.log_and_put(user)
                 self.redirect("/login?info=Password successfully changed, you can login now with your new password.")
 
-class VerifyEmailPage(GenericPage):
+class VerifyEmailPage(generic.GenericPage):
     def get(self):
         username = self.request.get("username")
         h = self.request.get("h")
@@ -287,13 +286,13 @@ class VerifyEmailPage(GenericPage):
             self.error(404)
             return 
         if hash_str(username + u.salt) == h:
-            new_user = RegisteredUsers(username = u.username,
-                                       password_hash = u.password_hash,
-                                       salt = u.salt,
-                                       email = u.email,
-                                       about_me = '',
-                                       my_projects = [],
-                                       profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(u.email.strip().lower()).hexdigest())
+            new_user = generic.RegisteredUsers(username = u.username,
+                                               password_hash = u.password_hash,
+                                               salt = u.salt,
+                                               email = u.email,
+                                               about_me = '',
+                                               my_projects = [],
+                                               profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(u.email.strip().lower()).hexdigest())
             self.log_and_put(new_user)
             self.log_and_delete(u)
             self.set_cookie("username", new_user.username, new_user.salt, max_age = LOGIN_COOKIE_MAXAGE)

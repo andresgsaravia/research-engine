@@ -1,8 +1,8 @@
 # forum.py
 # For the forums inside each project.
 
-from generic import *
-import projects
+from google.appengine.ext import ndb
+import generic, projects
 
 
 ###########################
@@ -11,7 +11,7 @@ import projects
 
 # Each ForumThread should have a project as parent.
 class ForumThreads(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     title = ndb.StringProperty(required = True)
     content = ndb.TextProperty(required = True)
     started = ndb.DateTimeProperty(auto_now_add = True)
@@ -27,7 +27,7 @@ class ForumThreads(ndb.Model):
 
 # each ForumComment should have a ForumThread as parent.
 class ForumComments(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
 
@@ -47,17 +47,17 @@ class ForumPage(projects.ProjectPage):
         self.log_read(ForumComments, "Fetching all the thread in a project's forum. ")
         return ForumThreads.query(ancestor = project.key).order(-ForumThreads.last_updated).fetch()
 
-    def get_thread(self, project, thread_id, log_message = ''):
+    def get_thread(self, project, threadid, log_message = ''):
         self.log_read(ForumThreads, log_message)
-        return ForumThreads.get_by_id(int(thread_id), parent = project.key)
+        return ForumThreads.get_by_id(int(threadid), parent = project.key)
 
     def get_comments(self, thread):
         self.log_read(ForumComments, 'Fetching all the comments in a thread. ')
         return ForumComments.query(ancestor = thread.key).order(ForumComments.date).fetch()
 
-    def get_comment(self, thread, c_id):
+    def get_comment(self, thread, cid):
         self.log_read(ForumComments)
-        return ForumComments.get_by_id(int(c_id), parent = thread.key)
+        return ForumComments.get_by_id(int(cid), parent = thread.key)
 
 
 class MainPage(ForumPage):
@@ -142,17 +142,17 @@ class NewThreadPage(ForumPage):
 
 
 class ThreadPage(ForumPage):
-    def get(self, projectid, thread_id):
+    def get(self, projectid, threadid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        thread = self.get_thread(project, thread_id)
+        thread = self.get_thread(project, threadid)
         if not thread:
             self.error(404)
-            self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
+            self.render("404.html", info = 'Thread with key <em>%s</em> not found' % threadid)
             return
         if not (thread.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
@@ -161,23 +161,23 @@ class ThreadPage(ForumPage):
         self.render("forum_thread.html", project = project, user = user, thread = thread, 
                     comments = comments)
 
-    def post(self, projectid, thread_id):
+    def post(self, projectid, threadid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/forum/%s" % (projectid, thread_id))
+            self.redirect("/login?goback=/%s/forum/%s" % (projectid, threadid))
             return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        thread = self.get_thread(project, thread_id)
+        thread = self.get_thread(project, threadid)
         if not thread:
             self.error(404)
-            self.render("404.html", info = 'Thread with key <em>%s</em> not found' % thread_id)
+            self.render("404.html", info = 'Thread with key <em>%s</em> not found' % threadid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/forum/%s" % (projectid, thread_id))
+            self.redirect("/%s/forum/%s" % (projectid, threadid))
             return
         have_error = False
         error_message = ''
@@ -191,27 +191,27 @@ class ThreadPage(ForumPage):
             answer= self.get_comment(thread, a_id)
             answer.comment = comment
             self.log_and_put(answer)
-        self.redirect("/%s/forum/%s" % (projectid, thread_id))
+        self.redirect("/%s/forum/%s" % (projectid, threadid))
 
 
 class EditThreadPage(ForumPage):
-    def get(self, projectid, thread_id):
+    def get(self, projectid, threadid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/forum/%s/edit" % (projectid, thread_id))
+            self.redirect("/login?goback=/%s/forum/%s/edit" % (projectid, threadid))
             return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        thread = self.get_thread(project, thread_id)
+        thread = self.get_thread(project, threadid)
         if not thread:
             self.error(404)
-            self.render("404.html", info = "Thread with key <em>%s</em> not found" % thread_id)
+            self.render("404.html", info = "Thread with key <em>%s</em> not found" % threadid)
             return
         if not thread.author == user.key:
-            self.redirect("/%s/forum/%s" % (projectid, thread_id))
+            self.redirect("/%s/forum/%s" % (projectid, threadid))
             return
         kw = {"title" : "Edit forum thread",
               "name_value" : thread.title,
@@ -220,29 +220,29 @@ class EditThreadPage(ForumPage):
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
               "submit_button_text" : "Save changes",
-              "cancel_url" : "/%s/forum/%s" % (projectid,thread_id),
+              "cancel_url" : "/%s/forum/%s" % (projectid,threadid),
               "markdown_p" : True,
               "open_choice_p": True,
               "breadcrumb" : '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)}
         self.render("project_form_2.html", user = user, project = project, **kw)
 
-    def post(self, projectid, thread_id):
+    def post(self, projectid, threadid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/forum/%s/edit" % (projectid, thread_id))
+            self.redirect("/login?goback=/%s/forum/%s/edit" % (projectid, threadid))
             return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        thread = self.get_thread(project, thread_id)
+        thread = self.get_thread(project, threadid)
         if not thread:
             self.error(404)
-            self.render("404.html", info = "Thread with key <em>%s</em> not found" % thread_id)
+            self.render("404.html", info = "Thread with key <em>%s</em> not found" % threadid)
             return
         if not thread.author == user.key:
-            self.redirect("/%s/forum/%s" % (projectid, thread_id))
+            self.redirect("/%s/forum/%s" % (projectid, threadid))
             return
         have_error = False
         kw = {"error_message" : '',
@@ -262,7 +262,7 @@ class EditThreadPage(ForumPage):
             kw["name_placeholder"] = "Brief description of the thread."
             kw["content_placeholder"] = "Content of your thread."
             kw["submit_button_text"] = "Save changes"
-            kw["cancel_url"] = "/%s/forum/%s" % (projectid,thread_id)
+            kw["cancel_url"] = "/%s/forum/%s" % (projectid,threadid)
             kw["markdown_p"] = True
             kw["open_choice_p"] = True
             kw["breadcrumb"] = '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)

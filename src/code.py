@@ -1,10 +1,10 @@
 # notebooks.py
 # All related to Notebooks and Notes inside a project.
 
-from generic import *
 from google.appengine.api import urlfetch
-import projects
-import json
+from google.appengine.ext import ndb
+import generic, projects
+import json, re
 
 GITHUB_REPO_RE = r'^https://github.com/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$'
 GITHUB_PREFIX  = r'https://github.com/'
@@ -32,7 +32,7 @@ class CodeRepositories(ndb.Model):
 
 # Each RepositoryComment should have a CodeRepository as parent
 class CodeComments(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     comment = ndb.TextProperty(required = True)
 
@@ -52,17 +52,17 @@ class CodePage(projects.ProjectPage):
         self.log_read(CodeRepositories, "Fetching all the code reposirtories. ")
         return CodeRepositories.query(ancestor = project.key).order(-CodeRepositories.last_updated).fetch()
 
-    def get_code(self, project, code_id, log_message = ''):
+    def get_code(self, project, codeid, log_message = ''):
         self.log_read(CodeRepositories, log_message)
-        return CodeRepositories.get_by_id(int(code_id), parent = project.key)
+        return CodeRepositories.get_by_id(int(codeid), parent = project.key)
 
     def get_comments(self, code):
         self.log_read(CodeComments, "Fetching all the comments for a code repository. ")
         return CodeComments.query(ancestor = code.key).order(CodeComments.date).fetch()
 
-    def get_comment(self, code, comment_id):
+    def get_comment(self, code, commentid):
         self.log_read(CodeComments)
-        return CodeComments.get_by_id(int(comment_id), parent = code.key)
+        return CodeComments.get_by_id(int(commentid), parent = code.key)
 
 class CodesListPage(CodePage):
     def get(self, projectid):
@@ -162,17 +162,17 @@ class NewCodePage(CodePage):
 
 
 class ViewCodePage(CodePage):
-    def get(self, projectid, code_id):
+    def get(self, projectid, codeid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        code = self.get_code(project, code_id)
+        code = self.get_code(project, codeid)
         if not code:
             self.error(404)
-            self.render("404.html", info = 'Code with key <em>%s</em> not found' % code_id)
+            self.render("404.html", info = 'Code with key <em>%s</em> not found' % codeid)
             return
         if not (code.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
@@ -180,10 +180,10 @@ class ViewCodePage(CodePage):
         comments = self.get_comments(code)
         self.render("code_view.html", project = project, user = user, code = code, comments = comments)
 
-    def post(self, projectid, code_id):
+    def post(self, projectid, codeid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/code/%s" % (projectid, code_id))
+            self.redirect("/login?goback=/%s/code/%s" % (projectid, codeid))
             return
         project = self.get_project(projectid)
         if not project: 
@@ -193,10 +193,10 @@ class ViewCodePage(CodePage):
         if not project.user_is_author(user):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
-        code = self.get_code(project, code_id)
+        code = self.get_code(project, codeid)
         if not code:
             self.error(404)
-            self.render("404.html", info = 'Code with key <em>%s</em> not found' % code_id)
+            self.render("404.html", info = 'Code with key <em>%s</em> not found' % codeid)
             return
         action = self.request.get("action")
         comment = self.request.get("comment")
@@ -209,13 +209,13 @@ class ViewCodePage(CodePage):
             if c.author == user.key:
                 c.comment = comment
                 self.log_and_put(c)
-        self.redirect("/%s/code/%s" % (projectid, code_id))
+        self.redirect("/%s/code/%s" % (projectid, codeid))
 
 class EditCodePage(CodePage):
-    def get(self, projectid, code_id):
+    def get(self, projectid, codeid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/code/%s/edit" % (projectid, code_id))
+            self.redirect("/login?goback=/%s/code/%s/edit" % (projectid, codeid))
             return
         project = self.get_project(projectid)
         if not project: 
@@ -223,12 +223,12 @@ class EditCodePage(CodePage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/code/%s" % (projectid, code_id))
+            self.redirect("/%s/code/%s" % (projectid, codeid))
             return
-        code = self.get_code(project, code_id)
+        code = self.get_code(project, codeid)
         if not code:
             self.error(404)
-            self.render("404.html", info = 'Code with key <em>%s</em> not found' % code_id)
+            self.render("404.html", info = 'Code with key <em>%s</em> not found' % codeid)
             return
         kw = {"title" : "Edit source-code's description",
               "name_value" : code.link,
@@ -237,16 +237,16 @@ class EditCodePage(CodePage):
               "name_placeholder" : "Link to GitHub repository. Something of the form https://github.com/author-name/repo-name",
               "content_placeholder" : "Briefly describe how this repository is related to the project.",
               "submit_button_text" : "Save changes",
-              "cancel_url" : "/%s/code/%s" % (projectid,code_id),
+              "cancel_url" : "/%s/code/%s" % (projectid,codeid),
               "markdown_p" : True,
               "open_choice_p": True,
               "breadcrumb" : '<li><a href="/%s/code">Source Code</a></li><li class="active">%s</li>' % (projectid, code.name)}
         self.render("project_form_2.html", user = user, project = project, **kw)
 
-    def post(self, projectid, code_id):
+    def post(self, projectid, codeid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/code/%s/edit" % (projectid, code_id))
+            self.redirect("/login?goback=/%s/code/%s/edit" % (projectid, codeid))
             return
         project = self.get_project(projectid)
         if not project: 
@@ -254,12 +254,12 @@ class EditCodePage(CodePage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/code/%s" % (projectid, code_id))
+            self.redirect("/%s/code/%s" % (projectid, codeid))
             return
-        code = self.get_code(project, code_id)
+        code = self.get_code(project, codeid)
         if not code:
             self.error(404)
-            self.render("404.html", info = 'Code with key <em>%s</em> not found' % code_id)
+            self.render("404.html", info = 'Code with key <em>%s</em> not found' % codeid)
             return
         have_error = False
         kw = {"name_value" : self.request.get("name").strip(),
@@ -293,7 +293,7 @@ class EditCodePage(CodePage):
             kw["submit_button_text"] = "Save Changes"
             kw["markdown_p"] = True
             kw["open_choice_p"] = True
-            kw["cancel_url"] = "/%s/code/%s" % (projectid, code_id)
+            kw["cancel_url"] = "/%s/code/%s" % (projectid, codeid)
             self.render("project_form_2.html", project = project, **kw)
         else:
             if code.link != kw["name_value"]: 

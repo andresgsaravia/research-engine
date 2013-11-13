@@ -1,12 +1,12 @@
 # bibliography.py
 # Bibliography review for a given project
 
-from generic import *
-import projects
+import generic, projects
 import urllib2
 from xml.dom import minidom
+from google.appengine.ext import ndb
 
-CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=" + ADMIN_EMAIL + "&format=unixsd&id="
+CROSSREF_QUERY_URL = "http://doi.crossref.org/servlet/query?pid=" + generic.ADMIN_EMAIL + "&format=unixsd&id="
 ARXIV_QUERY_URL = "http://export.arxiv.org/api/query?id_list="
 
 def get_dom(identifier, kind):
@@ -104,7 +104,7 @@ class BiblioItems(ndb.Model):
 # Each BiblioComment should have a BiblioItem as parent
 class BiblioComments(ndb.Model):
     content = ndb.TextProperty(required = True)
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
 
     def is_open_p(self):

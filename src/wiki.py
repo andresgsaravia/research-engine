@@ -1,8 +1,9 @@
 # wiki.py
 # A wiki for each project.
 
-from generic import *
-import projects
+from google.appengine.ext import ndb
+import re
+import generic, projects
 
 # This regexp finds MediaWiki-like inner links in the following way.
 # A simple [[link and text]]                 -->   (''       , 'link and text')
@@ -42,7 +43,7 @@ class WikiPages(ndb.Model):
 
 # Each WikiRevision should have a WikiPage as parent.
 class WikiRevisions(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
     content = ndb.TextProperty(required = True)
     summary = ndb.StringProperty(required = False)
@@ -72,9 +73,9 @@ class GenericWikiPage(projects.ProjectPage):
             revisions.append(rev)
         return revisions
 
-    def get_revision(self, wikipage, rev_id, log_message = ''):
+    def get_revision(self, wikipage, revid, log_message = ''):
         self.log_read(WikiRevisions, log_message)
-        return WikiRevisions.get_by_id(int(rev_id), parent = wikipage.key)
+        return WikiRevisions.get_by_id(int(revid), parent = wikipage.key)
 
 
 class ViewWikiPage(GenericWikiPage):
@@ -196,7 +197,7 @@ class HistoryWikiPage(GenericWikiPage):
 
 
 class RevisionWikiPage(GenericWikiPage):
-    def get(self, projectid, wikiurl, rev_id):
+    def get(self, projectid, wikiurl, revid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project: 
@@ -211,10 +212,10 @@ class RevisionWikiPage(GenericWikiPage):
             self.error(404)
             self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.url.replace("_"," ").title())
             return
-        revision = self.get_revision(wikipage, rev_id)
+        revision = self.get_revision(wikipage, revid)
         if not revision:
             self.error(404)
-            self.render("404.html", info = "Revision %s not found" % rev_id)
+            self.render("404.html", info = "Revision %s not found" % revid)
             return
         if revision:
             wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), revision.content) 

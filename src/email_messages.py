@@ -3,16 +3,16 @@
 
 from google.appengine.api import mail
 from google.appengine.ext import db
-from generic import *
+import generic
 
-PRETTY_ADMIN_EMAIL = APP_NAME + " <" + ADMIN_EMAIL + ">"
+PRETTY_ADMIN_EMAIL = generic.APP_NAME + " <" + generic.ADMIN_EMAIL + ">"
 
 
 ######################
 ##   Web Handlers   ##
 ######################
 
-class SendNotifications(GenericPage):
+class SendNotifications(generic.GenericPage):
     def get(self):
         logging.debug("CRON: Handler %s has been requested by cron" % self.__class__.__name__)
         for u in RegisteredUsers.query().iter():
@@ -53,7 +53,7 @@ def send_notifications(notifications_list, user):
 
 
 def send_verify_email(user):
-    link = "%s/verify_email?username=%s&h=%s" % (APP_URL, user.username, hash_str(user.username + user.salt))
+    link = "%s/verify_email?username=%s&h=%s" % (generic.APP_URL, user.username, hash_str(user.username + user.salt))
     message = verify_email_message(link)
     message.to = user.email
     logging.debug("EMAIL: Sending an email verification request.")
@@ -67,8 +67,8 @@ def send_invitation_to_project(project, inviting, invited, message):
           "inviting" : inviting,
           "invited" : invited,
           "message" : message,
-          "APP_URL" : APP_URL,
-          "accept_link" : "%s/%s/admin?h=%s" % (APP_URL, project.key.integer_id(), h)}
+          "APP_URL" : generic.APP_URL,
+          "accept_link" : "%s/%s/admin?h=%s" % (generic.APP_URL, project.key.integer_id(), h)}
     message = mail.EmailMessage(sender = PRETTY_ADMIN_EMAIL,
                                 to = invited.email,
                                 subject = "%s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name),
@@ -84,12 +84,12 @@ def send_invitation_to_project(project, inviting, invited, message):
 
 SIGNATURE = """
 -----------------------------------
-%s <%s>""" % (APP_NAME, APP_URL)
+%s <%s>""" % (generic.APP_NAME, generic.APP_URL)
 
 
 SIGNATURE_HTML = """<br/>
 -----------------------------------<br/>
-<a href="%s">%s</a>""" % (APP_URL, APP_NAME)
+<a href="%s">%s</a>""" % (generic.APP_URL, generic.APP_NAME)
 
 
 def verify_email_message(verify_link):

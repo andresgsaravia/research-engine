@@ -1,8 +1,8 @@
 # projects.py
 # For creating, managing and updating projects.
 
-from generic import *
-import email_messages
+from google.appengine.ext import ndb
+import generic, email_messages
 
 SHORT_DESCRIPTION_LENGTH = 150
 UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview tab
@@ -32,7 +32,7 @@ class Projects(ndb.Model):
     def list_of_authors(self, requesting_handler):
         authors_list = []
         for author_key in self.authors:
-            requesting_handler.log_read(RegisteredUsers, "Getting an author from a Project's list of authors. ")
+            requesting_handler.log_read(generic.RegisteredUsers, "Getting an author from a Project's list of authors. ")
             author = author_key.get()
             if author: 
                 authors_list.append(author)
@@ -82,11 +82,11 @@ class Projects(ndb.Model):
 # Should have a Project as parent
 class ProjectUpdates(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add = True)
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     item = ndb.KeyProperty(required = True)
 
     def description_html(self, project):
-        return render_str("project_activity.html", author = self.author.get(), item = self.item.get(), project = project)
+        return generic.render_str("project_activity.html", author = self.author.get(), item = self.item, project = project)
 
     def is_open_p(self):
         try:
@@ -100,7 +100,7 @@ class ProjectUpdates(ndb.Model):
 ##   Web Handlers   ##
 ######################
 
-class ProjectPage(GenericPage):
+class ProjectPage(generic.GenericPage):
     def get_project(self, projectid, log_message = ''):
         self.log_read(Projects, log_message)
         project = Projects.get_by_id(int(projectid))
@@ -119,22 +119,7 @@ class ProjectPage(GenericPage):
         return
 
 
-class OverviewPage(ProjectPage):
-    def get(self, projectid):
-        user = self.get_login_user()
-        project = self.get_project(projectid)
-        if not project:
-            self.error(404)
-            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
-            return
-        self.render("project_overview.html", project = project, 
-                    overview_tab_class = "active",
-                    authors = project.list_of_authors(self),
-                    updates = project.list_updates(self, user, UPDATES_TO_DISPLAY),
-                    visitor_p = not (user and project.user_is_author(user)))
-
-
-class NewProjectPage(GenericPage):
+class NewProjectPage(generic.GenericPage):
     def get(self):
         user = self.get_login_user()
         if not user:

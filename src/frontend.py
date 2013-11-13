@@ -1,8 +1,10 @@
 # frontend.py
 
-from generic import *
+import webapp2
+import generic, projects
+import bibliography, code, collab_writing, datasets, forum, notebooks, wiki
 
-class RootPage(GenericPage):
+class RootPage(generic.GenericPage):
     def get(self):
         user = self.get_login_user()
         projects = user.list_of_projects() if user else []
@@ -14,7 +16,7 @@ class RootPage(GenericPage):
         self.render("root.html", user = user, projects = projects, p_updates = p_updates[:30])
 
 
-class UnderConstructionPage(GenericPage):
+class UnderConstructionPage(generic.GenericPage):
     def get(self):
         self.render("under_construction.html")
 
@@ -24,6 +26,21 @@ class RemoveTrailingSlash(webapp2.RequestHandler):
         self.redirect("/" + url)
 
 
-class TermsOfServicePage(GenericPage):
+class TermsOfServicePage(generic.GenericPage):
     def get(self):
         self.render("terms_of_service.html")
+
+
+class OverviewPage(projects.ProjectPage):
+    def get(self, projectid):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        self.render("project_overview.html", project = project, 
+                    overview_tab_class = "active",
+                    authors = project.list_of_authors(self),
+                    updates = project.list_updates(self, user, projects.UPDATES_TO_DISPLAY),
+                    visitor_p = not (user and project.user_is_author(user)))

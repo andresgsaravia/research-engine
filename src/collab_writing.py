@@ -1,7 +1,7 @@
 # collaborative_writing.py
 
-from generic import *
-import projects
+from google.appengine.ext import ndb
+import generic, projects
 
 ###########################
 ##   Datastore Objects   ##
@@ -21,7 +21,7 @@ class CollaborativeWritings(ndb.Model):
 
 # Should have as parent a CollaborativeWriting
 class WritingRevisions(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     date = ndb.DateTimeProperty(auto_now = True)
     content = ndb.TextProperty(required = True)
     summary = ndb.TextProperty(required = False)
@@ -32,7 +32,7 @@ class WritingRevisions(ndb.Model):
 
 # Should have as parent a CollaborativeWriting
 class WritingComments(ndb.Model):
-    author = ndb.KeyProperty(kind = RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     comment = ndb.TextProperty(required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
 
@@ -55,17 +55,17 @@ class WritingPage(projects.ProjectPage):
             writings.append(w)
         return writings
 
-    def get_writing(self, project, writing_id, log_message = ''):
+    def get_writing(self, project, writingid, log_message = ''):
         self.log_read(CollaborativeWritings, log_message)
-        return CollaborativeWritings.get_by_id(int(writing_id), parent = project.key)
+        return CollaborativeWritings.get_by_id(int(writingid), parent = project.key)
 
     def get_last_revision(self, writing, log_message = ''):
         self.log_read(WritingRevisions, log_message)
         return WritingRevisions.query(ancestor = writing.key).order(-WritingRevisions.date).get()
 
-    def get_revision(self, writing, rev_id, log_message = ''):
+    def get_revision(self, writing, revid, log_message = ''):
         self.log_read(WritingRevisions, log_message)
-        return WritingRevisions.get_by_id(int(rev_id), parent = writing.key)
+        return WritingRevisions.get_by_id(int(revid), parent = writing.key)
 
     def get_revisions(self, writing, log_message = ''):
         revisions = []
@@ -166,17 +166,17 @@ class NewWritingPage(WritingPage):
 
 
 class ViewWritingPage(WritingPage):
-    def get(self, projectid, writing_id):
+    def get(self, projectid, writingid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not (writing.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
@@ -187,10 +187,10 @@ class ViewWritingPage(WritingPage):
 
 
 class EditWritingPage(WritingPage):
-    def get(self, projectid, writing_id):
+    def get(self, projectid, writingid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/writings/%s/edit" % (projectid, writing_id))
+            self.redirect("/login?goback=/%s/writings/%s/edit" % (projectid, writingid))
             return
         project = self.get_project(projectid)
         if not project:
@@ -198,12 +198,12 @@ class EditWritingPage(WritingPage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s" % (projectid, writingid))
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         last_revision = self.get_last_revision(writing)
         if last_revision:
@@ -213,10 +213,10 @@ class EditWritingPage(WritingPage):
         self.render("writings_edit.html", project = project, writing = writing, edit_p = True,
                     content = content, status = writing.status, user = user)
 
-    def post(self, projectid, writing_id):
+    def post(self, projectid, writingid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/writings/%s/edit" % (projectid, writing_id))
+            self.redirect("/login?goback=/%s/writings/%s/edit" % (projectid, writingid))
             return
         project = self.get_project(projectid)
         if not project:
@@ -224,12 +224,12 @@ class EditWritingPage(WritingPage):
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s" % (projectid, writingid))
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         last_revision = self.get_last_revision(writing)
         kw = {"content" : self.request.get("content"),
@@ -250,21 +250,21 @@ class EditWritingPage(WritingPage):
             new_revision = WritingRevisions(author = user.key, content = kw["content"], summary = kw["summary"], parent = writing.key)
             if kw["status"]: writing.status = kw["status"]
             self.put_and_report(new_revision, user, project, writing)
-            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s" % (projectid, writingid))
 
 
 class HistoryWritingPage(WritingPage):
-    def get(self, projectid, writing_id):
+    def get(self, projectid, writingid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not (writing.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
@@ -275,42 +275,42 @@ class HistoryWritingPage(WritingPage):
 
 
 class ViewRevisionPage(WritingPage):
-    def get(self, projectid, writing_id, rev_id):
+    def get(self, projectid, writingid, revid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not (writing.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
-        revision = self.get_revision(writing, rev_id)
+        revision = self.get_revision(writing, revid)
         if not revision:
             self.error(404)
-            self.render("404.html", info = "Revision with key <em>%s</em> not found" % rev_id)
+            self.render("404.html", info = "Revision with key <em>%s</em> not found" % revid)
             return
         self.render("writings_revision.html", project = project, hist_p = True, user = user, writing = writing,
                     visitor_p = not (user and project.user_is_author(user)), revision = revision)
 
 
 class DiscussionPage(WritingPage):
-    def get(self, projectid, writing_id):
+    def get(self, projectid, writingid):
         user = self.get_login_user()
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not (writing.is_open_p() or (user and project.user_is_author(user))):
             self.render("project_page_not_visible.html", project = project, user = user)
@@ -319,72 +319,72 @@ class DiscussionPage(WritingPage):
         self.render("writings_discussion.html", project = project, user = user, disc_p = True, writing = writing,
                     visitor_p = not (user and project.user_is_author(user)), comments = comments)
 
-    def post(self, projectid, writing_id):
+    def post(self, projectid, writingid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/writings/%s/discussion" % (projectid, writing_id))
+            self.redirect("/login?goback=/%s/writings/%s/discussion" % (projectid, writingid))
             return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/writings/%s/discusison" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s/discusison" % (projectid, writingid))
             return
         comment = self.request.get("comment")
         if not comment:
-            self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s/discussion" % (projectid, writingid))
             return
         new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
         self.put_and_report(new_comment, user, project, writing)
-        self.redirect("/%s/writings/%s/discussion" % (projectid, writing_id))
+        self.redirect("/%s/writings/%s/discussion" % (projectid, writingid))
 
 
 class InfoPage(WritingPage):
-    def get(self, projectid, writing_id):
+    def get(self, projectid, writingid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/writings/%s/info" % (projectid, writing_id))
+            self.redirect("/login?goback=/%s/writings/%s/info" % (projectid, writingid))
             return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s" % (projectid, writingid))
             return
         self.render("writings_info.html", project = project, writing = writing, open_p = writing.open_p,
                     title = writing.title, description = writing.description, info_p = True)
 
-    def post(self, projectid, writing_id):
+    def post(self, projectid, writingid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/writings/%s/info" % (projectid, writing_id))
+            self.redirect("/login?goback=/%s/writings/%s/info" % (projectid, writingid))
             return
         project = self.get_project(projectid)
         if not project:
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        writing = self.get_writing(project, writing_id)
+        writing = self.get_writing(project, writingid)
         if not writing:
             self.error(404)
-            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writing_id)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
             return
         if not project.user_is_author(user):
-            self.redirect("/%s/writings/%s" % (projectid, writing_id))
+            self.redirect("/%s/writings/%s" % (projectid, writingid))
             return        
         have_error = False
         kw = {"title" : self.request.get("title"),
