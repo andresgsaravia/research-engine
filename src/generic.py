@@ -7,6 +7,7 @@ import jinja2
 import os, re, string, hashlib, logging, datetime
 from google.appengine.ext import ndb, db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+from webapp2_extras import auth
 
 import filters
 
@@ -230,6 +231,12 @@ class GenericPage(webapp2.RequestHandler):
         kw["APP_REPO"] = APP_REPO
         kw['user'] = self.get_login_user()
         self.write(self.render_str(template, **kw))
+
+    # for simpleauth
+    @webapp2.cached_property
+    def auth(self):
+        return auth.get_auth()
+
 
 
 class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):

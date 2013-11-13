@@ -6,6 +6,17 @@ lib_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'lib')
 sys.path.insert(0, lib_path)
 
 from webapp2 import WSGIApplication, Route
+from src.secrets import SESSION_KEY
+
+app_config = {
+  'webapp2_extras.sessions': {
+    'cookie_name': '_simpleauth_sess',
+    'secret_key': SESSION_KEY
+  },
+  'webapp2_extras.auth': {
+    'user_attributes': []
+  }
+}
 
 routes = [
     Route('/', handler='src.frontend.RootPage'),
@@ -13,11 +24,14 @@ routes = [
     Route('/terms', 'src.frontend.TermsOfServicePage'),
     # Users
     Route('/login', 'src.users.LoginPage'),
-    Route('/logout', 'src.users.LogoutPage'),
+#    Route('/logout', 'src.users.LogoutPage'),
     Route('/signup', 'src.users.SignupPage'),
     Route('/settings', 'src.users.SettingsPage'),
     Route('/recover_password', 'src.users.RecoverPasswordPage'),
     Route('/verify_email', 'src.users.VerifyEmailPage'),
+    Route('/auth/<provider>', handler='src.users.AuthHandler:_simple_auth', name='auth_login'),
+    Route('/auth/<provider>/callback', handler='src.users.AuthHandler:_auth_callback', name='auth_callback'),
+    Route('/logout', handler='src.users.AuthHandler:logout', name='logout'),
     # Cron jobs
     Route('/cron/send_email_notifications', 'src.email_messages.SendNotifications'),
     ##
@@ -76,11 +90,11 @@ routes = [
     # Admin projects
     Route('/<projectid:[0-9]+>/admin', 'src.projects.AdminPage'),
     Route('/<projectid:[0-9]+>/invite', 'src.projects.InvitePage'),
-    Route('/file/<blobkey:.+>', 'src.datasets.DownloadDataRevisionHandler'),                                    # Argument is the Blobstore key
+    Route('/file/<blobkey:.+>', 'src.datasets.DownloadDataRevisionHandler'),
     
     Route('/<projectid:[0-9]+>', 'src.frontend.OverviewPage'),
     Route('/<username:.+>', 'src.users.UserPage')]
 
 
-app = WSGIApplication(routes, debug = True)
+app = WSGIApplication(routes, config = app_config, debug = True)
 
