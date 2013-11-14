@@ -184,9 +184,9 @@ class AdminPage(ProjectPage):
             self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
         # New user here?
-        if h and (hash_str(user.salt + str(project.key)) == h):
+        if h and (generic.hash_str(user.salt + str(project.key)) == h):
             project.add_author(self, user)
-            self.redirect("/%s/admin" % projectid)
+            self.redirect("/%s/admin?info=Welcome to this project!" % projectid)
             return
         if not project.user_is_author(user):
             self.redirect("/%s" % projectid)
@@ -200,7 +200,8 @@ class AdminPage(ProjectPage):
               "forum_posts_p"   : "checked" if user.key in project.forum_posts_notifications_list else "",
               "p_description"   : project.description,
               "p_name"          : project.name,
-              "authors"         : project.list_of_authors(self)}
+              "authors"         : project.list_of_authors(self),
+              "info_message"    : self.request.get("info")}
         self.render('project_admin.html', project = project, **kw)
 
     def post(self, projectid):

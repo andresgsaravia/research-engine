@@ -42,8 +42,8 @@ def send_notifications(notifications_list, user):
     message = mail.EmailMessage(sender = PRETTY_ADMIN_EMAIL,
                                 to = user.email,
                                 subject = "Recent activity in your projects",
-                                body = render_str("emails/notification_email.txt", **notifs),
-                                html = render_str("emails/notification_email.html", **notifs))
+                                body = generic.render_str("emails/notification_email.txt", **notifs),
+                                html = generic.render_str("emails/notification_email.html", **notifs))
     logging.debug("EMAIL: Sending an email with notifications to user %s" % user.username)
     message.send()
     for n in notifications_list:
@@ -73,8 +73,8 @@ def send_invitation_to_project(project, inviting, invited, message):
     message = mail.EmailMessage(sender = PRETTY_ADMIN_EMAIL,
                                 to = invited.email,
                                 subject = "%s has invited you to collaborate in the project %s" % (inviting.username.capitalize(), project.name),
-                                body = render_str("emails/invite_to_project.txt" , **kw),
-                                html = render_str("emails/invite_to_project.html", **kw))
+                                body = generic.render_str("emails/invite_to_project.txt" , **kw),
+                                html = generic.render_str("emails/invite_to_project.html", **kw))
     logging.debug("EMAIL: Sending an email with a invitation to a project from user %s to user %s" % (inviting.username, invited.username))
     message.send()
     return

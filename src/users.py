@@ -160,7 +160,7 @@ class SettingsPage(generic.GenericPage):
     def get(self):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login", goback = "/settings")
+            self.redirect("/login?goback=/settings")
             return
         kw = {"usern": user.username, "email" : user.email}
         if user.about_me: kw["about_me"] = user.about_me
@@ -241,13 +241,13 @@ class RecoverPasswordPage(generic.GenericPage):
             if have_error:
                 self.redirect("/login?r_error_message=%s" % r_error_message)
             else:
-                link = '%s/recover_password?email=%s&k=%s' % (APP_URL, email, generic.hash_str(user.username + user.salt))
-                message = mail.EmailMessage(sender = APP_NAME + ' <' + ADMIN_EMAIL + '>',
+                link = '%s/recover_password?email=%s&k=%s' % (generic.APP_URL, email, generic.hash_str(user.username + user.salt))
+                message = mail.EmailMessage(sender = generic.APP_NAME + ' <' + generic.ADMIN_EMAIL + '>',
                                             to = email,
                                             subject = 'Password recovery',
-                                            body = render_str('emails/recover_password.txt',  reset_link = link, ADMIN_EMAIL = ADMIN_EMAIL),
-                                            html = render_str('emails/recover_password.html', reset_link = link, ADMIN_EMAIL = ADMIN_EMAIL))
-                if DEBUG: logging.debug("EMAIL: Sending an email for password recovery. ")
+                                            body = generic.render_str('emails/recover_password.txt',  reset_link = link, ADMIN_EMAIL = generic.ADMIN_EMAIL),
+                                            html = generic.render_str('emails/recover_password.html', reset_link = link, ADMIN_EMAIL = generic.ADMIN_EMAIL))
+                if generic.DEBUG: logging.debug("EMAIL: Sending an email for password recovery. ")
                 message.send()
                 self.redirect('/login?info=Email sent. To reset your password follow the instructions on the email.')
         elif action == "do_reset":
