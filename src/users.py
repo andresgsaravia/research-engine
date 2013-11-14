@@ -47,7 +47,7 @@ class LoginPage(generic.GenericPage):
         if have_error:
             self.render("login.html", **kw)
         else:
-#            u.salt = make_salt()
+#            u.salt = generic.make_salt()
 #            u.password_hash = generic.hash_str(password + u.salt)
 #            self.log_and_put(u, "Making new salt. ")
             self.set_cookie("username", u.username, u.salt, max_age = LOGIN_COOKIE_MAXAGE)
@@ -125,8 +125,8 @@ class SignupPage(generic.GenericPage):
             # Available username
             another_user = self.get_user_by_username(usern, "Checking if username is available")
             if not another_user:
-                self.log_read(UnverifiedUsers, "Checking if username is available. ")
-                another_user = UnverifiedUsers.query(UnverifiedUsers.username == usern).get()
+                self.log_read(generic.UnverifiedUsers, "Checking if username is available. ")
+                another_user = generic.UnverifiedUsers.query(generic.UnverifiedUsers.username == usern).get()
             if another_user:
                 have_error = True
                 kw['error_username'] = True
@@ -138,19 +138,19 @@ class SignupPage(generic.GenericPage):
                 kw['error_email'] = True
                 kw['error'] += 'That email is already in use by someone. Did you <a href="/recover_password?email=%s">forget your password?. </a>' % email
             else:
-                self.log_read(UnverifiedUsers, "Checking if email is available. ")
-                another_email = UnverifiedUsers.query(UnverifiedUsers.email == email).get()
+                self.log_read(generic.UnverifiedUsers, "Checking if email is available. ")
+                another_email = generic.UnverifiedUsers.query(generic.UnverifiedUsers.email == email).get()
                 if another_email:
                     have_error = True
                     kw['error_email'] = True
-                    kw['error'] += 'This email is already registered but it still needs to be verified, click <a href="/verify_email?email=%s">here</a> to send the verification email again.' % email
+                    kw['error'] = 'This email is already registered but it still needs to be verified, click <a href="/verify_email?email=%s">here</a> to send the verification email again.' % email
         # Render
         if have_error:
             self.render('signup.html', **kw)
         else:
-            salt = make_salt()
+            salt = generic.make_salt()
             ph = generic.hash_str(password + salt)
-            u = UnverifiedUsers(username = usern, password_hash = ph, salt = salt, email = email)
+            u = generic.UnverifiedUsers(username = usern, password_hash = ph, salt = salt, email = email)
             self.log_and_put(u, "New user registration")
             email_messages.send_verify_email(u)
             self.render('signup.html', info = "A message has been sent to your email, please follow the instructions provided there.")
@@ -270,7 +270,7 @@ class RecoverPasswordPage(generic.GenericPage):
                 error = "Invalid request. "
                 self.write(error)
             else:
-                salt = make_salt()
+                salt = generic.make_salt()
                 user.salt = salt
                 user.password_hash = generic.hash_str(password + salt)
                 self.log_and_put(user)
@@ -279,9 +279,16 @@ class RecoverPasswordPage(generic.GenericPage):
 class VerifyEmailPage(generic.GenericPage):
     def get(self):
         username = self.request.get("username")
+        email = self.request.get("email").strip()
+        if email:
+            u = generic.UnverifiedUsers.query(generic.UnverifiedUsers.email == email).get()
+            if u:
+                email_messages.send_verify_email(u)
+                self.redirect("signup?info=A message has been sent to your email, please follow the instructions provided there.")
+                return
         h = self.request.get("h")
-        self.log_read(UnverifiedUsers)
-        u = UnverifiedUsers.query(UnverifiedUsers.username == username).get()
+        self.log_read(generic.UnverifiedUsers)
+        u = generic.UnverifiedUsers.query(generic.UnverifiedUsers.username == username).get()
         if not u:
             logging.warning("Handler VerifyEmailPage attempted to verify an email not in Datastore.")
             self.error(404)

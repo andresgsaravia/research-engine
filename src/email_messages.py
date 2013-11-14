@@ -3,6 +3,7 @@
 
 from google.appengine.api import mail
 from google.appengine.ext import db
+import logging
 import generic
 
 PRETTY_ADMIN_EMAIL = generic.APP_NAME + " <" + generic.ADMIN_EMAIL + ">"
@@ -53,7 +54,7 @@ def send_notifications(notifications_list, user):
 
 
 def send_verify_email(user):
-    link = "%s/verify_email?username=%s&h=%s" % (generic.APP_URL, user.username, hash_str(user.username + user.salt))
+    link = "%s/verify_email?username=%s&h=%s" % (generic.APP_URL, user.username, generic.hash_str(user.username + user.salt))
     message = verify_email_message(link)
     message.to = user.email
     logging.debug("EMAIL: Sending an email verification request.")
@@ -62,7 +63,7 @@ def send_verify_email(user):
 
 
 def send_invitation_to_project(project, inviting, invited, message):
-    h = hash_str(invited.salt + str(project.key))
+    h = generic.hash_str(invited.salt + str(project.key))
     kw = {"project" : project,
           "inviting" : inviting,
           "invited" : invited,
