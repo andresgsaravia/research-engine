@@ -306,6 +306,9 @@ class VerifyEmailPage(generic.GenericPage):
 class AuthHandler(generic.GenericPage, simpleauth.SimpleAuthHandler):
     """Authentication handler for all kinds of auth."""
 
+    # Enable optional OAuth 2.0 CSRF guard
+    OAUTH2_CSRF_STATE = True
+
     def _on_signin(self, data, auth_info, provider):
         """Callback whenever a new or existing user is logging in.
         data is a user info dictionary.
