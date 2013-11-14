@@ -11,3 +11,11 @@
 .page-header {
     margin-top: 0;
 }
+
+.btn-edit {
+    color:gray;
+}
+
+.btn-edit:hover {
+    color:black
+}

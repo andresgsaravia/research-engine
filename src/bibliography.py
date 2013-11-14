@@ -262,6 +262,13 @@ class ItemPage(BiblioPage):
         elif action == "toggle_visibility":
             item.open_p = not item.open_p
             self.log_and_put(item)
+        elif action == "edit_comment":
+            commentid = self.request.get("commentid")
+            comment = self.get_comment(item, commentid)
+            content = self.request.get("comment").strip()
+            if content and (user.key == comment.author):
+                comment.content = content
+                self.log_and_put(comment)
         self.redirect("/%s/bibliography/%s" % (projectid, itemid))
 
 
