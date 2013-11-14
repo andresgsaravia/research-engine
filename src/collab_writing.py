@@ -81,6 +81,10 @@ class WritingPage(projects.ProjectPage):
             comments.append(c)
         return comments
 
+    def get_comment(self, writing, commentid):
+        self.log_read(WritingComments)
+        return WritingComments.get_by_id(int(commentid), parent = writing.key)
+
 
 class WritingsListPage(WritingPage):
     def get(self, projectid):
@@ -337,12 +341,21 @@ class DiscussionPage(WritingPage):
         if not project.user_is_author(user):
             self.redirect("/%s/writings/%s/discusison" % (projectid, writingid))
             return
-        comment = self.request.get("comment")
-        if not comment:
-            self.redirect("/%s/writings/%s/discussion" % (projectid, writingid))
-            return
-        new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
-        self.put_and_report(new_comment, user, project, writing)
+        action = self.request.get("action")
+        if action == "new_comment":
+            comment = self.request.get("comment")
+            if not comment:
+                self.redirect("/%s/writings/%s/discussion" % (projectid, writingid))
+                return
+            new_comment = WritingComments(author = user.key, comment = comment, parent = writing.key)
+            self.put_and_report(new_comment, user, project, writing)
+        elif action == "edit_comment":
+            commentid = self.request.get("commentid")
+            comment = self.get_comment(writing, commentid)
+            content = self.request.get("comment").strip()
+            if comment and content and (comment.author == user.key):
+                comment.comment = content
+                self.log_and_put(comment)
         self.redirect("/%s/writings/%s/discussion" % (projectid, writingid))
 
 
