@@ -16,18 +16,18 @@
 {% block p_content %}
 
 <div class="panel panel-default">
-  <div class="panel-heading">
+  <div class="panel-heading" style="overflow:auto">
+    {% if user and user.key == thread.author %}
+    <a class="btn btn-link btn-sm btn-edit pull-right" href="/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}/edit">
+      <span class="glyphicon glyphicon-pencil"></span>
+    </a>
+    {% endif %}
     <h3 class="panel-title">
       <small><span class="glyphicon glyphicon-eye-{% if thread.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This forum thread is {% if not thread.is_open_p() %}not {% endif %}publicly visible."></span></small>
       {{thread.title}}</h3>
   </div>
   <div class="panel-body">
-    {% if user and user.key == thread.author %}
-    <a class="btn btn-default pull-right" href="/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}/edit">
-      <span class="glyphicon glyphicon-pencil"></span>
-    </a>
-    {% endif %}
     {{thread.content | md | safe}}
     <p class="text-muted pull-right">{{thread.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
@@ -43,7 +43,7 @@
   <div class="list-group-item">
     {% if c.author == user.key %}
     <!-- Button trigger modal -->
-    <button class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}" title="Edit">
+    <button class="btn btn-link btn-edit btn-xs pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}" title="Edit">
       <span class="glyphicon glyphicon-pencil"></span></button>
     <!-- Modal -->
     <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">

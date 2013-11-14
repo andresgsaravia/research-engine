@@ -23,7 +23,7 @@
     <div class="panel-collapse collapse" id="{{rev.key.integer_id()}}">
       <div class="panel-body">
 	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}" 
-	   class="btn btn-default pull-right" title="Edit this description"><span class="glyphicon glyphicon-cog"></span></a>
+	   class="btn btn-link btn-edit pull-right" title="Edit this revision"><span class="glyphicon glyphicon-pencil"></span></a>
 	{% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
       </div>
     </div>

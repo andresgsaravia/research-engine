@@ -13,7 +13,7 @@
 <div class="panel panel-default">
   <div class="panel-heading" style="overflow:auto;">
     {% if user_is_owner_p %}
-    <a class="btn btn-default btn-sm pull-right" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">
+    <a class="btn btn-link btn-sm btn-edit pull-right" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">
       <span class="glyphicon glyphicon-pencil"></span>
     </a>
     {% endif %}
@@ -31,7 +31,7 @@
   <div class="list-group-item">
     {% if c.author == user.key %}
     <!-- Button trigger modal -->
-    <button class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
+    <button class="btn btn-link btn-xs btn-edit pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
       <span class="glyphicon glyphicon-pencil"></span></button>
     <!-- Modal -->
     <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
