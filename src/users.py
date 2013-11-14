@@ -3,7 +3,7 @@
 
 import generic, projects, email_messages, secrets, simpleauth
 import bibliography, code, collab_writing, datasets, forum, notebooks, wiki
-import hashlib, re
+import hashlib, re, logging
 from google.appengine.api import mail
 from webapp2_extras import auth
 
@@ -85,7 +85,12 @@ class UserPage(generic.GenericPage):
 class SignupPage(generic.GenericPage):
     def get(self):
         user = self.get_login_user()
-        self.render("signup.html", user = user, info = self.request.get("info"))
+        kw = {"email" : self.request.get("email"),
+              "info" : self.request.get("info")}
+        if kw["email"]:
+            kw["error"] = "The email %s is not registered yet. Please create a new account first. " % kw["email"]
+        self.render("signup.html", user = user, **kw)
+
 
     def post(self):
         usern = self.request.get('usern')
@@ -308,25 +313,14 @@ class AuthHandler(generic.GenericPage, simpleauth.SimpleAuthHandler):
 
         See what's in it with logging.info(data, auth_info)
         """
+        # Test if we already have a registered user
+        user = self.get_user_by_email(data['email'])
+        if user:
+            self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
+            self.redirect("/%s" % user.username)
+        else:
+            self.redirect("/signup?email=%s" % data['email'])
 
-        auth_id = '%s:%s' % (provider, data['id'])
-
-        # Possible flow:
-        # 
-        # 1. check whether user exist, e.g.
-        #    User.get_by_auth_id(auth_id)
-        #
-        # 2. create a new user if it doesn't
-        #    User(**data).put()
-        #
-        # 3. sign in the user
-        #    self.session['_user_id'] = auth_id
-        #
-        # 4. redirect somewhere, e.g. self.redirect('/profile')
-        #
-        # See more on how to work the above steps here:
-        # http://webapp-improved.appspot.com/api/webapp2_extras/auth.html
-        # http://code.google.com/p/webapp-improved/issues/detail?id=20
         
     def logout(self):
         self.remove_cookie("username")
