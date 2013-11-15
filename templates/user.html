@@ -9,6 +9,7 @@
   TeX: {equationNumbers: {autoNumber: "AMS"} }
   });
 </script>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 var mergeNodes = function (a,b) { return [].slice.call(a).concat([].slice.call(b)); }
@@ -89,10 +90,13 @@ function drawPieChart() {
 <div class="container">
   <div class="row">
 
-    <div class="col-md-2">
+    <div class="col-md-3">
       <h2>{{page_user.username.capitalize()}}</h2>
       <hr>
-      <img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" style="display:block;margin:0 auto;">
+      <div class="container text-center">
+	{% if page_user.gplusid %}<div class="g-person" data-href="https://plus.google.com/{{page_user.gplusid}}" data-width="180"></div>
+	{% else %}<img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" style="display:block;margin:0 auto;">{% endif %}
+      </div>
       {% if page_user.about_me %}
       <hr>
       <a style="margin:0 auto;max-width:150px;" data-toggle="modal" href="#aboutInfo" class="btn btn-default btn-block">About</a>
@@ -119,7 +123,7 @@ function drawPieChart() {
       <p class="text-center"><a href="/{{page_user.username}}/outreach">Public outreach page</a></p>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-5">
       <h2>Last week's summary</h2>
       <hr>
       {% if recent_actv["Projects"] %}
