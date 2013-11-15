@@ -94,5 +94,14 @@
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     {% if not user %}<script languaje="javascript">document.getElementById("goback").value = window.location.pathname</script>{% endif %}
+    {% if plusone_p %}
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js?onload=onLoadCallback';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+    {% endif %}
   </body>
 </html>

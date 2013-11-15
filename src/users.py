@@ -69,7 +69,8 @@ class UserPage(generic.GenericPage):
               "self_user_p" : user and (user.key == page_user.key),
               "recent_actv" : page_user.get_recent_activity(days=7),
               "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0},
-              "p_counts" : page_user.get_project_contributions_counts(30, page_user.key == user.key if user else False)}
+              "p_counts" : page_user.get_project_contributions_counts(30, page_user.key == user.key if user else False),
+              "plusone_p": True}
         for a in kw["recent_actv"]["Projects"]:
             if a.is_open_p() or (user and a.actv_kind == "Projects" and a.relative_to.get().user_is_author(user)):
                 if a.item.kind() in ["Notebooks", "NotebookNotes", "NoteComments"]: kw["p_stats"]["Notebooks"] += 1
@@ -166,7 +167,8 @@ class SettingsPage(generic.GenericPage):
               "email"    : user.email,
               "about_me" : user.about_me if user.about_me else '',
               "gplusid"  : user.gplusid if user.gplusid else '',
-              "info"     : self.request.get("info")}
+              "info"     : self.request.get("info"),
+              "plusone_p": True}
         self.render("settings.html", user = user, **kw)
 
     def post(self):
@@ -174,10 +176,11 @@ class SettingsPage(generic.GenericPage):
         if not user:
             self.redirect("/login", goback = "/settings")
             return
-        kw = {"usern"    : self.request.get("usern"),
-              "email"    : self.request.get("email"),
-              "about_me" : self.request.get("about_me"),
-              "gplusid" : self.request.get("gplusid")}
+        kw = {"usern"    : self.request.get("usern").strip(),
+              "email"    : self.request.get("email").strip(),
+              "about_me" : self.request.get("about_me").strip(),
+              "gplusid"  : self.request.get("gplusid").strip(),
+              "plusone_p": True}
         have_error = False
         if kw["usern"]: kw["usern"] = kw["usern"].lower()
         if user.username != kw["usern"]:

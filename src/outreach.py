@@ -20,5 +20,9 @@ class MainPage(generic.GenericPage):
         if not page_user:
             self.render("404.html", info = "User %s not found." % username)
             return
-        self.render("outreach_MainPage.html", page_user = page_user, user = user)
+        self.render("outreach_MainPage.html", page_user = page_user, user = user, plusone_p = True)
     
+
+class PostPage(generic.GenericPage):
+    def get(self, username, postid):
+        pass
