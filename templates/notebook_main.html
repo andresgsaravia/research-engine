@@ -50,21 +50,21 @@
   
   {% if page>0 or more_p %}
   <ul class="pager">
-  {% if page>0 %}
-  <li class="previous">
-    <a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">
-      Previous page
-    </a>
-  </li>
-  {% endif %}
-  {% if more_p %}
-  <li class="next">
-    <a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">
-      Next page
-    </a>
-  </li>
-  {% endif %}
-  {% endif %}
-
+    {% if page>0 %}
+    <li class="previous">
+      <a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">
+	Previous page
+      </a>
+    </li>
+    {% endif %}
+    {% if more_p %}
+    <li class="next">
+      <a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">
+	Next page
+      </a>
+    </li>
+    {% endif %}
+    {% endif %}
+  </ul>
 </div>
 {% endblock %}
