@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <title>{{page_user.username.capitalize()}} | Outreach</title>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+      "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+      TeX: {equationNumbers: {autoNumber: "AMS"} }
+      });
+    </script>
+    <style class="text/css">img{max-width:100%;height:auto;}</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <!-- Breadcrumbs -->
+  <ol class="breadcrumb">
+    <li><a href="/{{page_user.username}}">{{page_user.username.capitalize()}}</a></li>
+    <li class="active">Outreach</li>
+  </ol>
+
+  <!-- Content  -->
+  <h1 class="page-header">{% if user and page_user.key == user.key %}Your{% else %}{{page_user.username.capitalize()}}'s{% endif %} public outreach page</h1>
+  <p>Awesome things to come ;) </p>
+</div>
+
+
+{% endblock %}

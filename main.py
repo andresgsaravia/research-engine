@@ -93,6 +93,7 @@ routes = [
     Route('/file/<blobkey:.+>', 'src.datasets.DownloadDataRevisionHandler'),
     
     Route('/<projectid:[0-9]+>', 'src.frontend.OverviewPage'),
+    Route('/<username:.+>/outreach', 'src.outreach.MainPage'),
     Route('/<username:.+>', 'src.users.UserPage')]
 
 
