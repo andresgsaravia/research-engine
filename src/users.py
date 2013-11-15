@@ -162,8 +162,11 @@ class SettingsPage(generic.GenericPage):
         if not user:
             self.redirect("/login?goback=/settings")
             return
-        kw = {"usern": user.username, "email" : user.email}
-        if user.about_me: kw["about_me"] = user.about_me
+        kw = {"usern"    : user.username, 
+              "email"    : user.email,
+              "about_me" : user.about_me if user.about_me else '',
+              "gplusid"  : user.gplusid if user.gplusid else '',
+              "info"     : self.request.get("info")}
         self.render("settings.html", user = user, **kw)
 
     def post(self):
@@ -173,7 +176,8 @@ class SettingsPage(generic.GenericPage):
             return
         kw = {"usern"    : self.request.get("usern"),
               "email"    : self.request.get("email"),
-              "about_me" : self.request.get("about_me")}
+              "about_me" : self.request.get("about_me"),
+              "gplusid" : self.request.get("gplusid")}
         have_error = False
         if kw["usern"]: kw["usern"] = kw["usern"].lower()
         if user.username != kw["usern"]:
@@ -198,10 +202,11 @@ class SettingsPage(generic.GenericPage):
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
-            user.profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(user.email.strip().lower()).hexdigest()
+            user.gplusid = kw["gplusid"]
             self.log_and_put(user, "Updating settings.")
+            user.set_profile_image_url("google" if user.gplusid else "gravatar")
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
-            self.redirect("/%s" % user.username)
+            self.redirect("/settings?info=Changes saved")
 
 
 class RecoverPasswordPage(generic.GenericPage):

@@ -2,6 +2,7 @@
 
 {% block head %}
 <title>Research Engine | Settings</title>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -10,29 +11,47 @@
   <div class="page-header"><h2>{{user.username.capitalize()}}</h2></div>
 
   <div class="row">
-    <div class="col-md-4">
-	<img src="{{user.get_profile_image(200)}}" class="img-responsive img-thumbnail" style="margin-bottom: 10px;">
-	<p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
+    <div class="col-sm-4 text-center">
+      {% if gplusid %}
+      <div class="g-person" data-href="https://plus.google.com/{{gplusid}}" data-layout="portrait" data-width="180" ></div>
+      {% else %}
+      <img src="{{user.get_profile_image(200)}}" class="img-responsive img-thumbnail" style="margin-bottom: 10px;">
+      <p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
+      {% endif %}
     </div>
 
-    <div class="col-md-8">
+    <div class="col-sm-8">
       <form method="post" class="form-horizontal">
 	<div class="form-group{% if uname_error_p %} has-error{% endif %}">
 	  <label for="unameInput" class="col-sm-2 control-label">Username</label>
 	  <div class="col-sm-10">
-	    <input id="unameInput" type="text" name="usern" value="{{usern}}" class="form-control"/>
+	    <input id="unameInput" type="text" name="usern" value="{{usern}}" class="form-control" placeholder="Username"/>
 	  </div>
 	</div>
 
 	<div class="form-group{% if email_error_p %} has-error{% endif %}">
 	  <label for="emailInput" class="col-sm-2 control-label">Email</label>
 	  <div class="col-sm-10">
-	    <input id="emailInput" type="text" name="email" value="{{email}}" class="form-control"/>
+	    <input id="emailInput" type="text" name="email" value="{{email}}" class="form-control" placeholder="Email"/>
 	  </div>
 	</div>
+
+	<hr/>
+	<h5 class="help-block text-center">Optional information</h5>
 	
+
 	<div class="form-group">
-	  <label for="aboutInput" class="col-sm-2 control-label">About me</label>
+	  <label for="gplusidInput" class="col-sm-2 control-label">Google+</label>
+	  <div class="col-sm-4">
+	    <p class="form-control-static">https://plus.google.com/</p>
+	  </div>
+	  <div class="col-sm-6">
+	    <input id="gplusidlInput" type="text" name="gplusid" value="{{gplusid}}" class="form-control" placeholder="Google+ ID"/>
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label for="aboutInput" class="col-sm-2 control-label">About</label>
 	  <div class="col-sm-10">
 	    <textarea id="aboutInput" name="about_me" class="form-control" rows="15">{{about_me}}</textarea>
 	  </div>
@@ -40,6 +59,7 @@
 	
 	<button type="submit" class="btn btn-success col-sm-offset-2">Save changes</button>
 	<button type="button" class="btn btn-default" onClick="window.location = '/{{usern}}'">Cancel</button>
+	{% if info %}<div class="alert alert-success" style="margin-top:10px;">{{info | safe}}</div>{% endif %}
 	{% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
       </form>
     </div>
