@@ -1,0 +1,19 @@
+{% extends "outreach_base.html" %}
+
+{% block breadcrumbs %}<li><a href="/{{page_user.username}}/outreach">Outreach</a></li><li class="active">{{post.title | truncate(40, True)}}</li>{% endblock %}
+
+{% block outreach_content %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">
+      <a href="/{{page_user.username}}/outreach/{{post.key.integer_id()}}">{{post.title}}</a>
+    </h2>
+  </div>
+  <div class="panel-body">
+    {{post.content | md | safe}}
+    <small class="text-muted">{{post.published.strftime("%d %b %Y")}}</small>
+  </div>
+</div>
+
+{% endblock %}

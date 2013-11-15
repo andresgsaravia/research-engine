@@ -101,6 +101,12 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: OutreachPosts
+  ancestor: yes
+  properties:
+  - name: published
+    direction: desc
+
 - kind: ProjectUpdates
   ancestor: yes
   properties:

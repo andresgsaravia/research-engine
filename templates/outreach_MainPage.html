@@ -1,32 +1,54 @@
-{% extends "base.html" %}
+{% extends "outreach_base.html" %}
 
+{% block breadcrumbs %}<li class="active">Outreach</li>{% endblock %}
 
-{% block head %}
-    <title>{{page_user.username.capitalize()}} | Outreach</title>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript">
-      MathJax.Hub.Config({
-      "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
-      TeX: {equationNumbers: {autoNumber: "AMS"} }
-      });
-    </script>
-    <style class="text/css">img{max-width:100%;height:auto;}</style>
-{% endblock %}
+{% block outreach_content %}
+<h2>{% if user and (page_user.key == user.key) %}Your{% else %}{{page_user.username.capitalize()}}'s{% endif %} public outreach page
+  {% if user and (user.key == page_user.key) %}
+  <a class="btn btn-success pull-right" href="/{{page_user.username}}/outreach/new_post">
+    <span class="glyphicon glyphicon-plus"></span> New post</a>
+  {% endif %}
+</h2>
+<hr/>
 
-
-{% block content %}
-
-<div class="container">
-  <!-- Breadcrumbs -->
-  <ol class="breadcrumb">
-    <li><a href="/{{page_user.username}}">{{page_user.username.capitalize()}}</a></li>
-    <li class="active">Outreach</li>
-  </ol>
-
-  <!-- Content  -->
-  <h1 class="page-header">{% if user and page_user.key == user.key %}Your{% else %}{{page_user.username.capitalize()}}'s{% endif %} public outreach page</h1>
-  <p>Awesome things to come ;) </p>
+{% for p in posts %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <a href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}">{{p.title}}</a>
+    </h3>
+  </div>
+  <div class="panel-body">
+    {{p.content | md | safe}}
+    <small class="text-muted">{{p.published.strftime("%d %b %Y")}}</small>
+    <div class="pull-right">
+      <a href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}#comments">
+	<span class="glyphicon glyphicon-comment"></span> {{p.get_number_of_comments()}} comments</a>
+      <a href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}?new_comment=True">
+	<span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
+    </div>
+  </div>
 </div>
+{% endfor %}
+
+{% if page>0 or more_p %}
+<ul class="pager">
+  {% if page>0 %}
+  <li class="previous">
+    <a id="prev-link" href="/{{page_user.username}}/outreach?page={{page - 1}}">
+      Previous page
+    </a>
+  </li>
+  {% endif %}
+  {% if more_p %}
+  <li class="next">
+    <a id="next-link" href="/{{page_user.username}}/outreach?page={{page + 1}}">
+      Next page
+    </a>
+  </li>
+  {% endif %}
+  {% endif %}
+</ul>
 
 
 {% endblock %}
