@@ -142,6 +142,7 @@ function drawPieChart() {
     <div class="col-md-4">
       <h2>{% if self_user_p %}Your projects{% else %}Projects{% endif %}</h2>
       <hr>
+      {% if projects %}
       <div id="p_pie_chart"></div><br/>
       <div class="panel-body">
 	<div class="panel-group" id="accordion1">
@@ -164,6 +165,9 @@ function drawPieChart() {
 	  {% endfor %}
 	</div>
       </div>
+      {% else %}
+      <p>You don't have any projects yet.</p>
+      {% endif %}
       {% if self_user_p %}
       <div class="container"><a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a></div>
       {% endif %}
