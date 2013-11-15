@@ -5,7 +5,7 @@
 
 {% block p_content %}
 
-{% if visitor_p %}
+{% if (user and project.user_is_author(user)) %}
 
 <div class="page-header">
   <h2>My notebooks

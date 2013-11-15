@@ -118,7 +118,7 @@ class NotebooksListPage(NotebookPage):
                     my_notebooks.append(n)
                 else:
                     other_notebooks.append(n)
-        self.render("notebooks_list.html", project = project, user = user, visitor_p = (user and project.user_is_author(user)),
+        self.render("notebooks_list.html", project = project, user = user,
                     notebooks = notebooks, my_notebooks = my_notebooks, other_notebooks = other_notebooks)
 
 
