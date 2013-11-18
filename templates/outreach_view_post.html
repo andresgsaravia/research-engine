@@ -5,7 +5,12 @@
 {% block outreach_content %}
 
 <div class="panel panel-default">
-  <div class="panel-heading">
+  <div class="panel-heading" style="overflow:auto;">
+    {% if user and (page_user.key == user.key) %}
+    <a class="btn btn-link btn-sm btn-edit pull-right" href="/{{user.username}}/outreach/{{post.key.integer_id()}}/edit" title="Edit this post">
+      <span class="glyphicon glyphicon-pencil"></span>
+    </a>
+    {% endif %}
     <h2 class="panel-title">
       <a href="/{{page_user.username}}/outreach/{{post.key.integer_id()}}">{{post.title}}</a>
     </h2>

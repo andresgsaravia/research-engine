@@ -95,6 +95,7 @@ routes = [
     Route('/<projectid:[0-9]+>', 'src.frontend.OverviewPage'),
     Route('/<username:.+>/outreach', 'src.outreach.MainPage'),
     Route('/<username:.+>/outreach/new_post', 'src.outreach.NewPostPage'),
+    Route('/<username:.+>/outreach/<postid:[0-9]+>/edit', 'src.outreach.EditPostPage'),
     Route('/<username:.+>/outreach/<postid:[0-9]+>', 'src.outreach.ViewPostPage'),
     Route('/<username:.+>', 'src.users.UserPage')]
 

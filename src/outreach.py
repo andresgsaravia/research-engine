@@ -111,3 +111,50 @@ class ViewPostPage(PostPage):
             return
         self.render("outreach_view_post.html", page_user = page_user, post = post)
 
+
+class EditPostPage(PostPage):
+    def get(self, username, postid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("login?goback=/%s/outreach/new_post")
+            return
+        if not user.username == username:
+            self.redirect("/%s/outreach"% username)
+            return
+        post = self.get_post(user, postid)
+        if not post:
+            self.render("404.html", info = "Post %s not found. " % postid)
+            return
+        self.render("outreach_edit_post.html", user = user, postid = postid,
+                    title_value = post.title, content_value = post.content)
+
+    def post(self, username, postid):
+        user = self.get_login_user()
+        if not user.username == username:
+            self.redirect("/%s/outreach"% username)
+            return
+        post = self.get_post(user, postid)
+        if not post:
+            self.render("404.html", info = "Post %s not found. " % postid)
+            return
+        kw = {"title_value": self.request.get("title"),
+              "content_value": self.request.get("content"),
+              "postid" : postid,
+              "error_message" : ''}
+        have_error = False
+        if not kw["title_value"]:
+            have_error = True
+            kw["title_error"] = True
+            kw["error_message"] = "Please provide a title. "
+        if not kw["content_value"]:
+            have_error = True
+            kw["content_error"] = True
+            kw["error_message"] += "You must write some content first. "
+        if not have_error:
+            post.title = kw["title_value"]
+            post.content = kw["content_value"]
+            self.log_and_put(post)
+            self.redirect("/%s/outreach/%s" % (username, postid))
+        else:
+            self.render("outreach_edit_post.html", user = user, **kw)
+

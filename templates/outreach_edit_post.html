@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+    <title>{{user.username.capitalize()}} | Outreach</title>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+      "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+      TeX: {equationNumbers: {autoNumber: "AMS"} }
+      });
+    </script>
+    <script type="text/javascript" src="/js/showdown.js"></script>
+    <script type="text/javascript" src="/js/preview.js"></script>
+    <style class="text/css">img{max-width:100%;height:auto;}</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <!-- Breadcrumbs -->
+  <ol class="breadcrumb">
+    <li><a href="/{{user.username}}">{{user.username.capitalize()}}</a></li>
+    <li><a href="/{{user.username}}/outreach">Outreach</a></li>
+    <li><a href="/{{user.username}}/outreach/{{postid}}">{{title_value | truncate(40,True)}}</a></li>
+    <li class="active">Edit post</li>
+  </ol>
+</div>
+
+<div class="container">
+  <h2 class="page-header">Edit post</h2>
+
+  <form method="post" role="form">
+    <div class="form-group{% if title_error %} has-error{% endif %}">
+      <input type="text" name="title" class="form-control"
+	     value="{{title_value}}" placeholder="A title for your post" autofocus/>
+    </div>
+    <div class="form-group{% if content_error %} has-error{% endif %}">
+      <textarea name="content" id="inputText" placeholder="The content for your post" class="form-control" rows="25">{{content_value}}</textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Save changes</button>
+    <button type="button" class="btn btn-default"
+	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{user.username}}/outreach/{{postid}}'}">Cancel</button>
+    {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
+    {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
+    <span class="help-block">
+      Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+    </span>
+  </form>
+
+  <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
+	Render preview
+      </button>
+    </div>
+    <div class="panel-body" id="previewArea">
+      Click the <em>Render preview</em> button to see a preview here.
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
