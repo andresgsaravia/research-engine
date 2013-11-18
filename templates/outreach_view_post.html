@@ -30,7 +30,7 @@
 <script type="text/javascript">
   function onLoadCallback () {
   gapi.comments.render('google_comments', {
-    href: window.location,
+    href: '{{APP_URL}}/{{page_user.username}}/outreach/{{post.key.integer_id()}}',
     width: '650',
     first_party_property: 'BLOGGER',
     view_type: 'FILTERED_POSTMOD'

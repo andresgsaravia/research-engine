@@ -56,7 +56,7 @@ class MainPage(PostPage):
             kw["page"] = int(kw["page"])
         except ValueError:
             kw["page"] = 0
-        kw["posts"], kw["next_page_cursor"], kw["more_p"] = self.get_posts_list(user, kw["page"])
+        kw["posts"], kw["next_page_cursor"], kw["more_p"] = self.get_posts_list(page_user, kw["page"])
         self.render("outreach_MainPage.html", page_user = page_user, user = user, **kw)
     
 
