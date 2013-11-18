@@ -14,8 +14,11 @@ def make_doi_link(doi_match_object):
     return "[%s](http://dx.doi.org/%s)" % (s, urllib.quote(s[4:]))
 
 def md(value):
-    allowed_tags = bleach.ALLOWED_TAGS + ['br', 'h1','h2','h3','h4', 'img', 'mathjax', 'p', 'pre', 'sub', 'sup','table', 'tbody', 'td', 'th', 'thead', 'tr', 'div', 'hr']
-    allowed_attrs = dict(bleach.ALLOWED_ATTRIBUTES.items() + {'*' : ['class', 'id'], 'img': ['alt', 'src', 'title', 'width', 'height']}.items())
+    allowed_tags = bleach.ALLOWED_TAGS + ['br', 'h1','h2','h3','h4', 'img', 'mathjax', 'p', 'pre', 'sub', 'sup','table', 'tbody', 'td', 'th', 'thead', 'tr', 'div', 'hr', 'iframe']
+    allowed_attrs = dict(bleach.ALLOWED_ATTRIBUTES.items() + 
+                         {'*' : ['class', 'id'], 
+                          'img': ['alt', 'src', 'title', 'width', 'height'],
+                          'iframe' : ['width', 'height', 'src']}.items())
     value = re.sub(DOI_REGEXP, make_doi_link, value)     # doi links
     value = markdown.markdown(value, extensions = ['extra', 'toc', 'nl2br', 'mathjax', 'tables'])
     value = bleach.clean(value, tags = allowed_tags, attributes = allowed_attrs)
