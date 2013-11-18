@@ -25,4 +25,15 @@
   </div>
 </div>
 
+<h3 class="page-header">Comments</h3>
+<div id="google_comments"></div>
+<script type="text/javascript">
+  function onLoadCallback () {
+  gapi.comments.render('google_comments', {
+    href: window.location,
+    width: '650',
+    first_party_property: 'BLOGGER',
+    view_type: 'FILTERED_POSTMOD'
+  });}
+</script>
 {% endblock %}
