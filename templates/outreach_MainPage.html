@@ -20,12 +20,10 @@
   </div>
   <div class="panel-body">
     {{p.content | md | safe}}
-    <small class="text-muted">{{p.published.strftime("%d %b %Y")}}</small>
+    <div class="g-plusone" data-size="medium" data-href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}" ></div>
+    <div class="g-plus" data-action="share" data-href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}" ></div>
     <div class="pull-right">
-      <a href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}#comments">
-	<span class="glyphicon glyphicon-comment"></span> {{p.get_number_of_comments()}} comments</a>
-      <a href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}?new_comment=True">
-	<span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
+      <small class="text-muted">{{p.published.strftime("%d %b %Y")}}</small>
     </div>
   </div>
 </div>
