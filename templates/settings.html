@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>Research Engine | Settings</title>
+<title>{{APP_NAME}} | Settings</title>
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
       <div class="g-person" data-href="https://plus.google.com/{{gplusid}}" data-layout="portrait" data-width="180" ></div>
       {% else %}
       <img src="{{user.get_profile_image(200)}}" class="img-responsive img-thumbnail" style="margin-bottom: 10px;">
-      <p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a></p>
+      <p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a> or provide your Google+ ID to use your profile image.</p>
       {% endif %}
     </div>
 

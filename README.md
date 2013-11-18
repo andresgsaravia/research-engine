@@ -67,10 +67,12 @@ Hacking
 
 If you want to play around with the code you will need [Google's App Engine][], please look into their documentation for instructions on how to get an instance working on your machine. If you want to make it public you will also need to register an app with them and change some basic settings:
 
-- In the `app.yaml` file change `application: research-engine` to your own app name.
-- In the `mail.py` file change the `ADMIN_EMAIL = "admin@research-engine.appspotmail.com"` parameter.
-- In the `generic.py` file change the parameters `APP_URL`, `ADMIN_EMAIL` and `APP_REPO`. Be sure that you use `ADMIN_EMAIL` consistently.
-- Optionally you may want to change the few instances in which *Research Engine* is mentioned in the `templates/root.html` and `static/edit_help.html` files.
+- In the `app.yaml` file change the line `application: research-engine` to your own app name.
+- In the `mail.py` file change the `ADMIN_EMAIL = "admin@research-engine.appspotmail.com"` parameter to your own appspot domain.
+- In the `src/generic.py` file change the parameters `APP_URL`, `ADMIN_EMAIL` and `APP_REPO`. Be sure that you use `ADMIN_EMAIL` consistently.
+- Optionally you may want to change the few instances in which *Research Engine* and its url are mentioned in the `static/edit_help.html` file
+.
+- Copy the `src/secrets.py.template` to `src/secrets.py` and fill in the appropriate information to your app. In the current version of this app we only use Google Login so you can leave the other options without modification. To use the *Log in with Google* feature you will need to register a new App in your [Google Cloud console][] for your appspot domain and copy its OAuth 2.0 CLIENT ID and CLIENT SECRET keys in this file. In the OAUth 2 options add as *web origins* `https://your-app-name.appspot.com` and `http://localhost:8080` and as *redirect uris* `https://your-app-name.appspot.com/auth/google/callback` and `http://localhost:8080/auth/google/callback`.
 
 
 License
@@ -94,3 +96,4 @@ Code developed here is released under a [GNU GPLv3][] license so you have the fr
 [WordPress]: https://wordpress.org/
 [my open science notebook]: http://notebook.andresgsaravia.com.mx/
 [Research Engine]: https://research-engine.appspot.com/
+[Google Cloud console]: https://cloud.google.com/console
