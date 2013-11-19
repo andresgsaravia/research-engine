@@ -31,9 +31,13 @@
 	    <li class="dropdown">
 	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 	      <ul class="dropdown-menu">
-		{% for p in user.list_of_projects() %}
+		{% if list_of_projects %}
+		{% for p in list_of_projects %}
 		<li><a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a></li>
 		{% endfor %}
+		{% else %}
+		<li><a href="/new_project">Create a new project</a></li>
+		{% endif %}
 	      </ul>
 	    </li>
 	    <li><a href="/{{user.username}}/outreach">Outreach</a></li>

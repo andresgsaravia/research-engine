@@ -242,6 +242,7 @@ class GenericPage(webapp2.RequestHandler):
         kw["APP_URL"] = APP_URL
         kw["APP_REPO"] = APP_REPO
         kw['user'] = self.get_login_user()
+        if kw["user"]: kw["list_of_projects"] = kw["user"].list_of_projects()
         self.write(self.render_str(template, **kw))
 
     # for simpleauth
