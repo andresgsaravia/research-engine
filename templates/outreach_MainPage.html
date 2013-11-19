@@ -39,8 +39,8 @@
   </div>
   <div class="panel-body">
     {{p.content | md | safe}}
-    <div class="g-plusone" data-size="medium" data-href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}" ></div>
-    <div class="g-plus" data-action="share" data-href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}" ></div>
+    <div class="g-plusone" data-size="medium" data-href="{{APP_URL}}/{{page_user.username}}/outreach/{{p.key.integer_id()}}" ></div>
+    <div class="g-plus" data-action="share" data-href="{{APP_URL}}/{{page_user.username}}/outreach/{{p.key.integer_id()}}" ></div>
     <br/><a href="/{{page_user.username}}/outreach/{{p.key.integer_id()}}#comments">View comments</a>
     <div class="pull-right">
       <small class="text-muted">{{p.published.strftime("%d %b %Y")}}</small>
