@@ -73,6 +73,7 @@ If you want to play around with the code you will need [Google's App Engine][], 
 - Optionally you may want to change the few instances in which *Research Engine* and its url are mentioned in the `static/edit_help.html` file
 .
 - Copy the `src/secrets.py.template` to `src/secrets.py` and fill in the appropriate information to your app. In the current version of this app we only use Google Login so you can leave the other options without modification. To use the *Log in with Google* feature you will need to register a new App in your [Google Cloud console][] for your appspot domain and copy its OAuth 2.0 CLIENT ID and CLIENT SECRET keys in this file. In the OAUth 2 options add as *web origins* `https://your-app-name.appspot.com` and `http://localhost:8080` and as *redirect uris* `https://your-app-name.appspot.com/auth/google/callback` and `http://localhost:8080/auth/google/callback`.
+- You will need yo register the `ADMIN_EMAIL` parameter you wrote on `src/generic.py` in CrossRef. To do this you should go to <http://www.crossref.org/requestaccount/> and submit there your `ADMIN_EMAIL`. They will send you a verification link which you can check in your app's logs.
 
 
 License
