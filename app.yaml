@@ -1,4 +1,4 @@
-application: research-engine
+application: gcdc2013-research-engine
 version: 0
 runtime: python27
 api_version: 1

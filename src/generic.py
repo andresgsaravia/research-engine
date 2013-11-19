@@ -20,10 +20,10 @@ SALT_LENGTH = 16
 jinja_env.filters['md'] = filters.md
 
 # You should change these if you are registering your own app on App Engine
-APP_NAME = "Research Engine"
-APP_URL = "https://research-engine.appspot.com"
-ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
-APP_REPO = "https://github.com/andresgsaravia/research-engine"
+APP_NAME = "Research Engine (GCDC-2013)"
+APP_URL = "https://gcdc2013-research-engine.appspot.com"
+ADMIN_EMAIL = "admin@gcdc2013-research-engine.appspotmail.com"
+APP_REPO = "https://github.com/andresgsaravia/research-engine/tree/gcdc2013"
 
 
 ##########################
