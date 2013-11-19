@@ -42,6 +42,7 @@
 
 	<div class="panel-body">
 	  <div class="panel-group" id="accordion1">
+	    {% if projects %}
 	    {% for p in projects %}
 	    <div class="panel panel-default">
 	      <div class="panel-heading">
@@ -59,6 +60,9 @@
 	      </div>
 	    </div>
 	    {% endfor %}
+	    {% else %}
+	    <em>Start by creating a new research project:</em>
+	    {% endif %}
 	    <div class="panel">
 	      <a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a>
 	    </div>
@@ -88,18 +92,24 @@
 <div class="container">
   <p class="lead text-center">Making research can get you drowned in data, notebooks, articles, lab notes and more.<br/>
     This makes collaborations prone to miscommunications, duplicated effort and reduced productivity.<br/>
-    We help you organize and communicate your work giving it extra value in the short and long run.</p>
+    Organize and communicate your work giving it extra value to you and your colleagues.</p>
 
-  <div class="row">
-    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-th"></span> Multiple projects</h2>
+  <div class="row text-center">
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-th"></span> Multiple projects</h2>
       <p>Split your work in different projects according to the topic, scope and/or collaborators. If you work on different topics and/or with different people you can easily contribute and keep track of each individual project. We will provide you with some statistics to help you identify your most productive areas and potential problems.</p></div>
-    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-user"></span> Easier collaborations</h2>
-      <p>Work closely with your colleagues with a constant eye in their recent contributions and keeping them up to date with your own progress. Make collaborative writings easier with our version control and discussion systems. Discuss key concepts, published articles or preprints. Integrate a common knowledge repository in the project's wiki.</p></div>
-    <div class="col-sm-6 col-md-4"><h2><span class="glyphicon glyphicon-eye-open"></span> Visibility control</h2>
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-wrench"></span> Different tools</h2>
+      <p>Making research means dealing with many different kinds of information like reviewing journal articles, keeping a notebook with your progress, collecting many datasets, writing collaborative articles, etc. We tailor an appropriate tool for each need while keeping everthing neatly integrated in the same reseach project.</p></div>
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-eye-open"></span> Visibility control</h2>
       <p>You decide if you want an <a href="">Open Science</a> project, a completely closed project or something in-between. You control the visibility of your contributions in broad strokes or finely grained.</p></div>
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-user"></span> Easier collaborations</h2>
+      <p>Work closely with your colleagues with a constant eye in their recent contributions and keeping them up to date with your own progress. Make collaborative writings easily with our version control and discussion systems and integrate a common knowledge repository.</p></div>
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-comment"></span> Public outreach</h2>
+      <p>Communicate your research to the general public and raise awareness about its importance. Make your work better known and understood by beign able to share and explain with as much detail as you wish. </p></div>
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-stats"></span> Know your progress</h2>
+      <p>If you work on several simultaneous projects you can track of your progress in each one of them. This could make more evident if there is a problem with some specific area in your work and help you take prompt action.</p></div>
+    <div class="col-sm-6 col-md-4" style="height: 13em;"><h2><span class="glyphicon glyphicon-plus"></span> Math friendly</h2>
+      <p>We know making research means using a lot of math, so we want to make it as easy as possible for you to write it. We use <a href="http://www.mathjax.org">Mathjax</a> support so you have a very powerful $\LaTeX$ environment at your disposal.</p></div>
   </div>
-
-
 </div>
 
 {% endif %}

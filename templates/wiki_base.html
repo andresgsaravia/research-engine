@@ -6,6 +6,20 @@
 {% endblock %}
 
 {% block p_content %}
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
+	<h4 class="modal-title">Wiki</h4>
+      </div>
+      <div class="modal-body">
+	<p>Description of this section...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <ul class="nav nav-tabs">
   <li class="pull-right{% if hist_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}" style="margin-right: 0;">History</a></li>
@@ -17,6 +31,9 @@
   <div class="panel-body">
     <h1 style="border-bottom:1px solid #B0B0B0;">
       {% if wikiurl == "Main_Page" and (user and project.user_is_author(user)) %}
+      <!-- Help modal -->
+      <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
+	<span class="glyphicon glyphicon-question-sign"></span></a>
       <form method="post" role="form" 
 	    onsubmit="return confirm('Are you sure you want to make this wiki {% if project.wiki_open_p %}not {% endif %}publicly visible?');">
 	<button class="btn btn-sm btn-default pull-right" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle." 

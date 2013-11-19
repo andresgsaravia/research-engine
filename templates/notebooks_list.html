@@ -7,10 +7,29 @@
 
 {% if (user and project.user_is_author(user)) %}
 
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
+	<h4 class="modal-title">Notebooks</h4>
+      </div>
+      <div class="modal-body">
+	<p>Each <em>notebook</em> in this section is a time-ordered sequence of <em>notes</em>, much like a simple blog. You can create as many notebooks as you like and, if you have collaborators in this project, you will see here their notebooks and they can see yours. You can make comments inside your colleagues' notebooks but only the owner of a notebook can take notes in it.</p>
+	<p>Notebooks are particularly useful for <em>progressive</em> knowledge and partial results. For example, you might be performing an experiment or a simulation and trying each day a different setup until you arrive at your ideal setting. You could record in a notebook all your parameters, partial results, negative results and discussions so you can refer to them later if needed, but usually you are interested in the latest results and will rarely go back to the beginning of the notebook. Most likely at the end of your experiment or simulation you will only report the very last notes in a notebook.</p>
+	<p>If you think every note will be very important, perhaps you will find more useful a <em>cummulative</em> knowledge repository which we have implemented here as a Wiki.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="page-header">
   <h2>My notebooks
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
       <span class="glyphicon glyphicon-plus"></span> New notebook</a>
+    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
+      <span class="glyphicon glyphicon-question-sign"></span></a>
   </h2>
 </div>
 
@@ -80,7 +99,10 @@
 
 {% else %}
 
-<div class="page-header"><h2>Open notebooks</h2></div>
+<div class="page-header"><h2>
+    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
+      <span class="glyphicon glyphicon-question-sign"></span></a>
+    Open notebooks</h2></div>
 
 <div class="panel-group" id="anaccordion">
   {% for n in notebooks %}
