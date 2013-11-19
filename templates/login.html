@@ -35,6 +35,9 @@
     {% if error_message %}<div class="alert alert-danger">{{error_message}}</div>{% endif %}
   </form>
 
+  <p>If you registered with a Google account, you can</p>
+  <p><a href="/auth/google" class="btn btn-default">Log in with Google</a></p>
+
   <div class="page-header"><h3>Forgot your password?</h3></div>
 
   <form method="post" action="/recover_password" role="form" class="form-horizontal">

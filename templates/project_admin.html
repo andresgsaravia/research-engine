@@ -58,6 +58,7 @@
 
   <span class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</span>
     
+<!---
   <p>You will receive an email notification for:</p>
   <div class="checkbox">
     <label for="wikicb">An update in a <strong>wiki</strong> page</label>
@@ -87,7 +88,7 @@
     <label for="fpcb">A new post in a <strong>forum</strong> thread</label>
     <input id="fpcb" type="checkbox" value="checked" name="forum_posts_p" {{forum_posts_p}}/>
   </div>
-
+--->
   <button type="submit" class="btn btn-success">Save changes</button>
   <button type="button" class="btn btn-default" onClick="window.location = '/{{project.key.integer_id()}}'">Cancel</button>
 
@@ -107,9 +108,6 @@
 
 <a class="btn btn-success" href="/{{project.key.integer_id()}}/invite">
   <span class=" glyphicon glyphicon-plus"></span> Invite a collaborator
-</a>
-<a class="btn btn-danger" href="#" onClick="alert('\'Leave this project\' is not implemented yet... we will fix this soon.')">
-  <span class="glyphicon glyphicon-minus"></span> Leave this project
 </a>
 
 {% endblock %}
