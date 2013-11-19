@@ -8,11 +8,12 @@
       #wrap {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; padding: 0 0 50px;}
       #footer {padding-top: 10px; height: 45px; border-top: 1px solid #C0C0C0;}
     </style>
+    {% if intro_p %}<link href="/css/introjs.min.css" rel="stylesheet"/>{% endif %}
     {% block head %}
     {% endblock %}
   </head>
 
-  <body>
+  <body{% if intro_p %} onload="introJs().start();"{% endif %}>
     <div id="wrap">
       
       <!-- NAVBAR -->
@@ -107,5 +108,6 @@
       })();
     </script>
     {% endif %}
+    {% if intro_p %}<script type="text/javascript" src="/js/intro.min.js"></script>{% endif %}
   </body>
 </html>

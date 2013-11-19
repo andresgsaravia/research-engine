@@ -21,10 +21,10 @@
 </div>
 
 <div class="page-header">
-  <h2>{{project.name | safe}}
+  <h2 {% if intro_p %} data-step="1" data-intro="Welcome to your first project at {{APP_NAME}}."{% endif %}>{{project.name | safe}}
     <a class="btn btn-default pull-right" href="/{{project.key.integer_id()}}/admin" title="Edit settings">
       <span class="glyphicon glyphicon-cog"></span></a>
-    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
+    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal"{% if intro_p %} data-step="3" data-intro="You will find help icons like this inside each section to help you understand its capabilities and potential uses."{% endif %}>
       <span class="glyphicon glyphicon-question-sign"></span></a>
   </h2>
 </div>
@@ -53,6 +53,5 @@
   <em>There has been no activity in this project yet</em>
   {% endif %}
 </div>
-
 
 {% endblock %}

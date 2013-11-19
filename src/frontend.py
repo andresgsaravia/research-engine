@@ -39,8 +39,11 @@ class OverviewPage(projects.ProjectPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
+        updates = project.list_updates(self, user, projects.UPDATES_TO_DISPLAY)
+        intro_p = (not updates) and user and user.list_of_projects() and (len(user.list_of_projects()) == 1)  # Display the intro if the project is new and its the only one.
         self.render("project_overview.html", project = project, 
                     overview_tab_class = "active",
                     authors = project.list_of_authors(self),
-                    updates = project.list_updates(self, user, projects.UPDATES_TO_DISPLAY),
+                    updates = updates,
+                    intro_p = intro_p,
                     visitor_p = not (user and project.user_is_author(user)))
