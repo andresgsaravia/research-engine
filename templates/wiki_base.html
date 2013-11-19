@@ -14,12 +14,12 @@
 	<h4 class="modal-title">Wiki</h4>
       </div>
       <div class="modal-body">
-	<p>Description of this section...</p>
+	<p>The wiki is a <em>cummulative</em> knowledge repository. You can use this section to document the background, previous work and motivations for your project. You can also use this section to collect bibliographical references related to certain topics. You can also use this section to summarize the findings your project has made.</p>
+	<p>For documenting partial progress and keeping track of an ongoing experiment you might find more useful the <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a> section</p>
       </div>
     </div>
   </div>
 </div>
-
 
 <ul class="nav nav-tabs">
   <li class="pull-right{% if hist_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}" style="margin-right: 0;">History</a></li>
@@ -31,9 +31,6 @@
   <div class="panel-body">
     <h1 style="border-bottom:1px solid #B0B0B0;">
       {% if wikiurl == "Main_Page" and (user and project.user_is_author(user)) %}
-      <!-- Help modal -->
-      <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
-	<span class="glyphicon glyphicon-question-sign"></span></a>
       <form method="post" role="form" 
 	    onsubmit="return confirm('Are you sure you want to make this wiki {% if project.wiki_open_p %}not {% endif %}publicly visible?');">
 	<button class="btn btn-sm btn-default pull-right" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle." 
@@ -41,6 +38,9 @@
 	  <span class="glyphicon glyphicon-eye-{% if project.wiki_open_p %}open{% else %}close{% endif %}"></span></button>
 	<input type="hidden" name="action" value="toggle_visibility" />
       </form>
+      <!-- Help modal -->
+      <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
+	<span class="glyphicon glyphicon-question-sign"></span></a>
       {% endif %}
       {{wikiurl.replace("_", " ")}}
     </h1>
