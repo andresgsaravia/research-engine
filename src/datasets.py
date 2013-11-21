@@ -481,6 +481,7 @@ class EditRevisionPage(DataPage):
         user = self.get_login_user()
         if not user:
             self.redirect("/login?goback=/%s/datasets/%s/%s/edit/%s" % (projectid, datasetid, datacid, revid))
+            return
         project = self.get_project(projectid)
         if not project: 
             self.error(404)

@@ -16,9 +16,9 @@ PRETTY_ADMIN_EMAIL = generic.APP_NAME + " <" + generic.ADMIN_EMAIL + ">"
 class SendNotifications(generic.GenericPage):
     def get(self):
         logging.debug("CRON: Handler %s has been requested by cron" % self.__class__.__name__)
-        for u in RegisteredUsers.query().iter():
+        for u in generic.RegisteredUsers.query().iter():
             notifications_list = []
-            for n in EmailNotifications.query(EmailNotifications.sent == False, ancestor = u.key).order(EmailNotifications.date).iter():
+            for n in generic.EmailNotifications.query(generic.EmailNotifications.sent == False, ancestor = u.key).order(generic.EmailNotifications.date).iter():
                 notifications_list.append(n)
             send_notifications(notifications_list, u)
         self.write("Done")
