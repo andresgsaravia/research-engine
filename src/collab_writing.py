@@ -102,7 +102,7 @@ class NewWritingPage(WritingPage):
     def get(self, projectid):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login?goback=/%s/writings/new" % projetid)
+            self.redirect("/login?goback=/%s/writings/new" % projectid)
             return
         project = self.get_project(projectid)
         if not project:
