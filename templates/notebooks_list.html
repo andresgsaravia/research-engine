@@ -5,7 +5,6 @@
 
 {% block p_content %}
 
-{% if (user and project.user_is_author(user)) %}
 
 <!-- Help modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
@@ -23,6 +22,9 @@
     </div>
   </div>
 </div>
+
+
+{% if (user and project.user_is_author(user)) %}
 
 <div class="page-header">
   <h2>My notebooks
