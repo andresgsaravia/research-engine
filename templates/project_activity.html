@@ -1,53 +1,53 @@
 {% if not hide_username_p %}<a href="/{{author.username}}">{{author.username.capitalize()}}</a>{% endif %}
 
 {% if item.kind() == "Notebooks" %}
-started a new notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.integer_id()}}">{{item.get().name | safe}}</a>
+started a new <strong>notebook</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.integer_id()}}">{{item.get().name | safe}}</a>
 
 {% elif item.kind() == "NotebookNotes" %}
 made a new note <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().integer_id()}}/{{item.integer_id()}}">{{item.get().title | safe}}</a> in the notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a>
 
 {% elif item.kind() == "NoteComments" %}
-made a new comment to the note <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().parent().integer_id()}}/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a> in the notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().parent().integer_id()}}">{{item.parent().parent().get().name | safe}}</a>
+made a new comment to the <strong>note</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().parent().integer_id()}}/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a> in the <strong>notebook</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().parent().integer_id()}}">{{item.parent().parent().get().name | safe}}</a>
 
 {% elif item.kind() == "CodeRepositories" %}
-added a new code repository <a href="/{{project.key.integer_id()}}/code/{{item.integer_id()}}">{{item.get().name}}</a>
+added a new <strong>code repository</strong> <a href="/{{project.key.integer_id()}}/code/{{item.integer_id()}}">{{item.get().name}}</a>
 
 {% elif item.kind() == "CodeComments" %}
-made a comment to the code repository <a href="/{{project.key.integer_id()}}/code/{{item.parent().integer_id()}}">{{item.parent().get().name}}</a>
+made a comment to the <strong>code repository</strong> <a href="/{{project.key.integer_id()}}/code/{{item.parent().integer_id()}}">{{item.parent().get().name}}</a>
 
 {% elif item.kind() == "DataSets" %}
-started a new dataset <a href="/{{project.key.integer_id()}}/datasets/{{item.integer_id()}}">{{item.get().name | safe}}</a>
+started a new <strong>dataset</strong> <a href="/{{project.key.integer_id()}}/datasets/{{item.integer_id()}}">{{item.get().name | safe}}</a>
 
 {% elif item.kind() == "DataConcepts" %}
-added a new concept <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().integer_id()}}/{{item.integer_id()}}">{{item.get().name | safe}}</a> to the dataset <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a>
+added a new <strong>concept</strong> <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().integer_id()}}/{{item.integer_id()}}">{{item.get().name | safe}}</a> to the <strong>dataset</strong> <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a>
 
 {% elif item.kind() == "DataRevisions" %}
-made a new revision to the concept <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().parent().integer_id()}}/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a> to the dataset <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().parent().integer_id()}}">{{item.parent().parent().get().name | safe}}</a>
+made a new revision to the <strong>concept</strong> <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().parent().integer_id()}}/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a> to the <strong>dataset</strong> <a href="/{{project.key.integer_id()}}/datasets/{{item.parent().parent().integer_id()}}">{{item.parent().parent().get().name | safe}}</a>
 
 {% elif item.kind() == "WikiRevisions" %}
-modified the wiki page <a href="/{{project.key.integer_id()}}/wiki/page/{{item.parent().get().url}}">{{item.parent().get().url.replace("_", " ")}}</a>
+modified the <strong>wiki</strong> page <a href="/{{project.key.integer_id()}}/wiki/page/{{item.parent().get().url}}">{{item.parent().get().url.replace("_", " ")}}</a>
 
 {% elif item.kind() == "CollaborativeWritings" %}
-started a new collaborative writing <a href="/{{project.key.integer_id()}}/writings/{{item.integer_id()}}">{{item.get().title | safe}}</a>
+started a new <strong>collaborative writing</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.integer_id()}}">{{item.get().title | safe}}</a>
 
 {% elif item.kind() == "WritingRevisions" %}
-made a new revision of the collaborative writing <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
+made a new revision of the <strong>collaborative writing</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
 
 {% elif item.kind() == "WritingComments" %}
-made a new <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}/discussion">comment</a> to the collaborative writing <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
+made a new <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}/discussion">comment</a> to the <strong>collaborativ ewriting</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
 
 {% elif item.kind() == "ForumThreads" %}
-started a new thread <a href="/{{project.key.integer_id()}}/forum/{{item.integer_id()}}">{{item.get().title | safe}}</a> in the forum
+started a new thread <a href="/{{project.key.integer_id()}}/forum/{{item.integer_id()}}">{{item.get().title | safe}}</a> in the <strong>forum</strong>
 
 {% elif item.kind() == "ForumComments" %}
-posted an answer to the thread <a href="/{{project.key.integer_id()}}/forum/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a> in the forum
+posted an answer to the thread <a href="/{{project.key.integer_id()}}/forum/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a> in the <strong>forum</strong>
 
 {% elif item.kind() == "BiblioItems" %}
-added a new item <a href="/{{project.key.integer_id()}}/bibliography/{{item.integer_id()}}">{{item.get().title}}</a> to the bibliography
+added a new item <a href="/{{project.key.integer_id()}}/bibliography/{{item.integer_id()}}">{{item.get().title}}</a> to the <strong>bibliography</strong>
 
 {% elif item.kind() == "BiblioComments" %}
-made a new comment to the bibliography item <a href="/{{project.key.integer_id()}}/bibliography/{{item.parent().integer_id()}}">{{item.parent().get().title}}</a>
+made a new comment to the <strong>bibliography</strong> item <a href="/{{project.key.integer_id()}}/bibliography/{{item.parent().integer_id()}}">{{item.parent().get().title}}</a>
 
 {% endif %}
 
-in the project <a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a>.
+{% if show_project_p %}in the project <a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a>.{% endif %}

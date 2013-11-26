@@ -85,8 +85,8 @@ class ProjectUpdates(ndb.Model):
     author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     item = ndb.KeyProperty(required = True)
 
-    def description_html(self, project):
-        return generic.render_str("project_activity.html", author = self.author.get(), item = self.item, project = project)
+    def description_html(self, project, show_project_p = True):
+        return generic.render_str("project_activity.html", author = self.author.get(), item = self.item, project = project, show_project_p = show_project_p)
 
     def is_open_p(self):
         try:

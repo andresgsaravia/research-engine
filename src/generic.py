@@ -148,12 +148,13 @@ class UserActivities(ndb.Model):
     relative_to = ndb.KeyProperty(required = True) # For now this is only the project the activity is related to. In the future might be something else
     item = ndb.KeyProperty(required = True)
 
-    def description_html(self, hide_username_p = False):
+    def description_html(self, hide_username_p = False, show_project_p = True):
         html = ''
         relative_to = self.relative_to.get()
         author = self.key.parent().get()
         if relative_to.__class__.__name__ == "Projects":
-            html = render_str("project_activity.html", author = author, item = self.item, project = relative_to, hide_username_p = hide_username_p)
+            html = render_str("project_activity.html", author = author, item = self.item, project = relative_to, 
+                              hide_username_p = hide_username_p, show_project_p = show_project_p)
         return html
 
     def is_open_p(self):

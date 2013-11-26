@@ -45,7 +45,7 @@
   <div class="list-group">
     {% for u in updates %}
     {% if (not visitor_p) or u.is_open_p() %}
-    <div class="list-group-item"><img src="{{u.author.get().get_profile_image(20)}}" /><em class="text-muted pull-right">{{u.date.strftime("%d %b %H:%M")}}</em> {{u.description_html(project) | safe}}</div>
+    <div class="list-group-item"><img src="{{u.author.get().get_profile_image(20)}}" /><em class="text-muted pull-right">{{u.date.strftime("%d %b %H:%M")}}</em> {{u.description_html(project, show_project_p = False) | safe}}</div>
     {% endif %}
     {% endfor %}
   </div>

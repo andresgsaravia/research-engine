@@ -70,7 +70,8 @@ class UserPage(generic.GenericPage):
               "recent_actv" : page_user.get_recent_activity(days=7),
               "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0},
               "p_counts" : page_user.get_project_contributions_counts(30, page_user.key == user.key if user else False),
-              "plusone_p": True}
+              "plusone_p": True,
+              "show_project_p": True}
         for a in kw["recent_actv"]["Projects"]:
             if a.is_open_p() or (user and a.actv_kind == "Projects" and a.relative_to.get().user_is_author(user)):
                 if a.item.kind() in ["Notebooks", "NotebookNotes", "NoteComments"]: kw["p_stats"]["Notebooks"] += 1
