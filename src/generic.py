@@ -24,7 +24,7 @@ APP_NAME = "Research Engine"
 APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
-GOOGLE_PLUS_PAGE = "https://plus.google.com/+ResearchengineAppspotApp"
+GOOGLE_PLUS_PAGE = "https://plus.google.com/+ResearchEngineAppspotApp"
 
 ##########################
 ##   Helper Functions   ##

@@ -20,6 +20,10 @@ handlers:
   static_files: static/robots.txt
   upload: static/robots.txt
 
+- url: /google(.+).html
+  static_files: static/google\1.html
+  upload: static/google(.+).html
+
 - url: /css
   static_dir: css
   secure: always
