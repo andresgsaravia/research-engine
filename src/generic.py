@@ -24,7 +24,7 @@ APP_NAME = "Research Engine"
 APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
-
+GOOGLE_PLUS_PAGE = "https://plus.google.com/113348184111291514923"
 
 ##########################
 ##   Helper Functions   ##
@@ -242,6 +242,7 @@ class GenericPage(webapp2.RequestHandler):
         kw["APP_NAME"] = APP_NAME
         kw["APP_URL"] = APP_URL
         kw["APP_REPO"] = APP_REPO
+        kw["GOOGLE_PLUS_PAGE"] = GOOGLE_PLUS_PAGE
         kw['user'] = self.get_login_user()
         if kw["user"]: kw["list_of_projects"] = kw["user"].list_of_projects()
         self.write(self.render_str(template, **kw))

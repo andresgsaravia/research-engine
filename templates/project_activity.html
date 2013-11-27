@@ -4,7 +4,7 @@
 started a new <strong>notebook</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.integer_id()}}">{{item.get().name | safe}}</a>
 
 {% elif item.kind() == "NotebookNotes" %}
-made a new note <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().integer_id()}}/{{item.integer_id()}}">{{item.get().title | safe}}</a> in the notebook <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a>
+made a new <strong>note</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().integer_id()}}/{{item.integer_id()}}">{{item.get().title | safe}}</a> in the <strong>notebook</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().integer_id()}}">{{item.parent().get().name | safe}}</a>
 
 {% elif item.kind() == "NoteComments" %}
 made a new comment to the <strong>note</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().parent().integer_id()}}/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a> in the <strong>notebook</strong> <a href="/{{project.key.integer_id()}}/notebooks/{{item.parent().parent().integer_id()}}">{{item.parent().parent().get().name | safe}}</a>
