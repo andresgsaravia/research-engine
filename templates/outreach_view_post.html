@@ -1,5 +1,15 @@
 {% extends "outreach_base.html" %}
 
+{% block head %}
+<meta property="og:title" content="{{post.title}}" /> 
+<meta property="og:site_name" content="{{APP_NAME}}" />
+<meta property="og:url" content="{{APP_URL}}/{{page_user.username}}/outreach/{{post.key.integer_id()}}" />
+<meta property="og:description" content="{{post.content | truncate(200,True)}}" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="{{APP_URL}}/static/logo100x100.png" />
+<meta property="fb:app_id" content="{{FACEBOOK_APP_ID}}" /> 
+{% endblock %}
+
 {% block breadcrumbs %}<li><a href="/{{page_user.username}}/outreach">Outreach</a></li><li class="active">{{post.title | truncate(40, True)}}</li>{% endblock %}
 
 {% block outreach_content %}
@@ -17,7 +27,11 @@
   </div>
   <div class="panel-body">
     {{post.content | md | safe}}
+    <hr/>
+    <div class="fb-like" data-href="{{APP_URL}}/{{page_user.username}}/outreach/{{post.key.integer_id()}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
     <div class="g-plusone" data-size="medium" data-href="{{APP_URL}}/{{page_user.username}}/outreach/{{post.key.integer_id()}}" ></div>
+    <br/>
+    <div class="fb-share-button" data-href="{{APP_URL}}/{{page_user.username}}/outreach/{{post.key.integer_id()}}" data-type="button_count"></div>
     <div class="g-plus" data-action="share" data-href="{{APP_URL}}/{{page_user.username}}/outreach/{{post.key.integer_id()}}" ></div>
     <div class="pull-right">
       <small class="text-muted">{{post.published.strftime("%d %b %Y")}}</small>

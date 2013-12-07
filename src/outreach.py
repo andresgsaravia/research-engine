@@ -2,7 +2,7 @@
 # All related to public outreach
 
 from google.appengine.ext import ndb
-import generic, projects
+import generic, projects, secrets
 
 POSTS_PER_PAGE = 10
 
@@ -51,7 +51,9 @@ class MainPage(PostPage):
             self.render("404.html", info = "User %s not found." % username)
             return
         kw = {"page" : self.request.get("page"),
-              "plusone_p" : True}
+              "plusone_p" : True,
+              "fb_p" : True,
+              "FACEBOOK_APP_ID" : secrets.FACEBOOK_APP_ID}
         try:
             kw["page"] = int(kw["page"])
         except ValueError:
@@ -98,7 +100,7 @@ class NewPostPage(PostPage):
 
 class ViewPostPage(PostPage):
     def render(*a, **kw):
-        generic.GenericPage.render(plusone_p = True, *a, **kw)
+        generic.GenericPage.render(plusone_p = True, fb_p = True, FACEBOOK_APP_ID = secrets.FACEBOOK_APP_ID, *a, **kw)
 
     def get(self, username, postid):
         page_user = self.get_user_by_username(username)
