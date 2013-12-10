@@ -59,7 +59,7 @@
 	<button type="submit" class="btn btn-success col-sm-offset-2">Save changes</button>
 	<button type="button" class="btn btn-default" onClick="window.location = '/{{usern}}'">Cancel</button>
 	{% if info %}<div class="alert alert-success" style="margin-top:10px;">{{info | safe}}</div>{% endif %}
-	{% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
+	{% if error %}<div class="alert alert-danger" style="margin-top:10px;">{{error | safe}}</div>{% endif %}
       </form>
     </div>
   </div>

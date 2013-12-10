@@ -20,6 +20,9 @@ class LoginPage(generic.GenericPage):
               'goback' : self.request.get('goback'),
               'r_error_message' : self.request.get('r_error_message'),
               'info' : self.request.get('info')}
+        if kw['user']: 
+            self.redirect("%s" % kw["goback"] if kw["goback"] else "/")
+            return
         self.render("login.html", **kw)
 
     def post(self):
@@ -285,6 +288,7 @@ class RecoverPasswordPage(generic.GenericPage):
                 self.log_and_put(user)
                 self.redirect("/login?info=Password successfully changed, you can login now with your new password.")
 
+
 class VerifyEmailPage(generic.GenericPage):
     def get(self):
         username = self.request.get("username")
@@ -334,11 +338,22 @@ class AuthHandler(generic.GenericPage, simpleauth.SimpleAuthHandler):
         """
         # Test if we already have a registered user
         user = self.get_user_by_email(data['email'])
-        if user:
-            self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
-            self.redirect("/%s" % user.username)
-        else:
-            self.redirect("/signup?email=%s" % data['email'])
+        logging.info(data)
+        if not user:
+            prefix = data['email'].split("@")[0]
+            test_user = self.get_user_by_username(prefix)
+            username = ("g." + prefix) if test_user else prefix
+            salt = generic.make_salt()
+            new_user = generic.RegisteredUsers(username = username,
+                                               password_hash = generic.hash_str(generic.make_salt() + salt),
+                                               salt = salt,
+                                               email = data['email'])
+            if data['id']: new_user.gplusid = data['id']
+            if data['picture']: new_user.profile_image_url = data['picture']
+            self.log_and_put(new_user)
+            user = new_user
+        self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
+        self.redirect("/%s" % "settings" if new_user else user.username)
 
         
     def logout(self):
