@@ -338,22 +338,22 @@ class AuthHandler(generic.GenericPage, simpleauth.SimpleAuthHandler):
         """
         # Test if we already have a registered user
         user = self.get_user_by_email(data['email'])
-        logging.info(data)
+        new_user_p = False
         if not user:
             prefix = data['email'].split("@")[0]
             test_user = self.get_user_by_username(prefix)
             username = ("g." + prefix) if test_user else prefix
             salt = generic.make_salt()
-            new_user = generic.RegisteredUsers(username = username,
-                                               password_hash = generic.hash_str(generic.make_salt() + salt),
-                                               salt = salt,
-                                               email = data['email'])
-            if data['id']: new_user.gplusid = data['id']
-            if data['picture']: new_user.profile_image_url = data['picture']
-            self.log_and_put(new_user)
-            user = new_user
+            user = generic.RegisteredUsers(username = username,
+                                           password_hash = generic.hash_str(generic.make_salt() + salt),
+                                           salt = salt,
+                                           email = data['email'])
+            if data['id']: user.gplusid = data['id']
+            if data['picture']: user.profile_image_url = data['picture']
+            self.log_and_put(user)
+            new_user_p = True
         self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
-        self.redirect("/%s" % "settings" if new_user else user.username)
+        self.redirect("/settings" if new_user_p else "/")
 
         
     def logout(self):
