@@ -20,7 +20,7 @@ class Projects(ndb.Model):
     last_updated = ndb.DateTimeProperty(auto_now = True)
     default_open_p = ndb.BooleanProperty(default = True)
     wiki_open_p = ndb.BooleanProperty(default = True)
-    default_license = ndb.StringProperty(required = False)
+    default_license = ndb.StringProperty(default = "")
     # Lists of authors to send notifications after an update
     wiki_notifications_list = ndb.KeyProperty(repeated = True)
     nb_notifications_list = ndb.KeyProperty(repeated = True)
@@ -82,10 +82,10 @@ class Projects(ndb.Model):
 
     def license_html(self):
         lic = self.default_license
-        assert lic in ALLOWED_PROJECT_LICENSES
         if lic == "": 
             return ""
         else:
+            lic_url, lic_img, lic_txt = ("","","")
             if lic == "CC BY":
                 lic_url = "http://creativecommons.org/licenses/by/4.0/"
                 lic_img = "http://i.creativecommons.org/l/by/4.0/88x31.png"
