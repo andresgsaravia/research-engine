@@ -6,6 +6,7 @@ import generic, email_messages
 
 SHORT_DESCRIPTION_LENGTH = 150
 UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview tab
+ALLOWED_PROJECT_LICENSES = ["","CC BY","CC BY-SA","CC BY-ND","CC BY-NC","CC BY-NC-SA","CC BY-NC-ND"]
 
 ###########################
 ##   Datastore Objects   ##
@@ -19,6 +20,7 @@ class Projects(ndb.Model):
     last_updated = ndb.DateTimeProperty(auto_now = True)
     default_open_p = ndb.BooleanProperty(default = True)
     wiki_open_p = ndb.BooleanProperty(default = True)
+    default_license = ndb.StringProperty(required = False)
     # Lists of authors to send notifications after an update
     wiki_notifications_list = ndb.KeyProperty(repeated = True)
     nb_notifications_list = ndb.KeyProperty(repeated = True)
@@ -77,6 +79,40 @@ class Projects(ndb.Model):
             if u.is_open_p() or (user and self.user_is_author(user)): updates.append(u)
             if len(updates) >= n: break            
         return updates
+
+    def license_html(self):
+        lic = self.default_license
+        assert lic in ALLOWED_PROJECT_LICENSES
+        if lic == "": 
+            return ""
+        else:
+            if lic == "CC BY":
+                lic_url = "http://creativecommons.org/licenses/by/4.0/"
+                lic_img = "http://i.creativecommons.org/l/by/4.0/88x31.png"
+                lic_txt = "Creative Commons Attribution 4.0 International License"
+            elif lic == "CC BY-SA":
+                lic_url = "http://creativecommons.org/licenses/by/4.0/"
+                lic_img = "http://i.creativecommons.org/l/by-sa/4.0/88x31.png"
+                lic_txt = "Creative Commons Attribution-ShareAlike 4.0 International License"
+            elif lic == "CC BY-ND":
+                lic_url = "http://creativecommons.org/licenses/by/4.0/"
+                lic_img = "http://i.creativecommons.org/l/by-nd/4.0/88x31.png"
+                lic_txt = "Creative Commons Attribution-NoDerivatives 4.0 International License"
+            elif lic == "CC BY-NC":
+                lic_url = "http://creativecommons.org/licenses/by/4.0/"
+                lic_img = "http://i.creativecommons.org/l/by-nc/4.0/88x31.png"
+                lic_txt = "Creative Commons Attribution-NonCommercial 4.0 International License"
+            elif lic == "CC BY-NC-SA":
+                lic_url = "http://creativecommons.org/licenses/by/4.0/"
+                lic_img = "http://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"
+                lic_txt = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
+            elif lic == "CC BY-NC-ND":
+                lic_url = "http://creativecommons.org/licenses/by/4.0/"
+                lic_img = "http://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"
+                lic_txt = "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License"
+            return '<small><a rel="license" href="%s"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><br />Unless otherwise specified, original content from <em><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">%s</span></em> is licensed under a <a rel="license" href="%s">%s</a>.</small>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
+        
+        
 
 
 # Should have a Project as parent
@@ -225,13 +261,14 @@ class AdminPage(ProjectPage):
               "p_description"   : self.request.get('p_description'),
               "p_name"          : self.request.get('p_name'),
               "default_open_p"  : self.request.get('open_p') == 'True',
+              "default_license" : self.request.get("default_license"),
               "authors"         : project.list_of_authors(self)}
         have_error = False
         kw["error"] = ''
         if not project.user_is_author(user):
             self.redirect("/%s" % projectid)
             return
-        ## Project's name and description
+        ## Project's name, description, open_p and default_license
         if kw["p_name"]:
             project.name = kw["p_name"]
         else:
@@ -245,6 +282,8 @@ class AdminPage(ProjectPage):
             kw["error"] += "You must provide a description for the project. "
             kw["dClass"] = "has-error"
         project.default_open_p = kw["default_open_p"]
+        assert kw["default_license"] in ALLOWED_PROJECT_LICENSES
+        project.default_license = kw["default_license"]
         ## Email notifications
         # Add to list
         if kw["wiki_p"] and not (user.key in project.wiki_notifications_list):
