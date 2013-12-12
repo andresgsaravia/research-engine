@@ -303,3 +303,9 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
     def get_user_by_username(self, username, log_message = ''):
         self.log_read(RegisteredUsers, log_message)
         return RegisteredUsers.query(RegisteredUsers.username == username).get()
+
+
+class RenderPreview(GenericPage):
+    def post(self):
+        content = self.request.get("content")
+        self.write(filters.md(content))

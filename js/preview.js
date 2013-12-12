@@ -1,14 +1,15 @@
 //
-// preview.js  -- Previews markdown and LaTeX using showdown.js and Mathjax
+// preview.js  -- Previews markdown and LaTeX using and Mathjax
 //
-// we assume Mathjax.js and showdown.js are present
-
-var MarkdownPreview = function (inputAreaId) {
-    var converter = new Showdown.converter();
-    return converter.makeHtml(document.getElementById(inputAreaId).value);
-};
+// we assume Mathjax.js is present
 
 var Preview = function (sourceId, destId) {
-    document.getElementById(destId).innerHTML = MarkdownPreview(sourceId);
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, destId]);
+    MathJax.InputJax.TeX.resetEquationNumbers();
+    inputText = document.getElementById(sourceId).value;
+    $.post("/_preview",
+	   {content : inputText},
+	   function (data, textStatus) {
+	       document.getElementById(destId).innerHTML = data;
+	       MathJax.Hub.Queue(["Typeset", MathJax.Hub, destId]);
+	   });
 };

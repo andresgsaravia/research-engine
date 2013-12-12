@@ -22,9 +22,9 @@ routes = [
     Route('/', handler='src.frontend.RootPage'),
     Route('/<:.+>/', 'src.frontend.RemoveTrailingSlash'),
     Route('/terms', 'src.frontend.TermsOfServicePage'),
+    Route('/_preview', 'src.generic.RenderPreview'),
     # Users
     Route('/login', 'src.users.LoginPage'),
-#    Route('/logout', 'src.users.LogoutPage'),
     Route('/signup', 'src.users.SignupPage'),
     Route('/settings', 'src.users.SettingsPage'),
     Route('/recover_password', 'src.users.RecoverPasswordPage'),
