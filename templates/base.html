@@ -59,7 +59,7 @@
 		<li><a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a></li>
 		{% endfor %}
 		{% else %}
-		<li><a href="/new_project">Create a new project</a></li>
+		<li><a href="/new_project" role="button">Create a new project</a></li>
 		{% endif %}
 	      </ul>
 	    </li>
@@ -90,8 +90,8 @@
 		  </form>
 		</li>
 		<li class="divider"></li>
-		<li><div class="container"><a href="/auth/google" class="btn btn-danger">Log in with Google</a></div></li>
-		<li style="margin-top:5px;"><div class="container"><a href="/signup" class="btn btn-primary">Create an account</a></div></li>
+		<li><div class="container"><a href="/auth/google" class="btn btn-danger" role="button">Log in with Google</a></div></li>
+		<li style="margin-top:5px;"><div class="container"><a href="/signup" class="btn btn-primary" role="button">Create an account</a></div></li>
 	      </ul>
 	    </li>
 	  </ul>
@@ -113,9 +113,9 @@
 	       alt="Powered by Google App Engine" />
 	</a>
 	<p>{{APP_NAME}} (alpha). 
-	  <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher">Google+</a>
+	  <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a>
 	  <a href="/terms" title="Terms of service">Terms</a>
-	  <small class="text-muted credit">You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></small>
+	  <small class="text-muted credit" tabindex="0">You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></small>
 	</p>
       </div>
     </div>
