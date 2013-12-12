@@ -3,13 +3,20 @@
 //
 // we assume Mathjax.js is present
 
-var Preview = function (sourceId, destId) {
-    MathJax.InputJax.TeX.resetEquationNumbers();
-    inputText = document.getElementById(sourceId).value;
-    $.post("/_preview",
-	   {content : inputText},
-	   function (data, textStatus) {
-	       document.getElementById(destId).innerHTML = data;
-	       MathJax.Hub.Queue(["Typeset", MathJax.Hub, destId]);
-	   });
+var timer;
+
+var Preview = function(sourceId, destId) {
+    clearTimeout(timer);
+    timer=setTimeout(function () 
+		     {
+			 MathJax.InputJax.TeX.resetEquationNumbers();
+			 inputText = document.getElementById(sourceId).value;
+			 $.post("/_preview",
+				{content : inputText},
+				function (data, textStatus) {
+				    document.getElementById(destId).innerHTML = data;
+				    MathJax.Hub.Queue(["Typeset", MathJax.Hub, destId]);
+				});
+		     },
+		     2000);
 };
