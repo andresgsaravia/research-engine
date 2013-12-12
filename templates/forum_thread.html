@@ -56,7 +56,7 @@
 	  <form method="post" role="form">
 	    <div class="modal-body">
 	      <div class="form-group">
-		<textarea id="aCommentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
+		<textarea id="commentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
 		<input type="hidden" name="answer_id" value="{{c.key.integer_id()}}" />
 		<input type="hidden" name="action" value="edit_answer" />
 	      </div>
@@ -81,9 +81,9 @@
 
 <form method="post" role="form">
   <div class="form-group">
-    <label for="commentText">Your answer</label>
-    <textarea name="comment" id="commentText" class="form-control" rows="10"
-	      onKeyUp="Preview('commentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
+    <label for="newCommentText">Your answer</label>
+    <textarea name="comment" id="newCommentText" class="form-control" rows="10"
+	      onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
   </div>
   <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post answer</button>
   <input type="hidden" name="action" value="new_answer" />
@@ -94,7 +94,7 @@
   </div>
 </form>
 
-<div>This is a preview of how the page will be renderer when you post it. It may not be 100&#37; accurate but it should be close.</div>
+<div>This is a preview of how the text will be renderer when you post it.</div>
 <div class="panel panel-default">
   <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.</em></div>
 </div>

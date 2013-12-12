@@ -11,7 +11,7 @@
 
   <form method="post" role="form">
     <div class="form-group {{cClass}}">
-      <textarea name="content" id="inputText" placeholder="Write the content of this page here." class="form-control" rows="20"
+      <textarea name="content" id="inputText" placeholder="Write the content of this page here." class="form-control" rows="20" onKeyUp="Preview('inputText','previewArea');"
 		autofocus {% if visitor_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
     </div>
     <div class="form-group">
@@ -33,15 +33,10 @@
 
   </form>
 
-<p>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</p>
+<p>Below is a preview of how the page will be renderer when you save it. The [[wikilinks]] will not be rendered in this preview.</p>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-      Render preview
-    </button>
-  </div>
   <div class="panel-body" id="previewArea">
-    Click the <em>Render preview</em> button to see a preview here.
+    Start typing above to see a preview here.
   </div>
 </div>
 

@@ -67,8 +67,8 @@
 {% if user and project.user_is_author(user) %}
 <form method="post" role="form">
   <div class="form-group">
-    <textarea id="commentText" name="comment" class="form-control" rows="15"
-	      onKeyUp="Preview('commentText','previewArea');">{{comment_value}}</textarea>
+    <textarea id="newCommentText" name="comment" class="form-control" rows="15"
+	      onKeyUp="Preview('newCommentText','previewArea');">{{comment_value}}</textarea>
   </div>
   <span class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</span>
   <button type="submit" class="btn btn-success">Comment</button>
@@ -77,7 +77,7 @@
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{{error_message}}</div>{% endif %}
 </form>
 
-<div style="margin-top:10px;">This is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+<div style="margin-top:10px;">This is a preview of how your comment will be renderer when you post it.</div>
 <div class="panel panel-default">
   <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.</em></div>
 </div>

@@ -13,7 +13,7 @@
     <input class="form-control" type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus {% if visitor_p %}disabled{% endif %}/>
   </div>
   <div class="form-group {{cClass}}">
-    <textarea class="form-control" name="description" rows="10" id="inputText"
+    <textarea class="form-control" name="description" rows="10" id="inputText" onKeyUp="Preview('inputText','previewArea');"
 	      placeholder="Description of the dataset" {% if visitor_p %}disabled{% endif %}>{{description}}</textarea>
   </div>
   <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Save changes</button>
@@ -24,15 +24,10 @@
 </form>
 
 <br/>
-<div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+<div>Below is a preview of how the page will be renderer when you save it.</div>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-      Render preview
-    </button>
-  </div>
   <div class="panel-body" id="previewArea">
-    Click the <em>Render preview</em> button to see a preview here.
+    Start typing above to see a preview here.
   </div>
 </div>
 

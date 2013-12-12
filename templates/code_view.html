@@ -77,9 +77,9 @@
 {% if user and project.user_is_author(user) %}
 <form method="post" role="form">
   <div class="form-group{% if error_message %} has-error{% endif %}">
-    <label for="commentText">Your comment</label>
-    <textarea name="comment" id="commentText" class="form-control" rows="10"
-	      onKeyUp="Preview('commentText','previewArea');">{{comment_value}}</textarea>
+    <label for="newCommentText">Your comment</label>
+    <textarea name="comment" id="newCommentText" class="form-control" rows="10"
+	      onKeyUp="Preview('newCommentText','previewArea');">{{comment_value}}</textarea>
   </div>
   <button type="submit" class="btn btn-success">Comment</button>
   <input type="hidden" name="action" value="new_comment" />

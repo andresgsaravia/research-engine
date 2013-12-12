@@ -18,7 +18,7 @@
 	     value="{{n_name}}" placeholder="Title of the notebook" autofocus {% if visitor_p %}disabled{% endif %}/>
     </div>
     <div class="form-group {{dClass}}">
-      <textarea name="description" id="inputText" placeholder="Description of the notebook" 
+      <textarea name="description" id="inputText" placeholder="Description of the notebook" onKeyUp="Preview('inputText','previewArea');"
 		class="form-control" rows="10"{% if visior_p %} disabled{% endif %}>{{n_description}}</textarea>
     </div>
     <small>About
@@ -76,15 +76,10 @@
   </form>
 
 
-  <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div>Below is a preview of how the page will be renderer when you save it.</div>
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-	Render preview
-      </button>
-    </div>
     <div class="panel-body" id="previewArea">
-      Click the <em>Render preview</em> button to see a preview here.
+      Start typing above to see a preview here.
     </div>
   </div>
 

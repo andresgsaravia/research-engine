@@ -5,7 +5,7 @@
 
 <form method="post" role="form">
   <div class="form-group {{cClass}}">
-    <textarea name="content" id="inputText" class="form-control" rows="20" autofocus>{{content}}</textarea>
+    <textarea name="content" id="inputText" class="form-control" rows="20" onKeyUp="Preview('inputText','previewArea');" autofocus>{{content}}</textarea>
   </div>
   <div class="form-group">
     <label for="stinput">Status:</label>
@@ -26,13 +26,8 @@
 
 <p>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</p>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-      Render preview
-    </button>
-  </div>
   <div class="panel-body" id="previewArea">
-    Click the <em>Render preview</em> button to see a preview here.
+    Start typing above to see a preview here.
   </div>
 </div>
 

@@ -97,7 +97,7 @@
 <form method="post" role="form">
   <div class="form-group{% if error_message %}has-error{% endif %}">
     <label for="inputText">Your comment</label>
-    <textarea name="comment" id="inputText" class="form-control" rows="20"
+    <textarea name="comment" id="inputText" class="form-control" rows="20" onKeyUp="Preview('inputText','previewArea');"
 	    placeholder="What do you think about this {% if item.kind=='article' %}article{% endif %}?">{{content_value}}</textarea>
   </div>
   <button type="submit" class="btn btn-success">Post comment</button>
@@ -110,11 +110,6 @@
 
 <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-      Render preview
-    </button>
-  </div>
   <div class="panel-body" id="previewArea">
     Click the <em>Render preview</em> button to see a preview here.
   </div>

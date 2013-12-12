@@ -21,7 +21,7 @@
     </div>
     <div class="form-group {{cClass}}">
       <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="20"
-		{% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
+		onKeyUp="Preview('inputText','previewArea');" {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
     </div>
 
     {% if open_choice_p %}
@@ -57,15 +57,10 @@
   {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
 
 {% if markdown_p %}
-  <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+  <div>Below is a preview of how the text will be renderer when you save it. </div>
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-	Render preview
-      </button>
-    </div>
     <div class="panel-body" id="previewArea">
-      Click the <em>Render preview</em> button to see a preview here.
+      Start typing above to see a preview here.
     </div>
   </div>
 {% endif %}
