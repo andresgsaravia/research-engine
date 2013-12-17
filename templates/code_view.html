@@ -19,7 +19,7 @@
       <span class="glyphicon glyphicon-pencil"></span>
     </a>
     {% endif %}
-    <h3 class="panel-title">
+    <h3 id="main-content" class="panel-title">
       <small><span class="glyphicon glyphicon-eye-{% if code.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible."></span></small>
       {{code.name}}</h3>

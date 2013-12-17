@@ -29,7 +29,7 @@
 
 <div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
   <div class="panel-body">
-    <h1 style="border-bottom:1px solid #B0B0B0;">
+    <h1 id="main-content" style="border-bottom:1px solid #B0B0B0;">
       {% if wikiurl == "Main_Page" and (user and project.user_is_author(user)) %}
       <form method="post" role="form" 
 	    onsubmit="return confirm('Are you sure you want to make this wiki {% if project.wiki_open_p %}not {% endif %}publicly visible?');">
