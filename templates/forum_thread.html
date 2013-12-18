@@ -32,7 +32,7 @@
     {{thread.content | md | safe}}
     <p class="text-muted pull-right">{{thread.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
-      <li><a href="/{{thread.author.get().username}}"><img src="{{thread.author.get().get_profile_image(20)}}"/> {{thread.author.get().username.capitalize()}}</a></li>
+      <li><a href="/{{thread.author.get().username}}"><img src="{{thread.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{thread.author.get().username.capitalize()}}</a></li>
     </ul>
   </div>
 </div>
@@ -74,7 +74,7 @@
     {{c.comment | md | safe}}
     <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
-      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
+      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{c.author.get().username.capitalize()}}</a></li>
     </ul>
   </div>
   {% endfor %}

@@ -11,7 +11,7 @@
     <div class="panel-heading">
       <ul class="nav nav-pills nav-justified">
 	<li><a href="/{{rev.author.get().username}}">
-	    <img src="{{rev.author.get().get_profile_image(20)}}"/> {{rev.author.get().username.capitalize()}}</a></li>
+	    <img src="{{rev.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{rev.author.get().username.capitalize()}}</a></li>
 	<li><a href="/file/{{rev.datafile}}">Download</a></li>
 	<li>
 	  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" 

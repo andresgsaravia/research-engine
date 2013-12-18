@@ -182,7 +182,7 @@
 <div class="container" style="margin-bottom:14px;">
   <ul class="nav nav-pills">
     {% for a in authors %}
-    <li><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}"/> {{a.username.capitalize()}}</a></li>
+    <li><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}" aria-hidden="true"/> {{a.username.capitalize()}}</a></li>
     {% endfor %}
   </ul>
 </div>

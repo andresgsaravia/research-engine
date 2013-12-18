@@ -58,7 +58,7 @@
 	{{n.description | md | safe }}
 	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
 	<ul class="nav nav-pills">
-	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}"/> {{n.owner.get().username.capitalize()}}</a></li>
+	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
 	</ul>
       </div>
     </div>
@@ -90,7 +90,7 @@
 	{{n.description | md | safe }}
 	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
 	<ul class="nav nav-pills">
-	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}"/> {{n.owner.get().username.capitalize()}}</a></li>
+	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
 	</ul>
       </div>
     </div>
@@ -128,7 +128,7 @@
 	{{n.description | md | safe }}
 	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
 	<ul class="nav nav-pills">
-	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}"/> {{n.owner.get().username.capitalize()}}</a></li>
+	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
 	</ul>
       </div>
     </div>

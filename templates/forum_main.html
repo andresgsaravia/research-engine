@@ -54,7 +54,7 @@
 	{{i.content | md | safe }}
 	<p class="text-muted pull-right">Last updated: {{i.last_updated.strftime("%d %b %Y")}}</p>
 	<ul class="nav nav-pills">
-	  <li><a href="/{{i.author.get().username}}"><img src="{{i.author.get().get_profile_image(20)}}" /> {{i.author.get().username.capitalize()}}</a></li>
+	  <li><a href="/{{i.author.get().username}}"><img src="{{i.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{i.author.get().username.capitalize()}}</a></li>
 	</ul>
       </div>
     </div>

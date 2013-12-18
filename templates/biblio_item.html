@@ -86,7 +86,7 @@
     {{c.content | md | safe}}
     <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
-      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}"/> {{c.author.get().username.capitalize()}}</a></li>
+      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{c.author.get().username.capitalize()}}</a></li>
     </ul>
   </div>
   {% endfor %}

@@ -35,7 +35,7 @@
     {{comment.content | md | safe}}
     <p class="text-muted pull-right">{{comment.date.strftime("%d %b %Y")}}</p>
     <ul class="nav nav-pills">
-      <li><a href="/{{comment.author.get().username}}"><img src="{{comment.author.get().get_profile_image(20)}}"/> {{comment.author.get().username.capitalize()}}</a></li>
+      <li><a href="/{{comment.author.get().username}}"><img src="{{comment.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{comment.author.get().username.capitalize()}}</a></li>
     </ul>
   </div>
 </div>

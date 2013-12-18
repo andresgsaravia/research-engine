@@ -94,7 +94,7 @@ function drawPieChart() {
       <hr>
       <div class="container text-center">
 	{% if page_user.gplusid %}<div class="g-person" data-href="https://plus.google.com/{{page_user.gplusid}}" data-width="180"></div>
-	{% else %}<img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" style="display:block;margin:0 auto;">{% endif %}
+	{% else %}<img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" style="display:block;margin:0 auto;" aria-label="Profile image">{% endif %}
       </div>
       {% if page_user.about_me %}
       <hr>
