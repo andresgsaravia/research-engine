@@ -16,7 +16,9 @@
     <h3 id="main-content" class="panel-title">
       <small><span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This forum bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible."></span></small>
-      {{item.title}}</h3>
+      {{item.title}}
+      <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    </h3>
   </div>
   <div class="panel-body">
     {% if (user and project.user_is_author(user)) %}

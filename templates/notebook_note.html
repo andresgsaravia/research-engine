@@ -17,7 +17,8 @@
       <span class="glyphicon glyphicon-pencil"></span>
     </a>
     {% endif %}
-    <h3 id="main-content" class="panel-title">{{note.title}}</h3>
+    <h3 id="main-content" class="panel-title">{{note.title}}
+      <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
   </div>
   <div class="panel-body">
     {{note.content | md | safe}}

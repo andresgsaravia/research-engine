@@ -21,7 +21,8 @@
 
 <!-- Breadcrumbs -->
 <div class="container">
-  <ol class="breadcrumb"{% if intro_p %} data-step="4" data-intro="The breadcrumbs at the top can help you navigate through your project easily."{% endif %}>
+  <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs"
+      {% if intro_p %} data-step="4" data-intro="The breadcrumbs at the top can help you navigate through your project easily."{% endif %}>
     <li><a href="/{{project.key.integer_id()}}">{{project.name | safe | truncate(40, True)}}</a></li>
     {% block breadcrumbs %}{% endblock %}
   </ol>
@@ -37,7 +38,7 @@
     <!-- Project menu -->
     <div class="col-sm-3"{% if intro_p %} data-step="2" data-intro="You have several sections inside each project. Each section has a different purpose."{% endif %}>
       <div class="well">
-	<ul class="nav nav-pills nav-stacked">
+	<ul class="nav nav-pills nav-stacked" id="project-menu" aria-label="Project menu">
 	  <li class="{{overview_tab_class}}"><a href="/{{project.key.integer_id()}}"><span class="glyphicon glyphicon-plane"></span> Overview</a></li>
 	  <li class="{{notebooks_tab_class}}"><a href="/{{project.key.integer_id()}}/notebooks"><span class="glyphicon glyphicon-file"></span> Notebooks</a></li>
 	  <li class="{{code_tab_class}}"><a href="/{{project.key.integer_id()}}/code"><span class="glyphicon glyphicon-align-justify"></span> Code</a></li>

@@ -22,7 +22,8 @@
     <h3 id="main-content" class="panel-title">
       <small><span class="glyphicon glyphicon-eye-{% if code.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible."></span></small>
-      {{code.name}}</h3>
+      {{code.name}}
+      <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
   </div>
   <div class="panel-body">
     {{code.description | md | safe}}

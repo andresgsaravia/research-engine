@@ -12,7 +12,8 @@
 {% block p_content %}
 
 <div class="container">
-  <h3 id="main-content" class="page-header">{{title | safe}}{% if subtitle %}<br/><small>{{subtitle | safe}}</small>{% endif %}</h3>
+  <h3 id="main-content" class="page-header">{{title | safe}}{% if subtitle %}<br/><small>{{subtitle | safe}}</small>{% endif %}
+    <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
 
   <form method="post" role="form">
     <div class="form-group {{nClass}}">
