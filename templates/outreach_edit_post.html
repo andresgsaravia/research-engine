@@ -20,7 +20,7 @@
 
 <div class="container">
   <!-- Breadcrumbs -->
-  <ol class="breadcrumb">
+  <ol class="breadcrumb" role="navigation" aria-label="Breadcrumb">
     <li><a href="/{{user.username}}">{{user.username.capitalize()}}</a></li>
     <li><a href="/{{user.username}}/outreach">Outreach</a></li>
     <li><a href="/{{user.username}}/outreach/{{postid}}">{{title_value | truncate(40,True)}}</a></li>

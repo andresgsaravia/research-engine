@@ -5,23 +5,6 @@
 
 
 {% block p_content %}
-<!-- Help modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
-	<h4 class="modal-title">Datasets</h4>
-      </div>
-      <div class="modal-body">
-	<p>This section helps you organize your experimental (or simulations) data files by having them separated in appropiate sections, associating with them the relevant metadata and providing a simple version control system.</p>
-	<p>Each <em>dataset</em> is a collection of measurements or calculations made in a single experiment or simulation. Inside a given dataset you can add many individual <em>concepts</em> which consist of version-controlled <em>data-files</em>.</p>
-	<p>For example, suppose you want to study the viscosity and color of a certain "liquid X" as a function of temperature, this experiment will give you two files, say <code>viscosity.dat</code> and <code>color.dat</code>. You can add a dataset called "Viscosity and color of X vs. Temperature". Inside this dataset you add two concepts: "Viscosiy" and "Color" and inside each one of this concepts you add the corresponding file <code>viscosity.dat</code> and <code>color.dat</code> respectively. If you improve your experimental setting and obtain better data, you just add a new revision for the "Viscosity" and "Color" concepts. Furthermore, if you need to make some data processing to your data you could add a couple more concepts like "Viscosity processed" and "Color processed".</p>
-	<p>Each <em>dataset</em>, <em>data-concept</em> and <em>data-file</em> can be documented individually so you don't loose any relevant information related to them.</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="page-header">
   <h3 id="main-content">
@@ -38,6 +21,24 @@
     <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
       <span class="glyphicon glyphicon-question-sign"></span></a>
   </h3>
+</div>
+
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<h4 class="modal-title">Datasets</h4>
+      </div>
+      <div class="modal-body">
+	<p>This section helps you organize your experimental (or simulations) data files by having them separated in appropiate sections, associating with them the relevant metadata and providing a simple version control system.</p>
+	<p>Each <em>dataset</em> is a collection of measurements or calculations made in a single experiment or simulation. Inside a given dataset you can add many individual <em>concepts</em> which consist of version-controlled <em>data-files</em>.</p>
+	<p>For example, suppose you want to study the viscosity and color of a certain "liquid X" as a function of temperature, this experiment will give you two files, say <code>viscosity.dat</code> and <code>color.dat</code>. You can add a dataset called "Viscosity and color of X vs. Temperature". Inside this dataset you add two concepts: "Viscosiy" and "Color" and inside each one of this concepts you add the corresponding file <code>viscosity.dat</code> and <code>color.dat</code> respectively. If you improve your experimental setting and obtain better data, you just add a new revision for the "Viscosity" and "Color" concepts. Furthermore, if you need to make some data processing to your data you could add a couple more concepts like "Viscosity processed" and "Color processed".</p>
+	<p>Each <em>dataset</em>, <em>data-concept</em> and <em>data-file</em> can be documented individually so you don't loose any relevant information related to them.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="panel-group" id="daccordion">

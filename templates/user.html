@@ -123,13 +123,13 @@ function drawPieChart() {
     </div>
 
     <div class="col-md-5">
-      <h2>Last week's summary</h2>
+      <h2 id="main-content">Last week's summary</h2>
       <hr>
       {% if recent_actv["Projects"] %}
       <div id="p_stats"></div>
       <small class="help-block">Click the chart's columns to filter the activities list below</small>
       <div class="panel panel-default">
-	<ul class="list-group">
+	<ul class="list-group" role="log">
 	  {% for a in recent_actv["Projects"] %}
 	  {% if a.is_open_p() or (user and a.actv_kind == "Projects" and a.relative_to.get().user_is_author(user)) %}
 	  <li class="list-group-item p_actv_item {{a.item.kind()}}">

@@ -6,20 +6,6 @@
 {% endblock %}
 
 {% block p_content %}
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
-	<h4 class="modal-title">Wiki</h4>
-      </div>
-      <div class="modal-body">
-	<p>The wiki is a <em>cummulative</em> knowledge repository. You can use this section to document the background, previous work and motivations for your project. You can also use this section to collect bibliographical references related to certain topics. You can also use this section to summarize the findings your project has made.</p>
-	<p>For documenting partial progress and keeping track of an ongoing experiment you might find more useful the <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a> section</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <ul class="nav nav-tabs">
   <li class="pull-right{% if hist_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}" style="margin-right: 0;">History</a></li>
@@ -45,6 +31,23 @@
       {% endif %}
       {{wikiurl.replace("_", " ")}}
     </h1>
+
+    <!-- Help modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Wiki</h4>
+	  </div>
+	  <div class="modal-body">
+	    <p>The wiki is a <em>cummulative</em> knowledge repository. You can use this section to document the background, previous work and motivations for your project. You can also use this section to collect bibliographical references related to certain topics. You can also use this section to summarize the findings your project has made.</p>
+	    <p>For documenting partial progress and keeping track of an ongoing experiment you might find more useful the <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a> section</p>
+	  </div>
+	</div>
+      </div>
+    </div>
+
     {% block w_content %}
     {% endblock %}
   </div>
