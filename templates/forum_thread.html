@@ -22,7 +22,7 @@
       <span class="glyphicon glyphicon-pencil"></span>
     </a>
     {% endif %}
-    <h3 class="panel-title">
+    <h3 id="main-content" class="panel-title">
       <small><span class="glyphicon glyphicon-eye-{% if thread.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This forum thread is {% if not thread.is_open_p() %}not {% endif %}publicly visible."></span></small>
       {{thread.title}}</h3>

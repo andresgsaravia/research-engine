@@ -27,7 +27,7 @@
 {% if (user and project.user_is_author(user)) %}
 
 <div class="page-header">
-  <h2>My notebooks
+  <h2 id="main-content">My notebooks
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
       <span class="glyphicon glyphicon-plus"></span> New notebook</a>
     <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
@@ -101,7 +101,7 @@
 
 {% else %}
 
-<div class="page-header"><h2>
+<div class="page-header"><h2 id="main-content">
     <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
       <span class="glyphicon glyphicon-question-sign"></span></a>
     Open notebooks</h2></div>

@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<h2>{% if user and (page_user.key == user.key) %}Your{% else %}{{page_user.username.capitalize()}}'s{% endif %} public outreach page
+<h2 id="main-content">{% if user and (page_user.key == user.key) %}Your{% else %}{{page_user.username.capitalize()}}'s{% endif %} public outreach page
   {% if user and (user.key == page_user.key) %}
   <a class="btn btn-success pull-right" href="/{{page_user.username}}/outreach/new_post">
     <span class="glyphicon glyphicon-plus"></span> New post</a>

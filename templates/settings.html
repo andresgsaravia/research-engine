@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="container" style="max-width:750px;">
-  <div class="page-header"><h2>{{user.username.capitalize()}}</h2></div>
+  <div class="page-header"><h2 id="main-content">{{user.username.capitalize()}}</h2></div>
 
   <div class="row">
     <div class="col-sm-4 text-center">
@@ -58,8 +58,8 @@
 	
 	<button type="submit" class="btn btn-success col-sm-offset-2">Save changes</button>
 	<button type="button" class="btn btn-default" onClick="window.location = '/{{usern}}'">Cancel</button>
-	{% if info %}<div class="alert alert-success" style="margin-top:10px;">{{info | safe}}</div>{% endif %}
-	{% if error %}<div class="alert alert-danger" style="margin-top:10px;">{{error | safe}}</div>{% endif %}
+	{% if info %}<div class="alert alert-success" style="margin-top:10px;" tabindex="0">{{info | safe}}</div>{% endif %}
+	{% if error %}<div class="alert alert-danger" style="margin-top:10px;" tabindex="0">{{error | safe}}</div>{% endif %}
       </form>
     </div>
   </div>

@@ -24,7 +24,7 @@
 </div>
 
 <div class="page-header">
-  <h3>
+  <h3 id="main-content">
     <small><span class="glyphicon glyphicon-eye-{% if dataset.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This dataset is {% if not dataset.is_open_p() %}not {% endif %}publicly visible."></span></small>
     {{dataset.name}}

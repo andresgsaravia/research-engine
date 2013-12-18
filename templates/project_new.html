@@ -8,11 +8,11 @@
 {% block content %}
 
 <div class="container" style="max-width:720px;">
-  <h2 class="page-header">New project</h2>
+  <h2 id="main-content" class="page-header" tabindex="0">New project</h2>
 
   <form method="post" action="/new_project" role="form">
     <div class="form-group {{name_class}}">
-      <label for="pName">Name</label>
+      <label for="pName">Project name</label>
       <input type="text" class="form-control"
 	     name="p_name" value="{{p_name}}" placeholder="Enter name" id="pName" autofocus/>
     </div>
@@ -24,15 +24,16 @@
 
     <div class="form-group">
       <label>Default visibility</label>
-      <a data-toggle="modal" href="#openHelp"><span class="glyphicon glyphicon-info-sign"></span></a>
+      <button class="btn btn-link" data-toggle="modal" data-target="#openHelp" aria-label="Default visibility. Click for help.">
+	<span class="glyphicon glyphicon-info-sign"></span></button>
       <div class="modal fade" id="openHelp" tabindex="-1" role="dialog" aria-labelledby="openHelpLabel" aria-hidden="true">
 	<div class="modal-dialog">
 	  <div class="modal-content">
 	    <div class="modal-header">
-	      <button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
-	      <h4 class="modal-title">Default visibility</h4>
+	      <button type="button" class="close" data-dismiss="modal" arial-hidden="true" aria-label="Close help">&times;</button>
+	      <h4 class="modal-title" id="openHelpLabel">Default visibility help</h4>
 	    </div>
-	    <div class="modal-body">
+	    <div class="modal-body" tabindex="0">
 	      <p>Some researchers like to work completely in the open while many prefer to keep everything private until they publish it in a journal. Here at <em>{{APP_NAME}}</em> you can also have a mixed approach with some elements public and some private. This <strong>Default visibility</strong> option sets the default choice for the new elements you create inside in this project, however you will always have the choice to change the visibility of individual items.</p>
 	      <ul>
 		<li>Items marked as <em><span class="glyphicon glyphicon-eye-open"></span> Visible to the general public</em> will be visible to everyone accesing you project's page.</li>

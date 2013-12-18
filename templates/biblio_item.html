@@ -13,7 +13,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">
+    <h3 id="main-content" class="panel-title">
       <small><span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"
 		   title="This forum bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible."></span></small>
       {{item.title}}</h3>
