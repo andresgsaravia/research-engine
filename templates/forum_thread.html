@@ -2,8 +2,15 @@
 
 
 {% block p_head %}
-  <script type="text/javascript" src="/js/showdown.js"></script>
-  <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/showdown.js"></script>
+<script type="text/javascript" src="/js/preview.js"></script>
+<meta property="og:title" content="{{thread.title}}" /> 
+<meta property="og:site_name" content="{{APP_NAME}}" />
+<meta property="og:url" content="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" />
+<meta property="og:description" content="{{thread.content | truncate(200,True)}}" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="{{APP_URL}}/static/logo100x100.png" />
+<meta property="fb:app_id" content="{{FACEBOOK_APP_ID}}" /> 
 {% endblock %}
 
 
@@ -34,6 +41,12 @@
     <ul class="nav nav-pills">
       <li><a href="/{{thread.author.get().username}}"><img src="{{thread.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{thread.author.get().username.capitalize()}}</a></li>
     </ul>
+    <hr/>
+    <div class="g-plusone" data-size="medium" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" ></div>
+    <div class="g-plus" data-action="share" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}"></div>
+    <br/>
+    <div class="fb-like pull-left" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+    <div class="fb-share-button" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" data-type="button_count" style="margin-left:12px;"></div>
   </div>
 </div>
 

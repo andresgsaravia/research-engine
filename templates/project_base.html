@@ -45,8 +45,8 @@
 	  <li class="{{datasets_tab_class}}"><a href="/{{project.key.integer_id()}}/datasets"><span class="glyphicon glyphicon-stats"></span> Datasets</a></li>
 	  <li class="{{wiki_tab_class}}"><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page"><span class="glyphicon glyphicon-book"></span> Wiki</a></li>
 	  <li class="{{writings_tab_class}}"><a href="/{{project.key.integer_id()}}/writings"><span class="glyphicon glyphicon-font"></span> Writings</a></li>
-	  <li class="{{forum_tab_class}}"><a href="/{{project.key.integer_id()}}/forum"><span class="glyphicon glyphicon-fire"></span> Forum</a></li>
 	  <li class="{{bibliography_tab_class}}"><a href="/{{project.key.integer_id()}}/bibliography"><span class="glyphicon glyphicon-folder-open"></span> Bibliography</a></li>
+	  <li class="{{forum_tab_class}}"><a href="/{{project.key.integer_id()}}/forum"><span class="glyphicon glyphicon-fire"></span> Forum</a></li>
 	  {% if (user and project.user_is_author(user)) %}
 	  <li class="{{admin_tab_class}}"><a href="/{{project.key.integer_id()}}/admin"><span class="glyphicon glyphicon-cog"></span> Admin</a></li>
 	  {% endif %}

@@ -2,7 +2,7 @@
 # For the forums inside each project.
 
 from google.appengine.ext import ndb
-import generic, projects
+import generic, projects, secrets
 
 
 ###########################
@@ -67,9 +67,8 @@ class MainPage(ForumPage):
         if not project: 
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
-            return            
-        self.render("forum_main.html", project = project, user = user, items = self.get_threads(project),
-                    visitor_p = not (user and project.user_is_author(user)))
+            return
+        self.render("forum_main.html", project = project, user = user, items = self.get_threads(project))
 
 
 class NewThreadPage(ForumPage):
@@ -83,9 +82,6 @@ class NewThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        if not project.user_is_author(user):
-            self.redirect("/%s/forum" % projectid)
-            return
         kw = {"title" : "New forum thread",
               "name_placeholder" : "Brief description of the thread.",
               "content_placeholder" : "Content of your thread.",
@@ -93,8 +89,7 @@ class NewThreadPage(ForumPage):
               "cancel_url" : "/%s/forum" % projectid,
               "more_head" : "<style>#forum-tab {background: white;}</style>",
               "markdown_p" : True,
-              "open_choice_p": True,
-              "open_p" : project.default_open_p,
+              "open_choice_p": False,
               "breadcrumb" : '<li class="active">Forum</li>'}
         self.render("project_form_2.html", project = project, **kw)
 
@@ -108,14 +103,10 @@ class NewThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        if not project.user_is_author(user):
-            self.redirect("/%s/forum" % projectid)
-            return
         have_error = False
         kw = {"error_message" : '',
               "name_value" : self.request.get("name"),
-              "content_value" : self.request.get("content"),
-              "open_p": self.request.get("open_p") == "True"}
+              "content_value" : self.request.get("content")}
         if not kw["name_value"]:
             have_error = True
             kw["error_message"] += "Please provide a brief description for this thread. "
@@ -130,13 +121,13 @@ class NewThreadPage(ForumPage):
             kw["content_placeholder"] = "Content of the thread"
             kw["submit_button_text"] = "Create thread"
             kw["markdown_p"] = True
-            kw["open_choice_p"] = True
+            kw["open_choice_p"] = False
             kw["cancel_url"] = "/%s/forum" % projectid
             kw["breadcrumb"] = '<li class="active">Forum</li>'
             self.render("project_form_2.html", project = project, **kw)
         else:
             new_thread = ForumThreads(author = user.key, parent = project.key,
-                                      title = kw["name_value"], content = kw["content_value"], open_p = kw["open_p"])
+                                      title = kw["name_value"], content = kw["content_value"], open_p = True)
             self.put_and_report(new_thread, user, project)
             self.redirect("/%s/forum/%s" % (projectid, new_thread.key.integer_id()))
 
@@ -154,12 +145,9 @@ class ThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Thread with key <em>%s</em> not found' % threadid)
             return
-        if not (thread.is_open_p() or (user and project.user_is_author(user))):
-            self.render("project_page_not_visible.html", project = project, user = user)
-            return
         comments = self.get_comments(thread)
         self.render("forum_thread.html", project = project, user = user, thread = thread, 
-                    comments = comments)
+                    comments = comments, plusone_p = True, fb_p = True, FACEBOOK_APP_ID = secrets.FACEBOOK_APP_ID)
 
     def post(self, projectid, threadid):
         user = self.get_login_user()
@@ -176,9 +164,6 @@ class ThreadPage(ForumPage):
             self.error(404)
             self.render("404.html", info = 'Thread with key <em>%s</em> not found' % threadid)
             return
-        if not project.user_is_author(user):
-            self.redirect("/%s/forum/%s" % (projectid, threadid))
-            return
         have_error = False
         error_message = ''
         action = self.request.get("action")
@@ -188,7 +173,7 @@ class ThreadPage(ForumPage):
             self.put_and_report(new_comment, user, project, thread)
         elif comment and action == "edit_answer":
             a_id = self.request.get("answer_id")
-            answer= self.get_comment(thread, a_id)
+            answer = self.get_comment(thread, a_id)
             answer.comment = comment
             self.log_and_put(answer)
         self.redirect("/%s/forum/%s" % (projectid, threadid))
@@ -222,7 +207,7 @@ class EditThreadPage(ForumPage):
               "submit_button_text" : "Save changes",
               "cancel_url" : "/%s/forum/%s" % (projectid,threadid),
               "markdown_p" : True,
-              "open_choice_p": True,
+              "open_choice_p": False,
               "breadcrumb" : '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)}
         self.render("project_form_2.html", user = user, project = project, **kw)
 
@@ -247,8 +232,7 @@ class EditThreadPage(ForumPage):
         have_error = False
         kw = {"error_message" : '',
               "name_value" : self.request.get("name"),
-              "content_value" : self.request.get("content"),
-              "open_p" : self.request.get("open_p") == "True"}
+              "content_value" : self.request.get("content")}
         if not kw["name_value"]:
             have_error = True
             kw["error_message"] = "Please provide a brief description for this thread. "
@@ -264,13 +248,12 @@ class EditThreadPage(ForumPage):
             kw["submit_button_text"] = "Save changes"
             kw["cancel_url"] = "/%s/forum/%s" % (projectid,threadid)
             kw["markdown_p"] = True
-            kw["open_choice_p"] = True
+            kw["open_choice_p"] = False
             kw["breadcrumb"] = '<li><a href="/%s/forum">Forum</a></li><li class="active">%s</li>' % (projectid, thread.title)
             self.render("project_form_2.html", user = user, project = project, **kw)
         else:
-            if (thread.title != kw["name_value"] or thread.content != kw["content_value"] or thread.open_p != kw["open_p"]):
+            if (thread.title != kw["name_value"] or thread.content != kw["content_value"]):
                 thread.title = kw["name_value"]
                 thread.content = kw["content_value"]
-                thread.open_p = kw["open_p"]
                 self.log_and_put(thread)
             self.redirect("/%s/forum/%s" % (project.key.integer_id(), thread.key.integer_id()))

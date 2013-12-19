@@ -9,7 +9,7 @@
 <div class="page-header">
   <h2 id="main-content">Forum
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    {% if not visitor_p %}
+    {% if user %}
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/forum/new_thread">
       <span class="glyphicon glyphicon-plus"></span> New thread</a>
     {% endif %}
@@ -27,9 +27,9 @@
 	<h4 class="modal-title">Forum</h4>
       </div>
       <div class="modal-body">
-	<p>This section provides you with a simple <em>questions and answers</em> system which can be used to discuss ideas with your collaborators.</p>
-	<p>You could also use this section to make announcements like a new "call for abstracts" for a conference or a new project grant.</p>
-	<p>If the discussion revolves around a particular bibliography item, you might find more useful the <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a> section.</p>
+	<p>This section provides you with a simple <em>questions and answers</em> system which can be used to discuss ideas with your collaborators and the general public.</p>
+	<p>This is the only section in your project open to users that are not collaborators in the project.</p>
+	<p>Here you can have broad discussions about your project and make "announcements" or "progress reports" to the public.</p>
       </div>
     </div>
   </div>
