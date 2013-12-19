@@ -87,30 +87,30 @@ class Projects(ndb.Model):
         else:
             lic_url, lic_img, lic_txt = ("","","")
             if lic == "CC BY":
-                lic_url = "http://creativecommons.org/licenses/by/4.0/"
-                lic_img = "http://i.creativecommons.org/l/by/4.0/88x31.png"
+                lic_url = "https://creativecommons.org/licenses/by/4.0/"
+                lic_img = "https://i.creativecommons.org/l/by/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution 4.0 International License"
             elif lic == "CC BY-SA":
-                lic_url = "http://creativecommons.org/licenses/by/4.0/"
-                lic_img = "http://i.creativecommons.org/l/by-sa/4.0/88x31.png"
+                lic_url = "https://creativecommons.org/licenses/by/4.0/"
+                lic_img = "https://i.creativecommons.org/l/by-sa/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-ShareAlike 4.0 International License"
             elif lic == "CC BY-ND":
-                lic_url = "http://creativecommons.org/licenses/by/4.0/"
-                lic_img = "http://i.creativecommons.org/l/by-nd/4.0/88x31.png"
+                lic_url = "https://creativecommons.org/licenses/by/4.0/"
+                lic_img = "https://i.creativecommons.org/l/by-nd/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-NoDerivatives 4.0 International License"
             elif lic == "CC BY-NC":
-                lic_url = "http://creativecommons.org/licenses/by/4.0/"
-                lic_img = "http://i.creativecommons.org/l/by-nc/4.0/88x31.png"
+                lic_url = "https://creativecommons.org/licenses/by/4.0/"
+                lic_img = "https://i.creativecommons.org/l/by-nc/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-NonCommercial 4.0 International License"
             elif lic == "CC BY-NC-SA":
-                lic_url = "http://creativecommons.org/licenses/by/4.0/"
-                lic_img = "http://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"
+                lic_url = "https://creativecommons.org/licenses/by/4.0/"
+                lic_img = "https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
             elif lic == "CC BY-NC-ND":
-                lic_url = "http://creativecommons.org/licenses/by/4.0/"
-                lic_img = "http://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"
+                lic_url = "https://creativecommons.org/licenses/by/4.0/"
+                lic_img = "https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License"
-            return '<small><a rel="license" href="%s"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><br />Unless otherwise specified, original content from <em><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">%s</span></em> is licensed under a <a rel="license" href="%s">%s</a>.</small>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
+            return '<small><a rel="license" href="%s"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><br />Unless otherwise specified, original content from <em><span xmlns:dct="https://purl.org/dc/terms/" property="dct:title">%s</span></em> is licensed under a <a rel="license" href="%s">%s</a>.</small>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
         
         
 
