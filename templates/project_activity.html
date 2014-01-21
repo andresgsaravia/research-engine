@@ -43,10 +43,10 @@ started a new thread <a href="/{{project.key.integer_id()}}/forum/{{item.integer
 posted an answer to the thread <a href="/{{project.key.integer_id()}}/forum/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a> in the <strong>forum</strong>
 
 {% elif item.kind() == "BiblioItems" %}
-added a new item <a href="/{{project.key.integer_id()}}/bibliography/{{item.integer_id()}}">{{item.get().title}}</a> to the <strong>bibliography</strong>
+added a new item <a href="/{{project.key.integer_id()}}/bibliography/{{item.integer_id()}}">{{item.get().title | safe}}</a> to the <strong>bibliography</strong>
 
 {% elif item.kind() == "BiblioComments" %}
-made a new comment to the <strong>bibliography</strong> item <a href="/{{project.key.integer_id()}}/bibliography/{{item.parent().integer_id()}}">{{item.parent().get().title}}</a>
+made a new comment to the <strong>bibliography</strong> item <a href="/{{project.key.integer_id()}}/bibliography/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
 
 {% endif %}
 
