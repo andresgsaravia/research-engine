@@ -34,7 +34,7 @@ started a new <strong>collaborative writing</strong> <a href="/{{project.key.int
 made a new revision of the <strong>collaborative writing</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
 
 {% elif item.kind() == "WritingComments" %}
-made a new <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}/discussion">comment</a> to the <strong>collaborativ ewriting</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
+made a new <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}/discussion">comment</a> to the <strong>collaborative writing</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
 
 {% elif item.kind() == "ForumThreads" %}
 started a new thread <a href="/{{project.key.integer_id()}}/forum/{{item.integer_id()}}">{{item.get().title | safe}}</a> in the <strong>forum</strong>

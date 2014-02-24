@@ -11,7 +11,7 @@ class RootPage(generic.GenericPage):
         p_updates = []
         if user:
             for p in projects:
-                p_updates += p.list_updates(self)          # I query more items than needed... there should be a smart way to do this.
+                p_updates += p.list_updates(self, user)          # I query more items than needed... there should be a smart way to do this.
         p_updates.sort(key=lambda u: u.date, reverse = True)
         self.render("root.html", user = user, projects = projects, p_updates = p_updates[:30], show_project_p = True)
 
