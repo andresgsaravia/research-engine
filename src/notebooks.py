@@ -17,6 +17,7 @@ class Notebooks(ndb.Model):
     description = ndb.TextProperty(required = True)
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
+    shared_p = ndb.BooleanProperty(default = False)   # If true, all users can make notes in it and "owner" is meaningless
     # For an open notebook it's one of ONS-ACI, ONS-ACD, ONS-SCI, ONS-SCD according in its (A)ll or (S)elected content and (I)mmediately or (D)elayed. 
     # Another option is "CNS" for closed notebooks.
     claims = ndb.StringProperty(required = True, default = 'ONS-ACI')
@@ -54,6 +55,7 @@ class NotebookNotes(ndb.Model):
     title = ndb.StringProperty(required = True)
     content = ndb.TextProperty(required = True)
     date = ndb.DateTimeProperty(auto_now_add = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = False) # This is required for shared notebooks, otherwise it can be inferred from its parent.
 
     def get_number_of_comments(self):
         return NoteComments.query(ancestor = self.key).count()
@@ -112,14 +114,17 @@ class NotebooksListPage(NotebookPage):
         notebooks = self.get_notebooks_list(project)
         my_notebooks = []
         other_notebooks = []
+        shared_notebooks = []
         if user:
             for n in notebooks:
-                if n.owner == user.key:
+                if n.shared_p:
+                    shared_notebooks.append(n)
+                elif n.owner == user.key:
                     my_notebooks.append(n)
                 else:
                     other_notebooks.append(n)
-        self.render("notebooks_list.html", project = project, user = user,
-                    notebooks = notebooks, my_notebooks = my_notebooks, other_notebooks = other_notebooks)
+        self.render("notebooks_list.html", project = project, user = user, notebooks = notebooks, 
+                    my_notebooks = my_notebooks, other_notebooks = other_notebooks, shared_notebooks = shared_notebooks)
 
 
 class NewNotebookPage(NotebookPage):
@@ -156,7 +161,8 @@ class NewNotebookPage(NotebookPage):
         kw = {"error_message" : '',
               "n_name" : self.request.get("name"),
               "n_description" : self.request.get("description"),
-              "n_claims" : self.request.get("claims")}
+              "n_claims" : self.request.get("claims"),
+              "shared_p" : self.request.get("shared_p") == "True"}
         if not kw["n_name"]:
             have_error = True
             kw["error_message"] = "Provide a name for your new notebook. "
@@ -175,7 +181,8 @@ class NewNotebookPage(NotebookPage):
                                      name = kw["n_name"], 
                                      description = kw["n_description"], 
                                      parent  = project.key,
-                                     claims = kw["n_claims"])
+                                     claims = kw["n_claims"],
+                                     shared_p = kw["shared_p"])
             self.put_and_report(new_notebook, user, project)
             self.redirect("/%s/notebooks/%s" % (project.key.integer_id(), new_notebook.key.id()))
 
@@ -203,7 +210,7 @@ class NotebookMainPage(NotebookPage):
             kw["page"] = 0
         kw["notes"], kw["next_page_cursor"], kw["more_p"] = self.get_notes_list(notebook, kw["page"])
         self.render("notebook_main.html", project = project, notebook = notebook, 
-                    user_is_owner_p = user and notebook.owner == user.key,
+                    writable_p = user and (notebook.owner == user.key or notebook.shared_p),
                     owner = notebook.owner.get(), **kw)
 
 
@@ -218,13 +225,13 @@ class NewNotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        if not project.user_is_author(user):
-            self.redirect("/%s/notebooks/%s" % (projectid, nbid))
-            return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
+            return
+        if not (user.key == notebook.owner or notebook.shared_p):
+            self.redirect("/%s/notebooks/%s" % (projectid, nbid))
             return
         parent_url = "/%s/notebooks" % project.key.integer_id()
         kw = {"title" : "New note",
@@ -247,13 +254,13 @@ class NewNotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        if not project.user_is_author(user):
-            self.redirect("/%s/notebooks/%s" % (projectid, nbid))
-            return
         notebook = self.get_notebook(project, nbid)
         if not notebook:
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
+            return
+        if not (user.key == notebook.owner or notebook.shared_p):
+            self.redirect("/%s/notebooks/%s" % (projectid, nbid))
             return
         have_error = False
         error_message = ''
@@ -278,7 +285,7 @@ class NewNotePage(NotebookPage):
                   "name_value": n_title, "content_value": n_content, "error_message" : error_message}
             self.render("project_form_2.html", project = project, **kw)
         else:
-            new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key)
+            new_note = NotebookNotes(title = n_title, content = n_content, parent = notebook.key, author = user.key)
             self.put_and_report(new_note, user, project, notebook)
             self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, new_note.key.integer_id()))
 
@@ -372,14 +379,15 @@ class EditNotebookPage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        if not notebook.owner.get().key == user.key:
+        if not (notebook.owner.get().key == user.key or (notebook.shared_p and project.user_is_author(user))):
             self.redirect("/%s/notebooks/%s" % (projectid, nbid))
             return
         kw = {"action" : "Edit",
               "button_text" : "Save Changes",
               "n_name" : notebook.name,
               "n_description" : notebook.description,
-              "n_claims" : notebook.claims}
+              "n_claims" : notebook.claims,
+              "shared_p" : notebook.shared_p}
         self.render("notebook_new.html", project = project, notebook = notebook, **kw)
 
     def post(self, projectid, nbid):
@@ -397,7 +405,7 @@ class EditNotebookPage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        if not notebook.owner.get().key == user.key:
+        if not (notebook.owner.get().key == user.key or (notebook.shared_p and project.user_is_author(user))):
             self.redirect("/%s/notebooks/%s" % (projectid, nbid))
             return
         have_error = False

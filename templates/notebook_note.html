@@ -22,7 +22,10 @@
   </div>
   <div class="panel-body">
     {{note.content | md | safe}}
-    <small class="text-muted">{{note.date.strftime("%d %b %Y")}}</small>
+    <small class="text-muted pull-right">{{note.date.strftime("%d %b %Y")}}</small>
+    <ul class="nav nav-pills">
+      <li><a href="/{{note.author.get().username}}"><img src="{{note.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{note.author.get().username.capitalize()}}</a></li>
+    </ul>
   </div>
 </div>
 

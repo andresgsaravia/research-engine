@@ -10,7 +10,7 @@
 
   <div class="page-header">
     <h3 id="main-content">
-      {% if user_is_owner_p %}
+      {% if writable_p %}
       <div class=" pull-right">
 	<a class="btn btn-success btn-sm" style="margin-right:5px;"
 	   href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
@@ -37,13 +37,19 @@
     </div>
     <div class="panel-body">
       {{note.content | md | safe}}
-      <small class="text-muted">{{note.date.strftime("%d %b %Y")}}</small>
       <div class="pull-right">
+      <small class="text-muted pull-right">{{note.date.strftime("%d %b %Y")}}</small><br/>
 	<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
 	  <span class="glyphicon glyphicon-comment"></span> {{note.get_number_of_comments()}} comments</a>
 	<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
 	  <span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
       </div>
+      {% if notebook.shared_p %}
+      <ul class="nav nav-pills">
+	<li><a href="/{{note.author.get().username}}">
+	    <img src="{{note.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{note.author.get().username.capitalize()}}</a></li>
+      </ul>
+      {% endif %}
     </div>
   </div>
   {% endfor %}

@@ -64,6 +64,18 @@
       </label>
     </div>
 
+    {% if action=="Edit" %}
+    <strong>This is a shared notebook</strong><br/><br/>
+    {% else %}
+    <div class="checkbox">
+      <br/>
+      <label>
+	<input type="checkbox" name="shared_p" value="True" {% if shared_p %}checked{% endif %}/>
+	<strong>Shared notebook?</strong> If checked, every author in this project can write in the notebook.
+      </label>
+    </div>
+    {% endif %}
+
     <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>{{button_text}}</button>
     <button type="button" class="btn btn-default"
 	    onClick="if (confirm('Are you sure you want to cancel?')) {window.location = '/{{project.key.integer_id()}}/notebooks'}">Cancel</button>
