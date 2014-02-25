@@ -315,7 +315,7 @@ class NotePage(NotebookPage):
         kw["visitor_p"] = not (user and project.user_is_author(user))
         self.render("notebook_note.html", project = project, user = user,
                     notebook = notebook, note = note, new_comment = self.request.get("new_comment"),
-                    user_is_owner_p = (user and notebook.owner == user.key), **kw)
+                    note_editable_p = user and ((not notebook.shared_p and notebook.owner == user.key) or (notebook.shared_p and note.author == user.key)), **kw)
 
     def post(self, projectid, nbid, noteid):
         user = self.get_login_user()
@@ -360,7 +360,8 @@ class NotePage(NotebookPage):
         kw["comments"] = self.get_comments_list(note)
         self.render("notebook_note.html", project = project,
                     notebook = notebook, note = note, comment = '',
-                    user_is_owner_p = True if (user and notebook.owner == user.key) else False, **kw)
+                    note_editable_p = user and ((not notebook.shared_p and notebook.owner == user.key) 
+                                                or (notebook.shared_p and note.author == user.key)), **kw)
 
 
 class EditNotebookPage(NotebookPage):
@@ -455,13 +456,14 @@ class EditNotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        if not notebook.owner == user.key:
-            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
-            return
         note = self.get_note(notebook, noteid)
         if not note:
             self.error(404)
             self.render("404.html", info = 'Note with key <em>%s</em> not found' % noteid)
+            return
+        note_editable_p = user and (notebook.owner == user.key or (notebook.shared_p and note.author == user.key))
+        if not note_editable_p:
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
             return
         nbs_url = "/%s/notebooks" % projectid
         nb_url = nbs_url + "/" + nbid
@@ -492,13 +494,14 @@ class EditNotePage(NotebookPage):
             self.error(404)
             self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
             return
-        if not notebook.owner == user.key:
-            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
-            return
         note = self.get_note(notebook, noteid)
         if not note:
             self.error(404)
             self.render("404.html", info = 'Note with key <em>%s</em> not found' % noteid)
+            return
+        note_editable_p = user and (notebook.owner == user.key or (notebook.shared_p and note.author == user.key))
+        if not note_editable_p:
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
             return
         have_error = False
         error_message = ''

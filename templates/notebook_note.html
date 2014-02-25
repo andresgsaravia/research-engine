@@ -12,7 +12,7 @@
 {% block p_content %}
 <div class="panel panel-default">
   <div class="panel-heading" style="overflow:auto;">
-    {% if user_is_owner_p %}
+    {% if note_editable_p %}
     <a class="btn btn-link btn-sm btn-edit pull-right" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">
       <span class="glyphicon glyphicon-pencil"></span>
     </a>
@@ -23,9 +23,12 @@
   <div class="panel-body">
     {{note.content | md | safe}}
     <small class="text-muted pull-right">{{note.date.strftime("%d %b %Y")}}</small>
+    {% if notebook.shared_p %}
     <ul class="nav nav-pills">
-      <li><a href="/{{note.author.get().username}}"><img src="{{note.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{note.author.get().username.capitalize()}}</a></li>
+      <li><a href="/{{note.author.get().username}}">
+	  <img src="{{note.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{note.author.get().username.capitalize()}}</a></li>
     </ul>
+    {% endif %}
   </div>
 </div>
 
