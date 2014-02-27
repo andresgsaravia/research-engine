@@ -209,7 +209,7 @@ class SettingsPage(generic.GenericPage):
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
-            user.gplusid = kw["gplusid"]
+            user.gplusid = re.findall(r'[0-9]+', kw["gplusid"])[0]
             self.log_and_put(user, "Updating settings.")
             user.set_profile_image_url("google" if user.gplusid else "gravatar")
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
