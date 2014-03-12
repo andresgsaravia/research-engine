@@ -183,7 +183,7 @@ class SettingsPage(generic.GenericPage):
         kw = {"usern"    : self.request.get("usern").strip(),
               "email"    : self.request.get("email").strip(),
               "about_me" : self.request.get("about_me").strip(),
-              "gplusid"  : self.request.get("gplusid").strip(),
+              "gplusid"  : user.gplusid if user.gplusid else '',
               "plusone_p": True}
         have_error = False
         if kw["usern"]: kw["usern"] = kw["usern"].lower()
@@ -209,7 +209,6 @@ class SettingsPage(generic.GenericPage):
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
-            user.gplusid = re.findall(r'[0-9]+', kw["gplusid"])[0] if kw['gplusid'] else None
             if user.gplusid: user.set_gplus_profile()
             self.log_and_put(user, "Updating settings.")
             user.set_profile_image_url("google" if user.gplus_profile_json else "gravatar")

@@ -15,7 +15,7 @@
       <div class="g-person" data-href="https://plus.google.com/{{gplusid}}" data-layout="portrait" data-width="180" ></div>
       {% else %}
       <img src="{{user.get_profile_image(200)}}" class="img-responsive img-thumbnail" style="margin-bottom: 10px;" aria-label="Profile image">
-      <p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a> or provide your Google+ ID to use your profile image.</p>
+      <p class="text-muted text-center">Change your avatar at <a href="https://secure.gravatar.com/">Gravatar.com</a> or sign in with Google+.</p>
       {% endif %}
     </div>
 
@@ -41,11 +41,12 @@
 
 	<div class="form-group">
 	  <label for="gplusidInput" class="col-sm-2 control-label">Google+</label>
-	  <div class="col-sm-4">
-	    <p class="form-control-static">https://plus.google.com/</p>
-	  </div>
-	  <div class="col-sm-6">
-	    <input id="gplusidlInput" type="text" name="gplusid" value="{{gplusid}}" class="form-control" placeholder="Google+ ID"/>
+	  <div class="col-sm-10">
+	    <p style="margin-top:5px;">
+	      {% if gplusid %}<a class="form-control-static" href="https://plus.google.com/{{gplusid}}">https://plus.google.com/{{gplusid}}</a>
+	      {% elif user.email.split('@')[1] == "gmail.com" %}<a class="btn btn-danger" href="/auth/google" role="button">Log in with Google</a>
+	      {% else %}<p>Change you email to a <a href="https://mail.google.com">Gmail</a> account to link it with Google+</p>{% endif %}
+	    </p>
 	  </div>
 	</div>
 
