@@ -4,13 +4,13 @@
 
 import webapp2 
 import jinja2
-import os, re, string, hashlib, logging, datetime
+import os, re, string, hashlib, logging, datetime, json
 from google.appengine.ext import ndb, db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.api import urlfetch
 from webapp2_extras import auth, sessions
 
-import filters
-from secrets import GOOGLE_APP_ID
+import filters, secrets
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
@@ -91,6 +91,15 @@ class RegisteredUsers(ndb.Model):
             projects_list.sort(key=lambda p: p.last_updated, reverse=True)
         return projects_list
 
+    def set_gplus_profile(self):
+        assert self.gplusid
+        try:
+            p = json.loads(urlfetch.fetch("https://www.googleapis.com/plus/v1/people/%s?key=%s" % (self.gplusid, secrets.GOOGLE_PLUS_KEY)).content)
+            self.gplus_profile_json = p
+            self.put()
+        except:
+            logging.warning("There was an error getting and/or parsing a user's G+ profile")
+
     def set_profile_image_url(self, provider = "gravatar"):
         assert provider in ["gravatar","google"]
         if provider == "gravatar":
@@ -101,7 +110,6 @@ class RegisteredUsers(ndb.Model):
         if DEBUG: logging.debug("DB WRITE: Updating a user's profile_image_url attribute")
         self.put()
         return
-
 
     def get_profile_image(self, size = 0):
         assert type(size) == int

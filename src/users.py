@@ -209,13 +209,8 @@ class SettingsPage(generic.GenericPage):
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
-            user.gplusid = re.findall(r'[0-9]+', kw["gplusid"])[0]
-            if user.gplusid:
-                try:
-                    p = json.loads(urlfetch.fetch("https://www.googleapis.com/plus/v1/people/%s?key=%s" % (user.gplusid, secrets.GOOGLE_PLUS_KEY)).content)
-                    user.gplus_profile_json = p
-                except:
-                    logging.warning("There was an error getting and/or parsing a user's G+ profile")
+            user.gplusid = re.findall(r'[0-9]+', kw["gplusid"])[0] if kw['gplusid'] else None
+            if user.gplusid: user.set_gplus_profile()
             self.log_and_put(user, "Updating settings.")
             user.set_profile_image_url("google" if user.gplus_profile_json else "gravatar")
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
@@ -354,7 +349,13 @@ class AuthHandler(generic.GenericPage, simpleauth.SimpleAuthHandler):
                                            password_hash = generic.hash_str(generic.make_salt() + salt),
                                            salt = salt,
                                            email = data['email'])
-            if data['id']: user.gplusid = data['id']
+            if data['id']: 
+                user.gplusid = data['id']
+                user.set_gplus_profile()
+                try: 
+                    user.about_me = user.gplus_profile_json['aboutMe']
+                except:
+                    pass
             if data['picture']: user.profile_image_url = data['picture']
             self.log_and_put(user)
             new_user_p = True
