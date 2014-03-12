@@ -359,6 +359,13 @@ class AuthHandler(generic.GenericPage, simpleauth.SimpleAuthHandler):
             if data['picture']: user.profile_image_url = data['picture']
             self.log_and_put(user)
             new_user_p = True
+        if (not new_user_p) and data['id']:
+            try:
+                user.gplusid = data['id']                
+                user.set_gplus_profile()
+                user.set_profile_image_url(provider = "google")
+            except:
+                logging.error("There was a problem fetching a gplus profile and/or profile image url for an existing user. ")
         self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
         self.redirect("/settings" if new_user_p else "/")
 
