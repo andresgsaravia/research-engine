@@ -10,6 +10,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from webapp2_extras import auth, sessions
 
 import filters
+from secrets import GOOGLE_APP_ID
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
@@ -75,6 +76,7 @@ class RegisteredUsers(ndb.Model):
     my_projects = ndb.KeyProperty(repeated = True)                   # keys to Projects (defined in projects.py)
     profile_image_url = ndb.StringProperty(required = False)
     gplusid = ndb.StringProperty(required = False)
+    gplus_profile_json = ndb.JsonProperty(required = False)
 
     def list_of_projects(self):
         projects_list = []
@@ -94,8 +96,8 @@ class RegisteredUsers(ndb.Model):
         if provider == "gravatar":
             self.profile_image_url = "https://secure.gravatar.com/avatar/" + hashlib.md5(self.email.strip().lower()).hexdigest()
         elif provider == "google":
-            assert self.gplusid
-            self.profile_image_url = "https://plus.google.com/s2/photos/profile/%s" % self.gplusid
+            assert self.gplus_profile_json
+            self.profile_image_url = self.gplus_profile_json['image']['url'].split('?')[0]
         if DEBUG: logging.debug("DB WRITE: Updating a user's profile_image_url attribute")
         self.put()
         return
@@ -106,7 +108,7 @@ class RegisteredUsers(ndb.Model):
         assert self.profile_image_url
         url = self.profile_image_url
         if size > 0: 
-            url += "?sz=" if self.gplusid else "?s=" 
+            url += "?sz=" if self.gplus_profile_json else "?s=" 
             url += str(size)
         return url
 

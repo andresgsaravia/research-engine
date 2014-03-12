@@ -3,8 +3,8 @@
 
 import generic, projects, email_messages, secrets, simpleauth
 import bibliography, code, collab_writing, datasets, forum, notebooks, wiki
-import hashlib, re, logging
-from google.appengine.api import mail
+import hashlib, re, logging, json
+from google.appengine.api import mail, urlfetch
 from webapp2_extras import auth
 
 LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
@@ -210,8 +210,14 @@ class SettingsPage(generic.GenericPage):
             user.email = kw["email"]
             user.about_me = kw["about_me"]
             user.gplusid = re.findall(r'[0-9]+', kw["gplusid"])[0]
+            if user.gplusid:
+                try:
+                    p = json.loads(urlfetch.fetch("https://www.googleapis.com/plus/v1/people/%s?key=%s" % (user.gplusid, secrets.GOOGLE_PLUS_KEY)).content)
+                    user.gplus_profile_json = p
+                except:
+                    logging.warning("There was an error getting and/or parsing a user's G+ profile")
             self.log_and_put(user, "Updating settings.")
-            user.set_profile_image_url("google" if user.gplusid else "gravatar")
+            user.set_profile_image_url("google" if user.gplus_profile_json else "gravatar")
             self.set_cookie("username", user.username, user.salt, max_age = LOGIN_COOKIE_MAXAGE)
             self.redirect("/settings?info=Changes saved")
 
