@@ -7,8 +7,8 @@
 {% block p_content %}
 <div class="page-header">
   <h3 id="main-content">
-    {% if writable_p %}
     <div class=" pull-right">
+      {% if writable_p %}
       <a class="btn btn-success btn-sm" style="margin-right:5px;"
 	 href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
 	<span class="glyphicon glyphicon-plus"></span> New note
@@ -17,12 +17,24 @@
 	 href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
 	<span class="glyphicon glyphicon-cog"></span>
       </a>
+      {% endif %}
+      <!-- Index modal trigger  -->
+      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index"
+	 data-toggle="modal" data-target="#nbIndexModal" class="btn btn-small btn-default">
+	<span class="glyphicon glyphicon-list"></span> Index</a>
     </div>
-    {% endif %}
+
     {% if notebook.is_open_p() %}<img src="{{notebook.claims_logo('icons')}}" title="{{notebook.claims_text()}}"/>{% else %}<span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span>{% endif %}
     {{notebook.name | safe}}
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
   </h3>
+</div>
+
+<!-- Notebook index modal  -->
+<div class="modal fade" id="nbIndexModal" tabindex="-1" role="dialog" aria-labelledby="nbIndexModalLabel" aria-hidden="true">  
+  <div class="modal-dialog">  
+    <div class="modal-content"></div>  
+  </div>  
 </div>
 
 {% for note in notes %}

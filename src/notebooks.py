@@ -548,4 +548,4 @@ class NotebookUtils(NotebookPage):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
         notes = NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).fetch()
-        self.render("notebook_index.html", notes = notes)
+        self.render("notebook_index.html", project = project, notebook = notebook, notes = notes)
