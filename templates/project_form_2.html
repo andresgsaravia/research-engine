@@ -11,60 +11,57 @@
 
 {% block p_content %}
 
-<div class="container">
-  <h3 id="main-content" class="page-header">{{title | safe}}{% if subtitle %}<br/><small>{{subtitle | safe}}</small>{% endif %}
-    <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
+<h3 id="main-content" class="page-header">{{title | safe}}{% if subtitle %}<br/><small>{{subtitle | safe}}</small>{% endif %}
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
 
-  <form method="post" role="form">
-    <div class="form-group {{nClass}}">
-      <input type="text" name="name" class="form-control"
-	     value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
-    </div>
-    <div class="form-group {{cClass}}">
-      <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="17"
-		onKeyUp="Preview('inputText','previewArea');" {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
-    </div>
-
-    {% if open_choice_p %}
-    <div class="radio">
-      <label>
-	<input type="radio" name="open_p" value="True" {% if open_p %}checked{% endif %}/>
-	<span class="glyphicon glyphicon-eye-open"></span>
-	Visible to the general public.
-      </label>
-    </div>
-    <div class="radio">
-      <label>
+<form method="post" role="form">
+  <div class="form-group {{nClass}}">
+    <input type="text" name="name" class="form-control"
+	   value="{{name_value}}" placeholder="{{name_placeholder}}" autofocus {% if disabled_p %}disabled{% endif %}/>
+  </div>
+  <div class="form-group {{cClass}}">
+    <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="17"
+	      onKeyUp="Preview('inputText','previewArea');" {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
+  </div>
+  
+  {% if open_choice_p %}
+  <div class="radio">
+    <label>
+      <input type="radio" name="open_p" value="True" {% if open_p %}checked{% endif %}/>
+      <span class="glyphicon glyphicon-eye-open"></span>
+      Visible to the general public.
+    </label>
+  </div>
+  <div class="radio">
+    <label>
 	<input type="radio" name="open_p" value="False" {% if not open_p %}checked{% endif %}/>
 	<span class="glyphicon glyphicon-eye-close"></span>
 	Visible only to members of this project.
-      </label>
-    </div>
+    </label>
+  </div>
     {% endif %}
+  
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
+  <button type="button" class="btn btn-default"
+	  onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
+  {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
+  {% if markdown_p %}
+  <span class="help-block">
+    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </span>
+  {% endif %}
+  
+</form>
 
-    <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
-    <button type="button" class="btn btn-default"
-	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
-    {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
-    {% if markdown_p %}
-    <span class="help-block">
-      Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-    </span>
-    {% endif %}
-
-  </form>
-
-
-  {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
+{% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
 
 {% if markdown_p %}
-  <div>Below is a preview of how the text will be renderer when you save it. </div>
-  <div class="panel panel-default">
-    <div class="panel-body" id="previewArea">
-      Start typing above to see a preview here.
-    </div>
+<div>Below is a preview of how the text will be renderer when you save it. </div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    Start typing above to see a preview here.
   </div>
+</div>
 {% endif %}
 
-</div>
 {% endblock %}

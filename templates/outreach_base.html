@@ -22,14 +22,12 @@
     <li><a href="/{{page_user.username}}">{{page_user.username.capitalize()}}</a></li>
     {% block breadcrumbs %}{% endblock %}
   </ol>
-</div>
 
-<div class="container">
   <div class="row">
     <div class="col-md-3">
       <h2 class="text-center"><a href="/{{page_user.username}}/outreach" style="color:rgb(51,51,51);">{{page_user.username.capitalize()}}</a></h2>
       <hr>
-      <div class="container text-center">
+      <div class="text-center">
 	{% if page_user.gplusid %}<div class="g-person" data-href="https://plus.google.com/{{page_user.gplusid}}" data-width="180"></div>
 	{% else %}<img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" aria-label="Profile image" style="display:block;margin:0 auto;">{% endif %}
       </div>
