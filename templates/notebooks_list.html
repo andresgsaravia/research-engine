@@ -57,6 +57,7 @@
     </div>
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
+	<!-- Index modal trigger -->
 	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
 	   data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
 	  <span class="glyphicon glyphicon-list"></span> Index</a>
@@ -68,6 +69,7 @@
       </div>
     </div>
   </div>
+  <!-- Index modal -->
   <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
        aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
     <div class="modal-dialog">  
@@ -98,9 +100,18 @@
     </div>
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+	   data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+	  <span class="glyphicon glyphicon-list"></span> Index</a>
 	{{n.description | md | safe }}
-	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+	<br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
       </div>
+    </div>
+  </div>
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
+    <div class="modal-dialog">  
+      <div class="modal-content"></div>  
     </div>
   </div>
   {% endfor %}
@@ -128,12 +139,21 @@
     </div>
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+	   data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+	  <span class="glyphicon glyphicon-list"></span> Index</a>
 	{{n.description | md | safe }}
-	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+	<br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
 	<ul class="nav nav-pills">
 	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
 	</ul>
       </div>
+    </div>
+  </div>
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
+    <div class="modal-dialog">  
+      <div class="modal-content"></div>  
     </div>
   </div>
   {% endfor %}
@@ -166,8 +186,11 @@
     </div>
     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
       <div class="panel-body">
+	<a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+	   data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+	  <span class="glyphicon glyphicon-list"></span> Index</a>
 	{{n.description | md | safe }}
-	<p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+	<br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
 	<ul class="nav nav-pills">
 	  <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
 	</ul>
@@ -175,6 +198,12 @@
     </div>
   </div>
   {% endif %}
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
+    <div class="modal-dialog">  
+      <div class="modal-content"></div>  
+    </div>
+  </div>
   {% endfor %}
 </div>    
 
