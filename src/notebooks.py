@@ -530,3 +530,22 @@ class EditNotePage(NotebookPage):
                 self.log_and_put(note)
             self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
 
+class NotebookUtils(NotebookPage):
+    def index(self, projectid, nbid):
+        "Returns an HTML index for all the notes in this notebook"
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        notebook = self.get_notebook(project, nbid)
+        if not notebook:
+            self.error(404)
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
+            return
+        if not (notebook.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
+        notes = NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).fetch()
+        self.render("notebook_index.html", notes = notes)

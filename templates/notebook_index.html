@@ -1,0 +1,5 @@
+<ul>
+  {% for note in notes %}
+  <li><small class="text-muted">{{note.date.strftime("%d %b %Y")}}</small> {{note.title}}</li>
+  {% endfor %}
+</ul>

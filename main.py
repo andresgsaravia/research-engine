@@ -45,6 +45,7 @@ routes = [
     Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/<noteid:[0-9]+>', 'src.notebooks.NotePage'),
     Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/new_note', 'src.notebooks.NewNotePage'),
     Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/edit', 'src.notebooks.EditNotebookPage'),
+    Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>/_utils/index', handler='src.notebooks.NotebookUtils:index'),
     Route('/<projectid:[0-9]+>/notebooks/<nbid:[0-9]+>', 'src.notebooks.NotebookMainPage'),
     # Collaborative writings
     Route('/<projectid:[0-9]+>/writings', 'src.collab_writing.WritingsListPage'),
