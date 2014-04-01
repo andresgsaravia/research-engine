@@ -60,6 +60,81 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label>Default license</label>
+      <a data-toggle="modal" href="#licenseHelp"><span class="glyphicon glyphicon-info-sign"></span></a>
+      <div class="modal fade" id="licenseHelp" tabindex="-1" role="dialog" aria-labelledby="licenseHelpLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	      <button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
+	      <h4 class="modal-title">Default license</h4>
+	    </div>
+	    <div class="modal-body">
+	      <p>Choosing a <a href="https://creativecommons.org/licenses/" target="_blank">Creative Commons license</a> for this project grants copyright permissions for its content so it can be copied, distributed, edited, remixed and built upon while retaining authorship recognition. Licensing a project under a Creative Commons license helps its dissemination.</p>
+	      <p>You can look at the <a href="https://creativecommons.org/licenses/" target="_blank">Creative Commons licenses descriptions</a> to learn about their differences and choose the most appropriate for you. Be sure to consult all project members before changing licenses, they might have different opinions.</p>
+	      <p>Choosing a Creative Commons license will cause an appropriate banner to appear in every page related to this project.</p>
+	    </div>
+	  </div>
+	</div>
+      </div>
+            
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" 
+		 value="CC BY" {% if (not default_license) or default_license == "CC BY" %}checked{% endif %} />
+	  <img alt="Creative Commons CC BY license" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/80x15.png" />
+	  Creative Commons Attribution
+	</label>
+      </div>
+      
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" value="CC BY-SA"{% if default_license == "CC BY-SA" %}checked{% endif %} />
+	  <img alt="Creative Commons CC BY-SA license" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/4.0/80x15.png" />
+	  Creative Commons Attribution-ShareAlike
+	</label>
+      </div>
+      
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" value="CC BY-ND"{% if default_license == "CC BY-ND" %}checked{% endif %} />
+	  <img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nd/4.0/80x15.png" />
+	  Creative Commons Attribution-NoDerivs
+	</label>
+      </div>
+      
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" value="CC BY-NC"{% if default_license == "CC BY-NC" %}checked{% endif %} />
+	  <img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
+	  Creative Commons Attribution-NonCommercial
+	</label>
+      </div>
+      
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" value="CC BY-NC-SA"{% if default_license == "CC BY-NC-SA" %}checked{% endif %} />
+	  <img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" />
+	  Creative Commons Attribution-NonCommercial-ShareAlike
+	</label>
+      </div>
+      
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" value="CC BY-NC-ND"{% if default_license == "CC BY-NC-ND" %}checked{% endif %} />
+	  <img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" />
+	  Creative Commons Attribution-NonCommercial-NoDerivs
+	</label>
+      </div>
+      
+      <div class="radio">
+	<label>
+	  <input type="radio" name="default_license" value="" />
+	  Not specified
+	</label>
+      </div>
+    </div>
 
     <button type="submit" class="btn btn-success">Create new project</button>
     <button type="button" class="btn btn-default" onClick="window.location = '/{{user.username}}'">Cancel</button>

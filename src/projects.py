@@ -169,25 +169,27 @@ class NewProjectPage(generic.GenericPage):
             self.redirect("/login?goback=/new_project")
             return
         have_error = False
-        kw = {"error_message" : ''}
-        p_name = self.request.get('p_name').strip()
-        p_description = self.request.get('p_description')
-        open_p = self.request.get("open_p") == "True"
-        if not p_name:
+        kw = {"error_message" : '',
+              "p_name" : self.request.get('p_name').strip(),
+              "p_description" : self.request.get('p_description'),
+              "open_p" : self.request.get("open_p") == "True",
+              "default_license" : self.request.get("default_license")}
+        if not kw["p_name"]:
             have_error = True
             kw["error_message"] = 'Please provide a name for your project. '
             kw["name_class"] = "has-error"
-        if not p_description:
+        if not kw["p_description"]:
             have_error = True
             kw["error_message"] = 'Please provide a description of the project. '
             kw["description_class"] = "has-error"
         if have_error:
-            self.render("project_new.html", user = user, p_name = p_name, p_description = p_description, **kw)
+            self.render("project_new.html", user = user, **kw)
         else:
-            new_project = Projects(name = p_name,
-                                   description = p_description,
-                                   default_open_p = open_p,
-                                   wiki_open_p = open_p,
+            new_project = Projects(name = kw["p_name"],
+                                   description = kw["p_description"],
+                                   default_open_p = kw["open_p"],
+                                   default_license = kw["default_license"],
+                                   wiki_open_p = kw["open_p"],
                                    authors = [user.key],
                                    wiki_notifications_list = [user.key],
                                    nb_notifications_list = [user.key],

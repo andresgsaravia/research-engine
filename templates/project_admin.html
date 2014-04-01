@@ -78,16 +78,9 @@
 
     <div class="radio">
       <label>
-	<input type="radio" name="default_license" value="" {% if not project.default_license %}checked{% endif %}/>
-	Not specified
-      </label>
-    </div>
-
-    <div class="radio">
-      <label>
 	<input type="radio" name="default_license" value="CC BY" {% if project.default_license == "CC BY" %}checked{% endif %}/>
 	<img alt="Creative Commons CC BY license" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/80x15.png" />
-	Attribution
+	Creative Commons Attribution
       </label>
     </div>
 
@@ -95,7 +88,7 @@
       <label>
 	<input type="radio" name="default_license" value="CC BY-SA" {% if project.default_license == "CC BY-SA" %}checked{% endif %}/>
 	<img alt="Creative Commons CC BY-SA license" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/4.0/80x15.png" />
-	Attribution-ShareAlike
+	Creative Commons Attribution-ShareAlike
       </label>
     </div>
 
@@ -103,7 +96,7 @@
       <label>
 	<input type="radio" name="default_license" value="CC BY-ND" {% if project.default_license == "CC BY-ND" %}checked{% endif %}/>
 	<img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nd/4.0/80x15.png" />
-	Attribution-NoDerivs
+	Creative Commons Attribution-NoDerivs
       </label>
     </div>
 
@@ -111,7 +104,7 @@
       <label>
 	<input type="radio" name="default_license" value="CC BY-NC" {% if project.default_license == "CC BY-NC" %}checked{% endif %}/>
 	<img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/4.0/80x15.png" />
-	Attribution-NonCommercial
+	Creative Commons Attribution-NonCommercial
       </label>
     </div>
 
@@ -119,7 +112,7 @@
       <label>
 	<input type="radio" name="default_license" value="CC BY-NC-SA" {% if project.default_license == "CC BY-NC-SA" %}checked{% endif %}/>
 	<img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" />
-	Attribution-NonCommercial-ShareAlike
+	Creative Commons Attribution-NonCommercial-ShareAlike
       </label>
     </div>
 
@@ -127,10 +120,16 @@
       <label>
 	<input type="radio" name="default_license" value="CC BY-NC-ND" {% if project.default_license == "CC BY-NC-ND" %}checked{% endif %}/>
 	<img alt="Creative Commons CC By license" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" />
-	Attribution-NonCommercial-NoDerivs
+	Creative Commons Attribution-NonCommercial-NoDerivs
       </label>
     </div>
 
+    <div class="radio">
+      <label>
+	<input type="radio" name="default_license" value="" {% if not project.default_license %}checked{% endif %}/>
+	Not specified
+      </label>
+    </div>
   </div>
 
 
