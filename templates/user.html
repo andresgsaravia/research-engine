@@ -92,7 +92,7 @@ function drawPieChart() {
     <div class="col-md-3">
       <h2>{{page_user.username.capitalize()}}</h2>
       <hr>
-      <div class="container text-center">
+      <div class="text-center">
 	{% if page_user.gplusid %}<div class="g-person" data-href="https://plus.google.com/{{page_user.gplusid}}" data-width="180"></div>
 	{% else %}<img class="img-responsive img-thumbnail" src="{{page_user.get_profile_image(150)}}" style="display:block;margin:0 auto;" aria-label="Profile image">{% endif %}
       </div>
@@ -174,7 +174,7 @@ function drawPieChart() {
       <p>You don't have any projects yet.</p>
       {% endif %}
       {% if self_user_p %}
-      <div class="container"><a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a></div>
+      <div class=""><a class="btn btn-success pull-right" href="/new_project"><span class="glyphicon glyphicon-plus"></span> New project</a></div>
       {% endif %}
     </div>
   </div>
