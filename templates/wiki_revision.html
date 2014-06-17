@@ -6,7 +6,7 @@
 <p class="text-muted">
   Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a>
 </p>
-{{wikitext | md | safe}}
+{{wikitext | md(project.key.integer_id()) | safe}}
 
 
 {% endblock %}
