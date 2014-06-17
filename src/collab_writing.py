@@ -1,7 +1,7 @@
 # collaborative_writing.py
 
 from google.appengine.ext import ndb
-import generic, projects
+import generic, projects, filters
 
 ###########################
 ##   Datastore Objects   ##
@@ -186,8 +186,7 @@ class ViewWritingPage(WritingPage):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
         last_revision = self.get_last_revision(writing)
-        self.render("writings_view.html", project = project, writing = writing, last_revision = last_revision, curr_p = True,
-                    visitor_p = not (user and project.user_is_author(user)))
+        self.render("writings_view.html", project = project, writing = writing, last_revision = last_revision, curr_p = True)
 
 
 class EditWritingPage(WritingPage):
@@ -419,3 +418,22 @@ class InfoPage(WritingPage):
             self.log_and_put(writing)
         kw["success_message"] = 'Changes saved'
         self.render("writings_info.html", project = project, writing = writing, **kw)
+
+class WritingUtils(WritingPage):
+    def html_export(self, projectid, writingid):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        writing = self.get_writing(project, writingid)
+        if not writing:
+            self.error(404)
+            self.render("404.html", info = 'Writing with key <em>%s</em> not found' % writingid)
+            return
+        if not (writing.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
+        last_revision = self.get_last_revision(writing)
+        self.render("html_export.html", title = writing.title, content = filters.md(last_revision.content))

@@ -12,6 +12,20 @@
   <li{% if hist_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">History</a></li>
   <li{% if disc_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion">Discussion</a></li>
   <li class="{% if info_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info"><span class="glyphicon glyphicon-cog"></span></a></li>
+  <li class="dropdown">
+    <a id="exportLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+      Export<span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="exportLabel">
+      <li role="presentation">
+	<a role="menuitem" tabindex="-1" target="_blank"
+	   href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/_html">HTML</a></li>
+      <li role="presentation" class="disabled">
+	<a role="menuitem" tabindex="-1" href="#">PDF (coming soon)</a></li>
+      <li role="presentation" class="disabled">
+	<a role="menuitem" tabindex="-1" href="#">Markdown (coming soon)</a></li>
+    </ul>
+  </li>
 </ul>
 
 <div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{title}}</title>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+      "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+      TeX: {equationNumbers: {autoNumber: "AMS"} }
+      });
+    </script>
+  </head>
+
+  <body>
+    {{content | safe}}
+  </body>
+</html>
+
