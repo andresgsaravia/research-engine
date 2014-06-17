@@ -10,7 +10,7 @@
 
   <form method="post" role="form">
     <div class="form-group {{cClass}}">
-      <textarea name="content" id="inputText" placeholder="Write the content of this page here." class="form-control" rows="20" onKeyUp="Preview('inputText','previewArea');"
+      <textarea name="content" id="inputText" placeholder="Write the content of this page here." class="form-control" rows="20" onKeyUp="Preview('inputText','previewArea','{{project.key.integer_id()}}');"
 		autofocus {% if visitor_p %}disabled{% endif %}>{% if wikipage %}{{wikipage.content}}{% endif %}</textarea>
     </div>
     <div class="form-group">
