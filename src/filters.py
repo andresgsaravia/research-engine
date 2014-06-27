@@ -41,13 +41,13 @@ def make_sub_repl(projectid):
 def md(value, wiki_p_id = ""):
     "wiki_p_id is the project id and should only be present when rendering a wiki page. This is used to generate the 'wikilinks'."
     allowed_tags = bleach.ALLOWED_TAGS + ['br', 'caption', 'colgroup', 'div', 'figcaption', 'figure', 'h1', 'h2', 'h3', 'h4', 'hr',
-                                          'iframe', 'img', 'mathjax', 'p', 'pre', 'sub', 'sup','table', 'tbody', 'tfoot', 'td', 'th', 'thead', 'tr']
+                                          'iframe', 'img', 'mathjax', 'p', 'pre', 'span', 'sub', 'sup','table', 'tbody', 'tfoot', 'td', 'th', 'thead', 'tr']
     allowed_attrs = dict(bleach.ALLOWED_ATTRIBUTES.items() + 
-                         {'*' : ['class', 'id', 'align'],
+                         {'*' : ['class', 'id', 'align', 'style'],
                           'img': ['alt', 'src', 'title', 'width', 'height'],
                           'iframe' : ['width', 'height', 'src', 'frameborder', 'allowfullscreen']}.items())
     value = re.sub(DOI_REGEXP, make_doi_link, value)     # doi links
     if wiki_p_id: value = re.sub(WIKILINKS_RE, make_sub_repl(wiki_p_id), value) 
-    value = markdown.markdown(value, extensions = ['extra', 'toc', 'nl2br', 'mathjax', 'tables'])
+    value = markdown.markdown(value, extensions = ['extra', 'toc(title=Contents)', 'nl2br', 'mathjax', 'tables'])
     value = bleach.clean(value, tags = allowed_tags, attributes = allowed_attrs)
     return value
