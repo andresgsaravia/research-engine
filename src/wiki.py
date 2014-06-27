@@ -5,30 +5,6 @@ from google.appengine.ext import ndb
 import re
 import generic, projects
 
-# This regexp finds MediaWiki-like inner links in the following way.
-# A simple [[link and text]]                 -->   (''       , 'link and text')
-# Another [[link | display text]]   -->   ('link |' , 'display text') 
-WIKILINKS_RE = r'\[\[([^\|\]]+\|)?([^\]]+)\]\]'
-
-# Given a link prefix and assuming the regex r'\[\[([^\|\]]+\|)?([^\]]+)\]\]'
-# was used, this function returns the link and display text to be used un an
-# html <a ...> tag.
-def link_and_text(mobject, link_prefix):
-    text = mobject.groups()[1].strip()
-    if mobject.groups()[0]:
-        link_posfix = mobject.groups()[0][:-1].strip().replace(" ","_")
-    else:
-        link_posfix = text.replace(" ", "_")
-    link_posfix = link_posfix[:1].upper() + link_posfix[1:]
-    return (link_prefix + link_posfix, text)
-
-# Returns a function suitable to use inside a re.sub(...) call to generate
-# a valid htlm <a ...> tag inside a wiki.
-def make_sub_repl(projectid):
-    link_prefix = "/%s/wiki/page/" % projectid
-    return lambda x: '<a href="%s">%s</a>' % (link_and_text(x, link_prefix))
-
-
 ###########################
 ##   Datastore Objects   ##
 ###########################
@@ -90,10 +66,7 @@ class ViewWikiPage(GenericWikiPage):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
         wikipage = self.get_wikipage(project, wikiurl)
-        if wikipage: 
-            wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), wikipage.content) 
-        else:
-            wikitext = '' 
+        wikitext = wikipage.content if wikipage else ''
         self.render("wiki_view.html", project = project, view_p = True, 
                     visitor_p = not (user and project.user_is_author(user)),
                     wikiurl = wikiurl, wikipage = wikipage, wikitext = wikitext)
@@ -217,10 +190,7 @@ class RevisionWikiPage(GenericWikiPage):
             self.error(404)
             self.render("404.html", info = "Revision %s not found" % revid)
             return
-        if revision:
-            wikitext = re.sub(WIKILINKS_RE, make_sub_repl(projectid), revision.content) 
-        else:
-            wikitext = ''
+        wikitext = revision.content if revision else ''
         self.render("wiki_revision.html", project = project, hist_p = True,
                     visitor_p = not (user and project.user_is_author(user)),
                     wikiurl = wikiurl, revision = revision, wikitext = wikitext)

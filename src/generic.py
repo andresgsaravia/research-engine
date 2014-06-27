@@ -318,4 +318,5 @@ class GenericBlobstoreUpload(blobstore_handlers.BlobstoreUploadHandler):
 class RenderPreview(GenericPage):
     def post(self):
         content = self.request.get("content")
-        self.write(filters.md(content))
+        wiki_p_id = self.request.get("wiki_p_id")
+        self.write(filters.md(content, wiki_p_id))
