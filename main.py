@@ -55,6 +55,7 @@ routes = [
     Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/history', 'src.collab_writing.HistoryWritingPage'),
     Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/info', 'src.collab_writing.InfoPage'),
     Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/rev/<revid:[0-9]+>', 'src.collab_writing.ViewRevisionPage'),
+    Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>/_html', handler='src.collab_writing.WritingUtils:html_export'),
     Route('/<projectid:[0-9]+>/writings/<writingid:[0-9]+>', 'src.collab_writing.ViewWritingPage'),
     # Forum
     Route('/<projectid:[0-9]+>/forum', 'src.forum.MainPage'),
