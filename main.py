@@ -67,6 +67,7 @@ routes = [
     Route('/<projectid:[0-9]+>/wiki/edit/<wikiurl:.+>', 'src.wiki.EditWikiPage'),
     Route('/<projectid:[0-9]+>/wiki/history/<wikiurl:.+>/rev/<revid:[0-9]+>', 'src.wiki.RevisionWikiPage'),
     Route('/<projectid:[0-9]+>/wiki/history/<wikiurl:.+>', 'src.wiki.HistoryWikiPage'),
+    Route('/<projectid:[0-9]+>/wiki/talk/<wikiurl:.+>', 'src.wiki.TalkWikiPage'),
     # Datasets
     Route('/<projectid:[0-9]+>/datasets', 'src.datasets.MainPage'),
     Route('/<projectid:[0-9]+>/datasets/new', 'src.datasets.NewDataSetPage'),

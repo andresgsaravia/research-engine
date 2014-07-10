@@ -27,6 +27,9 @@ made a new revision to the <strong>concept</strong> <a href="/{{project.key.inte
 {% elif item.kind() == "WikiRevisions" %}
 modified the <strong>wiki</strong> page <a href="/{{project.key.integer_id()}}/wiki/page/{{item.parent().get().url}}">{{item.parent().get().url.replace("_", " ")}}</a>
 
+{% elif item.kind() == "WikiComments" %}
+made a <a href="/{{project.key.integer_id()}}/wiki/talk/{{item.parent().get().url}}">comment</a> to the the <strong>wiki</strong> page <a href="/{{project.key.integer_id()}}/wiki/page/{{item.parent().get().url}}">{{item.parent().get().url.replace("_", " ")}}</a>
+
 {% elif item.kind() == "CollaborativeWritings" %}
 started a new <strong>collaborative writing</strong> <a href="/{{project.key.integer_id()}}/writings/{{item.integer_id()}}">{{item.get().title | safe}}</a>
 

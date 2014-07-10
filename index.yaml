@@ -126,6 +126,17 @@ indexes:
   - name: date
     direction: desc
 
+- kind: WikiComments
+  ancestor: yes
+  properties:
+  - name: date
+
+- kind: WikiComments
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
 - kind: WikiRevisions
   ancestor: yes
   properties:

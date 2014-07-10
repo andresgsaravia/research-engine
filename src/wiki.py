@@ -28,6 +28,16 @@ class WikiRevisions(ndb.Model):
         return self.key.parent().get().is_open_p()
 
 
+# Each comment should be a parent of a WikiPage
+class WikiComments(ndb.Model):
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
+    date = ndb.DateTimeProperty(auto_now_add = True)
+    comment = ndb.TextProperty(required = True)
+
+    def is_open_p(self):
+        return self.key.parent().get().is_open_p()
+
+
 ######################
 ##   Web Handlers   ##
 ######################
@@ -53,6 +63,10 @@ class GenericWikiPage(projects.ProjectPage):
         self.log_read(WikiRevisions, log_message)
         return WikiRevisions.get_by_id(int(revid), parent = wikipage.key)
 
+    def get_comments_list(self, wikipage):
+        self.log_read(WikiComments, "Fetching all the comments in the Talk page for a wiki page. ")
+        return WikiComments.query(ancestor = wikipage.key).order(-WikiComments.date).fetch()
+        
 
 class ViewWikiPage(GenericWikiPage):
     def get(self, projectid, wikiurl):
@@ -194,3 +208,64 @@ class RevisionWikiPage(GenericWikiPage):
         self.render("wiki_revision.html", project = project, hist_p = True,
                     visitor_p = not (user and project.user_is_author(user)),
                     wikiurl = wikiurl, revision = revision, wikitext = wikitext)
+
+class TalkWikiPage(GenericWikiPage):
+    def get(self, projectid, wikiurl):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not (project.wiki_open_p or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return        
+        wikipage = self.get_wikipage(project, wikiurl)
+        if not wikipage:
+            self.error(404)
+            self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.url.replace("_"," ").title())
+            return
+        comments = self.get_comments_list(wikipage)
+        self.render("wiki_talk.html", project = project, error_message = self.request.get("error"),
+                    wikiurl = wikiurl, comments = comments, talk_p = True)
+
+    def post(self, projectid, wikiurl):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
+            return
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not project.user_is_author(user):
+            self.redirect("/%s/notebooks/%s/%s" % (projectid, nbid, noteid))
+            return
+        wikipage = self.get_wikipage(project, wikiurl)
+        if not wikipage:
+            self.error(404)
+            self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.url.replace("_"," ").title())
+            return
+        have_error = False
+        error_message = ""
+        comment = self.request.get("comment")
+        if not comment:
+            have_error = True
+            error_message = "You can't submit an empty comment. "
+        if not have_error:
+            comment_id = self.request.get("comment_id")   # If this is present, we are editing a comment, otherwise it's a new comment
+            if comment_id:
+                # Edit comment
+                c = WikiComments.get_by_id(int(comment_id), parent = wikipage.key)
+                c.comment = comment
+                self.log_and_put(c)
+            else:
+                # New comment
+                new_comment = WikiComments(author = user.key, comment = comment, parent = wikipage.key)
+                self.put_and_report(new_comment, user, project, wikipage)
+#        if not have_error:
+#            new_comment = WikiComments(author = user.key, comment = comment, parent = wikipage.key)
+ #           self.put_and_report(new_comment, user, project, wikipage)
+        self.redirect("/%s/wiki/talk/%s" % (projectid, wikiurl) + "?error=%s" % error_message if error_message else '')
+
