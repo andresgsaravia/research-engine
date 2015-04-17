@@ -2,7 +2,9 @@
 # All related to Images inside a project.
 
 from google.appengine.api import images
-from google.appengine.ext import ndb
+from google.appengine.ext import ndb, blobstore
+from google.appengine.ext.webapp import blobstore_handlers
+import urllib
 import generic, projects
 
 
@@ -17,6 +19,7 @@ class Images(ndb.Model):
     description = ndb.TextProperty(required = False)
     date = ndb.DateTimeProperty(auto_now_add = True)
     open_p = ndb.BooleanProperty(default = True)
+    image = ndb.BlobKeyProperty(required = True)
 
     def is_open_p(self):
         return self.open_p
@@ -51,56 +54,63 @@ class MainPage(ImagesPage):
         self.render("images_main.html", project = project, user = user, images = images) 
 
 
-# class NewNotebookPage(NotebookPage):
-#     def get(self, projectid):
-#         user = self.get_login_user()
-#         if not user:
-#             self.redirect("/login?goback=/%s/notebooks/new" % projectid)
-#             return
-#         project = self.get_project(projectid)
-#         if not project: 
-#             self.error(404)
-#             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
-#             return
-#         if not project.user_is_author(user):
-#             self.redirect("/%s/notebooks" % projectid)
-#             return
-#         self.render("notebook_new.html", project = project, action = "New", button_text = "Create notebook",
-#                     n_claims = "ONS-ACI" if project.default_open_p else "CNS")
+class NewImagePage(ImagesPage):
+     def get(self, projectid):
+         user = self.get_login_user()
+         if not user:
+             self.redirect("/login?goback=/%s/images/new" % projectid)
+             return
+         project = self.get_project(projectid)
+         if not project: 
+             self.error(404)
+             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+             return
+         if not project.user_is_author(user):
+             self.redirect("/%s/images" % projectid)
+             return
+         upload_url = blobstore.create_upload_url("/%s/images/new_image" % projectid)
+         kw = {"project" : project,
+               "open_p" : project.default_open_p,
+               "upload_url" : upload_url,
+               "image_class" : self.request.get("image_class"),
+               "title_class" : self.request.get("title_class"),
+               "error_message" : self.request.get("error_message"),
+               "action" : "New", "button_text" : "Upload image"}
+         self.render("image_upload.html", **kw)
 
-#     def post(self, projectid):
-#         user = self.get_login_user()
-#         if not user:
-#             self.redirect("/login?goback=/%s/notebooks/new" % projectid)
-#             return
-#         project = self.get_project(projectid)
-#         if not project:
-#             self.error(404)
-#             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
-#             return
-#         if not project.user_is_author(user):
-#             self.redirect("/%s/notebooks" % projectid)
-#             return
-#         have_error = False
-#         kw = {"error_message" : '',
-#               "n_name" : self.request.get("name"),
-#               "n_description" : self.request.get("description"),
-#               "n_claims" : self.request.get("claims"),
-#               "shared_p" : self.request.get("shared_p") == "True"}
-#         if not kw["n_name"]:
-#             have_error = True
-#             kw["error_message"] = "Provide a name for your new notebook. "
-#             kw["nClass"] = "has-error"
-#         if not kw["n_description"]:
-#             have_error = True
-#             kw["error_message"] += "Provide a description of this notebook. "
-#             kw["dClass"] = "has-error"
-#         if not kw["n_claims"] in ["ONS-ACI","ONS-ACD","ONS-SCI","ONS-SCD","CNS"]:
-#             have_error = True
-#             error_message += "There was an error procesing your request, please try again."
-#         if have_error:
-#             self.render("notebook_new.html", project = project, action = "New", button_text = "Create notebook", **kw)
-#         else:
+class UploadNewImage(generic.GenericBlobstoreUpload):
+    def post(self,projectid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/images/new" % projectid)
+            return
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not project.user_is_author(user):
+            self.redirect("/%s/images" % projectid)
+            return
+        have_error = False
+        kw = {"error_message" : '',
+              "i_title" : self.request.get("i_title"),
+              "i_description" : self.request.get("i_description"),
+              "image" : self.get_uploads("image")}
+        if not kw["i_title"]:
+            have_error = True
+            kw["error_message"] = "Provide a title for your new image. "
+            kw["title_class"] = "has-error"
+        if not kw["image"]:
+            have_error = True
+            kw["error_message"] = "Select an image to upload. "
+            kw["image_class"] = "has-error"
+        if have_error:
+            url = "/%s/images/new" % projectid
+            url = url + '?' + urllib.urlencode(kw)
+            self.redirect(url)
+        else:
+            pass
 #             new_notebook = Notebooks(owner = user.key, 
 #                                      name = kw["n_name"], 
 #                                      description = kw["n_description"], 
@@ -109,6 +119,10 @@ class MainPage(ImagesPage):
 #                                      shared_p = kw["shared_p"])
 #             self.put_and_report(new_notebook, user, project)
 #             self.redirect("/%s/notebooks/%s" % (project.key.integer_id(), new_notebook.key.id()))
+    def get_project(self, projectid, log_message = ''):
+        self.log_read(projects.Projects, log_message)
+        project = projects.Projects.get_by_id(int(projectid))
+        return project
 
 
 # class NotebookMainPage(NotebookPage):

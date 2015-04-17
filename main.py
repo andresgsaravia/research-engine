@@ -82,6 +82,8 @@ routes = [
     Route('/<projectid:[0-9]+>/datasets/<datasetid:[0-9]+>/<datacid:[0-9]+>/update/<revid:[0-9]+>', 'src.datasets.UpdateDataRevisionHandler'),
     # Images
     Route('/<projectid:[0-9]+>/images', 'src.images.MainPage'),
+    Route('/<projectid:[0-9]+>/images/new', 'src.images.NewImagePage'),
+    Route('/<projectid:[0-9]+>/images/new_image', 'src.images.UploadNewImage'),
     # Code
     Route('/<projectid:[0-9]+>/code', 'src.code.CodesListPage'),
     Route('/<projectid:[0-9]+>/code/new', 'src.code.NewCodePage'),
