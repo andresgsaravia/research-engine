@@ -223,7 +223,7 @@ class TalkWikiPage(GenericWikiPage):
         wikipage = self.get_wikipage(project, wikiurl)
         if not wikipage:
             self.error(404)
-            self.render("404.html", info = 'Page "%s" not found in this wiki.' % wikipage.url.replace("_"," ").title())
+            self.render("wiki_view.html", wikipage = False, project = project, wikiurl = wikiurl, talk_p = True)
             return
         comments = self.get_comments_list(wikipage)
         self.render("wiki_talk.html", project = project, error_message = self.request.get("error"),
