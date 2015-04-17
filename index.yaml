@@ -84,6 +84,12 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: Images
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+
 - kind: NoteComments
   ancestor: yes
   properties:
