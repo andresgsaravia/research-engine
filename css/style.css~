@@ -16,6 +16,10 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: Raleway, sans-serif;
 }
 
+.navbar .navbar-brand {
+	font-family: 'Titillium Web', sans-serif;
+}
+
 .page-intro {
 	text-align: center;
 	background: url('/static/stars.png');
@@ -129,6 +133,28 @@ textarea {
 #features h2 .glyphicon {
 	margin-bottom: 10px;
 	font-size: 2.2em;
+}
+
+.project-link {
+	text-decoration: none !important;
+	color: #333 !important;
+	background: #f0f0f0;
+	display: block;
+	padding: 8px 15px;
+	margin-bottom: 20px;
+	border: 1px solid #c0c0c0;
+}
+
+.project-link:hover {
+	border-color: #999;
+}
+
+.project-link h3 {
+	margin-top: 0;
+}
+
+.project-link p {
+	margin-bottom: 0;
 }
 
 #footer {

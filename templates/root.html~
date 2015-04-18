@@ -58,7 +58,7 @@
             </div>
 	    {% endif %}
 
-	<a class="btn btn-default btn-new pull-right" href="/new_project" role="button">Create new project</a>
+	<a class="btn btn-default btn-new pull-right" href="/new_project" role="button">Create New Project</a>
     </div>
 
     <div class="col-md-7">
