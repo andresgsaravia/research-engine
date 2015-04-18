@@ -63,7 +63,7 @@
 	</div>
       </div>
     </div>
-    <button type="submit" class="btn btn-default btn-new col-sm-offset-2" id="createAccBtn" disabled>Create account</button>
+    <button type="submit" class="btn col-sm-offset-2" id="createAccBtn" disabled>Create account</button>
 
   </form>
   {% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}

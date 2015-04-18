@@ -51,7 +51,7 @@
   <hr>
 
   <p>If you registered with a Google account, you can</p>
-  <p><a href="/auth/google" class="btn btn-default btn-new">Log in with Google</a></p>
+  <p><a href="/auth/google" class="btn btn-default btn-new btn-grey">Log in with Google</a></p>
 
   <hr>
 
