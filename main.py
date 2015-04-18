@@ -84,6 +84,7 @@ routes = [
     Route('/<projectid:[0-9]+>/images', 'src.images.MainPage'),
     Route('/<projectid:[0-9]+>/images/new', 'src.images.NewImagePage'),
     Route('/<projectid:[0-9]+>/images/new_image', 'src.images.UploadNewImage'),
+    Route('/<projectid:[0-9]+>/images/<imageid:[0-9]+>', 'src.images.ViewImagePage'),
     # Code
     Route('/<projectid:[0-9]+>/code', 'src.code.CodesListPage'),
     Route('/<projectid:[0-9]+>/code/new', 'src.code.NewCodePage'),

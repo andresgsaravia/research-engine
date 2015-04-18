@@ -34,9 +34,9 @@ class ImagesPage(projects.ProjectPage):
         self.log_read(Images, "Fetching all the images inside a project")
         return Images.query(ancestor = project.key).order(-Images.date).fetch()
 
-    def get_image(self, project, imgid, log_message = ''):
+    def get_image(self, project, imageid, log_message = ''):
         self.log_read(Images, log_message)
-        return Images.get_by_id(int(imgid), parent = project.key)
+        return Images.get_by_id(int(imageid), parent = project.key)
 
     def render(*a, **kw):
         projects.ProjectPage.render(images_tab_class = "active", *a, **kw)
@@ -78,7 +78,7 @@ class NewImagePage(ImagesPage):
                "action" : "New", "button_text" : "Upload image"}
          self.render("image_upload.html", **kw)
 
-class UploadNewImage(generic.GenericBlobstoreUpload):
+class UploadNewImage(projects.ProjectBlobstoreUpload):
     def post(self,projectid):
         user = self.get_login_user()
         if not user:
@@ -115,23 +115,22 @@ class UploadNewImage(generic.GenericBlobstoreUpload):
                                title = kw["i_title"],
                                description = kw["i_description"],
                                open_p = kw["open_p"],
-                               image_key = image[0].key())
+                               image_key = image[0].key(),
+                               parent = project.key)
             self.put_and_report(new_image, user, project)
-            self.redirect("/%s/images" % projectid)
+            self.redirect("/%s/images/%s" % (projectid, new_image.key.integer_id()))
 
-    def get_project(self, projectid, log_message = ''):
-        self.log_read(projects.Projects, log_message)
-        project = projects.Projects.get_by_id(int(projectid))
-        return project
-
-    def put_and_report(self, item, author, project, list_of_things_to_update = []):
-        self.log_and_put(item)
-        # Log user activity
-        u_activity = generic.UserActivities(parent = author.key, item = item.key, relative_to = project.key, actv_kind = "Projects")
-        self.log_and_put(u_activity)
-        # Log project update
-        p_update = projects.ProjectUpdates(parent = project.key, author = author.key, item = item.key)
-        self.log_and_put(p_update)
-        for i in list_of_things_to_update:
-            self.log_and_put(i)
-        return
+class ViewImagePage(ImagesPage):
+    def get(self, projectid, imageid):
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        image = self.get_image(project, imageid)
+        if not image:
+            self.error(404)
+            self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
+            return
+        self.render("image.html", user = user, project = project, image = image, image_url = images.get_serving_url(image.image_key))
