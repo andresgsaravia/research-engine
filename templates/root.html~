@@ -19,6 +19,7 @@
 {% block content %}
 
 {% if user %}
+<br>
 <div class="container">
   <div class="row">
 
@@ -58,7 +59,7 @@
             </div>
 	    {% endif %}
 
-	<a class="btn btn-default btn-new pull-right" href="/new_project" role="button">Create New Project</a>
+	<a class="btn btn-default btn-new pull-right" href="/new_project" role="button">Create new project</a>
     </div>
 
     <div class="col-md-7">

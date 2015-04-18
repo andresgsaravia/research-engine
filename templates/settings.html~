@@ -70,7 +70,6 @@
 	{% if info %}<div class="alert alert-success" style="margin-top:10px;" tabindex="0">{{info | safe}}</div>{% endif %}
 	{% if error %}<div class="alert alert-danger" style="margin-top:10px;" tabindex="0">{{error | safe}}</div>{% endif %}
       </form>
-      <br>
     </div>
   </div>
 </div>
