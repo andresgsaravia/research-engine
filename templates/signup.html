@@ -14,9 +14,20 @@
 
 {% block content %}
 
-<div class="container" style="max-width:750px;">
-  <div class="page-header"><h2 id="main-content">Create an account</h2></div>
+<div class="jumbotron page-intro small-margins">
+  <div class="container-fluid">
+    <h2 role="heading" id="main-content" class="title" style="margin-bottom: 0">
+	<a href="/"><span class="glyphicon glyphicon-menu-left pull-left icon-btn"></span></a>	
+	Sign Up
+	<span class="glyphicon glyphicon-menu-left pull-right" style="visibility: hidden;"></span>	
+    </h2>
+  </div>
+</div>
 
+<br>
+
+<div class="container" style="max-width:800px;">
+  
   {% if user %}
   <p>Welcome back {{user.username}}, you are already logged in.</p>
   <p>If you are not {{user.username}} you can <a href="/logout">Logout</a></p>
@@ -52,7 +63,7 @@
 	</div>
       </div>
     </div>
-    <button type="submit" class="btn btn-success col-sm-offset-2" id="createAccBtn" disabled>Create account</button>
+    <button type="submit" class="btn col-sm-offset-2" id="createAccBtn" disabled>Create account</button>
 
   </form>
   {% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
