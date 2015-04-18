@@ -14,7 +14,7 @@ import generic, projects
 
 # Images have a Project as parent.
 class Images(ndb.Model):
-    owner = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
+    author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
     title = ndb.StringProperty(required = True)
     description = ndb.TextProperty(required = False)
     date = ndb.DateTimeProperty(auto_now_add = True)
@@ -24,6 +24,8 @@ class Images(ndb.Model):
     def is_open_p(self):
         return self.open_p
 
+    def url(self):
+        return images.get_serving_url(self.image_key)
 
 ######################
 ##   Web Handlers   ##
@@ -111,7 +113,7 @@ class UploadNewImage(projects.ProjectBlobstoreUpload):
             url = url + '?' + urllib.urlencode(kw)
             self.redirect(url)
         else:
-            new_image = Images(owner = user.key,
+            new_image = Images(author = user.key,
                                title = kw["i_title"],
                                description = kw["i_description"],
                                open_p = kw["open_p"],
@@ -133,4 +135,4 @@ class ViewImagePage(ImagesPage):
             self.error(404)
             self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
             return
-        self.render("image.html", user = user, project = project, image = image, image_url = images.get_serving_url(image.image_key))
+        self.render("image.html", user = user, project = project, image = image)

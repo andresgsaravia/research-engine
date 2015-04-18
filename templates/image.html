@@ -16,7 +16,11 @@
 </div>
 
 <div>
-  <img src="{{image_url}}" title="{{image.title}}" />
+  {{image.description | safe}}
+</div>
+
+<div>
+  <img src="{{image.url()}}" title="{{image.title}}" />
   <div>This image is available at {{image_url}}</div>
 </div>
 {% endblock %}

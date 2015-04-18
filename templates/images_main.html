@@ -46,6 +46,7 @@
 	<a href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}">
 	  <small><span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
 		       title="This image is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
+	  <img src="{{i.url()}}=s32" />
 	  {{i.title | safe}}</a>
       </h4>
     </div>
