@@ -1,9 +1,19 @@
 * {
-	font-family: Roboto;
+	font-family: Roboto, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: Raleway;
+	font-family: Raleway, sans-serif;
+}
+
+.navbar {
+	margin-bottom: 0;
+	background: #fff;
+	border-bottom: 5px solid #566;
+}
+
+.navbar a {
+	font-family: Raleway, sans-serif;
 }
 
 .page-intro {
@@ -67,7 +77,7 @@ h1, h2, h3, h4, h5, h6 {
 	background: #555;
 }
 
-.btn.btn-grey {
+.btn.btn-grey.btn-new {
 	border-color: #836c4f !important;
 }
 
