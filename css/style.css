@@ -1,165 +1,141 @@
+/**
+ * Header color scheme: http://paletton.com/#uid=73i0u0k5lll1Iwb3uq77ogW9yaY
+ * Main color scheme: http://paletton.com/#uid=73i0u0kg0ll7luZbPpCjKhjotdt
+ */
+/** Typography **/
 * {
-	font-family: Roboto, sans-serif;
-}
+  font-family: Roboto, sans-serif;
+  outline: none !important; }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: Raleway, sans-serif;
-}
+  font-family: Raleway, sans-serif; }
 
-.navbar {
-	margin-bottom: 0;
-	border-bottom: 5px solid #566;
-}
+/** Basic Element & Form Controls Stylings **/
+a {
+  color: #5C6989; }
 
-.navbar a {
-	font-family: Raleway, sans-serif;
-}
-
-.navbar .navbar-brand {
-	font-family: 'Titillium Web', sans-serif;
-}
-
-.page-intro {
-	text-align: center;
-	background: url('/static/stars.png');
-	background-attachment: fixed;
-	margin-bottom: 0;
-	border-bottom: 5px solid #566;
-}
-
-.page-intro.small-margins {
-	padding: 24px 0;
-}
-
-.page-intro h1, .page-intro h2 {
-	margin-top: 0;
-}
-
-.page-intro .title {
-	font-family: 'Titillium Web', sans-serif;
-	color: #eee;	
-}
-
-.page-intro .sub-title {
-	font-family: Raleway, sans-serif;
-	color: #ccc;
-}
-
-.page-intro .icon-btn {
-	cursor: pointer;
-	color: #eee;
-}
-
-.page-intro .icon-btn:hover, .page-intro .icon-btn:active, .page-intro .icon-btn:focus {
-	color: #566;
-}
-
-.page-intro .btn, .btn.btn-new {
-	border-radius: 0;
-	font-family: Roboto, sans-serif;
-	border-color: #ccc !important;
-}
-
-.page-intro .btn {
-	background: #566;
-	color: #eee;
-}
-
-.page-intro .actions .btn {
-	margin-right: 2px;
-	margin-left: 2px;
-}
+a:hover, a:focus, a:active {
+  color: #3F4E72; }
 
 .btn.btn-new {
-	background: #fff;
-	color: #333;
-	border-color: #3E5151 !important;
-}
-
-.page-intro .btn.btn-grey {
-	background: #555;
-}
+  background: none;
+  color: #205353;
+  border-color: #205353 !important;
+  border-radius: 0; }
 
 .btn.btn-grey.btn-new {
-	border-color: #836c4f !important;
-}
-
-.page-intro .btn:hover, .page-intro .btn:active, .page-intro .btn:focus {
-	background: #666;
-	color: #eee;
-}
+  border-color: #836c4f !important; }
 
 .btn.btn-new:hover, .btn.btn-new:active, .btn.btn-new:focus {
-	background: #e5e5e5;
-	color: #333;
-}
-
-.form-control {
-	border-radius: 0;
-}
-
-.form-control:focus {
-	border-color: #566;
-	box-shadow: 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(85, 102, 102, 0.6);
-}
+  background: #e5e5e5;
+  color: #205353; }
 
 textarea {
-	resize: vertical;
-}
+  resize: vertical; }
 
+.form-control {
+  border-radius: 0; }
+
+.form-control:focus {
+  border-color: #29395C;
+  box-shadow: none; }
+
+/** Headers **/
+.navbar {
+  margin-bottom: 0;
+  border-bottom: 5px solid #556666; }
+  .navbar .navbar-brand {
+    font-family: "Titillium Web", sans-serif; }
+  .navbar a {
+    font-family: Raleway, sans-serif; }
+
+.page-intro {
+  text-align: center;
+  background: url("/static/stars.png");
+  background-attachment: fixed;
+  margin-bottom: 0;
+  border-bottom: 5px solid #556666; }
+  .page-intro * {
+    color: #EEEEEE; }
+  .page-intro h1, .page-intro h2, .page-intro h3, .page-intro h4, .page-intro h5, .page-intro h6 {
+    margin-top: 0; }
+  .page-intro .title {
+    font-family: "Titillium Web", sans-serif; }
+  .page-intro .sub-title {
+    font-family: Raleway, sans-serif;
+    color: #light-muted-font-color; }
+  .page-intro .icon-btn {
+    cursor: pointer; }
+  .page-intro .icon-btn:hover, .page-intro .icon-btn:active, .page-intro .icon-btn:focus {
+    color: #616672; }
+  .page-intro .actions .btn {
+    border-radius: 0;
+    font-family: Roboto, sans-serif;
+    border-color: #CCCCCC !important;
+    background: rgba(85, 102, 102, 0.3);
+    margin-right: 3px;
+    margin-left: 3px; }
+  .page-intro .actions .btn-grey {
+    background: rgba(97, 102, 114, 0.3); }
+  .page-intro .actions .btn:hover, .page-intro .actions .btn:active, .page-intro .actions .btn:focus {
+    background: rgba(51, 51, 51, 0.5);
+    color: #EEEEEE; }
+
+.page-intro.small-margins {
+  padding: 24px 0; }
+
+/** Special Unique Elements **/
 #overview {
-	border-bottom: 5px solid #566;
-	padding: 30px 0;
-	font-family: Roboto, sans-serif;
-}
-
-#overview p {
-	margin-bottom: 0;
-}
+  border-bottom: 5px solid #556666;
+  padding: 30px 0; }
+  #overview p {
+    margin-bottom: 0; }
 
 #features {
-	font-family: Roboto, sans-serif;
-	padding-top: 10px;
-	padding-bottom: 20px;
-	background: #f0f0f0;
-}
+  font-family: Roboto, sans-serif;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  background: #f0f0f0; }
+
+#features .row {
+  margin-top: 10px; }
+
+#features .row:last-child {
+  margin-bottom: 10px; }
 
 #features h2 {
-	font-family: Raleway;
-	font-size: 1.8em;
-}
+  font-family: Raleway;
+  font-size: 1.8em;
+  color: #484D5A; }
 
-#features h2 .glyphicon {
-	margin-bottom: 10px;
-	font-size: 2.2em;
-}
+#features h2 .fa {
+  margin-bottom: 15px;
+  font-size: 2.5em; }
 
 .project-link {
-	text-decoration: none !important;
-	color: #333 !important;
-	background: #f0f0f0;
-	display: block;
-	padding: 8px 15px;
-	margin-bottom: 20px;
-	border: 1px solid #c0c0c0;
-}
+  text-decoration: none !important;
+  color: #333 !important;
+  background: #f0f0f0;
+  display: block;
+  padding: 8px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #c0c0c0; }
 
 .project-link:hover {
-	border-color: #999;
-}
+  border-color: #999; }
 
 .project-link h3 {
-	margin-top: 0;
-}
+  margin-top: 0; }
 
 .project-link p {
-	margin-bottom: 0;
-}
+  margin-bottom: 0; }
 
 #footer {
-	font-family: Roboto, sans-serif;
-}
+  padding-top: 10px;
+  height: 45px;
+  border-top: 1px solid #CCCCCC; }
 
 .breadcrumb {
-	margin-top: 20px;
-}
+  margin-top: 20px; }
+
+/*# sourceMappingURL=style.css.map */
