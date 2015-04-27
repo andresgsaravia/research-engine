@@ -16,9 +16,10 @@ $green: #336666;
 $dark-green: #205353;
 $very-dark-green: #0F4040;
 $blue: #3F4E72;
-$blue-transparent: rgba(63, 78, 114, .3);
 $light-blue: #5C6989;
 $dark-blue: #29395C;
+$very-dark-blue: #172648;
+$blue-transparent: rgba(63, 78, 114, .3);
 $dark-blue-transparent: rgba(41, 57, 92, .3);
 $brown: #AA8E55;
 $orange: #AA7C55;
@@ -26,7 +27,11 @@ $dark-orange: #8A5B35;
 $light-grey: #CCCCCC;
 
 $header-green: #556666;
+$header-very-light-green: #919A9A;
+$header-light-green: #6F7D7D;
 $header-blue: #616672;
+$header-very-light-blue: #A3A6AB;
+$header-light-blue: #7E828B;
 $header-dark-blue: #484D5A;
 $header-very-dark-blue: #2B303A;
 $header-brown: #AAA18E;
@@ -55,11 +60,12 @@ h1, h2, h3, h4, h5, h6 {
 /** Basic Element & Form Controls Stylings **/
 
 a {
-	color: $light-blue;
+	color: $blue;
+	font-weight: bold;
 }
 
 a:hover, a:focus, a:active {
-	color: $blue;
+	color: $dark-blue;
 }
 
 .btn.btn-new {
@@ -101,7 +107,7 @@ textarea {
 	.navbar-brand {
 		font-family: $logo-font;
 	}
-	
+
 	a {
 		font-family: $header-font;
 	}
@@ -109,31 +115,31 @@ textarea {
 
 .page-intro {
 	text-align: center;
-	
+
 	background: url('/static/stars.png');
 	background-attachment: fixed;
-	
+
 	margin-bottom: 0;
-	
+
 	border-bottom: $medium-border $header-green;
-	
+
 	* {
 		color: $light-font-color;
 	}
-	
+
 	h1, h2, h3, h4, h5, h6 {
 		margin-top: 0;
 	}
-	
+
 	.title {
 		font-family: $logo-font;
 	}
-	
+
 	.sub-title {
 		font-family: Raleway, sans-serif;
 		color: #light-muted-font-color;
 	}
-	
+
 	.icon-btn {
 		cursor: pointer;
 	}
@@ -142,25 +148,51 @@ textarea {
 		color: $header-blue;
 	}
 
-	
+
 	.actions {
+		margin-top: 24px;
+
 		.btn {
 			border-radius: 0;
 			font-family: Roboto, sans-serif;
-			border-color: $header-light-grey !important;		
+			border-color: $header-light-grey !important;
 			background: $header-green-transparent;
-			
+
 			margin-right: 3px;
 			margin-left: 3px;
 		}
-		
+
 		.btn-grey {
 			background: $header-blue-transparent;
 		}
-		
+
 		.btn:hover, .btn:active, .btn:focus {
 			background: $header-dark-grey-transparent;
 			color: $light-font-color;
+		}
+
+		.icon-btn {
+			text-decoration: none;
+			display: inline-block;
+			min-width: 100px;
+			color: $header-blue;
+
+			.fa {
+				font-size: 2.4em;
+				color: inherit;
+			}
+		}
+
+		.icon-btn:not(:last-child) {
+			border-right: $light-border #777;
+		}
+
+		.icon-btn.active {
+			color: $light-font-color !important;
+		}
+
+		.icon-btn:hover, .icon-btn:focus, .icon-btn:active {
+			color: #aaa;
 		}
 	}
 }
@@ -174,7 +206,7 @@ textarea {
 #overview {
 	border-bottom: $medium-border $header-green;
 	padding: 30px 0;
-	
+
 	p {
 		margin-bottom: 0;
 	}

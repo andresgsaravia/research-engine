@@ -12,10 +12,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /** Basic Element & Form Controls Stylings **/
 a {
-  color: #5C6989; }
+  color: #3F4E72;
+  font-weight: bold; }
 
 a:hover, a:focus, a:active {
-  color: #3F4E72; }
+  color: #29395C; }
 
 .btn.btn-new {
   background: none;
@@ -68,18 +69,34 @@ textarea {
     cursor: pointer; }
   .page-intro .icon-btn:hover, .page-intro .icon-btn:active, .page-intro .icon-btn:focus {
     color: #616672; }
-  .page-intro .actions .btn {
-    border-radius: 0;
-    font-family: Roboto, sans-serif;
-    border-color: #CCCCCC !important;
-    background: rgba(85, 102, 102, 0.3);
-    margin-right: 3px;
-    margin-left: 3px; }
-  .page-intro .actions .btn-grey {
-    background: rgba(97, 102, 114, 0.3); }
-  .page-intro .actions .btn:hover, .page-intro .actions .btn:active, .page-intro .actions .btn:focus {
-    background: rgba(51, 51, 51, 0.5);
-    color: #EEEEEE; }
+  .page-intro .actions {
+    margin-top: 24px; }
+    .page-intro .actions .btn {
+      border-radius: 0;
+      font-family: Roboto, sans-serif;
+      border-color: #CCCCCC !important;
+      background: rgba(85, 102, 102, 0.3);
+      margin-right: 3px;
+      margin-left: 3px; }
+    .page-intro .actions .btn-grey {
+      background: rgba(97, 102, 114, 0.3); }
+    .page-intro .actions .btn:hover, .page-intro .actions .btn:active, .page-intro .actions .btn:focus {
+      background: rgba(51, 51, 51, 0.5);
+      color: #EEEEEE; }
+    .page-intro .actions .icon-btn {
+      text-decoration: none;
+      display: inline-block;
+      min-width: 100px;
+      color: #616672; }
+      .page-intro .actions .icon-btn .fa {
+        font-size: 2.4em;
+        color: inherit; }
+    .page-intro .actions .icon-btn:not(:last-child) {
+      border-right: 1px solid #777; }
+    .page-intro .actions .icon-btn.active {
+      color: #EEEEEE !important; }
+    .page-intro .actions .icon-btn:hover, .page-intro .actions .icon-btn:focus, .page-intro .actions .icon-btn:active {
+      color: #aaa; }
 
 .page-intro.small-margins {
   padding: 24px 0; }
