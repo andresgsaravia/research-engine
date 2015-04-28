@@ -24,6 +24,7 @@ $dark-blue-transparent: rgba(41, 57, 92, .3);
 $brown: #AA8E55;
 $orange: #AA7C55;
 $dark-orange: #8A5B35;
+$very-light-grey: #EEEEEE;
 $light-grey: #CCCCCC;
 
 $header-green: #556666;
@@ -73,6 +74,7 @@ a:hover, a:focus, a:active {
 	color: $dark-green;
 	border-color: $dark-green !important;
 	border-radius: 0;
+	font-weight: normal;
 }
 
 .btn.btn-grey.btn-new {
@@ -98,11 +100,40 @@ textarea {
 }
 
 
+/** Specialized Elements **/
+
+.icon-btn {
+	display: block;
+
+	text-decoration: none !important;
+	font-weight: normal;
+	text-align: center;
+	color: $dark-font-color;
+	font-size: 0.9em;
+
+	padding: 8px 0;
+
+	.fa {
+		font-size: 2.2em;
+		color: inherit;
+	}
+}
+
+.icon-btn.active {
+	background: $very-light-grey;
+}
+
+.icon-btn:hover, .icon-btn:focus, .icon-btn:active {
+	color: #111;
+}
+
+
 /** Headers **/
 
 .navbar {
 	margin-bottom: 0;
 	border-bottom: $medium-border $header-green;
+	background: #fff;
 
 	.navbar-brand {
 		font-family: $logo-font;
@@ -110,6 +141,7 @@ textarea {
 
 	a {
 		font-family: $header-font;
+		font-weight: normal;
 	}
 }
 
@@ -170,30 +202,6 @@ textarea {
 			background: $header-dark-grey-transparent;
 			color: $light-font-color;
 		}
-
-		.icon-btn {
-			text-decoration: none;
-			display: inline-block;
-			min-width: 100px;
-			color: $header-blue;
-
-			.fa {
-				font-size: 2.4em;
-				color: inherit;
-			}
-		}
-
-		.icon-btn:not(:last-child) {
-			border-right: $light-border #777;
-		}
-
-		.icon-btn.active {
-			color: $light-font-color !important;
-		}
-
-		.icon-btn:hover, .icon-btn:focus, .icon-btn:active {
-			color: #aaa;
-		}
 	}
 }
 
@@ -236,6 +244,11 @@ textarea {
 #features h2 .fa {
 	margin-bottom: 15px;
 	font-size: 2.5em;
+}
+
+#project-nav {
+	padding: 6px 0;
+	border-right: $light-border $very-light-grey;
 }
 
 .project-link {

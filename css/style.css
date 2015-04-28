@@ -22,7 +22,8 @@ a:hover, a:focus, a:active {
   background: none;
   color: #205353;
   border-color: #205353 !important;
-  border-radius: 0; }
+  border-radius: 0;
+  font-weight: normal; }
 
 .btn.btn-grey.btn-new {
   border-color: #836c4f !important; }
@@ -41,14 +42,35 @@ textarea {
   border-color: #29395C;
   box-shadow: none; }
 
+/** Specialized Elements **/
+.icon-btn {
+  display: block;
+  text-decoration: none !important;
+  font-weight: normal;
+  text-align: center;
+  color: #333;
+  font-size: 0.9em;
+  padding: 8px 0; }
+  .icon-btn .fa {
+    font-size: 2.2em;
+    color: inherit; }
+
+.icon-btn.active {
+  background: #EEEEEE; }
+
+.icon-btn:hover, .icon-btn:focus, .icon-btn:active {
+  color: #111; }
+
 /** Headers **/
 .navbar {
   margin-bottom: 0;
-  border-bottom: 5px solid #556666; }
+  border-bottom: 5px solid #556666;
+  background: #fff; }
   .navbar .navbar-brand {
     font-family: "Titillium Web", sans-serif; }
   .navbar a {
-    font-family: Raleway, sans-serif; }
+    font-family: Raleway, sans-serif;
+    font-weight: normal; }
 
 .page-intro {
   text-align: center;
@@ -83,20 +105,6 @@ textarea {
     .page-intro .actions .btn:hover, .page-intro .actions .btn:active, .page-intro .actions .btn:focus {
       background: rgba(51, 51, 51, 0.5);
       color: #EEEEEE; }
-    .page-intro .actions .icon-btn {
-      text-decoration: none;
-      display: inline-block;
-      min-width: 100px;
-      color: #616672; }
-      .page-intro .actions .icon-btn .fa {
-        font-size: 2.4em;
-        color: inherit; }
-    .page-intro .actions .icon-btn:not(:last-child) {
-      border-right: 1px solid #777; }
-    .page-intro .actions .icon-btn.active {
-      color: #EEEEEE !important; }
-    .page-intro .actions .icon-btn:hover, .page-intro .actions .icon-btn:focus, .page-intro .actions .icon-btn:active {
-      color: #aaa; }
 
 .page-intro.small-margins {
   padding: 24px 0; }
@@ -128,6 +136,10 @@ textarea {
 #features h2 .fa {
   margin-bottom: 15px;
   font-size: 2.5em; }
+
+#project-nav {
+  padding: 6px 0;
+  border-right: 1px solid #EEEEEE; }
 
 .project-link {
   text-decoration: none !important;
