@@ -69,7 +69,7 @@ a:hover, a:focus, a:active {
 	color: $dark-blue;
 }
 
-.btn.btn-new {
+.btn:not(.btn-link) {
 	background: none;
 	color: $dark-green;
 	border-color: $dark-green !important;
@@ -77,11 +77,11 @@ a:hover, a:focus, a:active {
 	font-weight: normal;
 }
 
-.btn.btn-grey.btn-new {
+.btn:not(.btn-link).btn-grey {
 	border-color: #836c4f !important;
 }
 
-.btn.btn-new:hover, .btn.btn-new:active, .btn.btn-new:focus {
+.btn:not(.btn-link):hover, .btn:not(.btn-link):active, .btn:not(.btn-link):focus {
 	background: #e5e5e5;
 	color: $dark-green;
 }

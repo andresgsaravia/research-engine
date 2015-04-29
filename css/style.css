@@ -18,17 +18,17 @@ a {
 a:hover, a:focus, a:active {
   color: #29395C; }
 
-.btn.btn-new {
+.btn:not(.btn-link) {
   background: none;
   color: #205353;
   border-color: #205353 !important;
   border-radius: 0;
   font-weight: normal; }
 
-.btn.btn-grey.btn-new {
+.btn:not(.btn-link).btn-grey {
   border-color: #836c4f !important; }
 
-.btn.btn-new:hover, .btn.btn-new:active, .btn.btn-new:focus {
+.btn:not(.btn-link):hover, .btn:not(.btn-link):active, .btn:not(.btn-link):focus {
   background: #e5e5e5;
   color: #205353; }
 

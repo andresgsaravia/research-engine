@@ -11,8 +11,8 @@
 </script>
 
 <style>
-	
-</style>	
+
+</style>
 {% endblock %}
 
 
@@ -32,7 +32,7 @@
 		<a class="project-link" href="/{{p.key.integer_id()}}">
 			<h3>{{p.name | safe}}</h3>
 			<p>
-				{{p.description | safe}}
+				{{p.description | safe | truncate(190)}}
 			</p>
 		</a>
 		<!--div class="panel panel-default">
@@ -44,7 +44,7 @@
 		    <span class="glyphicon glyphicon-info-sign"></span></a>
 		</h4>
 	      </div>
-	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">  
+	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">
 		<div class="panel-body">
 		  {{p.description | md | safe}}
 		  <p class="text-muted pull-right">Last updated: {{p.last_updated.strftime("%d %b %Y")}}</p>
@@ -53,7 +53,7 @@
 	    </div-->
 	    {% endfor %}
 	    {% else %}
-	    <div class="pull-left" style="line-height: 34px">	    
+	    <div class="pull-left" style="line-height: 34px">
 		Start by creating a new research project:
             </div>
 	    {% endif %}
