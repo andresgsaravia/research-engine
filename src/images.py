@@ -74,6 +74,8 @@ class NewImagePage(ImagesPage):
          kw = {"project" : project,
                "open_p" : project.default_open_p,
                "upload_url" : upload_url,
+               "i_title" : self.request.get("i_title"),
+               "i_description" : self.request.get("i_description"),
                "image_class" : self.request.get("image_class"),
                "title_class" : self.request.get("title_class"),
                "error_message" : self.request.get("error_message"),
