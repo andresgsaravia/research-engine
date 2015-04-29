@@ -38,23 +38,25 @@
 <div class="panel-group" id="taccordion">
   {% for i in images %}
   {% if i.is_open_p() or (user and project.user_is_author(user)) %}
-  <div class="col-md-4 col-sm-6" >
-    <div class="myImage">
-      <a data-toggle="modal" href="#{{i.key.integer_id()}}" title="{{i.title}}">
-	<img src="{{i.url()}}" /></a>
-    </div>
+  <div class="col-sm-4" >
+    <a data-toggle="modal" href="#{{i.key.integer_id()}}" title="{{i.title}}">
+      <img class="img-thumbnail" src="{{i.url()}}" /></a>
   </div>
   <!-- image modal -->
   <div class="modal fade" id="{{i.key.integer_id()}}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+	
 	<div class="modal-header">
 	  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 	  <h4 class="modal-title">{{i.title | safe}}</h4>
 	</div>
+	
 	<div class="modal-body">
-	  <small><span class="pull-right glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
+	  <small><span class="pull-left glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
  		       title="This image is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
+	  <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}/edit">
+	    <span class="glyphicon glyphicon-plus"></span> Edit</a>
 	  <img src="{{i.url()}}" />
 	  {{i.description | md | safe }}
 	  <p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p>
@@ -63,33 +65,14 @@
 		<img src="{{i.author.get().get_profile_image(20)}}" aria-hidden="true"/>
 		{{i.author.get().username.capitalize()}}</a></li>
   	  </ul>
+	  <br />
+	  <p>Embed this image as <br /><span style="font-family:monospace;background-color:#DDD;">
+	      &lt;img src="{{i.url()}}" title="{{i.title}}" /&gt;</span></p>
 	</div>
+	
       </div>
     </div>
   </div> <!-- / image modal -->
-  
-  <!-- <div class="panel panel-default col-md-5" style="margin:1em;padding:0;"> -->
-  <!--   <div class="panel-heading"> -->
-  <!--     <h4 class="panel-title"> -->
-  <!-- 	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#taccordion" href="#{{i.key.integer_id()}}"> -->
-  <!-- 	  <span class="glyphicon glyphicon-info-sign"></span></a> -->
-  <!-- 	<a href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}"> -->
-  <!-- 	  <small><span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}" -->
-  <!-- 		       title="This image is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small> -->
-  <!-- 	  <img src="{{i.url()}}=s128" /> -->
-  <!-- 	  {{i.title | safe}}</a> -->
-  <!--     </h4> -->
-  <!--   </div> -->
-  <!--   <div class="panel-collapse collapse" id="{{i.key.integer_id()}}"> -->
-  <!--     <div class="panel-body"> -->
-  <!-- 	{{i.description | md | safe }} -->
-  <!-- 	<p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p> -->
-  <!-- 	<ul class="nav nav-pills"> -->
-  <!-- 	  <li><a href="/{{i.author.get().username}}"><img src="{{i.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{i.author.get().username.capitalize()}}</a></li> -->
-  <!-- 	</ul> -->
-  <!--     </div> -->
-  <!--   </div> -->
-  <!-- </div> -->
   {% endif %}
   {% endfor %}
 </div>
