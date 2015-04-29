@@ -17,7 +17,7 @@
   </div>
   <br/>
   <div class="form-group {{dClass}}">
-    <label for="projectDescription">Description</label>  
+    <label for="projectDescription">Description</label>
     <textarea id="projectDescription" name="p_description" class="form-control" rows="10"
 	      placeholder="Description of the project.">{{p_description}}</textarea>
   </div>
@@ -133,7 +133,7 @@
   </div>
 
 
-    
+
 <!---
   <p>You will receive an email notification for:</p>
   <div class="checkbox">
@@ -174,11 +174,11 @@
   {% if error %}<div class="alert alert-danger" style="margin-top:10px;">
     <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
     {{error}}</div>{% endif %}
-  
+
 </form>
 
 <h3>Members of this project</h3>
-<div class="container" style="margin-bottom:14px;">
+<div style="margin-bottom:14px;">
   <ul class="nav nav-pills">
     {% for a in authors %}
     <li><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}" aria-hidden="true"/> {{a.username.capitalize()}}</a></li>

@@ -61,6 +61,14 @@ textarea {
 .icon-btn:hover, .icon-btn:focus, .icon-btn:active {
   color: #111; }
 
+.license {
+  text-align: center;
+  max-width: 400px;
+  margin: auto; }
+
+.license img {
+  margin-bottom: 6px; }
+
 /** Headers **/
 .navbar {
   margin-bottom: 0;
@@ -98,6 +106,7 @@ textarea {
       font-family: Roboto, sans-serif;
       border-color: #CCCCCC !important;
       background: rgba(85, 102, 102, 0.3);
+      color: #EEEEEE;
       margin-right: 3px;
       margin-left: 3px; }
     .page-intro .actions .btn-grey {

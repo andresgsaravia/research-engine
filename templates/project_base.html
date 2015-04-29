@@ -72,11 +72,13 @@
         <!-- Project content -->
           {% block p_content %}
           {% endblock %}
-
-          <hr>
-
-          <div class="license">{{project.license_html() | safe}}</div>
       </div>
+  </div>
+
+  <hr>
+
+  <div class="license">
+    {{project.license_html() | safe}}
   </div>
 
   <br>
