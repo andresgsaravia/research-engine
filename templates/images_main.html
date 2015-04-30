@@ -39,6 +39,7 @@
   {% for i in images %}
   {% if i.is_open_p() or (user and project.user_is_author(user)) %}
   <div class="col-sm-4" >
+    <div class="imageTitle">{{i.title}}</div>
     <a data-toggle="modal" href="#{{i.key.integer_id()}}" title="{{i.title}}">
       <img class="img-thumbnail" src="{{i.url()}}" /></a>
   </div>
@@ -55,8 +56,10 @@
 	<div class="modal-body">
 	  <small><span class="pull-left glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
  		       title="This image is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
+	  {% if i.author == user.key %}
 	  <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}/edit">
 	    <span class="glyphicon glyphicon-plus"></span> Edit</a>
+	  {% endif %}
 	  <img src="{{i.url()}}" />
 	  {{i.description | md | safe }}
 	  <p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p>

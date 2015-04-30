@@ -138,3 +138,81 @@ class ViewImagePage(ImagesPage):
             self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
             return
         self.render("image.html", user = user, project = project, image = image)
+
+
+class EditImagePage(ImagesPage):
+    def get(self, projectid, imageid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/images/%s/edit" % (projectid, imageid))
+            return
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        image = self.get_image(project, imageid)
+        if not image:
+            self.error(404)
+            self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
+            return
+        upload_url = blobstore.create_upload_url("/%s/images/%s/edit_image" % (projectid, imageid))
+        blob_info = blobstore.BlobInfo.get(image.image_key)
+        kw = {"project" : project,
+              "open_p" : project.default_open_p,
+              "upload_url" : upload_url,
+              "image" : image,
+              "blob_info" : blob_info,
+              "size" : blob_info.size / 1024.0,
+              "i_title" : self.request.get("i_title") or image.title,
+              "i_description" : self.request.get("i_description") or image.description,
+              "image_class" : self.request.get("image_class"),
+              "title_class" : self.request.get("title_class"),
+              "error_message" : self.request.get("error_message"),
+              "action" : "Edit", "button_text" : "Save changes"}
+        self.render("image_upload.html", **kw)
+
+
+class EditImage(projects.ProjectBlobstoreUpload):
+    def post(self,projectid, imageid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/images/new" % projectid)
+            return
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not project.user_is_author(user):
+            self.redirect("/%s/images" % projectid)
+            return
+        self.log_read(Images)
+        image = Images.get_by_id(int(imageid), parent = project.key)
+        if not image:
+            self.error(404)
+            self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
+            return
+        have_error = False
+        kw = {"error_message" : '',
+              "i_title" : self.request.get("i_title"),
+              "i_description" : self.request.get("i_description"),
+              "open_p" : self.request.get("open_p") == "True"}
+        new_image = self.get_uploads("image")
+        if not kw["i_title"]:
+            have_error = True
+            kw["error_message"] = "Provide a title for your new image. "
+            kw["title_class"] = "has-error"
+        if have_error:
+            url = "/%s/images/%s/edit" % (projectid, imageid)
+            url = url + '?' + urllib.urlencode(kw)
+            self.redirect(url)
+        else:
+            image.title = kw["i_title"]
+            image.open_p = kw["open_p"]
+            image.description = kw["i_description"]
+            if new_image:
+                blobstore.BlobInfo.get(image.image_key).delete()
+                image.image_key = new_image[0].key()
+            image.put()
+            self.redirect("/%s/images/%s" % (projectid, imageid))
