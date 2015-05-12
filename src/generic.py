@@ -22,6 +22,7 @@ jinja_env.filters['md'] = filters.md
 
 # You should change these if you are registering your own app on App Engine
 APP_NAME = "Research Engine"
+APP_VERSION = "1.1.0"
 APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
@@ -250,6 +251,7 @@ class GenericPage(webapp2.RequestHandler):
 
     def render(self, template, **kw):
         kw["APP_NAME"] = APP_NAME
+        kw["APP_VERSION"] = APP_VERSION
         kw["APP_URL"] = APP_URL
         kw["APP_REPO"] = APP_REPO
         kw["GOOGLE_PLUS_PAGE"] = GOOGLE_PLUS_PAGE
