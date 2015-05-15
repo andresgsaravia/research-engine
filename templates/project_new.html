@@ -7,9 +7,17 @@
 
 {% block content %}
 
-<div class="container" style="max-width:720px;">
-  <h2 id="main-content" class="page-header" tabindex="0">New project</h2>
+<div class="jumbotron page-intro small-margins">
+  <div class="container-fluid">
+    <h2 role="heading" id="main-content" class="title" style="margin-bottom: 0">
+	New project	
+    </h2>
+  </div>
+</div>
 
+<br>
+
+<div class="container" style="max-width:720px;">
   <form method="post" action="/new_project" role="form">
     <div class="form-group {{name_class}}">
       <label for="pName">Project name</label>
@@ -136,10 +144,12 @@
       </div>
     </div>
 
-    <button type="submit" class="btn btn-success">Create new project</button>
-    <button type="button" class="btn btn-default" onClick="window.location = '/{{user.username}}'">Cancel</button>
+    <button type="submit" class="btn btn-default btn-new">Create new project</button>
+    <button type="button" class="btn btn-default btn-new" onClick="window.location = '/{{user.username}}'">Cancel</button>
     <p class="text-danger" style="margin-top:10px;">{{error_message}}</p>
   </form>
+
+  <br>
 
 </div>
 

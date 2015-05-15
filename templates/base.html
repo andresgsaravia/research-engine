@@ -2,14 +2,19 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
     <style class="text/css">
       html,body {height: 100%;}
-      #wrap {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; padding: 0 0 50px;}
-      #footer {padding-top: 10px; height: 45px; border-top: 1px solid #C0C0C0;}
+      #wrap {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; padding: 0 0 45px;}
       a.skiptocontent:link, a.skiptocontent:hover, a.skiptocontent:visited {display: inline-block;position: absolute;left: -400px;font-size: 0.8em;text-decoration: none; opacity:0}
       a.skiptocontent:active, a.skiptocontent:focus {display: inline-block;position: absolute;left: 9px;background-color:white; opacity:1}
     </style>
+
+    <!-- Import Roboto, Raleway & Titillium Web from Google Web Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700|Titillium+Web|Raleway' rel='stylesheet' type='text/css'>
+
     {% if intro_p %}<link href="/css/introjs.min.css" rel="stylesheet"/>{% endif %}
     {% block head %}
     {% endblock %}
@@ -25,10 +30,10 @@
           status     : true,                                 // Check Facebook Login status
           xfbml      : true                                  // Look for social plugins on the page
         });
-    
+
         // Additional initialization code such as adding Event Listeners goes here
       };
-    
+
       // Load the SDK asynchronously
       (function(d, s, id){
          var js, fjs = d.getElementsByTagName(s)[0];
@@ -41,10 +46,11 @@
 
     <a href="#main-content" class="skiptocontent">Skip to main content</a>
     <div id="wrap">
-      
+
       <!-- NAVBAR -->
-      <nav class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
-	<div class="container-fluid">
+      {% if user %}
+      <nav class="navbar navbar-default navbar-static-top" role="navigation">
+	<div class="container">
 	  <div class="navbar-header">
 	    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
 	      <span class="icon-bar"></span>
@@ -52,7 +58,7 @@
 	    </button>
 	    <a class="navbar-brand" href="/" aria-label="Return to the root page">{{APP_NAME}}</a>
 	  </div>
-	
+
 	  <div class="collapse navbar-collapse navbar-ex1-collapse">
 	    {% if user %}
 	    <ul class="nav navbar-nav">
@@ -72,8 +78,8 @@
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
 	      <li><a href="/{{user.username}}"><img src="{{user.get_profile_image(20)}}" aria-hidden="true"/> {{user.username}}</a></li>
-	      <li><a href="/settings" title="Settings"><span class="glyphicon glyphicon-wrench"></span></a></li>
-	      <li><a href="/logout" title="Logout"><span class="glyphicon glyphicon-log-out"></span></a></li>
+	      <li><a href="/settings" title="Settings"><i class="fa fa-wrench"></i></a></li>
+	      <li><a href="/logout" title="Logout"><i class="fa fa-sign-out"></i></a></li>
 	    </ul>
 	    {% else %}
 	    <ul class="nav navbar-nav navbar-right">
@@ -104,11 +110,12 @@
 	  </div>
 	</div>
       </nav>
-      
-      <!-- CONTENT -->    
+      {% endif %}
+
+      <!-- CONTENT -->
       {% block content %}
       {% endblock %}
-      
+
     </div>
 
     <!-- FOOTER -->
@@ -119,7 +126,7 @@
 	       alt="Powered by Google App Engine" />
 	</a>
 	<p>{{APP_NAME}} (v. {{APP_VERSION}}). 
-	  <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a>
+	  <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a> |
 	  <a href="/terms" title="Terms of service">Terms</a>
 	  <small class="text-muted credit" tabindex="0">You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></small>
 	</p>

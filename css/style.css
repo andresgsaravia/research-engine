@@ -1,0 +1,179 @@
+/**
+ * Header color scheme: http://paletton.com/#uid=73i0u0k5lll1Iwb3uq77ogW9yaY
+ * Main color scheme: http://paletton.com/#uid=73i0u0kg0ll7luZbPpCjKhjotdt
+ */
+/** Typography **/
+* {
+  font-family: Roboto, sans-serif;
+  outline: none !important; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Raleway, sans-serif; }
+
+/** Basic Element & Form Controls Stylings **/
+a {
+  color: #3F4E72;
+  font-weight: bold; }
+
+a:hover, a:focus, a:active {
+  color: #29395C; }
+
+.btn:not(.btn-link) {
+  background: none;
+  color: #205353;
+  border-color: #205353 !important;
+  border-radius: 0;
+  font-weight: normal; }
+
+.btn:not(.btn-link).btn-grey {
+  border-color: #836c4f !important; }
+
+.btn:not(.btn-link):hover, .btn:not(.btn-link):active, .btn:not(.btn-link):focus {
+  background: #e5e5e5;
+  color: #205353; }
+
+textarea {
+  resize: vertical; }
+
+.form-control {
+  border-radius: 0; }
+
+.form-control:focus {
+  border-color: #29395C;
+  box-shadow: none; }
+
+/** Specialized Elements **/
+.icon-btn {
+  display: block;
+  text-decoration: none !important;
+  font-weight: normal;
+  text-align: center;
+  color: #333;
+  font-size: 0.9em;
+  padding: 8px 0; }
+  .icon-btn .fa {
+    font-size: 2.2em;
+    color: inherit; }
+
+.icon-btn.active {
+  background: #EEEEEE; }
+
+.icon-btn:hover, .icon-btn:focus, .icon-btn:active {
+  color: #111; }
+
+.license {
+  text-align: center;
+  max-width: 400px;
+  margin: auto; }
+
+.license img {
+  margin-bottom: 6px; }
+
+/** Headers **/
+.navbar {
+  margin-bottom: 0;
+  border-bottom: 5px solid #556666;
+  background: #fff; }
+  .navbar .navbar-brand {
+    font-family: "Titillium Web", sans-serif; }
+  .navbar a {
+    font-family: Raleway, sans-serif;
+    font-weight: normal; }
+
+.page-intro {
+  text-align: center;
+  background: url("/static/stars.png");
+  background-attachment: fixed;
+  margin-bottom: 0;
+  border-bottom: 5px solid #556666; }
+  .page-intro * {
+    color: #EEEEEE; }
+  .page-intro h1, .page-intro h2, .page-intro h3, .page-intro h4, .page-intro h5, .page-intro h6 {
+    margin-top: 0; }
+  .page-intro .title {
+    font-family: "Titillium Web", sans-serif; }
+  .page-intro .sub-title {
+    font-family: Raleway, sans-serif;
+    color: #light-muted-font-color; }
+  .page-intro .icon-btn {
+    cursor: pointer; }
+  .page-intro .icon-btn:hover, .page-intro .icon-btn:active, .page-intro .icon-btn:focus {
+    color: #616672; }
+  .page-intro .actions {
+    margin-top: 24px; }
+    .page-intro .actions .btn {
+      border-radius: 0;
+      font-family: Roboto, sans-serif;
+      border-color: #CCCCCC !important;
+      background: rgba(85, 102, 102, 0.3);
+      color: #EEEEEE;
+      margin-right: 3px;
+      margin-left: 3px; }
+    .page-intro .actions .btn-grey {
+      background: rgba(97, 102, 114, 0.3); }
+    .page-intro .actions .btn:hover, .page-intro .actions .btn:active, .page-intro .actions .btn:focus {
+      background: rgba(51, 51, 51, 0.5);
+      color: #EEEEEE; }
+
+.page-intro.small-margins {
+  padding: 24px 0; }
+
+/** Special Unique Elements **/
+#overview {
+  border-bottom: 5px solid #556666;
+  padding: 30px 0; }
+  #overview p {
+    margin-bottom: 0; }
+
+#features {
+  font-family: Roboto, sans-serif;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  background: #f0f0f0; }
+
+#features .row {
+  margin-top: 10px; }
+
+#features .row:last-child {
+  margin-bottom: 10px; }
+
+#features h2 {
+  font-family: Raleway;
+  font-size: 1.8em;
+  color: #484D5A; }
+
+#features h2 .fa {
+  margin-bottom: 15px;
+  font-size: 2.5em; }
+
+#project-nav {
+  padding: 6px 0;
+  border-right: 1px solid #EEEEEE; }
+
+.project-link {
+  text-decoration: none !important;
+  color: #333 !important;
+  background: #f0f0f0;
+  display: block;
+  padding: 8px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #c0c0c0; }
+
+.project-link:hover {
+  border-color: #999; }
+
+.project-link h3 {
+  margin-top: 0; }
+
+.project-link p {
+  margin-bottom: 0; }
+
+#footer {
+  padding-top: 10px;
+  height: 45px;
+  border-top: 1px solid #CCCCCC; }
+
+.breadcrumb {
+  margin-top: 20px; }
+
+/*# sourceMappingURL=style.css.map */
