@@ -36,10 +36,10 @@ class Projects(ndb.Model):
         for author_key in self.authors:
             requesting_handler.log_read(generic.RegisteredUsers, "Getting an author from a Project's list of authors. ")
             author = author_key.get()
-            if author: 
+            if author:
                 authors_list.append(author)
             else:
-                logging.warning("Project with key (%s) contains a broken reference to author (%s)" 
+                logging.warning("Project with key (%s) contains a broken reference to author (%s)"
                                 % (self.key, author_key))
         return authors_list
 
@@ -77,12 +77,12 @@ class Projects(ndb.Model):
         updates = []
         for u in ProjectUpdates.query(ancestor = self.key).order(-ProjectUpdates.date).iter():
             if u.is_open_p() or (user and self.user_is_author(user)): updates.append(u)
-            if len(updates) >= n: break            
+            if len(updates) >= n: break
         return updates
 
     def license_html(self):
         lic = self.default_license
-        if lic == "": 
+        if lic == "":
             return ""
         else:
             lic_url, lic_img, lic_txt = ("","","")
@@ -110,9 +110,9 @@ class Projects(ndb.Model):
                 lic_url = "https://creativecommons.org/licenses/by/4.0/"
                 lic_img = "https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License"
-            return '<small><a rel="license" href="%s"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><br />Unless otherwise specified, original content from <em><span xmlns:dct="https://purl.org/dc/terms/" property="dct:title">%s</span></em> is licensed under a <a rel="license" href="%s">%s</a>.</small>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
-        
-        
+            return '<small><a rel="license" href="%s" class="license-img"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><div class="license-text">Unless otherwise specified, original content from <b><span xmlns:dct="https://purl.org/dc/terms/" property="dct:title">%s</span></b> is licensed under a <a rel="license" href="%s">%s</a>.</div></small>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
+
+
 
 
 # Should have a Project as parent
@@ -217,7 +217,7 @@ class AdminPage(ProjectPage):
             self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
-        if not project: 
+        if not project:
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
@@ -249,7 +249,7 @@ class AdminPage(ProjectPage):
             self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
-        if not project: 
+        if not project:
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
@@ -317,12 +317,12 @@ class AdminPage(ProjectPage):
             project.forum_threads_notifications_list.remove(user.key)
         if (not kw["forum_posts_p"]) and (user.key in project.forum_posts_notifications_list):
             project.forum_posts_notifications_list.remove(user.key)
-    
+
         if not have_error:
             self.log_and_put(project, "Updating email notifications and/or description. ")
             kw["info_message"] = "Changes saved"
         self.render('project_admin.html', project = project, **kw)
-        
+
 
 class InvitePage(ProjectPage):
     def get(self, projectid):
@@ -332,7 +332,7 @@ class InvitePage(ProjectPage):
             self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
-        if not project: 
+        if not project:
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
@@ -356,13 +356,13 @@ class InvitePage(ProjectPage):
             self.redirect("/login?goback=%s" % goback)
             return
         project = self.get_project(projectid)
-        if not project: 
+        if not project:
             self.error(404)
             self.render("404.html", info = "Project with key <em>%s</em> not found" % projectid)
             return
         if not project.user_is_author(user):
             self.write("You are not a member of this project.")
-            return        
+            return
         kw = {"title" : "Invite a new collaborator",
               "subtitle" : "Use this form to make an email invitation for a user to collaborate in your project.",
               "name_placeholder" : "Write here the name of the user you want to invite.",
