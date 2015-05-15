@@ -390,3 +390,22 @@ class InvitePage(ProjectPage):
             kw["name_value"] = ''
             kw["content_value"] = ''
         self.render("project_form_2.html", project = project, admin_tab_class = "active", **kw)
+
+
+class ProjectBlobstoreUpload(generic.GenericBlobstoreUpload):
+    def get_project(self, projectid, log_message = ''):
+        self.log_read(Projects, log_message)
+        project = Projects.get_by_id(int(projectid))
+        return project
+
+    def put_and_report(self, item, author, project, list_of_things_to_update = []):
+        self.log_and_put(item)
+        # Log user activity
+        u_activity = generic.UserActivities(parent = author.key, item = item.key, relative_to = project.key, actv_kind = "Projects")
+        self.log_and_put(u_activity)
+        # Log project update
+        p_update = ProjectUpdates(parent = project.key, author = author.key, item = item.key)
+        self.log_and_put(p_update)
+        for i in list_of_things_to_update:
+            self.log_and_put(i)
+        return

@@ -1,0 +1,26 @@
+{% extends "project_base.html" %}
+
+
+{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/images">Images</a></li><li class="active">{{image.title | truncate(40, True)}}</li>{% endblock %}
+
+
+{% block p_content %}
+
+<div class="page-header">
+  <h2 id="main-content">{{image.title}}
+    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    {% if user %}
+    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/images/{{image.key.integer_id()}}/edit">Edit</a>
+    {% endif %}
+  </h2>
+</div>
+
+<div>
+  {{image.description | safe}}
+</div>
+
+<div>
+  <img src="{{image.url()}}" title="{{image.title}}" />
+  <div>This image is available at <a href="{{image.url()}}">{{image.url()}}</a></div>
+</div>
+{% endblock %}

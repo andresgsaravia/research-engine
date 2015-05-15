@@ -51,6 +51,9 @@ added a new item <a href="/{{project.key.integer_id()}}/bibliography/{{item.inte
 {% elif item.kind() == "BiblioComments" %}
 made a new comment to the <strong>bibliography</strong> item <a href="/{{project.key.integer_id()}}/bibliography/{{item.parent().integer_id()}}">{{item.parent().get().title | safe}}</a>
 
+{% elif item.kind() == "Images" %}
+uploaded a new <strong>image</strong> titled <a href="/">{{item.get().title | safe }}</a>
+
 {% endif %}
 
 {% if show_project_p %}in the project <a href="/{{project.key.integer_id()}}">{{project.name | safe}}</a>.{% endif %}

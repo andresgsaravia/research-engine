@@ -1,0 +1,74 @@
+{% extends "project_base.html" %}
+
+{% block p_head %}
+<script type="text/javascript" src="/js/preview.js"></script>
+{% endblock %}
+
+{% block breadcrumbs %}{% if action=="New" %}<li class="active">Images</li>{% else %}<li><a href="/{{project.key.integer_id()}}/images">Images</a></li><li class="active">{{image.title}}</li>{% endif %}{% endblock %}
+
+{% block p_content %}
+
+<h2 id="main-content" class="page-header">{{action}} image
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h2>
+
+<form method="post" role="form" action="{{upload_url}}" enctype="multipart/form-data">
+  <div class="form-group {{title_class}}">
+    <input type="text" name="i_title" class="form-control"
+	   value="{{i_title}}" placeholder="Title of the image" autofocus {% if visitor_p %}disabled{% endif %}/>
+  </div>
+
+  <div class="form-group">
+    <textarea name="i_description" id="inputText" placeholder="Description of the image (optional)" onKeyUp="Preview('inputText','previewArea');"
+	      class="form-control" rows="10"{% if visior_p %} disabled{% endif %}>{{i_description}}</textarea>
+  </div>
+
+  {% if action == "Edit" %}
+  <div class="form-group">
+    <label for="current-file">Current image file</label>
+    <p id="current-file" class="form-control"> <a href="{{image.url()}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</p>
+  </div>
+  {% endif %}
+
+  <div class="form-group {{image_class}}">
+    <label for="image">{% if action == "New" %}Image{% else %}New image{% endif %}</label>
+    <input type="file" name="image" id="image" class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <div class="radio">
+      <label>
+	<input type="radio" name="open_p" value="True" {% if open_p %}checked{% endif %}/>
+	<span class="glyphicon glyphicon-eye-open"></span>
+	Visible to the general public.
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+	<input type="radio" name="open_p" value="False" {% if not open_p %}checked{% endif %}/>
+	<span class="glyphicon glyphicon-eye-close"></span>
+	Visible only to members of this project.
+      </label>
+    </div>
+  </div>
+  
+  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>{{button_text}}</button>
+  <button type="button" class="btn btn-default"
+	  onClick="if (confirm('Are you sure you want to cancel?')) {window.location = '/{{project.key.integer_id()}}/images'}">Cancel</button>
+  {% if error_message %}
+  <div class="alert alert-danger alert-dismissable" style="margin-top:5px;">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    {{error_message | safe}}</div>{% endif %}
+  <span class="help-block">
+    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </span>
+</form>
+
+
+<div>Below is a preview of how the page will be renderer when you save it.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    Start typing above to see a preview here.
+  </div>
+</div>
+
+{% endblock %}

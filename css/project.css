@@ -38,3 +38,8 @@
     font-weight: bold;}
 
 blockquote {font-size: 1em;}
+
+.imageTitle {
+    text-align: center;
+    margin-top: 1em;
+}
