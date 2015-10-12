@@ -2,7 +2,7 @@
 # All related to user login/signup and preferences storage.
 
 import generic, projects, email_messages, secrets, simpleauth
-import bibliography, code, collab_writing, datasets, forum, notebooks, wiki
+import bibliography, code, collab_writing, datasets, forum, images, notebooks, wiki
 import hashlib, re, logging, json
 from google.appengine.api import mail, urlfetch
 from webapp2_extras import auth
