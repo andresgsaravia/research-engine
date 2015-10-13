@@ -2,7 +2,7 @@
 
 import webapp2
 import generic, projects
-import bibliography, code, collab_writing, datasets, forum, notebooks, wiki
+import bibliography, code, collab_writing, datasets, forum, images, notebooks, wiki
 
 class RootPage(generic.GenericPage):
     def get(self):
