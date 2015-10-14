@@ -130,6 +130,36 @@
 	</div>
 </div>
 
+<!-- Hide navbar on home page until user scrolls down -->
+<script>
+    $(document).ready(function() {
+        $('.navbar').hide()
+        $(document).scroll(function() {
+            if ($(this).scrollTop() > 10) {
+                $('.navbar').show("slide", {"direction": "up"});
+            } else {
+                $('.navbar').hide("slide", {"direction": "up"});
+            }
+        });
+    });
+</script>
+
+<style>
+    .navbar {
+        position: fixed;
+        width: 100%;
+    	background: #556666;
+
+        -webkit-box-shadow: 0 4px 4px -2px #333;
+        -moz-box-shadow: 0 4px 4px -2px #333;
+        box-shadow: 0 4px 4px -2px #333;
+    }
+
+    #footer {
+        background: #fff;
+    }
+</style>
+
 {% endif %}
 
 {% endblock %}
