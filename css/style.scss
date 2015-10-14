@@ -71,6 +71,7 @@ html, body {
 
 #page-content {
 	flex: 1 0 auto;
+	margin-bottom: 60px;
 }
 
 
@@ -312,6 +313,7 @@ textarea {
 	padding-top: 10px;
 	padding-bottom: 20px;
 	background: #f0f0f0;
+	border-bottom: 1px solid #ccc;
 }
 
 #features .row {
@@ -363,17 +365,22 @@ textarea {
 #footer {
 	box-sizing: border-box;
 	background: #f0f0f0;
-	box-shadow: inset 0 7px 8px -7px rgba(0,0,0,0.4);
 	flex: 0 1 auto;
-	padding-top: 15px;
+	padding-top: 40px;
 }
 
 #footer > * {
 	background: #f0f0f0;
+	padding-bottom: 30px;
 }
 
-#footer a {
-	padding-bottom: 15px;
+#footer .links {
+	margin-bottom: 10px;
+}
+
+#footer .links a {
+	margin-right: 12px;
+	color: #333;
 }
 
 .breadcrumb {
