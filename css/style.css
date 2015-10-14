@@ -54,6 +54,9 @@ textarea {
   border-color: #29395C;
   box-shadow: none; }
 
+.alert {
+  border-radius: 0; }
+
 /** Specialized Elements **/
 .icon-btn {
   display: block;
@@ -81,14 +84,32 @@ textarea {
 .license img {
   margin-bottom: 6px; }
 
+.form-container {
+  max-width: 300px;
+  padding: 0;
+  text-align: center; }
+
+.form-container h2 {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
+.form-container .form-group {
+  margin-bottom: 0; }
+
+.form-container .form-group > input:not(.last) {
+  border-bottom: none; }
+
+.form-container .checkbox {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
 /** Headers **/
 .navbar {
   flex: 0 1 auto;
   margin-bottom: 0;
   border-bottom: none;
-  background: #556666;
-  box-shadow: inset 0 -10px 15px -10px rgba(0, 0, 0, 0.6);
-  border-bottom: 1px solid #333; }
+  background: #506C6A;
+  box-shadow: inset 0 -7px 8px -7px rgba(0, 0, 0, 0.4); }
   .navbar .navbar-brand {
     font-family: "Titillium Web", sans-serif;
     color: #eee; }
@@ -190,7 +211,7 @@ textarea {
 #footer {
   box-sizing: border-box;
   background: #f0f0f0;
-  border-top: 1px solid #333;
+  border-top: 1px solid #ccc;
   flex: 0 1 auto;
   padding-top: 15px; }
 
