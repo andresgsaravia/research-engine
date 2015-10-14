@@ -24,19 +24,19 @@
   {% else %}
   <form method="post" role="form" style="margin-bottom: 20px;">
     <div class="form-group{% if error_username %} has-error{% endif %}">
-      <input type="text" name="usern" value="{{usern}}" placeholder="Username" class="form-control input-lg"/>
+      <input type="text" name="usern" value="{{usern}}" placeholder="Username" class="form-control input-lg input-group first"/>
     </div>
 
     <div class="form-group{% if error_password %} has-error{% endif %}">
-        <input type="password" name="password" value="" placeholder="Password" class="form-control input-lg" />
+        <input type="password" name="password" value="" placeholder="Password" class="form-control input-lg input-group" />
     </div>
 
     <div class="form-group{% if error_verify %} has-error{% endif %}">
-      <input type="password" name="verify" value="" placeholder="Write your password again" class="form-control input-lg"/>
+      <input type="password" name="verify" value="" placeholder="Write your password again" class="form-control input-lg input-group"/>
     </div>
 
     <div class="form-group {% if error_email %} has-error{% endif %}">
-      <input type="text" name="email" value="{{email}}" placeholder="Email address" class="form-control input-lg last"/>
+      <input type="text" name="email" value="{{email}}" placeholder="Email address" class="form-control input-lg last input-group"/>
     </div>
 
     <div class="form-group">

@@ -94,8 +94,20 @@ textarea {
 .form-container .form-group {
   margin-bottom: 0; }
 
-.form-container .form-group > input:not(.last) {
-  border-bottom: none; }
+.form-container * {
+  position: relative; }
+
+.form-container .form-group > input {
+  z-index: 1; }
+
+.form-container .form-group > input:not(.first).input-group {
+  margin-top: -1px; }
+
+.form-container .form-group > input:focus {
+  z-index: 3; }
+
+.form-container .form-group.has-error > input {
+  z-index: 2; }
 
 .form-container .checkbox {
   margin-top: 20px;
@@ -218,9 +230,12 @@ textarea {
 #footer {
   box-sizing: border-box;
   background: #f0f0f0;
-  border-top: 1px solid #ccc;
+  box-shadow: inset 0 7px 8px -7px rgba(0, 0, 0, 0.4);
   flex: 0 1 auto;
   padding-top: 15px; }
+
+#footer > * {
+  background: #f0f0f0; }
 
 #footer a {
   padding-bottom: 15px; }
