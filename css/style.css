@@ -48,11 +48,11 @@ textarea {
   resize: vertical; }
 
 .form-control {
-  border-radius: 0; }
+  border-radius: 0;
+  box-shadow: none !important; }
 
 .form-control:focus {
-  border-color: #29395C;
-  box-shadow: none; }
+  border-color: #29395C; }
 
 .alert {
   border-radius: 0; }
@@ -65,16 +65,14 @@ textarea {
   text-align: center;
   color: #333;
   font-size: 0.9em;
-  padding: 8px 0; }
+  padding: 10px 0; }
   .icon-btn .fa {
     font-size: 2.2em;
     color: inherit; }
 
 .icon-btn.active {
-  background: #EEEEEE; }
-
-.icon-btn:hover, .icon-btn:focus, .icon-btn:active {
-  color: #111; }
+  background: #EEEEEE;
+  color: #333 !important; }
 
 .license {
   text-align: center;
@@ -158,6 +156,15 @@ textarea {
 .page-intro.small-margins {
   padding: 24px 0; }
 
+.page-title-centered {
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; }
+
 /** Special Unique Elements **/
 #overview {
   border-bottom: 5px solid #556666;
@@ -187,7 +194,7 @@ textarea {
   margin-bottom: 10px; }
 
 #project-nav {
-  padding: 6px 0;
+  padding: 8px 0;
   border-right: 1px solid #EEEEEE; }
 
 .project-link {
@@ -220,5 +227,12 @@ textarea {
 
 .breadcrumb {
   margin-top: 20px; }
+
+.collapse-toggle, .collapse-toggle:focus {
+  color: #333;
+  text-decoration: none !important; }
+
+.collapse-toggle:hover, .collapse-toggle:active {
+  color: #777; }
 
 /*# sourceMappingURL=style.css.map */
