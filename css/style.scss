@@ -120,6 +120,11 @@ textarea {
 	border-radius: 0;
 }
 
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover,
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
+	background: rgba(0, 0, 0, 0.3);
+}
+
 
 /** Specialized Elements **/
 
@@ -193,6 +198,54 @@ textarea {
 .form-container .checkbox {
 	margin-top: 20px;
 	margin-bottom: 20px;
+}
+
+.project-item-header {
+	margin-top: 0;
+	margin-bottom: 25px;
+}
+
+.project-item-header small {
+	font-size: 0.5em;
+}
+
+.card-list-item {
+	/*border: 2px solid #f0f0f0;
+	padding: 30px;
+	margin-bottom: 30px;*/
+	padding: 30px;
+	border: 1px solid #f0f0f0;
+	margin-top: 20px;
+}
+
+.card-list-item h3 {
+	margin-top: 0;
+}
+
+.card-list-item h3 a:not(.btn-muted) {
+	color: #000;
+}
+
+.card-list-item-actions a {
+	margin-right: 15px;
+	color: #777;
+	text-decoration: none !important;
+}
+
+.card-list-item-actions a:hover {
+	color: #333;
+}
+
+.btn-muted {
+	color: #777;
+}
+
+.btn-muted:hover {
+	color: #333;
+}
+
+.btn-muted .fa {
+	font-size: 0.8em;
 }
 
 

@@ -52,7 +52,10 @@
   {% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
   {% if info %}<div class="alert alert-success">{{info | safe}}</div>{% endif %}
 
-
   {% endif %}
 </div>
+
+<script>
+    $("#signup-navbar").addClass("active");
+</script>
 {% endblock %}

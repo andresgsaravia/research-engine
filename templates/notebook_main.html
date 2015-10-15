@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block p_content %}
-<div class="page-header">
+<!--div class="page-header">
   <h3 id="main-content">
     <div class=" pull-right">
       {% if writable_p %}
@@ -13,12 +13,12 @@
 	 href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
 	<span class="glyphicon glyphicon-plus"></span> New note
       </a>
-      <a class="btn btn-default btn-sm" 
+      <a class="btn btn-default btn-sm"
 	 href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
 	<span class="glyphicon glyphicon-cog"></span>
       </a>
       {% endif %}
-      <!-- Index modal trigger  -->
+      <!-/- Index modal trigger  -/->
       <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index"
 	 data-toggle="modal" data-target="#nbIndexModal" class="btn btn-small btn-default">
 	<span class="glyphicon glyphicon-list"></span> Index</a>
@@ -28,40 +28,79 @@
     {{notebook.name | safe}}
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
   </h3>
-</div>
+</div-->
+
+<h2 class="project-item-header">
+    <small><a href="http://localhost:8080/5556931766779904/notebooks">Notebook</a></small>
+    <br>
+    {{notebook.name | safe}}
+    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+    {% if writable_p %}
+        <div class="pull-right">
+            <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit" class="btn-muted">
+                <span class="glyphicon glyphicon-cog"></span>
+            </a>
+        </div>
+    {% endif %}
+</h2>
 
 <!-- Notebook index modal  -->
-<div class="modal fade" id="nbIndexModal" tabindex="-1" role="dialog" 
-     aria-labelledby="nbIndexModalLabel{{notebook.key.integer_id()}}" aria-hidden="true">  
-  <div class="modal-dialog">  
-    <div class="modal-content"></div>  
+<div class="modal fade" id="nbIndexModal" tabindex="-1" role="dialog"
+     aria-labelledby="nbIndexModalLabel{{notebook.key.integer_id()}}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
   </div>
 </div>
 
+<hr>
+
+{% if writable_p %}
+    <a class="btn btn-success btn-lg" style="margin-right:5px;"
+    href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
+        <span class="glyphicon glyphicon-plus"></span> New note
+    </a>
+{% endif %}
+<!-- Index modal trigger  -->
+<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index"
+data-toggle="modal" data-target="#nbIndexModal" class="btn btn-lg btn-default">
+    <span class="glyphicon glyphicon-list"></span> Index
+</a>
+
 {% for note in notes %}
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">{{note.title}}</a>
-    </h3>
-  </div>
-  <div class="panel-body">
-    {{note.content | md | safe}}
-    <div class="pull-right">
-      <small class="text-muted pull-right">{{note.date.strftime("%d %b %Y")}}</small><br/>
-      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
-	<span class="glyphicon glyphicon-comment"></span> {{note.get_number_of_comments()}} comments</a>
-      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
-	<span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
+    <div class="card-list-item">
+        <h3 style="margin-bottom: 4px;">
+            <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">
+                {{note.title}}
+            </a>
+            {% if writable_p %}
+                <a class="btn-muted pull-right" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">
+                  <span class="fa fa-pencil"></span>
+                </a>
+            {% endif %}
+        </h3>
+        <small class="text-muted" style="margin-bottom: 10px; display: block;">
+            Writen by <a href="/{{note.author.get().username}}">{{note.author.get().username.capitalize()}}</a>
+            on {{note.date.strftime("%d %b %Y")}}
+        </small>
+        <div>
+            {{note.content | md | safe}}
+
+            <br>
+
+            <div class="card-list-item-actions">
+                <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">{{note.get_number_of_comments()}} comments</a>
+                <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">Add comment</a>
+            </div>
+
+            <!--div class="pull-right">
+                <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
+                <span class="glyphicon glyphicon-comment"></span> {{note.get_number_of_comments()}} comments</a>
+                <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
+                <span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
+            </div-->
+        </div>
     </div>
-    {% if notebook.shared_p %}
-    <ul class="nav nav-pills">
-      <li><a href="/{{note.author.get().username}}">
-	  <img src="{{note.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{note.author.get().username.capitalize()}}</a></li>
-    </ul>
-    {% endif %}
-  </div>
-</div>
 {% endfor %}
 
 

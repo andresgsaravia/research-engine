@@ -213,9 +213,12 @@
 <!-- Hide navbar on home page until user scrolls down -->
 <script>
     $(document).ready(function() {
+        // Hide the navbar when the page loads
         $(".navbar").hide("slide", {"direction": "up"}, 400, function() {
             $(".navbar").addClass("navbar-mod");
         });
+
+        // Only show the navbar when the user scrolls down
         $(document).scroll(function() {
             if ($(this).scrollTop() > 1) {
                 $(".navbar").show("slide", {"direction": "up"});
