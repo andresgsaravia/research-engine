@@ -5,30 +5,6 @@
 {% endblock %}
 
 {% block p_content %}
-<!--div class="page-header">
-  <h3 id="main-content">
-    <div class=" pull-right">
-      {% if writable_p %}
-      <a class="btn btn-success btn-sm" style="margin-right:5px;"
-	 href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
-	<span class="glyphicon glyphicon-plus"></span> New note
-      </a>
-      <a class="btn btn-default btn-sm"
-	 href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
-	<span class="glyphicon glyphicon-cog"></span>
-      </a>
-      {% endif %}
-      <!-/- Index modal trigger  -/->
-      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index"
-	 data-toggle="modal" data-target="#nbIndexModal" class="btn btn-small btn-default">
-	<span class="glyphicon glyphicon-list"></span> Index</a>
-    </div>
-
-    {% if notebook.is_open_p() %}<img src="{{notebook.claims_logo('icons')}}" title="{{notebook.claims_text()}}"/>{% else %}<span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span>{% endif %}
-    {{notebook.name | safe}}
-    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-  </h3>
-</div-->
 
 <h2 class="project-item-header">
     <small><a href="http://localhost:8080/5556931766779904/notebooks">Notebook</a></small>
@@ -37,7 +13,7 @@
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
     {% if writable_p %}
-        <div class="pull-right">
+        <div class="pull-right project-item-header-actions">
             <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit" class="btn-muted">
                 <span class="glyphicon glyphicon-cog"></span>
             </a>
@@ -55,17 +31,22 @@
 
 <hr>
 
-{% if writable_p %}
-    <a class="btn btn-success btn-lg" style="margin-right:5px;"
-    href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
-        <span class="glyphicon glyphicon-plus"></span> New note
-    </a>
+{% if notebook.is_open_p() %}
+    <img src="{{notebook.claims_logo('icons')}}"/> {{notebook.claims_text()}}
+{% else %}
+    <span class="glyphicon glyphicon-eye-close"></span> This is a closed notebook. Only project members can see it.
 {% endif %}
-<!-- Index modal trigger  -->
-<a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index"
-data-toggle="modal" data-target="#nbIndexModal" class="btn btn-lg btn-default">
-    <span class="glyphicon glyphicon-list"></span> Index
-</a>
+
+<div class="project-item-actions">
+    {% if writable_p %}
+        <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note" style="margin-right: 5px;" class="btn btn-default btn-new">
+            New note
+        </a>
+        <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index" data-toggle="modal" data-target="#nbIndexModal" class="btn btn-default btn-new">
+            <span class="fa fa-list"></span> Index
+        </a>
+    {% endif %}
+</div>
 
 {% for note in notes %}
     <div class="card-list-item">

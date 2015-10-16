@@ -7,7 +7,7 @@
 
 {% if (user and project.user_is_author(user)) %}
 
-<div class="page-header">
+<!--div class="page-header">
   <h2 id="main-content">Notebooks
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
     <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/notebooks/new">
@@ -15,7 +15,19 @@
     <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
       <span class="glyphicon glyphicon-question-sign"></span></a>
   </h2>
-</div>
+</div-->
+<h2 class="project-item-header" style="margin-top: 10px;">
+    Notebooks
+    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+    <div class="pull-right project-item-header-actions">
+        <a href="#helpModal" data-toggle="modal" class="btn-muted">
+            <span class="fa fa-question-circle"></span>
+        </a>
+    </div>
+</h2>
+
+<hr>
 
 <!-- Help modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
@@ -70,10 +82,10 @@
     </div>
   </div>
   <!-- Index modal -->
-  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
-       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
-    <div class="modal-dialog">  
-      <div class="modal-content"></div>  
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
     </div>
   </div>
   {% endfor %}
@@ -108,14 +120,14 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
-       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
-    <div class="modal-dialog">  
-      <div class="modal-content"></div>  
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
     </div>
   </div>
   {% endfor %}
-</div>    
+</div>
 
 {% endif %}
 
@@ -150,14 +162,14 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
-       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
-    <div class="modal-dialog">  
-      <div class="modal-content"></div>  
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
     </div>
   </div>
   {% endfor %}
-</div>    
+</div>
 
 {% endif %}
 
@@ -198,14 +210,14 @@
     </div>
   </div>
   {% endif %}
-  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog" 
-       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">  
-    <div class="modal-dialog">  
-      <div class="modal-content"></div>  
+  <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+       aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
     </div>
   </div>
   {% endfor %}
-</div>    
+</div>
 
 {% endif %}
 

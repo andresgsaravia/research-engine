@@ -209,13 +209,27 @@ textarea {
 	font-size: 0.5em;
 }
 
+.project-item-actions {
+	margin-top: 15px;
+}
+
+.project-item-comment {
+	background: #f0f0f0;
+	padding: 30px;
+	margin-top: 20px;
+}
+
+.project-item-comment:first-child {
+	margin-top: 15px;
+}
+
 .card-list-item {
 	/*border: 2px solid #f0f0f0;
 	padding: 30px;
 	margin-bottom: 30px;*/
 	padding: 30px;
 	border: 1px solid #f0f0f0;
-	margin-top: 20px;
+	margin-top: 25px;
 }
 
 .card-list-item h3 {
