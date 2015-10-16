@@ -10,7 +10,7 @@
 
 {% block p_content %}
 <h2 class="project-item-header">
-    <small><a href="http://localhost:8080/5556931766779904/notebooks/{{notebook.key.integer_id()}}">{{notebook.name | safe}}</a></small>
+    <small><a href="http://localhost:8080/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">{{notebook.name | safe}}</a></small>
     <br>
     {{note.title}}
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
