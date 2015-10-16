@@ -122,23 +122,8 @@ class UploadNewImage(projects.ProjectBlobstoreUpload):
                                image_key = image[0].key(),
                                parent = project.key)
             self.put_and_report(new_image, user, project)
-            self.redirect("/%s/images/%s" % (projectid, new_image.key.integer_id()))
-
-class ViewImagePage(ImagesPage):
-    def get(self, projectid, imageid):
-        user = self.get_login_user()
-        project = self.get_project(projectid)
-        if not project: 
-            self.error(404)
-            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
-            return
-        image = self.get_image(project, imageid)
-        if not image:
-            self.error(404)
-            self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
-            return
-        self.render("image.html", user = user, project = project, image = image)
-
+            self.redirect("/%s/images/" % projectid)
+            
 
 class EditImagePage(ImagesPage):
     def get(self, projectid, imageid):
