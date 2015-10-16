@@ -8,7 +8,7 @@
 
 {% block p_content %}
 
-<h2 class="project-item-header"{% if action=="New" %} style="margin-top: 8px;"{% endif %}>
+<h2 class="project-item-header"{% if action=="New" %} style="margin-top: 12px;"{% endif %}>
     {% if action=="Edit" %}
         <small>
             <a href="http://localhost:8080/5556931766779904/notebooks/{{notebook.key.integer_id()}}">
@@ -38,7 +38,7 @@
   </div>
   <small>About
     <a href="https://en.wikipedia.org/wiki/Open_Notebook_Science" target="_blank">
-      Open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a> and
+      open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a> and
     <a href="https://onsclaims.wikispaces.com/" target="_blank">
       this set of icons <span class="glyphicon glyphicon-new-window"></span></a>
   </small>

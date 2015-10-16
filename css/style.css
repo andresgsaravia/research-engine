@@ -60,7 +60,13 @@ textarea {
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
-  background: rgba(0, 0, 0, 0.3); }
+  background: rgba(0, 0, 0, 0.1); }
+
+.navbar .dropdown-menu a {
+  color: #333 !important; }
+
+.navbar .dropdown-menu a:hover {
+  color: #333 !important; }
 
 /** Specialized Elements **/
 .icon-btn {
@@ -137,12 +143,10 @@ textarea {
   margin-top: 15px; }
 
 .card-list-item {
-  /*border: 2px solid #f0f0f0;
   padding: 30px;
-  margin-bottom: 30px;*/
-  padding: 30px;
-  border: 1px solid #f0f0f0;
-  margin-top: 25px; }
+  border: 2px solid #e0e0e0;
+  margin-top: 25px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
 
 .card-list-item h3 {
   margin-top: 0; }
@@ -157,6 +161,13 @@ textarea {
 
 .card-list-item-actions a:hover {
   color: #333; }
+
+.notebook-list .panel {
+  border-radius: 0 !important;
+  margin-top: -1px; }
+
+.notebook-list .panel-heading {
+  background: #fff; }
 
 .btn-muted {
   color: #777; }
