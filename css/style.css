@@ -58,6 +58,9 @@ textarea {
 .alert {
   border-radius: 0; }
 
+.list-group .list-group-item {
+  border-radius: 0; }
+
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
   background: rgba(0, 0, 0, 0.1); }
@@ -82,9 +85,13 @@ textarea {
     font-size: 0.8em;
     margin-top: 4px; }
     .project-tab-header .actions a {
+      margin-left: 15px;
       color: #777; }
     .project-tab-header .actions a:hover {
       color: #333; }
+
+.project-tab-header.no-action-bar {
+  margin-bottom: 16px; }
 
 .project-tab-actions {
   padding-top: 12px;

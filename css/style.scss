@@ -120,6 +120,10 @@ textarea {
 	border-radius: 0;
 }
 
+.list-group .list-group-item {
+	border-radius: 0;
+}
+
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover,
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
 	background: rgba(0, 0, 0, 0.1);
@@ -153,6 +157,7 @@ textarea {
 		margin-top: 4px;
 
 		a {
+			margin-left: 15px;
 			color: #777;
 		}
 
@@ -160,6 +165,10 @@ textarea {
 			color: #333;
 		}
 	}
+}
+
+.project-tab-header.no-action-bar {
+	margin-bottom: 16px;
 }
 
 .project-tab-actions {
