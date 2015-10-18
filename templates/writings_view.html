@@ -1,11 +1,62 @@
-{% extends "writings_base.html" %}
-    
-{% block w_content %}
+{% extends "project_base.html" %}
 
-{% if last_revision %}
-{{last_revision.content | md | safe}}
-{% else %}
-<p>This writing hasn't been started yet. Click <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">here</a> or the <em>Edit</em> tab above to make the first draft.</p>
-{% endif %}
+{% block p_content %}
+    <h2 class="project-tab-header">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/writings">
+                Writing
+            </a>
+        </div>
 
+        {{writing.title | safe}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        <div class="actions">
+            {% if not visitor_p %}
+                <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">
+                    <span class="fa fa-pencil"></span><!--
+                --></a>
+                <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info">
+                    <span class="fa fa-cog"></span>
+                </a>
+            {% endif %}
+        </div>
+    </h2>
+
+    <div class="project-tab-actions">
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">
+            History
+        </a>
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion">
+            Discussion
+        </a>
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">
+            Export <span class="caret"></span>
+        </a>
+    </div>
+
+    <p class="text-muted">
+        <small style="margin-right: 15px;">
+             Status: {{writing.status}}
+        </small>
+        <small>
+            {% if writing.is_open_p() %}
+                <span class="fa fa-eye"></span> Public
+            {% else %}
+                <span class="fa fa-eye-slash"></span> Private
+            {% endif %}
+        </small>
+    </p>
+
+    {% if last_revision %}
+        {{last_revision.content | md | safe}}
+    {% else %}
+        <p>This writing hasn't been started yet. Click <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">here</a> or the <em>Edit</em> tab above to make the first draft.</p>
+    {% endif %}
+
+    <div class="text-muted">
+        <small>
+            Last updated on {{writing.last_updated.strftime("%d %b %Y")}}
+        </small>
+    </div>
 {% endblock %}
