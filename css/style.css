@@ -98,6 +98,13 @@ textarea {
   .project-tab-actions a:not(.unstyled):hover {
     color: #333; }
 
+.project-tab-list .panel {
+  border-radius: 0 !important;
+  margin-top: -1px !important; }
+
+.project-tab-list .panel-heading {
+  background: #fff; }
+
 /** Specialized Elements **/
 .icon-btn {
   display: block;
@@ -184,13 +191,6 @@ textarea {
 
 .card-list-item-actions a .fa {
   font-size: 0.9em; }
-
-.notebook-list .panel {
-  border-radius: 0 !important;
-  margin-top: -1px; }
-
-.notebook-list .panel-heading {
-  background: #fff; }
 
 .btn-muted {
   color: #777;

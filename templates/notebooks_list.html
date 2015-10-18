@@ -1,8 +1,5 @@
 {% extends "project_base.html" %}
 
-{% block breadcrumbs %}<li class="active">Notebooks</li>{% endblock %}
-
-
 {% block p_content %}
 <!-- Help modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
@@ -43,7 +40,7 @@
     {% if my_notebooks %}
         <h3 style="margin-top: 20px;">My notebooks</h3>
 
-        <div class="panel-group notebook-list" id="myaccordion">
+        <div class="panel-group project-tab-list" id="myaccordion">
             {% for n in my_notebooks %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -121,7 +118,7 @@
     {% if shared_notebooks %}
         <h3 style="margin-top: 50px;">Shared notebooks</h3>
 
-        <div class="panel-group notebook-list" id="otheraccordion">
+        <div class="panel-group project-tab-list" id="otheraccordion">
             {% for n in shared_notebooks %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -199,7 +196,7 @@
     {% if other_notebooks %}
         <h3 style="margin-top: 50px;">Collaborators' notebooks</h3>
 
-        <div class="panel-group notebook-list" id="anotheraccordion">
+        <div class="panel-group project-tab-list" id="anotheraccordion">
             {% for n in other_notebooks %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -273,7 +270,7 @@
 
     <h3 style="margin-top: 20px;">Open notebooks</h3>
 
-    <div class="panel-group notebook-list" id="yetanotheraccordion">
+    <div class="panel-group project-tab-list" id="yetanotheraccordion">
         {% for n in notebooks %}
             {% if n.is_open_p() %}
                 <div class="panel panel-default">
