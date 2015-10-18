@@ -289,6 +289,10 @@ textarea {
 	color: #333;
 }
 
+.card-list-item-actions a .fa {
+	font-size: 0.9em;
+}
+
 .notebook-list .panel {
 	border-radius: 0 !important;
 	margin-top: -1px;
@@ -300,6 +304,7 @@ textarea {
 
 .btn-muted {
 	color: #777;
+	cursor: pointer;
 }
 
 .btn-muted:hover {

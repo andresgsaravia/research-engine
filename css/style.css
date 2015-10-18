@@ -182,6 +182,9 @@ textarea {
 .card-list-item-actions a:hover {
   color: #333; }
 
+.card-list-item-actions a .fa {
+  font-size: 0.9em; }
+
 .notebook-list .panel {
   border-radius: 0 !important;
   margin-top: -1px; }
@@ -190,7 +193,8 @@ textarea {
   background: #fff; }
 
 .btn-muted {
-  color: #777; }
+  color: #777;
+  cursor: pointer; }
 
 .btn-muted:hover {
   color: #333; }

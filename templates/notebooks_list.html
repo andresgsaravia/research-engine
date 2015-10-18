@@ -48,36 +48,70 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
-                            <span class="glyphicon glyphicon-info-sign"></span></a>
-                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                            {% if n.is_open_p() %}
-                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                            {% endif %}
-                            {{n.name | safe}}</a>
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    {{n.get_number_of_notes()}} notes
+                                </div>
+
+                                <span  class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
+                            <!--span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;"></span-->
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right: 20px;">
+                                <div style="margin-right: 20px; display: inline-block;">
+                                    {% if n.is_open_p() %}
+                                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                                    {% else %}
+                                        <small>
+                                            <span class="glyphicon glyphicon-eye-close" style="width: 50px;" title="This is a closed notebook. Only project members can see it."></span>
+                                        </small>
+                                    {% endif %}
+                                </div><!--
+                                -->{{n.name | safe}}<!--
+                            --></a>
                         </h4>
                     </div>
                     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                    <div class="panel-body">
-                    <!-- Index modal trigger -->
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                    <span class="glyphicon glyphicon-list"></span> Index</a>
-                    {{n.description | md | safe }}
-                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                    <ul class="nav nav-pills">
-                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                    </ul>
+                        <div class="panel-body">
+                            <div class="card-list-item-actions">
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/new_note">
+                                    New note
+                                </a>
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}">
+                                    <span class="fa fa-list"></span> Index
+                                </a>
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/edit">
+                                    <span class="fa fa-cog"></span> Settings
+                                </a>
+                            </div>
+
+                            <hr style="margin-top: 10px; margin-bottom: 10px;">
+
+                            {{n.description | md | safe }}
+
+                            <div class="text-muted">
+                                <small>
+                                    <span>
+                                        Owned by <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a>
+                                    </span>
+
+                                    <span style="margin-left: 12px;">
+                                        Last updated on {{n.last_updated.strftime("%d %b %Y")}}
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    </div>
-                    <!-- Index modal -->
-                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                </div>
+
+                <!-- Index modal -->
+                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
                     aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
                     <div class="modal-dialog">
-                    <div class="modal-content"></div>
+                        <div class="modal-content"></div>
                     </div>
                 </div>
             {% endfor %}
@@ -92,36 +126,70 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
-                            <span class="glyphicon glyphicon-info-sign"></span></a>
-                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                            {% if n.is_open_p() %}
-                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                            {% endif %}
-                            {{n.name | safe}}</a>
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    {{n.get_number_of_notes()}} notes
+                                </div>
+
+                                <span  class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
+                            <!--span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;"></span-->
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right: 20px;">
+                                <div style="margin-right: 20px; display: inline-block;">
+                                    {% if n.is_open_p() %}
+                                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                                    {% else %}
+                                        <small>
+                                            <span class="glyphicon glyphicon-eye-close" style="width: 50px;" title="This is a closed notebook. Only project members can see it."></span>
+                                        </small>
+                                    {% endif %}
+                                </div><!--
+                                -->{{n.name | safe}}<!--
+                            --></a>
                         </h4>
                     </div>
                     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                    <div class="panel-body">
-                    <!-- Index modal trigger -->
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                    <span class="glyphicon glyphicon-list"></span> Index</a>
-                    {{n.description | md | safe }}
-                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                    <ul class="nav nav-pills">
-                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                    </ul>
+                        <div class="panel-body">
+                            <div class="card-list-item-actions">
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/new_note">
+                                    New note
+                                </a>
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}">
+                                    <span class="fa fa-list"></span> Index
+                                </a>
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/edit">
+                                    <span class="fa fa-cog"></span> Settings
+                                </a>
+                            </div>
+
+                            <hr style="margin-top: 10px; margin-bottom: 10px;">
+
+                            {{n.description | md | safe }}
+
+                            <div class="text-muted">
+                                <small>
+                                    <span>
+                                        Owned by <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a>
+                                    </span>
+
+                                    <span style="margin-left: 12px;">
+                                        Last updated on {{n.last_updated.strftime("%d %b %Y")}}
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    </div>
-                    <!-- Index modal -->
-                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                </div>
+
+                <!-- Index modal -->
+                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
                     aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
                     <div class="modal-dialog">
-                    <div class="modal-content"></div>
+                        <div class="modal-content"></div>
                     </div>
                 </div>
             {% endfor %}
@@ -136,36 +204,64 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
-                            <span class="glyphicon glyphicon-info-sign"></span></a>
-                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                            {% if n.is_open_p() %}
-                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                            {% endif %}
-                            {{n.name | safe}}</a>
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    {{n.get_number_of_notes()}} notes
+                                </div>
+
+                                <span  class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
+                            <!--span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;"></span-->
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right: 20px;">
+                                <div style="margin-right: 20px; display: inline-block;">
+                                    {% if n.is_open_p() %}
+                                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                                    {% else %}
+                                        <small>
+                                            <span class="glyphicon glyphicon-eye-close" style="width: 50px;" title="This is a closed notebook. Only project members can see it."></span>
+                                        </small>
+                                    {% endif %}
+                                </div><!--
+                                -->{{n.name | safe}}<!--
+                            --></a>
                         </h4>
                     </div>
                     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                    <div class="panel-body">
-                    <!-- Index modal trigger -->
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                    <span class="glyphicon glyphicon-list"></span> Index</a>
-                    {{n.description | md | safe }}
-                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                    <ul class="nav nav-pills">
-                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                    </ul>
+                        <div class="panel-body">
+                            <div class="card-list-item-actions">
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}">
+                                    <span class="fa fa-list"></span> Index
+                                </a>
+                            </div>
+
+                            <hr style="margin-top: 10px; margin-bottom: 10px;">
+
+                            {{n.description | md | safe }}
+
+                            <div class="text-muted">
+                                <small>
+                                    <span>
+                                        Owned by <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a>
+                                    </span>
+
+                                    <span style="margin-left: 12px;">
+                                        Last updated on {{n.last_updated.strftime("%d %b %Y")}}
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    </div>
-                    <!-- Index modal -->
-                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                </div>
+
+                <!-- Index modal -->
+                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
                     aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
                     <div class="modal-dialog">
-                    <div class="modal-content"></div>
+                        <div class="modal-content"></div>
                     </div>
                 </div>
             {% endfor %}
@@ -177,42 +273,70 @@
 
     <h3 style="margin-top: 20px;">Open notebooks</h3>
 
-    <div class="panel-group notebook-list" id="anotheraccordion">
+    <div class="panel-group notebook-list" id="yetanotheraccordion">
         {% for n in notebooks %}
             {% if n.is_open_p() %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
-                            <span class="glyphicon glyphicon-info-sign"></span></a>
-                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                            {% if n.is_open_p() %}
-                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                            {% endif %}
-                            {{n.name | safe}}</a>
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    {{n.get_number_of_notes()}} notes
+                                </div>
+
+                                <span  class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#yetanotheraccordion" href="#{{n.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
+                            <!--span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;"></span-->
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right: 20px;">
+                                <div style="margin-right: 20px; display: inline-block;">
+                                    {% if n.is_open_p() %}
+                                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                                    {% else %}
+                                        <small>
+                                            <span class="glyphicon glyphicon-eye-close" style="width: 50px;" title="This is a closed notebook. Only project members can see it."></span>
+                                        </small>
+                                    {% endif %}
+                                </div><!--
+                                -->{{n.name | safe}}<!--
+                            --></a>
                         </h4>
                     </div>
                     <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                    <div class="panel-body">
-                    <!-- Index modal trigger -->
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                    <span class="glyphicon glyphicon-list"></span> Index</a>
-                    {{n.description | md | safe }}
-                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                    <ul class="nav nav-pills">
-                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                    </ul>
+                        <div class="panel-body">
+                            <div class="card-list-item-actions">
+                                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}">
+                                    <span class="fa fa-list"></span> Index
+                                </a>
+                            </div>
+
+                            <hr style="margin-top: 10px; margin-bottom: 10px;">
+
+                            {{n.description | md | safe }}
+
+                            <div class="text-muted">
+                                <small>
+                                    <span>
+                                        Owned by <a href="/{{n.owner.get().username}}">{{n.owner.get().username.capitalize()}}</a>
+                                    </span>
+
+                                    <span style="margin-left: 12px;">
+                                        Last updated on {{n.last_updated.strftime("%d %b %Y")}}
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    </div>
-                    <!-- Index modal -->
-                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                </div>
+
+                <!-- Index modal -->
+                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
                     aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
                     <div class="modal-dialog">
-                    <div class="modal-content"></div>
+                        <div class="modal-content"></div>
                     </div>
                 </div>
             {% endif %}
@@ -220,5 +344,23 @@
     </div>
 
 {% endif %}
+
+<!-- Accordion open/close animation -->
+<script>
+    $(".accordion-toggle").click(function() {
+        if (!$(this).children(".fa-chevron-down").is(":hidden")) {
+            $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
+                $(this).show();
+            });
+            $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
+                $(this).hide();
+            });
+        }
+
+        $(this).children(".fa").each(function() {
+            $(this).toggle();
+        });
+    });
+</script>
 
 {% endblock %}
