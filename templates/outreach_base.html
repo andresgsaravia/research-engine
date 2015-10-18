@@ -3,7 +3,7 @@
 
 {% block head %}
     <title>{{page_user.username.capitalize()}} | Outreach</title>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript">
       MathJax.Hub.Config({
       "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
@@ -11,6 +11,7 @@
       });
     </script>
     <style class="text/css">img{max-width:100%;height:auto;} .btn-edit{color:gray;} .btn-edit:hover{color:black;}</style>
+    {% block more_head %}{% endblock %}
 {% endblock %}
 
 

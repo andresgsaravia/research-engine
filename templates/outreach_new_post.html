@@ -3,7 +3,7 @@
 
 {% block head %}
     <title>{{user.username.capitalize()}} | Outreach</title>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript">
       MathJax.Hub.Config({
       "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
@@ -35,7 +35,8 @@
 	     value="{{title_value}}" placeholder="Title for your new post" autofocus/>
     </div>
     <div class="form-group{% if content_error %} has-error{% endif %}">
-      <textarea name="content" id="inputText" placeholder="The content for your new post" class="form-control" rows="25">{{content_value}}</textarea>
+      <textarea name="content" id="inputText" placeholder="The content for your new post" class="form-control" rows="25"
+		onKeyUp="Preview('inputText','previewArea','');">{{content_value}}</textarea>
     </div>
     <button type="submit" class="btn btn-success">Create new post</button>
     <button type="button" class="btn btn-default"
@@ -47,17 +48,14 @@
     </span>
   </form>
 
-  <div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
+
+  <p>Below is a preview of how the page will be renderer when you save it.</p>
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <button type="button" class="btn btn-default" id="render-button" onCLick="Preview('inputText', 'previewArea');">
-	Render preview
-      </button>
-    </div>
     <div class="panel-body" id="previewArea">
-      Click the <em>Render preview</em> button to see a preview here.
+      <em>Start typing above to see a preview here.</em>
     </div>
   </div>
+
 </div>
 
 {% endblock %}

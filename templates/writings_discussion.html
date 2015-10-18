@@ -6,7 +6,8 @@
 {% if user and project.user_is_author(user) %}
 <form method="post" role="form">
   <div class="form-group">
-    <textarea name="comment" class="form-control" rows="10" placeholder="Write a new comment here.">{{comment}}</textarea>
+    <textarea name="comment" class="form-control" rows="10" placeholder="Write a new comment here." id="inputText"
+	      onKeyUp="Preview('inputText','previewArea');">{{comment}}</textarea>
   </div>
   <div class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</div>
   <input type="hidden" name="action" value="new_comment" />
@@ -14,6 +15,14 @@
   {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
 </form>
 <hr />
+
+<p>Below is a preview of how your comment will look when you post it.</p>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    <em>Start typing above to see a preview here.</em>
+  </div>
+</div>
+
 {% endif %}
 
 <div class="list-group" >
@@ -56,5 +65,5 @@
   </div>
   {% endfor %}
 </div>
-
+<script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
