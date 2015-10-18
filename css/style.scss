@@ -197,6 +197,16 @@ textarea {
 	background: #fff;
 }
 
+.project-tab-comment {
+	background: #f0f0f0;
+	padding: 30px;
+	margin-top: 20px;
+}
+
+.project-tab-comment:first-child {
+	margin-top: 15px;
+}
+
 
 /** Specialized Elements **/
 
@@ -270,16 +280,6 @@ textarea {
 .form-container .checkbox {
 	margin-top: 20px;
 	margin-bottom: 20px;
-}
-
-.project-item-comment {
-	background: #f0f0f0;
-	padding: 30px;
-	margin-top: 20px;
-}
-
-.project-item-comment:first-child {
-	margin-top: 15px;
 }
 
 .card-list-item {
