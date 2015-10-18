@@ -8,15 +8,13 @@
 
 {% block p_content %}
 
-<h2 class="project-item-header"{% if action=="New" %} style="margin-top: 12px;"{% endif %}>
+<h2 class="project-tab-header">
     {% if action=="Edit" %}
-        <small>
-            <a href="http://localhost:8080/5556931766779904/notebooks/{{notebook.key.integer_id()}}">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">
                 {{notebook.name | safe}}
             </a>
-        </small>
-
-        <br>
+        </div>
     {% endif %}
 
     {% if action=="New" %}

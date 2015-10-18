@@ -68,6 +68,36 @@ textarea {
 .navbar .dropdown-menu a:hover {
   color: #333 !important; }
 
+/** Project tab structuer **/
+.project-tab-header {
+  margin: 0;
+  padding-top: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0; }
+  .project-tab-header .parent-link {
+    font-size: 0.5em;
+    color: #777; }
+  .project-tab-header .actions {
+    float: right;
+    font-size: 0.8em;
+    margin-top: 4px; }
+    .project-tab-header .actions a {
+      color: #777; }
+    .project-tab-header .actions a:hover {
+      color: #333; }
+
+.project-tab-actions {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px; }
+  .project-tab-actions a:not(.unstyled) {
+    color: #777;
+    margin-left: 15px;
+    text-decoration: none; }
+  .project-tab-actions a:not(.unstyled):hover {
+    color: #333; }
+
 /** Specialized Elements **/
 .icon-btn {
   display: block;
@@ -123,16 +153,6 @@ textarea {
 .form-container .checkbox {
   margin-top: 20px;
   margin-bottom: 20px; }
-
-.project-item-header {
-  margin-top: 0;
-  margin-bottom: 25px; }
-
-.project-item-header small {
-  font-size: 0.5em; }
-
-.project-item-actions {
-  margin-top: 15px; }
 
 .project-item-comment {
   background: #f0f0f0;

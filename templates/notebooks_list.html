@@ -4,224 +4,220 @@
 
 
 {% block p_content %}
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Notebooks</h4>
+            </div>
+            <div class="modal-body">
+                <p>Each <em>notebook</em> in this section is a time-ordered sequence of <em>notes</em>, much like a simple blog. You can create as many notebooks as you like and, if you have collaborators in this project, you will see here their notebooks as they can see yours. You can make comments inside your colleagues' notebooks but only the owner of a notebook can take notes in it.</p>
+                <p>Notebooks are particularly useful for <em>progressive</em> knowledge and partial results. For example, you might be performing an experiment or a simulation and trying each time a different setup until you arrive at your ideal setting. You could record in a notebook all your parameters, partial results, negative results and discussions so you can refer to them later if needed, but usually you are interested in the latest results and will rarely go back to the beginning of the notebook. Most likely at the end of your experiment or simulation you will only report the very last notes in a notebook.</p>
+                <p>You can also create <em>Shared notebooks</em> which are different in that they allow every member of this project to write in it. These can be useful, for example, to keep records of laboratory equipment's usage.</p>
+                <p>If you think every note will be very important, perhaps you will find more useful a <em>cummulative</em> knowledge repository like the <a href="/{{project.key.integer_id()}}">Wiki</a> section in this project.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h2 class="project-item-header" style="margin-top: 12px;">
+<h2 class="project-tab-header">
     Notebooks
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
-    <div class="pull-right project-item-header-actions">
-        <a href="#helpModal" data-toggle="modal" class="btn-muted">
+    <div class="actions">
+        <a href="#helpModal" data-toggle="modal">
             <span class="fa fa-question-circle"></span>
         </a>
     </div>
 </h2>
 
-<hr>
-
-<!-- Help modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title">Notebooks</h4>
-      </div>
-      <div class="modal-body">
-	<p>Each <em>notebook</em> in this section is a time-ordered sequence of <em>notes</em>, much like a simple blog. You can create as many notebooks as you like and, if you have collaborators in this project, you will see here their notebooks as they can see yours. You can make comments inside your colleagues' notebooks but only the owner of a notebook can take notes in it.</p>
-	<p>Notebooks are particularly useful for <em>progressive</em> knowledge and partial results. For example, you might be performing an experiment or a simulation and trying each time a different setup until you arrive at your ideal setting. You could record in a notebook all your parameters, partial results, negative results and discussions so you can refer to them later if needed, but usually you are interested in the latest results and will rarely go back to the beginning of the notebook. Most likely at the end of your experiment or simulation you will only report the very last notes in a notebook.</p>
-	<p>You can also create <em>Shared notebooks</em> which are different in that they allow every member of this project to write in it. These can be useful, for example, to keep records of laboratory equipment's usage.</p>
-	<p>If you think every note will be very important, perhaps you will find more useful a <em>cummulative</em> knowledge repository like the <a href="/{{project.key.integer_id()}}">Wiki</a> section in this project.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
 {% if (user and project.user_is_author(user)) %}
-
-<a class="btn btn-success" href="/{{project.key.integer_id()}}/notebooks/new">
-    New notebook
-</a>
-
-<hr>
-
-{% if my_notebooks %}
-    <h3 style="margin-top: 20px;">My notebooks</h3>
-
-    <div class="panel-group notebook-list" id="myaccordion">
-        {% for n in my_notebooks %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
-                        <span class="glyphicon glyphicon-info-sign"></span></a>
-                        <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                        <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                        {% if n.is_open_p() %}
-                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                        {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                        {% endif %}
-                        {{n.name | safe}}</a>
-                    </h4>
-                </div>
-                <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                <div class="panel-body">
-                <!-- Index modal trigger -->
-                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                <span class="glyphicon glyphicon-list"></span> Index</a>
-                {{n.description | md | safe }}
-                <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                <ul class="nav nav-pills">
-                <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                </ul>
-                </div>
-                </div>
-                </div>
-                <!-- Index modal -->
-                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
-                aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content"></div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-{% if shared_notebooks %}
-    <h3 style="margin-top: 50px;">Shared notebooks</h3>
-
-    <div class="panel-group notebook-list" id="otheraccordion">
-        {% for n in shared_notebooks %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
-                        <span class="glyphicon glyphicon-info-sign"></span></a>
-                        <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                        <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                        {% if n.is_open_p() %}
-                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                        {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                        {% endif %}
-                        {{n.name | safe}}</a>
-                    </h4>
-                </div>
-                <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                <div class="panel-body">
-                <!-- Index modal trigger -->
-                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                <span class="glyphicon glyphicon-list"></span> Index</a>
-                {{n.description | md | safe }}
-                <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                <ul class="nav nav-pills">
-                <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                </ul>
-                </div>
-                </div>
-                </div>
-                <!-- Index modal -->
-                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
-                aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content"></div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-{% if other_notebooks %}
-    <h3 style="margin-top: 50px;">Collaborators' notebooks</h3>
-
-    <div class="panel-group notebook-list" id="anotheraccordion">
-        {% for n in other_notebooks %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
-                        <span class="glyphicon glyphicon-info-sign"></span></a>
-                        <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                        <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                        {% if n.is_open_p() %}
-                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                        {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                        {% endif %}
-                        {{n.name | safe}}</a>
-                    </h4>
-                </div>
-                <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                <div class="panel-body">
-                <!-- Index modal trigger -->
-                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                <span class="glyphicon glyphicon-list"></span> Index</a>
-                {{n.description | md | safe }}
-                <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                <ul class="nav nav-pills">
-                <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                </ul>
-                </div>
-                </div>
-                </div>
-                <!-- Index modal -->
-                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
-                aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content"></div>
-                </div>
-            </div>
-        {% endfor %}
+    <div class="project-tab-actions">
+        <a href="/{{project.key.integer_id()}}/notebooks/new">
+            New notebook
+        </a>
     </div>
 
-{% endif %}
+    {% if my_notebooks %}
+        <h3 style="margin-top: 20px;">My notebooks</h3>
+
+        <div class="panel-group notebook-list" id="myaccordion">
+            {% for n in my_notebooks %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{n.key.integer_id()}}">
+                            <span class="glyphicon glyphicon-info-sign"></span></a>
+                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
+                            {% if n.is_open_p() %}
+                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
+                            {% endif %}
+                            {{n.name | safe}}</a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+                    <div class="panel-body">
+                    <!-- Index modal trigger -->
+                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+                    <span class="glyphicon glyphicon-list"></span> Index</a>
+                    {{n.description | md | safe }}
+                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+                    <ul class="nav nav-pills">
+                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
+                    </ul>
+                    </div>
+                    </div>
+                    </div>
+                    <!-- Index modal -->
+                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                    aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if shared_notebooks %}
+        <h3 style="margin-top: 50px;">Shared notebooks</h3>
+
+        <div class="panel-group notebook-list" id="otheraccordion">
+            {% for n in shared_notebooks %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#otheraccordion" href="#{{n.key.integer_id()}}">
+                            <span class="glyphicon glyphicon-info-sign"></span></a>
+                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
+                            {% if n.is_open_p() %}
+                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
+                            {% endif %}
+                            {{n.name | safe}}</a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+                    <div class="panel-body">
+                    <!-- Index modal trigger -->
+                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+                    <span class="glyphicon glyphicon-list"></span> Index</a>
+                    {{n.description | md | safe }}
+                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+                    <ul class="nav nav-pills">
+                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
+                    </ul>
+                    </div>
+                    </div>
+                    </div>
+                    <!-- Index modal -->
+                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                    aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if other_notebooks %}
+        <h3 style="margin-top: 50px;">Collaborators' notebooks</h3>
+
+        <div class="panel-group notebook-list" id="anotheraccordion">
+            {% for n in other_notebooks %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
+                            <span class="glyphicon glyphicon-info-sign"></span></a>
+                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
+                            {% if n.is_open_p() %}
+                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
+                            {% endif %}
+                            {{n.name | safe}}</a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+                    <div class="panel-body">
+                    <!-- Index modal trigger -->
+                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+                    <span class="glyphicon glyphicon-list"></span> Index</a>
+                    {{n.description | md | safe }}
+                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+                    <ul class="nav nav-pills">
+                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
+                    </ul>
+                    </div>
+                    </div>
+                    </div>
+                    <!-- Index modal -->
+                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                    aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
 
 {% else %}
 
-<h3 style="margin-top: 20px;">Open notebooks</h3>
+    <h3 style="margin-top: 20px;">Open notebooks</h3>
 
-<div class="panel-group notebook-list" id="anotheraccordion">
-    {% for n in notebooks %}
-        {% if n.is_open_p() %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
-                        <span class="glyphicon glyphicon-info-sign"></span></a>
-                        <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
-                        <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
-                        {% if n.is_open_p() %}
-                        <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
-                        {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
-                        {% endif %}
-                        {{n.name | safe}}</a>
-                    </h4>
+    <div class="panel-group notebook-list" id="anotheraccordion">
+        {% for n in notebooks %}
+            {% if n.is_open_p() %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#anotheraccordion" href="#{{n.key.integer_id()}}">
+                            <span class="glyphicon glyphicon-info-sign"></span></a>
+                            <span class="badge pull-right" title="Number of notes in this notebook" style="margin-right:10px;">{{n.get_number_of_notes()}}</span>
+                            <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}" style="padding-right:30px;">
+                            {% if n.is_open_p() %}
+                            <img src="{{n.claims_logo('icons')}}" title="{{n.claims_text()}}"/>
+                            {% else %}<small><span class="glyphicon glyphicon-eye-close" title="Closed notebook. Only project members can see it."></span></small>
+                            {% endif %}
+                            {{n.name | safe}}</a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
+                    <div class="panel-body">
+                    <!-- Index modal trigger -->
+                    <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
+                    data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
+                    <span class="glyphicon glyphicon-list"></span> Index</a>
+                    {{n.description | md | safe }}
+                    <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
+                    <ul class="nav nav-pills">
+                    <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
+                    </ul>
+                    </div>
+                    </div>
+                    </div>
+                    <!-- Index modal -->
+                    <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
+                    aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content"></div>
+                    </div>
                 </div>
-                <div class="panel-collapse collapse" id="{{n.key.integer_id()}}">
-                <div class="panel-body">
-                <!-- Index modal trigger -->
-                <a href="/{{project.key.integer_id()}}/notebooks/{{n.key.integer_id()}}/_utils/index"
-                data-toggle="modal" data-target="#nbIndexModal{{n.key.integer_id()}}" class="btn btn-sm btn-default pull-right">
-                <span class="glyphicon glyphicon-list"></span> Index</a>
-                {{n.description | md | safe }}
-                <br/><p class="text-muted pull-right">Last note: {{n.last_updated.strftime("%d %b %Y")}}</p>
-                <ul class="nav nav-pills">
-                <li><a href="/{{n.owner.get().username}}"><img src="{{n.owner.get().get_profile_image(20)}}" aria-hidden="true"/> {{n.owner.get().username.capitalize()}}</a></li>
-                </ul>
-                </div>
-                </div>
-                </div>
-                <!-- Index modal -->
-                <div class="modal fade" id="nbIndexModal{{n.key.integer_id()}}" tabindex="-1" role="dialog"
-                aria-labelledby="nbIndexModalLabel{{n.key.integer_id()}}" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content"></div>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-</div>
+            {% endif %}
+        {% endfor %}
+    </div>
 
 {% endif %}
 
