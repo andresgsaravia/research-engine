@@ -124,6 +124,10 @@ textarea {
 	border-radius: 0;
 }
 
+.dropdown-menu {
+	border-radius: 0;
+}
+
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover,
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
 	background: rgba(0, 0, 0, 0.1);
@@ -185,6 +189,15 @@ textarea {
 
 	a:not(.unstyled):hover {
 		color: #333;
+	}
+
+	a:not(.unstyled).active {
+		color: $dark-green !important;
+	}
+
+	*.pull-right a:not(.unstyled), a:not(.unstyled).pull-right {
+		margin-left: 0;
+		margin-right: 15px;
 	}
 }
 

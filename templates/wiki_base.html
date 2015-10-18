@@ -19,9 +19,9 @@
     <h1 id="main-content" style="border-bottom:1px solid #B0B0B0;">
       <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
       {% if wikiurl == "Main_Page" and (user and project.user_is_author(user)) %}
-      <form method="post" role="form" 
+      <form method="post" role="form"
 	    onsubmit="return confirm('Are you sure you want to make this wiki {% if project.wiki_open_p %}not {% endif %}publicly visible?');">
-	<button class="btn btn-sm btn-default pull-right" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle." 
+	<button class="btn btn-sm btn-default pull-right" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle."
 		type="submit">
 	  <span class="glyphicon glyphicon-eye-{% if project.wiki_open_p %}open{% else %}close{% endif %}"></span></button>
 	<input type="hidden" name="action" value="toggle_visibility" />

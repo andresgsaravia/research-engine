@@ -61,6 +61,9 @@ textarea {
 .list-group .list-group-item {
   border-radius: 0; }
 
+.dropdown-menu {
+  border-radius: 0; }
+
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
   background: rgba(0, 0, 0, 0.1); }
@@ -104,6 +107,11 @@ textarea {
     text-decoration: none; }
   .project-tab-actions a:not(.unstyled):hover {
     color: #333; }
+  .project-tab-actions a:not(.unstyled).active {
+    color: #205353 !important; }
+  .project-tab-actions *.pull-right a:not(.unstyled), .project-tab-actions a:not(.unstyled).pull-right {
+    margin-left: 0;
+    margin-right: 15px; }
 
 .project-tab-list .panel {
   border-radius: 0 !important;
