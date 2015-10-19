@@ -71,7 +71,8 @@ class UserPage(generic.GenericPage):
         kw = {"projects" : page_user.list_of_projects(),
               "self_user_p" : user and (user.key == page_user.key),
               "recent_actv" : page_user.get_recent_activity(days=7),
-              "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0},
+              "p_stats" : {"Notebooks" : 0, "Code" : 0, "Datasets" : 0, "Wiki" : 0, "Writings" : 0,"Forum" : 0,"Bibliography" : 0,
+                           "Images" : 0},
               "p_counts" : page_user.get_project_contributions_counts(30, page_user.key == user.key if user else False),
               "plusone_p": True,
               "show_project_p": True}
@@ -84,6 +85,7 @@ class UserPage(generic.GenericPage):
                 elif a.item.kind() in ["CollaborativeWritings", "WritingRevisions", "WritingComments"]: kw["p_stats"]["Writings"] += 1
                 elif a.item.kind() in ["ForumThreads", "ForumComments"]: kw["p_stats"]["Forum"] += 1
                 elif a.item.kind() in ["BiblioItems", "BiblioComments"]: kw["p_stats"]["Bibliography"] += 1
+                elif a.item.kind() in ["Images"]: kw["p_stats"]["Images"] += 1
         self.render("user.html", page_user = page_user, **kw)
 
 
