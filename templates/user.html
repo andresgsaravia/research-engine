@@ -58,6 +58,8 @@ function drawLastWeekSummaryChart() {
 	    else if (u_kind == 'Bibliography') {
 		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('BiblioItems'));
 		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('BiblioComments'));}
+	    else if (u_kind == 'Images') {
+		visible_actvs = mergeNodes(visible_actvs, document.getElementsByClassName('Images'));}
 	    else {console.log('Error, unrecognized kind' + u_kind);}
 	    for (var i=0; i < visible_actvs.length; i++) { visible_actvs[i].style.display = '';}
         }
