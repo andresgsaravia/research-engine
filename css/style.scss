@@ -176,15 +176,15 @@ textarea {
 }
 
 .project-tab-actions {
-	padding-top: 12px;
-	padding-bottom: 12px;
 	border-bottom: $light-border #f0f0f0;
 	margin-bottom: 20px;
+	padding-top: 12px;
+	padding-bottom: 12px;
 
 	a:not(.unstyled) {
 		color: #777;
 		margin-left: 15px;
-		text-decoration: none;
+		text-decoration: none
 	}
 
 	a:not(.unstyled):hover {
@@ -193,6 +193,7 @@ textarea {
 
 	a:not(.unstyled).active {
 		color: $dark-green !important;
+		text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
 	}
 
 	*.pull-right a:not(.unstyled), a:not(.unstyled).pull-right {
@@ -333,7 +334,7 @@ textarea {
 	color: #333;
 }
 
-.btn-muted .fa {
+.btn-muted .fa:not(.unstyled) {
 	font-size: 0.8em;
 }
 

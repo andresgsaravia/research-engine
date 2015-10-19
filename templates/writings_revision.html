@@ -1,9 +1,17 @@
 {% extends "writings_base.html" %}
 
-    
 {% block w_content %}
+    <div>
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">
+            <span class="fa fa-chevron-left" style="font-size: 0.8em"></span> Back<!--
+        --></a>
+        <br>
+        <b style="font-size: 1.4em;">
+            This is a revision of "{{writing.title | safe}}" from {{revision.date.strftime("%d %b %Y")}}
+        </b>
+    </div>
 
-<p class="text-muted">Revision from day: {{revision.date.strftime("%d %b %Y")}}</p>
-{{revision.content | md | safe}}
+    <hr>
 
+    {{revision.content | md | safe}}
 {% endblock %}
