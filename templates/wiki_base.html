@@ -1,57 +1,73 @@
 {% extends "project_base.html" %}
 
-{% block breadcrumbs %}
-<li><a href="/{{project.key.integer_id()}}/wiki/page/Main_Page">Wiki</a></li>
-<li class="active">{{wikiurl.replace("_", " ") | truncate(40, True)}}</li>
-{% endblock %}
-
 {% block p_content %}
-
-<ul class="nav nav-tabs">
-  <li class="pull-right{% if hist_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}" style="margin-right: 0;">History</a></li>
-  <li class="pull-right{% if edit_p %} active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}">Edit</a></li>
-  <li class="pull-right{% if talk_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/talk/{{wikiurl}}">Talk</a></li>
-  <li class="pull-right{% if view_p %} active{% endif %}"><a href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}">Article</a></li>
-</ul>
-
-<div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
-  <div class="panel-body">
-    <h1 id="main-content" style="border-bottom:1px solid #B0B0B0;">
-      <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-      {% if wikiurl == "Main_Page" and (user and project.user_is_author(user)) %}
-      <form method="post" role="form"
-	    onsubmit="return confirm('Are you sure you want to make this wiki {% if project.wiki_open_p %}not {% endif %}publicly visible?');">
-	<button class="btn btn-sm btn-default pull-right" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle."
-		type="submit">
-	  <span class="glyphicon glyphicon-eye-{% if project.wiki_open_p %}open{% else %}close{% endif %}"></span></button>
-	<input type="hidden" name="action" value="toggle_visibility" />
-      </form>
-      <!-- Help modal -->
-      <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
-	<span class="glyphicon glyphicon-question-sign"></span></a>
-      {% endif %}
-      {{wikiurl.replace("_", " ")}}
-    </h1>
-
     <!-- Help modal -->
     <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	    <h4 class="modal-title">Wiki</h4>
-	  </div>
-	  <div class="modal-body">
-	    <p>The wiki is a <em>cummulative</em> knowledge repository. You can use this section to document the background, previous work and motivations for your project. You can also use this section to collect bibliographical references related to certain topics. You can also use this section to summarize the findings your project has made.</p>
-	    <p>For documenting partial progress and keeping track of an ongoing experiment you might find more useful the <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a> section</p>
-	  </div>
-	</div>
-      </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Wiki</h4>
+                </div>
+                <div class="modal-body">
+                    <p>The wiki is a <em>cummulative</em> knowledge repository. You can use this section to document the background, previous work and motivations for your project. You can also use this section to collect bibliographical references related to certain topics. You can also use this section to summarize the findings your project has made.</p>
+                    <p>For documenting partial progress and keeping track of an ongoing experiment you might find more useful the <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a> section</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="project-tab-header">
+        <div class="parent-link">
+            Wiki
+        </div>
+
+        {{wikiurl.replace("_", " ")}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        <div class="actions">
+            <div class="actions">
+                <a href="#helpModal" data-toggle="modal">
+                    <span class="fa fa-question-circle"></span>
+                </a>
+            </div>
+        </div>
+    </h2>
+
+    <div class="project-tab-actions">
+        <a href="/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}" class="{% if view_p %}active{% endif %}">
+            View
+        </a>
+        {% if not visitor_p %}
+            <a href="/{{project.key.integer_id()}}/wiki/edit/{{wikiurl}}" class="{% if edit_p %}active{% endif %}">
+                Edit
+            </a>
+        {% endif %}
+        <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}" class="{% if hist_p %}active{% endif %}">
+            History
+        </a>
+        <a href="/{{project.key.integer_id()}}/wiki/talk/{{wikiurl}}" class="{% if talk_p %}active{% endif %}">
+            Discussion
+        </a>
+
+        {% if wikiurl == "Main_Page" and user and project.user_is_author(user) %}
+            <div class="pull-right">
+                <form method="post" role="form" id="wiki_visibility_form" onsubmit="return confirm('Are you sure you want to make this wiki {% if project.wiki_open_p %}not {% endif %}publicly visible?');">
+                    <a onclick="document.getElementById('wiki_visibility_form').submit();" title="This wiki is {% if not project.wiki_open_p %}not {% endif %}publicly visible. Click to toggle.">
+                        <span class="fa fa-eye{% if not project.wiki_open_p %}-slash{% endif %}"></span>
+                        {% if project.wiki_open_p %}
+                            Public
+                        {% else %}
+                            Private
+                        {% endif %}
+                    </a>
+                    <input type="hidden" name="action" value="toggle_visibility" />
+                </form>
+            </div>
+        {% endif %}
     </div>
 
     <div class="wikitext">
-      {% block w_content %}{% endblock %}</div>
-  </div>
-</div>
-
+        {% block w_content %}{% endblock %}
+    </div>
 {% endblock %}

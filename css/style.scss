@@ -141,6 +141,10 @@ textarea {
 	color: #333 !important;
 }
 
+a {
+	cursor: pointer !important;
+}
+
 
 /** Project tab structuer **/
 
@@ -245,6 +249,10 @@ textarea {
 		font-size: 2.2em;
 		color: inherit;
 	}
+}
+
+.fa-full-size {
+	font-size: 1em !important;
 }
 
 .icon-btn.active {

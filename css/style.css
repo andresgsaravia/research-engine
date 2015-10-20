@@ -74,6 +74,9 @@ textarea {
 .navbar .dropdown-menu a:hover {
   color: #333 !important; }
 
+a {
+  cursor: pointer !important; }
+
 /** Project tab structuer **/
 .project-tab-header {
   margin: 0;
@@ -142,6 +145,9 @@ textarea {
   .icon-btn .fa {
     font-size: 2.2em;
     color: inherit; }
+
+.fa-full-size {
+  font-size: 1em !important; }
 
 .icon-btn.active {
   background: #EEEEEE;
