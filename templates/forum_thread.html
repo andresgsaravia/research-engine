@@ -53,10 +53,12 @@
 
     {% for c in comments %}
         <div class="project-tab-comment">
-            <!-- Edit modal trigger -->
-            <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
-                <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
-            </a>
+            {% if c.author == user.key %}
+                <!-- Edit modal trigger -->
+                <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
+                    <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
+                </a>
+            {% endif %}
 
             <!-- Edit comment modal -->
             <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
@@ -120,5 +122,4 @@
             <em>Start typing above to see the preview here.</em>
         </div>
     </div>
-
 {% endblock %}

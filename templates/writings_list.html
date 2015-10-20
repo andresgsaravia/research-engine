@@ -1,19 +1,6 @@
 {% extends "project_base.html" %}
 
 {% block p_content %}
-
-    <!--div class="page-header" >
-    <h2 id="main-content">Collaborative Writings
-    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    {% if not visitor_p %}
-    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/writings/new">
-    <span class="glyphicon glyphicon-plus"></span> New writing</a>
-    {% endif %}
-    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
-    <span class="glyphicon glyphicon-question-sign"></span></a>
-    </h2>
-</div-->
-
     <!-- Help modal -->
     <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -109,5 +96,4 @@
             });
         });
     </script>
-
 {% endblock %}

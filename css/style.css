@@ -117,9 +117,10 @@ textarea {
 .project-tab-list .panel {
   border-radius: 0 !important;
   margin-top: -1px !important; }
-
 .project-tab-list .panel-heading {
   background: #fff; }
+.project-tab-list .accordion-toggle .fa {
+  font-size: 1em !important; }
 
 .project-tab-comment {
   background: #f0f0f0;

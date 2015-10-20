@@ -202,13 +202,19 @@ textarea {
 	}
 }
 
-.project-tab-list .panel {
-	border-radius: 0 !important;
-	margin-top: -1px !important;
-}
+.project-tab-list {
+	.panel {
+		border-radius: 0 !important;
+		margin-top: -1px !important;
+	}
 
-.project-tab-list .panel-heading {
-	background: #fff;
+	.panel-heading {
+		background: #fff;
+	}
+
+	.accordion-toggle .fa {
+		font-size: 1em !important;
+	}
 }
 
 .project-tab-comment {
@@ -439,6 +445,7 @@ textarea {
 	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 }
+
 
 /** Special Unique Elements **/
 

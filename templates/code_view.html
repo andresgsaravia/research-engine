@@ -1,98 +1,124 @@
 {% extends "project_base.html" %}
 
-
 {% block p_head %}
   <script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
-
-{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/code">Source code</a></li><li class="active">{{code.name | truncate(40, True)}}</li>{% endblock %}
-
-
 {% block p_content %}
- 
-<div class="panel panel-default">
-  <div class="panel-heading" style="overflow:auto">
-    {% if user and project.user_is_author(user) %}
-    <a class="btn btn-link btn-edit btn-sm pull-right" href="/{{project.key.integer_id()}}/code/{{code.key.integer_id()}}/edit">
-      <span class="glyphicon glyphicon-pencil"></span>
-    </a>
-    {% endif %}
-    <h3 id="main-content" class="panel-title">
-      <small><span class="glyphicon glyphicon-eye-{% if code.is_open_p() %}open{% else %}close{% endif %}"
-		   title="This source-code discussion is {% if not code.is_open_p() %}not {% endif %}publicly visible."></span></small>
-      {{code.name}}
-      <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
-  </div>
-  <div class="panel-body">
+    <h2 class="project-tab-header no-action-bar">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/code">Code</a>
+        </div>
+
+        {{code.name}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        {% if user and project.user_is_author(user) %}
+            <div class="actions">
+                <a href="/{{project.key.integer_id()}}/code/{{code.key.integer_id()}}/edit">
+                    <span class="fa fa-pencil"></span>
+                </a>
+            </div>
+        {% endif %}
+    </h2>
+
     {{code.description | md | safe}}
-    <p class="text-muted pull-right">Last comment: {{code.last_updated.strftime("%d %b %Y")}}</p>
-    <a href="{{code.link}}">External link</a>
-  </div>
-</div>
 
-<h3 class="page-header">Comments <span class="badge">{{code.get_number_of_comments()}}</span></h3>
+    <div style="margin-top: 8px;">
+        <small class="text-muted">
+            <span style="margin-right: 15px;">
+                <a href="{{code.link}}">External link</a>
+            </span>
 
-<div class="list-group">
-  {% for c in comments %}
-  <div class="list-group-item">
-    {% if c.author == user.key %}
-    <!-- Button trigger modal -->
-    <button class="btn btn-link btn-edit btn-xs pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}" title="Edit">
-      <span class="glyphicon glyphicon-pencil"></span></button>
-    <!-- Modal -->
-    <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
-      <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit answer</h4>
-	  </div>
-	  <form method="post" role="form">
-	    <div class="modal-body">
-	      <div class="form-group">
-		<textarea id="commentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
-		<input type="hidden" name="comment_id" value="{{c.key.integer_id()}}" />
-		<input type="hidden" name="action" value="edit_comment" />
-	      </div>
-	    </div>
-	    <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-	    </div>
-	  </form>
-	</div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            <span style="margin-right: 15px;">
+                Last comment on {{code.last_updated.strftime("%d %b %Y")}}
+            </span>
+
+            <span style="margin-right: 15px;">
+                {% if code.is_open_p() %}
+                    <span class="fa fa-eye"></span> Public
+                {% else %}
+                    <span class="fa fa-eye-slash"></span> Private
+                {% endif %}
+            </span>
+        </small>
+    </div>
+
+    <h3 style="margin-top: 60px">
+        {{code.get_number_of_comments()}} comments
+    </h3>
+
+    {% for c in comments %}
+        <div class="project-tab-comment">
+            {% if c.author == user.key %}
+                <!-- Edit modal trigger -->
+                <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
+                    <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
+                </a>
+            {% endif %}
+
+            <!-- Edit comment modal -->
+            <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit comment</h4>
+                        </div>
+                        <form method="post" role="form">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <textarea id="commentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
+                                    <input type="hidden" name="comment_id" value="{{c.key.integer_id()}}" />
+		                            <input type="hidden" name="action" value="edit_comment" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            {{c.comment | md | safe}}
+
+            <div>
+                <small class="text-muted">
+                    By <a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a>
+                    on {{c.date.strftime("%d %b %Y")}}
+                </small>
+            </div>
+        </div>
+    {% endfor %}
+    {% if not comments|length %}
+        <div class="text-muted" style="margin-top: 5px;">There are no comments currently.</div>
     {% endif %}
-    {{c.comment | md | safe}}
-    <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
-    <ul class="nav nav-pills">
-      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{c.author.get().username.capitalize()}}</a></li>
-    </ul>
-  </div>
-  {% endfor %}
-</div>
 
-{% if user and project.user_is_author(user) %}
-<form method="post" role="form">
-  <div class="form-group{% if error_message %} has-error{% endif %}">
-    <label for="newCommentText">Your comment</label>
-    <textarea name="comment" id="newCommentText" class="form-control" rows="10"
-	      onKeyUp="Preview('newCommentText','previewArea');">{{comment_value}}</textarea>
-  </div>
-  <button type="submit" class="btn btn-success">Comment</button>
-  <input type="hidden" name="action" value="new_comment" />
-  <p class="text-danger">{{error_message}}</p>
-  <div class="help-block">
-    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-  </div>
-</form>
+    {% if user and project.user_is_author(user) %}
+        <form method="post" role="form">
+            <div class="form-group">
+                <label for="newCommentText">
+                    <h3 style="margin-top: 60px">Leave a reply...</h3>
+                </label>
+                <textarea name="comment" id="newCommentText" class="form-control" rows="10"
+                      onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
+            </div>
+            <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post answer</button>
+            <input type="hidden" name="action" value="new_comment" />
+            {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+            {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
+            <div class="help-block">
+                Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+            </div>
+        </form>
 
-<div>This is a preview of how the page will be renderer when you post it. It may not be 100&#37; accurate but it should be close.</div>
-<div class="panel panel-default">
-  <div class="panel-body" id="previewArea"><em>Start typing above to see the preview here.</em></div>
-</div>
-{% endif %}
-
+        <div>This is a preview of how the text will be renderer when you post it.</div>
+        <div class="panel panel-default">
+            <div class="panel-body" id="previewArea">
+                <em>Start typing above to see the preview here.</em>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
