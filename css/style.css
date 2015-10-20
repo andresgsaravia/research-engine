@@ -64,6 +64,9 @@ textarea {
 .dropdown-menu {
   border-radius: 0; }
 
+.modal-content {
+  border-radius: 0; }
+
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
   background: rgba(0, 0, 0, 0.1); }

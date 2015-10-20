@@ -105,7 +105,7 @@
                 <textarea name="comment" id="newCommentText" class="form-control" rows="10"
                       onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
             </div>
-            <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post answer</button>
+            <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post comment</button>
             <input type="hidden" name="action" value="new_comment" />
             {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
             {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
