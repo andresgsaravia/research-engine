@@ -12,6 +12,7 @@
                 <small class="text-muted pull-right">
                     By {{rev.author.get().username.capitalize()}}
                     on {{rev.date.strftime("%d %b %Y")}}
+                    at {{rev.date.strftime("%X")}}
                 </small>
             </a>
         {% endfor %}
