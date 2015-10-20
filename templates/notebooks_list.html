@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<h2 class="project-tab-header">
+<h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
     Notebooks
     <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
