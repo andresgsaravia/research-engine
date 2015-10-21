@@ -110,7 +110,7 @@ class Projects(ndb.Model):
                 lic_url = "https://creativecommons.org/licenses/by/4.0/"
                 lic_img = "https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"
                 lic_txt = "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License"
-            return '<small><a rel="license" href="%s" class="license-img"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><div class="license-text">Unless otherwise specified, original content from <b><span xmlns:dct="https://purl.org/dc/terms/" property="dct:title">%s</span></b> is licensed under a <a rel="license" href="%s">%s</a>.</div></small>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
+            return '<a rel="license" href="%s" class="license-img"><img alt="Creative Commons License" style="border-width:0" src="%s" /></a><div class="license-text">Unless otherwise specified, original content from <b><span xmlns:dct="https://purl.org/dc/terms/" property="dct:title">%s</span></b> is licensed under a<br><a rel="license" href="%s">%s</a>.</div>' % (lic_url, lic_img, self.name, lic_url, lic_txt)
 
 
 

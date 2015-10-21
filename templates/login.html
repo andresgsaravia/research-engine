@@ -7,68 +7,60 @@
 
 {% block content %}
 
-<div class="jumbotron page-intro small-margins">
-  <div class="container-fluid">
-    <h2 role="heading" id="main-content" class="title" style="margin-bottom: 0">
-	<a href="/"><span class="glyphicon glyphicon-menu-left pull-left icon-btn"></span></a>	
-	Sign In
-	<span class="glyphicon glyphicon-menu-left pull-right" style="visibility: hidden;"></span>	
-    </h2>
-  </div>
+<div class="container form-container">
+    <h2>Sign In</h2>
+
+    {% if user %}
+    <p>Welcome back {{user.username.title()}}, you are already logged in</p>
+    <p>If you are not {{user.username.title()}} you can <a href="/logout">Logout here</a></p>
+
+    {% else %}
+
+    <form method="post" role="form">
+        <div class="form-group{% if uname_error_p %} has-error{% endif %}">
+            <input id="username" class="form-control input-lg input-group first" type="text" name="email_or_username" value="{{email_or_username}}" placeholder="Email or username" autofocus/>
+        </div>
+
+        <div class="form-group{% if pwd_error_p %} has-error{% endif %}">
+            <input id="inputPassword" class="form-control input-lg input-group" type="password" name="password" value="" placeholder="Password"/>
+        </div>
+
+        <button type="submit" class="btn btn-default btn-new btn-block btn-lg" style="margin-top: 10px;">Log in</button>
+        <input type="hidden" name="goback" value="{{goback}}">
+        {% if error_message %}<div class="alert alert-danger" style="margin-top: 10px;">{{error_message}}</div>{% endif %}
+    </form>
+
+    <hr>
+
+    <div class="help-block">If you don't have an account you can<br><a href="/signup">create an account</a> for free.</div>
+
+    <hr>
+
+    <p>If you have a Google account, you can</p>
+    <p><a href="/auth/google" class="btn btn-default btn-new btn-block btn-lg">Log in with Google</a></p>
+
+    <hr>
+
+    <a role="button" data-toggle="collapse" href="#recover-password-form" aria-expanded="false" aria-controls="recover-password-form" class="collapse-toggle">
+        <h3 style="margin-bottom: 20px;">Forgot your password?</h3>
+    </a>
+
+    <form method="post" action="/recover_password" role="form" id="recover-password-form" class="collapse">
+        <div class="form-group{% if r_error_message %} has-error{% endif %}">
+            <input type="text" name="email" class="form-control input-lg" placeholder="Enter your email"/>
+            <input type="submit" class="btn btn-default btn-new btn-block btn-lg last" style="margin-top: 10px;" value="Send recovery link" />
+            {% if r_error_message %}<p class="text-danger">{{r_error_message}}</p>{% endif %}
+            <input type="hidden" name="action" value="send_email" />
+        </div>
+    </form>
+
+    {% if info %}<div class="alert alert-success">{{info}}</div>{% endif %}
+
+    {% endif %}
 </div>
 
-<br>
-
-<div class="container" style="max-width:800px;">
-  {% if user %}
-  <p>Welcome back {{user.username.title()}}, you are already logged in</p>
-  <p>If you are not {{user.username.title()}} you can <a href="/logout">Logout here</a></p>
-  
-  {% else %}
-  
-  <form method="post" role="form" class="form-horizontal">
-    <div class="form-group{% if uname_error_p %} has-error{% endif %}">
-      <label for="username" class="col-sm-2 control-label">Email or username</label>
-      <div class="col-sm-10">
-	<input id="username" class="form-control" type="text" name="email_or_username" value="{{email_or_username}}" placeholder="Email or username" autofocus/>
-      </div>
-    </div>
-    <div class="form-group{% if pwd_error_p %} has-error{% endif %}">
-      <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-      <div class="col-sm-10">
-	<input id="inputPassword" class="form-control" type="password" name="password" value="" placeholder="Password"/>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-default btn-new col-sm-offset-2">Log in</button>
-    <input type="hidden" name="goback" value="{{goback}}">
-    {% if error_message %}<div class="alert alert-danger">{{error_message}}</div>{% endif %}
-  </form>
-
-  <hr>
-
-  <div class="help-block">If you don't have an account you can <a href="/signup">create an account</a> for free.</div>
-
-  <hr>
-
-  <p>If you registered with a Google account, you can</p>
-  <p><a href="/auth/google" class="btn btn-default btn-new">Log in with Google</a></p>
-
-  <hr>
-
-  <h3 style="margin-bottom: 20px;">Forgot your password?</h3>
-
-  <form method="post" action="/recover_password" role="form" class="form-horizontal">
-    <div class="form-group{% if r_error_message %} has-error{% endif %}">
-      <div class="col-md-9"><input type="text" name="email" class="form-control" placeholder="Enter your email"/></div>
-      <div class="col-md-2"><input type="submit" class="btn btn-default btn-new" value="Send recovery link" /></div>
-      {% if r_error_message %}<p class="text-danger">{{r_error_message}}</p>{% endif %}
-      <input type="hidden" name="action" value="send_email" />
-    </div>
-  </form>
-  
-  {% if info %}<div class="alert alert-success">{{info}}</div>{% endif %}
-
-  {% endif %}
-</div>
+<script>
+    $("#signin-navbar").addClass("active");
+</script>
 
 {% endblock %}

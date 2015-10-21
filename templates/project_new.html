@@ -7,17 +7,9 @@
 
 {% block content %}
 
-<div class="jumbotron page-intro small-margins">
-  <div class="container-fluid">
-    <h2 role="heading" id="main-content" class="title" style="margin-bottom: 0">
-	New project	
-    </h2>
-  </div>
-</div>
-
-<br>
-
 <div class="container" style="max-width:720px;">
+    <h2 role="heading" id="main-content" class="page-title-centered">Create a New Project</h2>
+
   <form method="post" action="/new_project" role="form">
     <div class="form-group {{name_class}}">
       <label for="pName">Project name</label>
@@ -86,16 +78,16 @@
 	  </div>
 	</div>
       </div>
-            
+
       <div class="radio">
 	<label>
-	  <input type="radio" name="default_license" 
+	  <input type="radio" name="default_license"
 		 value="CC BY" {% if (not default_license) or default_license == "CC BY" %}checked{% endif %} />
 	  <img alt="Creative Commons CC BY license" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/80x15.png" />
 	  Creative Commons Attribution
 	</label>
       </div>
-      
+
       <div class="radio">
 	<label>
 	  <input type="radio" name="default_license" value="CC BY-SA"{% if default_license == "CC BY-SA" %}checked{% endif %} />
@@ -103,7 +95,7 @@
 	  Creative Commons Attribution-ShareAlike
 	</label>
       </div>
-      
+
       <div class="radio">
 	<label>
 	  <input type="radio" name="default_license" value="CC BY-ND"{% if default_license == "CC BY-ND" %}checked{% endif %} />
@@ -111,7 +103,7 @@
 	  Creative Commons Attribution-NoDerivs
 	</label>
       </div>
-      
+
       <div class="radio">
 	<label>
 	  <input type="radio" name="default_license" value="CC BY-NC"{% if default_license == "CC BY-NC" %}checked{% endif %} />
@@ -119,7 +111,7 @@
 	  Creative Commons Attribution-NonCommercial
 	</label>
       </div>
-      
+
       <div class="radio">
 	<label>
 	  <input type="radio" name="default_license" value="CC BY-NC-SA"{% if default_license == "CC BY-NC-SA" %}checked{% endif %} />
@@ -127,7 +119,7 @@
 	  Creative Commons Attribution-NonCommercial-ShareAlike
 	</label>
       </div>
-      
+
       <div class="radio">
 	<label>
 	  <input type="radio" name="default_license" value="CC BY-NC-ND"{% if default_license == "CC BY-NC-ND" %}checked{% endif %} />
@@ -135,7 +127,7 @@
 	  Creative Commons Attribution-NonCommercial-NoDerivs
 	</label>
       </div>
-      
+
       <div class="radio">
 	<label>
 	  <input type="radio" name="default_license" value="" />

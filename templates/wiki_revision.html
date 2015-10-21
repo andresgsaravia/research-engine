@@ -1,12 +1,17 @@
 {% extends "wiki_base.html" %}
 
-    
 {% block w_content %}
+    <p class="text-muted">
+        <span style="margin-right: 15px">
+            <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}">
+                <span class="fa fa-chevron-left" style="font-size: 0.8em"></span> Back<!--
+            --></a>
+        </span>
+        <span style="margin-right: 15px">
+            Revision from {{revision.date.strftime("%d %b %Y")}}
+            by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a>
+        </span>
+    </p>
 
-<p class="text-muted">
-  Revision as of {{revision.date.strftime("%x %X")}} by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a>
-</p>
-{{wikitext | md(project.key.integer_id()) | safe}}
-
-
+    {{wikitext | md(project.key.integer_id()) | safe}}
 {% endblock %}

@@ -1,46 +1,64 @@
 {% extends "project_base.html" %}
 
-
-{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/writings">Collaborative writings</a></li><li class="active">{{writing.title | safe | truncate(40, True)}}</li>{% endblock %}
-
-
 {% block p_content %}
-  
-<ul class="nav nav-tabs nav-justified">
-  <li{% if curr_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">View</a></li>
-  <li class="{% if edit_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">Edit</a></li>
-  <li{% if hist_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">History</a></li>
-  <li{% if disc_p %} class="active"{% endif %}><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion">Discussion</a></li>
-  <li class="{% if info_p %}active{% endif %}{% if visitor_p %} disabled{% endif %}"><a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info"><span class="glyphicon glyphicon-cog"></span></a></li>
-  <li class="dropdown">
-    <a id="exportLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
-      Export<span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="exportLabel">
-      <li role="presentation">
-	<a role="menuitem" tabindex="-1" target="_blank"
-	   href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/_html">HTML</a></li>
-      <li role="presentation" class="disabled">
-	<a role="menuitem" tabindex="-1" href="#">PDF (coming soon)</a></li>
-      <li role="presentation" class="disabled">
-	<a role="menuitem" tabindex="-1" href="#">Markdown (coming soon)</a></li>
-    </ul>
-  </li>
-</ul>
+    <h2 class="project-tab-header">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/writings">
+                Writing
+            </a>
+        </div>
 
-<div class="panel panel-default" style="border-top:0;border-top-left-radius:0;border-top-right-radius:0;">
-  <div class="panel-body" style="text-align:justify">
-    <div class="page-header"><h2 id="main-content">{{writing.title | safe}}
-	<a href="#project-menu" class="skiptocontent">Skip to project menu</a></h2></div>
+        {{writing.title | safe}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        <div class="actions">
+            {% if not visitor_p %}
+                <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/info">
+                    <span class="fa fa-cog"></span>
+                </a>
+            {% endif %}
+        </div>
+    </h2>
+
+    <div class="project-tab-actions">
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}" class="{% if curr_p %}active{% endif %}">
+            View
+        </a>
+        {% if not visitor_p %}
+            <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit" class="{% if edit_p %}active{% endif %}">
+                Edit
+            </a>
+        {% endif %}
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history" class="{% if hist_p %}active{% endif %}">
+            History
+        </a>
+        <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/discussion" class="{% if disc_p %}active{% endif %}">
+            Discussion
+        </a>
+        <div class="pull-right dropdown">
+            <a id="exportLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+                Export <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="exportLabel">
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" target="_blank" href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/_html" class="unstyled">
+                        HTML
+                    </a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a role="menuitem" tabindex="-1" href="#" class="unstyled">
+                        PDF (coming soon)
+                    </a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a role="menuitem" tabindex="-1" href="#" class="unstyled">
+                        Markdown (coming soon)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     {% block w_content %}
     {% endblock %}
-  </div>
-  <div class="panel-footer">
-    <p class="text-muted pull-right">Last Updated: {{writing.last_updated.strftime("%d %b %Y")}}</p>
-    <p class="text-muted">
-      <small><span class="glyphicon glyphicon-eye-{% if writing.is_open_p() %}open{% else %}close{% endif %}"
-		   title="This writing is {% if not writing.is_open_p() %}not {% endif %}publicly visible."></span></small> |
-      Status: <em>{{writing.status}}</em></p>
-  </div>
-</div>
 {% endblock %}

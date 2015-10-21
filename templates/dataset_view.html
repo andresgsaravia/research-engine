@@ -1,66 +1,117 @@
 {% extends "project_base.html" %}
 
-
-{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/datasets">Datasets</a></li><li class="active">{{dataset.name | truncate(40, True)}}</li>{% endblock %}
-
-
 {% block p_content %}
+    <!-- Help modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Datasets</h4>
+                </div>
+                <div class="modal-body">
+                    <p>This section helps you organize your experimental (or simulations) data files by having them separated in appropiate sections, associating with them the relevant metadata and providing a simple version control system.</p>
+                    <p>Each <em>dataset</em> is a collection of measurements or calculations made in a single experiment or simulation. Inside a given dataset you can add many individual <em>concepts</em> which consist of version-controlled <em>data-files</em>.</p>
+                    <p>For example, suppose you want to study the viscosity and color of a certain "liquid X" as a function of temperature, this experiment will give you two files, say <code>viscosity.dat</code> and <code>color.dat</code>. You can add a dataset called "Viscosity and color of X vs. Temperature". Inside this dataset you add two concepts: "Viscosiy" and "Color" and inside each one of this concepts you add the corresponding file <code>viscosity.dat</code> and <code>color.dat</code> respectively. If you improve your experimental setting and obtain better data, you just add a new revision for the "Viscosity" and "Color" concepts. Furthermore, if you need to make some data processing to your data you could add a couple more concepts like "Viscosity processed" and "Color processed".</p>
+                    <p>Each <em>dataset</em>, <em>data-concept</em> and <em>data-file</em> can be documented individually so you don't loose any relevant information related to them.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="page-header">
-  <h3 id="main-content">
-    <small><span class="glyphicon glyphicon-eye-{% if dataset.is_open_p() %}open{% else %}close{% endif %}"
-		   title="This dataset is {% if not dataset.is_open_p() %}not {% endif %}publicly visible."></span></small>
-    {{dataset.name}}
-    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    <h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/datasets">
+                Dataset
+            </a>
+        </div>
+
+        {{dataset.name}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        <div class="actions">
+            <a href="#helpModal" data-toggle="modal">
+                <span class="fa fa-question-circle"></span>
+            </a>
+            {% if user and project.user_is_author(user) %}
+                <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">
+                    <span class="fa fa-cog"></span>
+                </a>
+            {% endif %}
+        </div>
+    </h2>
+
     {% if user and project.user_is_author(user) %}
-    <a class="btn btn-default btn-sm pull-right" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/edit">
-      <span class="glyphicon glyphicon-cog"></span></a>
-    <a class="btn btn-success btn-sm pull-right" href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data" style=" margin-right:10px;">
-      <span class="glyphicon glyphicon-plus"></span> New data concept</a>
+        <div class="project-tab-actions">
+            <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/new_data">
+                New data concept
+            </a>
+        </div>
     {% endif %}
-    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
-      <span class="glyphicon glyphicon-question-sign"></span></a>
-  </h3>
-</div>
 
-<!-- Help modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title">Datasets</h4>
-      </div>
-      <div class="modal-body">
-	<p>This section helps you organize your experimental (or simulations) data files by having them separated in appropiate sections, associating with them the relevant metadata and providing a simple version control system.</p>
-	<p>Each <em>dataset</em> is a collection of measurements or calculations made in a single experiment or simulation. Inside a given dataset you can add many individual <em>concepts</em> which consist of version-controlled <em>data-files</em>.</p>
-	<p>For example, suppose you want to study the viscosity and color of a certain "liquid X" as a function of temperature, this experiment will give you two files, say <code>viscosity.dat</code> and <code>color.dat</code>. You can add a dataset called "Viscosity and color of X vs. Temperature". Inside this dataset you add two concepts: "Viscosiy" and "Color" and inside each one of this concepts you add the corresponding file <code>viscosity.dat</code> and <code>color.dat</code> respectively. If you improve your experimental setting and obtain better data, you just add a new revision for the "Viscosity" and "Color" concepts. Furthermore, if you need to make some data processing to your data you could add a couple more concepts like "Viscosity processed" and "Color processed".</p>
-	<p>Each <em>dataset</em>, <em>data-concept</em> and <em>data-file</em> can be documented individually so you don't loose any relevant information related to them.</p>
-      </div>
+    <p class="text-muted" style="margin-bottom: 20px;">
+        <span class="fa fa-eye{% if not dataset.is_open_p() %}-slash{% endif %}" title="This dataset is {% if not dataset.is_open_p() %}not {% endif %}publicly visible."></span>
+
+        {% if dataset.is_open_p() %}
+            Public
+        {% else %}
+            Private
+        {% endif %}
+    </p>
+
+    <div class="panel-group project-tab-list" id="caccordion">
+        {% for i in items %}
+            {% if i.is_open_p() or (user and project.user_is_author(user)) %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    {{i.get_number_of_revisions()}} revisions
+                                </div>
+
+                                <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
+
+                            <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{i.key.integer_id()}}">
+                                {{i.name | safe}}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+                        <div class="panel-body">
+                      	     {{i.description | md | safe}}
+
+                            <div class="text-muted">
+                                <small>
+                                    Last updated on {{i.last_updated.strftime("%d %b %Y")}}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-  </div>
-</div>
 
-<div class="panel-group" id="daccordion">
-  {% for i in items %}
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#daccordion" href="#{{i.key.integer_id()}}">
-	  <span class="glyphicon glyphicon-info-sign"></span></a>
-	<span class="badge pull-right" title="Number of revisions" style="margin-right:10px;">{{i.get_number_of_revisions()}}</span>
-	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{i.key.integer_id()}}">{{i.name | safe}}</a>
-      </h4>
-    </div>
-    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
-      <div class="panel-body">
-	{{i.description | md | safe }}
-	<p class="text-muted pull-right">Last updated: {{i.last_updated.strftime("%d %b %Y")}}</p>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
+    <!-- Accordion open/close animation -->
+    <script>
+        $(".accordion-toggle").click(function() {
+            if (!$(this).children(".fa-chevron-down").is(":hidden")) {
+                $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
+                    $(this).show();
+                });
+                $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
+                    $(this).hide();
+                });
+            }
 
-
+            $(this).children(".fa").each(function() {
+                $(this).toggle();
+            });
+        });
+    </script>
 {% endblock %}
