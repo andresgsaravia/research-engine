@@ -32,7 +32,7 @@
             </a>
         </p>
     {% elif item.kind == "arXiv" %}
-        <strong>arXiv preprint</strong> ({{i.metadata["date"]}})
+        <strong>arXiv preprint</strong> ({{item.metadata["date"]}})
         <p>
             <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
         </p>
