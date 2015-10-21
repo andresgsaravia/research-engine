@@ -6,14 +6,13 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
     <style class="text/css">
-      html,body {height: 100%;}
-      #wrap {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -45px; padding: 0 0 45px;}
       a.skiptocontent:link, a.skiptocontent:hover, a.skiptocontent:visited {display: inline-block;position: absolute;left: -400px;font-size: 0.8em;text-decoration: none; opacity:0}
       a.skiptocontent:active, a.skiptocontent:focus {display: inline-block;position: absolute;left: 9px;background-color:white; opacity:1}
     </style>
 
     <!-- Import Roboto, Raleway & Titillium Web from Google Web Fonts -->
     <link href='//fonts.googleapis.com/css?family=Roboto:400,700|Titillium+Web|Raleway' rel='stylesheet' type='text/css'>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
     {% if intro_p %}<link href="/css/introjs.min.css" rel="stylesheet"/>{% endif %}
     {% block head %}
@@ -48,7 +47,7 @@
     <div id="wrap">
 
       <!-- NAVBAR -->
-      <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <nav class="navbar navbar-inverse navbar-static-top" role="navigation" id="navbar">
 	<div class="container">
 	  <div class="navbar-header">
 	    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -57,7 +56,7 @@
 	    </button>
 	    <a class="navbar-brand" href="/" aria-label="Return to the root page">{{APP_NAME}}</a>
 	  </div>
-	  
+
 	  <div class="collapse navbar-collapse navbar-ex1-collapse">
 	    {% if user %}
 	    <ul class="nav navbar-nav">
@@ -82,26 +81,8 @@
 	    </ul>
 	    {% else %} <!-- if user -->
 	    <ul class="nav navbar-nav navbar-right">
-	      <li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Log in <b class="caret"></b></a>
-		<ul class="dropdown-menu" style="min-width:300px;">
-		  <li>
-		    <form class="navbar-form" action="/login" method="post" role="form">
-		      <div class="form-group">
-			<input type="text" placeholder="Email or username" class="form-control" name="email_or_username"/>
-		      </div>
-		      <div class="form-group">
-			<input type="password" placeholder="Password" class="form-control" name="password"/>
-		      </div>
-		      <div class="form-group">
-			<button type="submit" class="btn btn-success">Log in</button>
-		      </div>
-		      <input id="goback" type="hidden" name="goback" value=""/>
-		    </form>
-		  </li>
-		  <li class="divider"></li>
-		  <li><div class="text-center"><a href="/auth/google" class="btn btn-danger" role="button">Log in with Google</a></div></li>
-		  <li style="margin-top:5px;"><div class="text-center"><a href="/signup" class="btn btn-primary" role="button">Create an account</a></div></li>
+            <li id="signin-navbar"><a href="/login">Sign in</a></li>
+            <li id="signup-navbar"><a href="/signup">Sign up</a></li>
 		</ul>
 	      </li>
 	    </ul>
@@ -111,28 +92,30 @@
       </nav>
 
       <!-- CONTENT -->
-      {% block content %}
-      {% endblock %}
-
-    </div>
+      <div id="page-content">
+          {% block content %}
+          {% endblock %}
+      </div>
 
     <!-- FOOTER -->
     <div id="footer">
-      <div class="container">
-	<a href="https://developers.google.com/appengine/" class="pull-right">
-	  <img src="https://developers.google.com/appengine/images/appengine-noborder-120x30.gif"
-	       alt="Powered by Google App Engine" />
-	</a>
-	<p>{{APP_NAME}} (v. {{APP_VERSION}}). 
-	  <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a> |
-	  <a href="/terms" title="Terms of service">Terms</a>
-	  <small class="text-muted credit" tabindex="0">You can find the source code for this project at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a></small>
-	</p>
-      </div>
+        <div>
+            <div class="container">
+                <div class="links">
+                    <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a>
+                    <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">GitHub</a>
+                    <a href="/terms" title="Terms of Service">Terms of Service</a>
+                </div>
+                <span>{{APP_NAME}} (v. {{APP_VERSION}})</span> is an open source project. You can find its source code at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a>
+                <br>
+                Powered by <a href="https://developers.google.com/appengine/">Google App Engine</a>.
+            </div>
+        </div>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     {% if not user %}<script languaje="javascript">document.getElementById("goback").value = window.location.pathname</script>{% endif %}
     {% if plusone_p %}
     <script type="text/javascript">

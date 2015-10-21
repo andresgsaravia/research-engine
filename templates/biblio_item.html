@@ -1,119 +1,142 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-<script type="text/javascript" src="/js/preview.js"></script>
+    <script type="text/javascript" src="/js/preview.js"></script>
 {% endblock %}
 
-
-{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></li><li class="active">{{item.title | truncate(40, True)}}...</li>{% endblock %}
-
-
 {% block p_content %}
+    <h2 class="project-tab-header no-action-bar">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+        </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 id="main-content" class="panel-title">
-      <small><span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"
-		   title="This forum bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible."></span></small>
-      {{item.title | safe}}
-      <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    </h3>
-  </div>
-  <div class="panel-body">
+        {{item.title | safe}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    </h2>
+
     {% if (user and project.user_is_author(user)) %}
     <form method="post" role="form"
 	  onsubmit="return confirm('Are you sure you want to make this bibliography item discussion {% if item.is_open_p() %}not {% endif %}publicly visible?');">
-      <button class="btn btn-sm btn-default pull-right" title="This bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible. Click to toggle" 
+      <button class="btn btn-sm btn-default pull-right" title="This bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible. Click to toggle"
 	      type="submit">
 	<span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"></span></button>
       <input type="hidden" name="action" value="toggle_visibility" />
     </form>
     {% endif %}
-    {% if item.kind == "article" %} 
-    <strong>{{item.metadata["publication"]}}</strong> <em>({{item.metadata["date"]}})</em>
-    <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+
+    {% if item.kind == "article" %}
+        <strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})
+        <p>
+            <a href="{{item.link}}">
+                doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span>
+            </a>
+        </p>
     {% elif item.kind == "arXiv" %}
-    <strong>arXiv preprint</strong> <em>({{item.metadata["date"]}})</em>
-    <p><a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
-    {% endif %}		
-    <p>Authors:</p>
-    <ul class="list-inline list-group">
-      {% for a in item.metadata["authors"] %}
-      <li class="list-group-item">{{a}}</li>
-      {% endfor %}
-    </ul>
-  </div>	
-</div>
-
-<div class="page-header"><h3>Comments <span class="badge">{{item.get_number_of_comments()}}</span></h3></div>
-
-<div class="list-group">
-  {% if comments %}
-  {% for c in comments %}
-  <div class="list-group-item">
-    <small><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" class="pull-right"
-	      title="link to this comment only"><span class="glyphicon glyphicon-link"></span></a></small>
-    {% if c.author == user.key %}
-    <!-- Button trigger modal -->
-    <button class="btn btn-link btn-xs btn-edit pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
-      <span class="glyphicon glyphicon-pencil"></span></button>
-    <!-- Modal -->
-    <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
-      <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit comment</h4>
-	  </div>
-	  <form method="post" role="form">
-	    <div class="modal-body">
-	      <div class="form-group">
-		<textarea id="commentText" name="comment" class="form-control" rows="15">{{c.content}}</textarea>
-		<input type="hidden" name="action" value="edit_comment" />
-		<input type="hidden" name="commentid" value="{{c.key.integer_id()}}" />
-	      </div>
-	    </div>
-	    <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-	    </div>
-	  </form>
-	</div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        <strong>arXiv preprint</strong> ({{i.metadata["date"]}})
+        <p>
+            <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
+        </p>
     {% endif %}
-    {{c.content | md | safe}}
-    <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
-    <ul class="nav nav-pills">
-      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{c.author.get().username.capitalize()}}</a></li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% else %}
-  <div class="list-group-item"><em>No comments yet</em></div>
-  {% endif %}
-</div>
 
-{% if (user and project.user_is_author(user)) %}
-<form method="post" role="form">
-  <div class="form-group{% if error_message %}has-error{% endif %}">
-    <label for="inputText">Your comment</label>
-    <textarea name="comment" id="inputText" class="form-control" rows="20" onKeyUp="Preview('inputText','previewArea');"
-	    placeholder="What do you think about this {% if item.kind=='article' %}article{% endif %}?">{{content_value}}</textarea>
-  </div>
-  <button type="submit" class="btn btn-success">Post comment</button>
-  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
-  <div class="help-block">
-    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-  </div>
-  <input type="hidden" name="action" value="make_comment" />
-</form>
+    <h4 style="margin-top: 16px;">Authors</h4>
+    <div>
+        {% for a in item.metadata["authors"] %}
+            <span style="margin-right: 15px">{{a}}</span>
+        {% endfor %}
+    </div>
 
-<div>Below is a preview of how the page will be renderer when you save it. It may not be 100&#37; accurate but it should be close.</div>
-<div class="panel panel-default">
-  <div class="panel-body" id="previewArea">
-    <em>Start writing above to see a preview here.</em>
-  </div>
-</div>
-{% endif %}
+    <h3 style="margin-top: 60px">
+        {{item.get_number_of_comments()}} comments
+    </h3>
+
+    {% for c in comments %}
+        <div class="project-tab-comment">
+
+            <a class="btn-muted pull-right" style="margin-left: 10px" href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" title="Link to this comment only">
+                <span class="fa fa-link fa-flip-horizontal" style="font-size: 1.3em;"></span>
+            </a>
+
+            {% if c.author == user.key %}
+                <!-- Edit modal trigger -->
+                <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
+                    <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
+                </a>
+            {% endif %}
+
+            <!-- Edit comment modal -->
+            <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit comment</h4>
+                        </div>
+                        <form method="post" role="form">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <textarea id="commentText" name="comment" class="form-control" rows="15">{{c.content}}</textarea>
+                                    <input type="hidden" name="action" value="edit_comment" />
+                                    <input type="hidden" name="commentid" value="{{c.key.integer_id()}}" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            {{c.content | md | safe}}
+
+            <div>
+                <small class="text-muted">
+                    By <a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a>
+                    on {{c.date.strftime("%d %b %Y")}}
+                </small>
+            </div>
+        </div>
+    {% endfor %}
+    {% if not comments | length %}
+        <div class="text-muted" style="margin-top: 5px;">There are no comments currently.</div>
+    {% endif %}
+
+    {% if user and project.user_is_author(user) %}
+        <form method="post" role="form">
+            <div class="form-group">
+                <label for="newCommentText">
+                    <h3 style="margin-top: 60px">Leave a reply...</h3>
+                </label>
+                <textarea name="comment" id="newCommentText" class="form-control" rows="10" placeholder="What do you think about this{% if item.kind == 'article' %} article{% endif %}?"
+                      onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{content_value}}</textarea>
+            </div>
+            <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post comment</button>
+            <input type="hidden" name="action" value="make_comment" />
+            {% if error_message %}
+                <p class="text-danger">
+                    {{error_message}}
+                </p>
+            {% endif %}
+            {% if visitor_p %}
+                <p class="text-warning">
+                    {% if user %}
+                        You are not a member of this project.
+                    {% else %}
+                        Please log in first.
+                    {% endif %}
+                </p>
+            {% endif %}
+            <div class="help-block">
+                Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+            </div>
+        </form>
+
+        <div>This is a preview of how the text will be renderer when you post it.</div>
+        <div class="panel panel-default">
+            <div class="panel-body" id="previewArea">
+                <em>Start typing above to see the preview here.</em>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

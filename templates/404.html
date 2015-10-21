@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
-
-<h1 id="main-content">404</h1>
-<p>Page not found</p>
-{{info | safe}}
+    <div class="container">
+        <h1 id="main-content" style="margin-bottom: 0;">404</h1>
+        <p style="font-family: Raleway, Arial;">Page not found</p>
+        {{info | safe}}
+    </div>
 {% endblock %}

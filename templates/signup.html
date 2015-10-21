@@ -14,62 +14,48 @@
 
 {% block content %}
 
-<div class="jumbotron page-intro small-margins">
-  <div class="container-fluid">
-    <h2 role="heading" id="main-content" class="title" style="margin-bottom: 0">
-	<a href="/"><span class="glyphicon glyphicon-menu-left pull-left icon-btn"></span></a>	
-	Sign Up
-	<span class="glyphicon glyphicon-menu-left pull-right" style="visibility: hidden;"></span>	
-    </h2>
-  </div>
-</div>
+<div class="container form-container">
+  <h2>Sign Up</h2>
 
-<br>
-
-<div class="container" style="max-width:800px;">
-  
   {% if user %}
   <p>Welcome back {{user.username}}, you are already logged in.</p>
   <p>If you are not {{user.username}} you can <a href="/logout">Logout</a></p>
 
   {% else %}
-  <form method="post" role="form" class="form-horizontal" style="margin-bottom:10px;">
+  <form method="post" role="form" style="margin-bottom: 20px;">
     <div class="form-group{% if error_username %} has-error{% endif %}">
-      <label for="usrInput" class="col-sm-2 control-label">Username</label>
-      <div class="col-sm-10"><input type="text" name="usern" value="{{usern}}" placeholder="Username" class="form-control"/></div>
+      <input type="text" name="usern" value="{{usern}}" placeholder="Username" class="form-control input-lg input-group first"/>
     </div>
 
     <div class="form-group{% if error_password %} has-error{% endif %}">
-      <label for="pwdInput" class="col-sm-2 control-label">Password</label>
-      <div class="col-sm-10"><input type="password" name="password" value="" placeholder="Password" class="form-control" /></div>
+        <input type="password" name="password" value="" placeholder="Password" class="form-control input-lg input-group" />
     </div>
 
     <div class="form-group{% if error_verify %} has-error{% endif %}">
-      <label for="verInput" class="col-sm-2 control-label">Verify password</label>
-      <div class="col-sm-10"><input type="password" name="verify" value="" placeholder="Write again your password" class="form-control"/></div>
+      <input type="password" name="verify" value="" placeholder="Write your password again" class="form-control input-lg input-group"/>
     </div>
 
-    <div class="form-group{% if error_email %} has-error{% endif %}">
-      <label for="usrInput" class="col-sm-2 control-label">Email</label>
-      <div class="col-sm-10"><input type="text" name="email" value="{{email}}" placeholder="Email address" class="form-control"/></div>
+    <div class="form-group {% if error_email %} has-error{% endif %}">
+      <input type="text" name="email" value="{{email}}" placeholder="Email address" class="form-control input-lg last input-group"/>
     </div>
 
     <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
 	<div class="checkbox">
 	  <label>
-	    <input type="checkbox" id="TOScb" onClick="enableSignUp();"/> I have read and agree to {{APP_NAME}}'s <a href="/terms" target="_blank">Terms of service <span class="glyphicon glyphicon-new-window"></span></a>
+	    <input type="checkbox" id="TOScb" onClick="enableSignUp();"/> I have read and agree to {{APP_NAME}}'s <a href="/terms" target="_blank">Terms of Service <span class="glyphicon glyphicon-new-window"></span></a>
 	  </label>
 	</div>
       </div>
-    </div>
-    <button type="submit" class="btn btn-default btn-new col-sm-offset-2" id="createAccBtn" disabled>Create account</button>
+    <button type="submit" class="btn btn-default btn-new btn-block btn-lg" id="createAccBtn" disabled>Create account</button>
 
   </form>
   {% if error %}<div class="alert alert-danger">{{error | safe}}</div>{% endif %}
-  {% if info %}<div class="alert alert-success">{{info | safe}}</div>{% endif %} 
-
+  {% if info %}<div class="alert alert-success">{{info | safe}}</div>{% endif %}
 
   {% endif %}
 </div>
+
+<script>
+    $("#signup-navbar").addClass("active");
+</script>
 {% endblock %}

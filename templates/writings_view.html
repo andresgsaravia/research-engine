@@ -1,11 +1,28 @@
 {% extends "writings_base.html" %}
-    
+
 {% block w_content %}
+    <p class="text-muted">
+        <small style="margin-right: 15px;">
+             Status: {{writing.status}}
+        </small>
+        <small>
+            {% if writing.is_open_p() %}
+                <span class="fa fa-eye"></span> Public
+            {% else %}
+                <span class="fa fa-eye-slash"></span> Private
+            {% endif %}
+        </small>
+    </p>
 
-{% if last_revision %}
-{{last_revision.content | md | safe}}
-{% else %}
-<p>This writing hasn't been started yet. Click <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">here</a> or the <em>Edit</em> tab above to make the first draft.</p>
-{% endif %}
+    {% if last_revision %}
+        {{last_revision.content | md | safe}}
+    {% else %}
+        <p>This writing hasn't been started yet. Click <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/edit">here</a> or the <em>Edit</em> tab above to make the first draft.</p>
+    {% endif %}
 
+    <div class="text-muted">
+        <small>
+            Last updated on {{writing.last_updated.strftime("%d %b %Y")}}
+        </small>
+    </div>
 {% endblock %}

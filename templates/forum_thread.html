@@ -1,117 +1,125 @@
 {% extends "project_base.html" %}
 
-
 {% block p_head %}
-<script type="text/javascript" src="/js/preview.js"></script>
-<meta property="og:title" content="{{thread.title}}" /> 
-<meta property="og:site_name" content="{{APP_NAME}}" />
-<meta property="og:url" content="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" />
-<meta property="og:description" content="{{thread.content | truncate(200,True)}}" />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="{{APP_URL}}/static/logo100x100.png" />
-<meta property="fb:app_id" content="{{FACEBOOK_APP_ID}}" /> 
+    <script type="text/javascript" src="/js/preview.js"></script>
+    <meta property="og:title" content="{{thread.title}}" />
+    <meta property="og:site_name" content="{{APP_NAME}}" />
+    <meta property="og:url" content="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" />
+    <meta property="og:description" content="{{thread.content | truncate(200,True)}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="{{APP_URL}}/static/logo100x100.png" />
+    <meta property="fb:app_id" content="{{FACEBOOK_APP_ID}}" />
 {% endblock %}
-
-
-{% block breadcrumbs %}
-<li><a href="/{{project.key.integer_id()}}/forum">Forum</a></li>
-<li class="active">{{thread.title | safe | truncate(40,True)}}</li>
-{% endblock %}
-
 
 {% block p_content %}
+    <h2 class="project-tab-header no-action-bar">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/forum">Forum</a>
+        </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading" style="overflow:auto">
-    {% if user and user.key == thread.author %}
-    <a class="btn btn-link btn-sm btn-edit pull-right" href="/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}/edit">
-      <span class="glyphicon glyphicon-pencil"></span>
-    </a>
-    {% endif %}
-    <h3 id="main-content" class="panel-title">
-      <small><span class="glyphicon glyphicon-eye-{% if thread.is_open_p() %}open{% else %}close{% endif %}"
-		   title="This forum thread is {% if not thread.is_open_p() %}not {% endif %}publicly visible."></span></small>
-      {{thread.title}}
-      <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
-  </div>
-  <div class="panel-body">
+        {{thread.title}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        {% if user and user.key == thread.author %}
+            <div class="actions">
+                <a href="/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}/edit">
+                    <span class="fa fa-pencil"></span>
+                </a>
+            </div>
+        {% endif %}
+    </h2>
+
     {{thread.content | md | safe}}
-    <p class="text-muted pull-right">{{thread.date.strftime("%d %b %Y")}}</p>
-    <ul class="nav nav-pills">
-      <li><a href="/{{thread.author.get().username}}"><img src="{{thread.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{thread.author.get().username.capitalize()}}</a></li>
-    </ul>
-    <hr/>
+
+    <div style="margin-top: 8px;">
+        <small class="text-muted">
+            Started by
+            <a href="/{{thread.author.get().username}}" class="unstyled">{{thread.author.get().username.capitalize()}}</a>
+            on {{thread.date.strftime("%d %b %Y")}}
+        </small>
+    </div>
+
+    <hr>
+
     <div class="g-plusone" data-size="medium" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" ></div>
     <div class="g-plus" data-action="share" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}"></div>
-    <br/>
+    <br>
     <div class="fb-like pull-left" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
-    <div class="fb-share-button" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" data-type="button_count" style="margin-left:12px;"></div>
-  </div>
-</div>
+    <div class="fb-share-button" data-href="{{APP_URL}}/{{project.key.integer_id()}}/forum/{{thread.key.integer_id()}}" data-type="button_count" style="margin-left: 17px;"></div>
 
-<h3 class="page-header">Answers <span class="badge">{{thread.get_number_of_comments()}}</span></h3>
+    <h3 style="margin-top: 60px">
+        {{thread.get_number_of_comments()}} replies
+    </h3>
 
-<div class="list-group">
-  {% for c in comments %}
-  <div class="list-group-item">
-    {% if c.author == user.key %}
-    <!-- Button trigger modal -->
-    <button class="btn btn-link btn-edit btn-xs pull-right" data-toggle="modal" data-target="#{{c.key.integer_id()}}" title="Edit">
-      <span class="glyphicon glyphicon-pencil"></span></button>
-    <!-- Modal -->
-    <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
-      <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit answer</h4>
-	  </div>
-	  <form method="post" role="form">
-	    <div class="modal-body">
-	      <div class="form-group">
-		<textarea id="commentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
-		<input type="hidden" name="answer_id" value="{{c.key.integer_id()}}" />
-		<input type="hidden" name="action" value="edit_answer" />
-	      </div>
-	    </div>
-	    <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-	    </div>
-	  </form>
-	</div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    {% for c in comments %}
+        <div class="project-tab-comment">
+            {% if c.author == user.key %}
+                <!-- Edit modal trigger -->
+                <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
+                    <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
+                </a>
+            {% endif %}
+
+            <!-- Edit comment modal -->
+            <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit comment</h4>
+                        </div>
+                        <form method="post" role="form">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <textarea id="commentText" name="comment" class="form-control" rows="15">{{c.comment}}</textarea>
+                                    <input type="hidden" name="answer_id" value="{{c.key.integer_id()}}" />
+		                            <input type="hidden" name="action" value="edit_answer" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            {{c.comment | md | safe}}
+
+            <div>
+                <small class="text-muted">
+                    By <a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a>
+                    on {{c.date.strftime("%d %b %Y")}}
+                </small>
+            </div>
+        </div>
+    {% endfor %}
+    {% if not comments|length %}
+        <div class="text-muted" style="margin-top: 5px;">There are no comments currently.</div>
     {% endif %}
-    {{c.comment | md | safe}}
-    <p class="text-muted pull-right">{{c.date.strftime("%d %b %Y")}}</p>
-    <ul class="nav nav-pills">
-      <li><a href="/{{c.author.get().username}}"><img src="{{c.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{c.author.get().username.capitalize()}}</a></li>
-    </ul>
-  </div>
-  {% endfor %}
-</div>
 
-<form method="post" role="form">
-  <div class="form-group">
-    <label for="newCommentText">Your answer</label>
-    <textarea name="comment" id="newCommentText" class="form-control" rows="10"
-	      onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
-  </div>
-  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post answer</button>
-  <input type="hidden" name="action" value="new_answer" />
-  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
-  {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
-  <div class="help-block">
-    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-  </div>
-</form>
+    <form method="post" role="form">
+        <div class="form-group">
+            <label for="newCommentText">
+                <h3 style="margin-top: 60px">Leave a reply...</h3>
+            </label>
+            <textarea name="comment" id="newCommentText" class="form-control" rows="10"
+        	      onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{comment_value}}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post answer</button>
+        <input type="hidden" name="action" value="new_answer" />
+        {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+        {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
+        <div class="help-block">
+            Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+        </div>
+    </form>
 
-<div>This is a preview of how the text will be renderer when you post it.</div>
-<div class="panel panel-default">
-  <div class="panel-body" id="previewArea">
-    <em>Start typing above to see the preview here.</em>
-  </div>
-</div>
-
+    <div>This is a preview of how the text will be renderer when you post it.</div>
+    <div class="panel panel-default">
+        <div class="panel-body" id="previewArea">
+            <em>Start typing above to see the preview here.</em>
+        </div>
+    </div>
 {% endblock %}

@@ -8,8 +8,22 @@
 
 {% block p_content %}
 
-<h2 id="main-content" class="page-header">{{action}} notebook
-  <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h2>
+<h2 class="project-tab-header">
+    {% if action=="Edit" %}
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">
+                {{notebook.name | safe}}
+            </a>
+        </div>
+    {% endif %}
+
+    {% if action=="New" %}
+        New Notebook
+    {% else %}
+        Edit Notebook
+    {% endif %}
+    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+</h2>
 
 <form method="post" role="form">
   <div class="form-group {{nClass}}">
@@ -22,7 +36,7 @@
   </div>
   <small>About
     <a href="https://en.wikipedia.org/wiki/Open_Notebook_Science" target="_blank">
-      Open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a> and
+      open notebooks in science <span class="glyphicon glyphicon-new-window"></span></a> and
     <a href="https://onsclaims.wikispaces.com/" target="_blank">
       this set of icons <span class="glyphicon glyphicon-new-window"></span></a>
   </small>
@@ -61,7 +75,7 @@
 	<strong>Closed notebook:</strong> Only members of this project will be able to see the content.
     </label>
   </div>
-  
+
   {% if action=="Edit" %}
   <strong>This is a shared notebook</strong><br/><br/>
   {% else %}
@@ -73,7 +87,7 @@
     </label>
   </div>
   {% endif %}
-  
+
   <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>{{button_text}}</button>
   <button type="button" class="btn btn-default"
 	  onClick="if (confirm('Are you sure you want to cancel?')) {window.location = '/{{project.key.integer_id()}}/notebooks'}">Cancel</button>

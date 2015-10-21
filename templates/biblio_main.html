@@ -1,76 +1,111 @@
 {% extends "project_base.html" %}
 
-
-{% block breadcrumbs %}<li class="active">Bibliography</li>{% endblock %}
-
-
 {% block p_content %}
- 
-<div class="page-header">
-  <h2 id="main-content">Bibliography
-    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    <!-- Help modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Bibliography</h4>
+                </div>
+                <div class="modal-body">
+                    <p>In this section you can discuss relevant bibliography items for this project. Each item serves has its own discussion section.</p>
+                    <p>We automatically fetch the item's metadata and in the near future, through services like <a href="https://selectedpapers.net/">SelectedPapers.net</a>, we will also fetch wider academic opinions about that very bibliography item.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="project-tab-header{% if visitor_p %} no-action-bar{% endif %}">
+        Bibliography
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        <div class="actions">
+            <a href="#helpModal" data-toggle="modal">
+                <span class="fa fa-question-circle"></span>
+            </a>
+        </div>
+    </h2>
+
     {% if not visitor_p %}
-    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/bibliography/new_item">
-      <span class="glyphicon glyphicon-plus"></span> New entry</a>
+        <div class="project-tab-actions">
+            <a href="/{{project.key.integer_id()}}/bibliography/new_item">
+                New entry
+            </a>
+        </div>
     {% endif %}
-    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
-      <span class="glyphicon glyphicon-question-sign"></span></a>
-  </h2>
-</div>
 
-<!-- Help modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title">Bibliography</h4>
-      </div>
-      <div class="modal-body">
-	<p>In this section you can discuss relevant bibliography items for this project. Each item serves has its own discussion section.</p>
-	<p>We automatically fetch the item's metadata and in the near future, through services like <a href="https://selectedpapers.net/">SelectedPapers.net</a>, we will also fetch wider academic opinions about that very bibliography item.</p>
-      </div>
+    <div class="panel-group project-tab-list" id="caccordion">
+        {% for i in items %}
+            {% if i.is_open_p() or (user and project.user_is_author(user)) %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    {{i.get_number_of_comments()}} comments
+                                </div>
+
+                                <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
+
+                            <a href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
+                                <small>
+                                    <span class="fa fa-eye{% if not i.is_open_p() %}-slash{% endif %}"
+                                          title="This writing is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span>
+                                </small>
+                                {{i.title | safe}}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+                        <div class="panel-body">
+                            {% if i.kind == "article" %}
+                                <strong>{{i.metadata["publication"]}}</strong> ({{i.metadata["date"]}})
+                                <p>
+                                    <a href="{{i.link}}">
+                                        doi:{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span>
+                                    </a>
+                                </p>
+                            {% elif i.kind == "arXiv" %}
+                                <strong>arXiv preprint</strong> ({{i.metadata["date"]}})
+                                <p>
+                                    <a href="{{i.link}}">{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
+                                </p>
+                            {% endif %}
+
+                            <h4 style="margin-top: 15px;">Authors</h4>
+                            <div>
+                                {% for a in i.metadata["authors"] %}
+                                    <span style="margin-right: 15px">{{a}}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-  </div>
-</div>
 
-<div class="panel-group" id="baccordion">
-  {% for i in items %}
-  {% if i.is_open_p() or (user and project.user_is_author(user)) %}
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#baccordion" href="#{{i.key.integer_id()}}">
-	  <span class="glyphicon glyphicon-info-sign"></span></a>
-	<span class="badge pull-right" title="Number of comments" style="margin-right:10px;">{{i.get_number_of_comments()}}</span>
-	<a href="/{{project.key.integer_id()}}/bibliography/{{i.key.integer_id()}}">
-	  <small><span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
-		       title="This bibliography item is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
-	  {{i.title | safe}}</a>
-      </h4>
-    </div>
-    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
-      <div class="panel-body">
-	{% if i.kind == "article" %} 
-	<strong>{{i.metadata["publication"]}}</strong> <em>({{i.metadata["date"]}})</em>
-	<p><a href="{{i.link}}">doi:{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
-	{% elif i.kind == "arXiv" %}
-	<strong>arXiv preprint</strong> <em>({{i.metadata["date"]}})</em>
-	<p><a href="{{i.link}}">{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
-	{% endif %}	
-	
-	<p>Authors:</p>
-	<ul class="list-inline list-group">
-	  {% for a in i.metadata["authors"] %}
-	  <li class="list-group-item">{{a}}</li>
-	  {% endfor %}
-	</ul>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-  {% endfor %}
-</div>
+    <!-- Accordion open/close animation -->
+    <script>
+        $(".accordion-toggle").click(function() {
+            if (!$(this).children(".fa-chevron-down").is(":hidden")) {
+                $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
+                    $(this).show();
+                });
+                $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
+                    $(this).hide();
+                });
+            }
 
-
+            $(this).children(".fa").each(function() {
+                $(this).toggle();
+            });
+        });
+    </script>
 {% endblock %}

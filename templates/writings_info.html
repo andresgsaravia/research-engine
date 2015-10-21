@@ -1,41 +1,49 @@
-{% extends "writings_base.html" %}
+{% extends "project_base.html" %}
 
-    
-{% block w_content %}
+{% block p_content %}
+    <h2 class="project-tab-header no-action-bar">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">
+                {{writing.title | safe}}
+            </a>
+        </div>
 
-<form method="post" role="form">
-  <div class="form-group {{tClass}}">
-    <label for="tinput">Title</label>
-    <input id="tinput" type="text" name="title" class="form-control" value="{{title}}" 
-	   placeholder="Title of the writing."/>
-  </div>
-  <div class="from-group {{dClass}}">
-    <label for="dinput">Description</label>
-    <textarea id="dinput" name="description" class="form-control" rows="15"
-	      placeholder="Description of the writing.">{{description}}</textarea>
-  </div>
-  <div class="radio">
-    <label>
-      <input type="radio" name="open_p" value="True" {% if open_p %}checked{% endif %}/>
-      <span class="glyphicon glyphicon-eye-open"></span>
-      Visible to the general public.
-    </label>
-  </div>
-  <div class="radio">
-    <label>
-      <input type="radio" name="open_p" value="False" {% if not open_p %}checked{% endif %}/>
-      <span class="glyphicon glyphicon-eye-close"></span>
-      Visible only to members of this project.
-    </label>
-  </div>
+        Writing Settings
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    </h2>
 
-  <br/>
-  <button type="submit" class="btn btn-success" >Save changes</button>
-  <button onClick="window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'"
-	  type="button" class="btn btn-default">Cancel</button>
+    <form method="post" role="form">
+        <div class="form-group {{tClass}}">
+            <label for="tinput">Title</label>
+            <input id="tinput" type="text" name="title" class="form-control" value="{{title}}" placeholder="Title of the writing"/>
+        </div>
+        <div class="from-group {{dClass}}">
+            <label for="dinput">Description</label>
+            <textarea id="dinput" name="description" class="form-control" rows="15" placeholder="Description of the writing">{{description}}</textarea>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="open_p" value="True" {% if open_p %}checked{% endif %}/>
+                <span class="glyphicon glyphicon-eye-open"></span>
+                Visible to the general public.
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="open_p" value="False" {% if not open_p %}checked{% endif %}/>
+                <span class="glyphicon glyphicon-eye-close"></span>
+                Visible only to members of this project.
+            </label>
+        </div>
 
-  {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message}}</div>{% endif %}
-  {% if success_message %}<div class="alert alert-success" style="margin-top:10px;">{{success_message}}</div>{% endif %}
-</form>
+        <br/>
+
+        <button type="submit" class="btn btn-success" >Save changes</button>
+        <button onClick="window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'"
+        type="button" class="btn btn-default">Cancel</button>
+        
+        {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message}}</div>{% endif %}
+        {% if success_message %}<div class="alert alert-success" style="margin-top:10px;">{{success_message}}</div>{% endif %}
+    </form>
 
 {% endblock %}

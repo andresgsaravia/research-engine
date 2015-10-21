@@ -1,43 +1,54 @@
 {% extends "project_base.html" %}
 
-{% block breadcrumbs %}<li><a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a></li><li><a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">{{item.title | truncate(40, True)}}</a></li><li class="active">{{comment.key.integer_id()}}</li>{% endblock %}
-
-
 {% block p_content %}
+    <h2 class="project-tab-header no-action-bar">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+        </div>
 
+        {{item.title | safe}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    </h2>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 id="main-content" class="panel-title">{{item.title}}
-      <a href="#project-menu" class="skiptocontent">Skip to project menu</a></h3>
-  </div>
-  <div class="panel-body">
-    {% if item.kind == "article" %} 
-    <strong>{{item.metadata["publication"]}}</strong> <em>({{item.metadata["date"]}})</em>
-    <p><a href="{{item.link}}">doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
+    {% if item.kind == "article" %}
+        <strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})
+        <p>
+            <a href="{{item.link}}">
+                doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span>
+            </a>
+        </p>
     {% elif item.kind == "arXiv" %}
-    <strong>arXiv preprint</strong> <em>({{item.metadata["date"]}})</em>
-    <p><a href="{{i.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a></p>
-    {% endif %}		
-    <p>Authors:</p>
-    <ul class="list-inline list-group">
-      {% for a in item.metadata["authors"] %}
-      <li class="list-group-item">{{a}}</li>
-      {% endfor %}
-    </ul>
-  </div>	
-</div>
+        <strong>arXiv preprint</strong> ({{i.metadata["date"]}})
+        <p>
+            <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
+        </p>
+    {% endif %}
 
-<div class="page-header"><h3>Comment</span></h3></div>
+    <h4 style="margin-top: 16px;">Authors</h4>
+    <div>
+        {% for a in item.metadata["authors"] %}
+            <span style="margin-right: 15px">{{a}}</span>
+        {% endfor %}
+    </div>
 
-<div class="list-group">
-  <div class="list-group-item">
-    {{comment.content | md | safe}}
-    <p class="text-muted pull-right">{{comment.date.strftime("%d %b %Y")}}</p>
-    <ul class="nav nav-pills">
-      <li><a href="/{{comment.author.get().username}}"><img src="{{comment.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{comment.author.get().username.capitalize()}}</a></li>
-    </ul>
-  </div>
-</div>
+    <h3 style="margin-top: 60px">
+        <small>
+            <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">
+                <span class="fa fa-chevron-left" style="font-size: 0.85em"></span> All comments<!--
+            --></a>
+        </small>
+        <br>
+        Linked comment
+    </h3>
 
+    <div class="project-tab-comment">
+        {{comment.content | md | safe}}
+
+        <div>
+            <small class="text-muted">
+                By <a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a>
+                on {{comment.date.strftime("%d %b %Y")}}
+            </small>
+        </div>
+    </div>
 {% endblock %}

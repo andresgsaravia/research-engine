@@ -1,9 +1,18 @@
 {% extends "writings_base.html" %}
 
-    
 {% block w_content %}
+    <p class="text-muted">
+        <span style="margin-right: 15px">
+            <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}/history">
+                <span class="fa fa-chevron-left" style="font-size: 0.8em"></span> Back<!--
+            --></a>
+        </span>
+        <span style="margin-right: 15px">
+            Revision of "{{writing.title | safe}}"
+            from {{revision.date.strftime("%d %b %Y")}}
+            by <a href="/{{revision.author.get().username}}">{{revision.author.get().username.capitalize()}}</a>
+        </span>
+    </p>
 
-<p class="text-muted">Revision from day: {{revision.date.strftime("%d %b %Y")}}</p>
-{{revision.content | md | safe}}
-
+    {{revision.content | md | safe}}
 {% endblock %}

@@ -1,15 +1,23 @@
 {% extends "wiki_base.html" %}
 
-    
 {% block w_content %}
+    <div class="list-group">
+        {% for rev in revisions %}
+            <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key.id()}}" class="list-group-item">
+                {% if rev.summary %}
+                    {{rev.summary}}
+                {% else %}
+                    <em>No summary of changes</em>
+                {% endif %}
 
-<div class="list-group">
-  {% for rev in revisions %}
-  <a href="/{{project.key.integer_id()}}/wiki/history/{{wikiurl}}/rev/{{rev.key.id()}}" class="list-group-item">
-    <span class="text-muted">{{rev.author.get().username.capitalize()}} <em>{{rev.date.strftime("%d %b %Y")}}</em></span>
-    {% if rev.summary %}{{rev.summary}}{% else %}<em>No summary of changes</em>{% endif %}
-  </a>
-  {% endfor %}
-</div>
-
+                <small class="text-muted pull-right">
+                    <span class="text-muted">
+                        By {{rev.author.get().username.capitalize()}}
+                        on {{rev.date.strftime("%d %b %Y")}}
+                        at {{rev.date.strftime("%X")}}
+                    </span>
+                </small>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}

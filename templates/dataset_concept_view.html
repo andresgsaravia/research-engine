@@ -1,41 +1,63 @@
-{% extends "dataset_concept_base.html" %}
+{% extends "project_base.html" %}
 
-    
-{% block dv_content %}
+{% block p_content %}
+    <h2 class="project-tab-header{% if visitor_p %} no-action-bar{% endif %}">
+        <div class="parent-link">
+            <a href="http://localhost:8080/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">
+                {{dataset.name}}
+            </a>
+        </div>
 
-{% if revisions %}
+        {{datac.name | safe}}
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
-<div class="panel-group" id="accordion">
-  {% for rev in revisions %}
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <ul class="nav nav-pills nav-justified">
-	<li><a href="/{{rev.author.get().username}}">
-	    <img src="{{rev.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{rev.author.get().username.capitalize()}}</a></li>
-	<li><a href="/file/{{rev.datafile}}">Download</a></li>
-	<li>
-	  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" 
-	     href="#{{rev.key.integer_id()}}" title="Click to show more information about this revision">
-	    <span class=" glyphicon glyphicon-info-sign"></span></a></li>
-	<li><p class="text-muted text-center">{{rev.date.strftime("%d %b %Y")}}</p></li>
-      </ul>
-    </div>
-    <div class="panel-collapse collapse" id="{{rev.key.integer_id()}}">
-      <div class="panel-body">
-	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}" 
-	   class="btn btn-link btn-edit pull-right" title="Edit this revision"><span class="glyphicon glyphicon-pencil"></span></a>
-	{% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
+        <div class="actions">
+            {% if not visitor_p %}
+                <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit">
+                    <span class="fa fa-cog"></span>
+                </a>
+            {% endif %}
+        </div>
+    </h2>
 
-{% else %}
-<p>There isn't any data uploaded yet. 
-  Click <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">here</a> 
-  or the <strong>New revision</strong> tab above to upload the first revision.
-</p>
-{% endif %}
+    {% if not visitor_p %}
+        <div class="project-tab-actions">
+            <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">
+                New revision
+            </a>
+        </div>
+    {% endif %}
 
+    {% if revisions %}
+        <div class="panel-group" id="accordion">
+          {% for rev in revisions %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <ul class="nav nav-pills nav-justified">
+        	<li><a href="/{{rev.author.get().username}}">
+        	    <img src="{{rev.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{rev.author.get().username.capitalize()}}</a></li>
+        	<li><a href="/file/{{rev.datafile}}">Download</a></li>
+        	<li>
+        	  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+        	     href="#{{rev.key.integer_id()}}" title="Click to show more information about this revision">
+        	    <span class=" glyphicon glyphicon-info-sign"></span></a></li>
+        	<li><p class="text-muted text-center">{{rev.date.strftime("%d %b %Y")}}</p></li>
+              </ul>
+            </div>
+            <div class="panel-collapse collapse" id="{{rev.key.integer_id()}}">
+              <div class="panel-body">
+        	<a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/edit/{{rev.key.integer_id()}}"
+        	   class="btn btn-link btn-edit pull-right" title="Edit this revision"><span class="glyphicon glyphicon-pencil"></span></a>
+        	{% if rev.meta %}{{rev.meta | md | safe}}{% else %}<em>No extra information provided.</em>{% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+    {% else %}
+        <p>
+            There isn't any data uploaded yet.
+            Get started by <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}/new">creating a new revision</a>.
+        </p>
+    {% endif %}
 {% endblock %}

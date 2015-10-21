@@ -1,64 +1,99 @@
 {% extends "project_base.html" %}
 
-
-{% block breadcrumbs %}<li class="active">Collaborative writings</li>{% endblock %}
-
-
 {% block p_content %}
+    <!-- Help modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Collaborative writings</h4>
+                </div>
+                <div class="modal-body">
+                    <p>This section can help you create single documents for publishing (for example journal articles).</p>
+                    <p>Each writing is version-controlled allowing you to revert unwanted changes and making it easier for several authors to work always in the most recent version. There's also a <em>Discussion</em> section for each writing for brainstorming and debate about the writing itself.</p>
+                    <p>Even if you don't have collaborators in this project this section can ease the burden of writing an article.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="page-header" >
-  <h2 id="main-content">Collaborative Writings
-    <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+    <h2 class="project-tab-header">
+        Collaborative Writings
+        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+        <div class="actions">
+            <a href="#helpModal" data-toggle="modal">
+                <span class="fa fa-question-circle"></span>
+            </a>
+        </div>
+    </h2>
+
     {% if not visitor_p %}
-    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/writings/new">
-      <span class="glyphicon glyphicon-plus"></span> New writing</a>
+        <div class="project-tab-actions">
+            <a href="/{{project.key.integer_id()}}/writings/new">
+                New writing
+            </a>
+        </div>
     {% endif %}
-    <a class="btn btn-link pull-right" href="#helpModal" data-toggle="modal">
-      <span class="glyphicon glyphicon-question-sign"></span></a>
-  </h2>
-</div>
 
-<!-- Help modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title">Collaborative writings</h4>
-      </div>
-      <div class="modal-body">
-	<p>This section can help you create single documents for publishing (for example journal articles).</p>
-	<p>Each writing is version-controlled allowing you to revert unwanted changes and making it easier for several authors to work always in the most recent version. There's also a <em>Discussion</em> section for each writing for brainstorming and debate about the writing itself.</p>
-	<p>Even if you don't have collaborators in this project this section can ease the burden of writing an article.</p>
-      </div>
-    </div>
-  </div>
-</div>
+    <div class="panel-group project-tab-list" id="myaccordion">
+        {% for i in items %}
+            {% if i.is_open_p() or (user and project.user_is_author(user)) %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <span class="pull-right">
+                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+                                    Status: {{i.status}}
+                                </div>
 
-<div class="panel-group" id="myaccordion">
-  {% for i in items %}
-  {% if i.is_open_p() or (user and project.user_is_author(user)) %}
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-	<a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#myaccordion" href="#{{i.key.integer_id()}}">
-	  <span class="glyphicon glyphicon-info-sign"></span></a>
-	<a href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">
-	  <small><span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
-		       title="This writing is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span></small>
-	  {{i.title | safe}}</a>
-      </h4>
-    </div>
-    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
-      <div class="panel-body">
-	{{i.description | md | safe }}
-	<p class="text-muted">Status: <em>{{i.status}}</em></p>
-	<p class="text-muted pull-right">Last updated: {{i.last_updated.strftime("%d %b %Y")}}</p>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-  {% endfor %}
-</div>    
+                                <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#myaccordion" href="#{{i.key.integer_id()}}">
+                                    <span class="fa fa-chevron-down"></span>
+                                    <span class="fa fa-chevron-up" hidden></span>
+                                </span>
+                            </span>
 
+                            <a href="/{{project.key.integer_id()}}/writings/{{i.key.integer_id()}}">
+                                <small>
+                                    <span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
+                                          title="This writing is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span>
+                                </small>
+                                {{i.title | safe}}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+                        <div class="panel-body">
+                            {{i.description | md | safe }}
+
+                            <div class="text-muted">
+                                <small>
+                                    Last updated on {{i.last_updated.strftime("%d %b %Y")}}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Accordion open/close animation -->
+    <script>
+        $(".accordion-toggle").click(function() {
+            if (!$(this).children(".fa-chevron-down").is(":hidden")) {
+                $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
+                    $(this).show();
+                });
+                $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
+                    $(this).hide();
+                });
+            }
+
+            $(this).children(".fa").each(function() {
+                $(this).toggle();
+            });
+        });
+    </script>
 {% endblock %}
