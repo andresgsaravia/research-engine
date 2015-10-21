@@ -67,6 +67,12 @@ textarea {
 .modal-content {
   border-radius: 0; }
 
+.panel {
+  border-radius: 0 !important; }
+
+.nav-pills a {
+  border-radius: 0 !important; }
+
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
   background: rgba(0, 0, 0, 0.1); }
