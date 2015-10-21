@@ -157,12 +157,13 @@ a {
   color: #333 !important; }
 
 .license {
-  text-align: center;
-  max-width: 400px;
-  margin: auto; }
-
-.license img {
-  margin-bottom: 6px; }
+  margin-top: 60px;
+  padding-bottom: 40px; }
+  .license img {
+    margin-bottom: 10px; }
+  .license hr {
+    background: #ccc;
+    border-color: #ccc; }
 
 .form-container {
   max-width: 300px;

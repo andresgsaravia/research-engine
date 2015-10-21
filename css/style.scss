@@ -265,13 +265,17 @@ a {
 }
 
 .license {
-	text-align: center;
-	max-width: 400px;
-	margin: auto;
-}
+	margin-top: 60px;
+	padding-bottom: 40px;
 
-.license img {
-	margin-bottom: 6px;
+	img {
+		margin-bottom: 10px;
+	}
+
+	hr {
+		background: #ccc;
+		border-color: #ccc;
+	}
 }
 
 .form-container {
