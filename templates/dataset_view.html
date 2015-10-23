@@ -21,8 +21,8 @@
 
     <h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
         <div class="parent-link">
-            <a href="http://localhost:8080/{{project.key.integer_id()}}/datasets">
-                Dataset
+            <a href="/{{project.key.integer_id()}}/datasets">
+                Datasets
             </a>
         </div>
 

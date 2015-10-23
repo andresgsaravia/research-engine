@@ -11,7 +11,7 @@
 <h2 class="project-tab-header">
     {% if action=="Edit" %}
         <div class="parent-link">
-            <a href="http://localhost:8080/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">
+            <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}">
                 {{notebook.name | safe}}
             </a>
         </div>

@@ -3,7 +3,7 @@
 {% block p_content %}
     <h2 class="project-tab-header{% if visitor_p %} no-action-bar{% endif %}">
         <div class="parent-link">
-            <a href="http://localhost:8080/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">
+            <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}">
                 {{dataset.name}}
             </a>
         </div>

@@ -3,7 +3,7 @@
 {% block p_content %}
     <h2 class="project-tab-header no-action-bar">
         <div class="parent-link">
-            <a href="http://localhost:8080/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">
+            <a href="/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}">
                 {{writing.title | safe}}
             </a>
         </div>
@@ -41,7 +41,7 @@
         <button type="submit" class="btn btn-success" >Save changes</button>
         <button onClick="window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'"
         type="button" class="btn btn-default">Cancel</button>
-        
+
         {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message}}</div>{% endif %}
         {% if success_message %}<div class="alert alert-success" style="margin-top:10px;">{{success_message}}</div>{% endif %}
     </form>
