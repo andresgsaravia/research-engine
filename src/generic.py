@@ -2,7 +2,7 @@
 # Functions related to all pages.
 # Every source page should import this.
 
-import webapp2 
+import webapp2
 import jinja2
 import os, re, string, hashlib, logging, datetime, json
 from google.appengine.ext import ndb, db, blobstore
@@ -22,7 +22,7 @@ jinja_env.filters['md'] = filters.md
 
 # You should change these if you are registering your own app on App Engine
 APP_NAME = "Research Engine"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.3.1"
 APP_URL = "https://research-engine.appspot.com"
 ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 APP_REPO = "https://github.com/andresgsaravia/research-engine"
@@ -83,10 +83,10 @@ class RegisteredUsers(ndb.Model):
         projects_list = []
         for p_key in self.my_projects:
             project = p_key.get()
-            if project: 
+            if project:
                 projects_list.append(project)
             else:
-                logging.warning("RegisteredUser with key (%s) contains a broken reference to project %s" 
+                logging.warning("RegisteredUser with key (%s) contains a broken reference to project %s"
                                 % (self.key, p_key))
         if len(projects_list) > 0:
             projects_list.sort(key=lambda p: p.last_updated, reverse=True)
@@ -116,20 +116,20 @@ class RegisteredUsers(ndb.Model):
         assert type(size) == int
         assert self.profile_image_url
         url = self.profile_image_url
-        if size > 0: 
-            url += "?sz=" if self.gplus_profile_json else "?s=" 
+        if size > 0:
+            url += "?sz=" if self.gplus_profile_json else "?s="
             url += str(size)
         return url
 
     def get_recent_activity(self, days = 7):
-        project_actvs = UserActivities.query(UserActivities.actv_kind == "Projects", 
+        project_actvs = UserActivities.query(UserActivities.actv_kind == "Projects",
                                              UserActivities.date > (datetime.datetime.now() - datetime.timedelta(days=days)),
                                              ancestor = self.key).order(-UserActivities.date).fetch()
         r = {"Projects" : project_actvs}
         return r
 
     def get_project_contributions_counts(self, days, self_user_p):
-        actvs = UserActivities.query(UserActivities.actv_kind == "Projects", 
+        actvs = UserActivities.query(UserActivities.actv_kind == "Projects",
                                              UserActivities.date > (datetime.datetime.now() - datetime.timedelta(days=days)),
                                              ancestor = self.key).fetch()
         counts = {}
@@ -164,7 +164,7 @@ class UserActivities(ndb.Model):
         relative_to = self.relative_to.get()
         author = self.key.parent().get()
         if relative_to.__class__.__name__ == "Projects":
-            html = render_str("project_activity.html", author = author, item = self.item, project = relative_to, 
+            html = render_str("project_activity.html", author = author, item = self.item, project = relative_to,
                               hide_username_p = hide_username_p, show_project_p = show_project_p)
         return html
 
@@ -187,7 +187,7 @@ class GenericPage(webapp2.RequestHandler):
         if DEBUG: logging.debug("DB READ: Handler %s requests an instance of %s. %s"
                                 % (self.__class__.__name__, dbmodel.__name__, message))
         return
-    
+
     # Writing the Datastore
     def log_and_put(self, instance, message = ''):
         if DEBUG: logging.debug("DB WRITE: Handler %s is writing an instance of %s. %s"
@@ -263,7 +263,7 @@ class GenericPage(webapp2.RequestHandler):
     @webapp2.cached_property
     def auth(self):
         return auth.get_auth()
-    
+
     @webapp2.cached_property
     def session(self):
         """Returns a session using the default cookie key"""
@@ -272,7 +272,7 @@ class GenericPage(webapp2.RequestHandler):
     def dispatch(self):
         # Get a session store for this request.
         self.session_store = sessions.get_store(request=self.request)
-    
+
         try:
             # Dispatch the request.
             webapp2.RequestHandler.dispatch(self)
