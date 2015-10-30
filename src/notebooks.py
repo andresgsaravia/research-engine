@@ -43,7 +43,7 @@ class Notebooks(ndb.Model):
         else:
             text += "Only some part of the relevant content is reported here "
         if self.claims[6] == "I":
-            text += "in as close as real time as possible."
+            text += "in as close to real time as possible."
         else:
             text += "after a significant delay."
         return text
