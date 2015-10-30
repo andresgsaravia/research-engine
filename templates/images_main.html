@@ -64,7 +64,7 @@
                                         <span class="fa fa-pencil"></span> Edit
                                     </a>
                                 {% endif %}
-                                <img src="{{i.url()}}" />
+                                    <a href="{{i.url()}}" target="_blank"><img src="{{i.url()}}" /></a>
                                 {{i.description | md | safe }}
                                 <p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p>
                                 <ul class="nav nav-pills">
