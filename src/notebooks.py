@@ -3,6 +3,7 @@
 
 from google.appengine.ext import ndb
 import generic, projects
+import logging
 
 NOTES_PER_PAGE = 5   # Number of notes displayed in a single page while viewing a notebook. Perhaps later this will be user-customizable.
 
@@ -63,6 +64,18 @@ class NotebookNotes(ndb.Model):
     def is_open_p(self):
         return self.key.parent().get().is_open_p()
 
+    def get_author(self):
+        if self.author:
+            return self.author.get()
+        else:
+            return self.key.parent().get().owner.get()
+
+    def editable_p(self, user):
+        author = self.get_author()
+        notebook = self.key.parent().get()
+        return user and (user.key == author.key)
+
+        
 # Each comment should be a child of a NotebookNote
 class NoteComments(ndb.Model):
     author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
@@ -315,7 +328,7 @@ class NotePage(NotebookPage):
         kw["visitor_p"] = not (user and project.user_is_author(user))
         self.render("notebook_note.html", project = project, user = user,
                     notebook = notebook, note = note, new_comment = self.request.get("new_comment"),
-                    note_editable_p = user and ((not notebook.shared_p and notebook.owner == user.key) or (notebook.shared_p and note.author == user.key)), **kw)
+                    note_editable_p = note.editable_p(user), **kw)
 
     def post(self, projectid, nbid, noteid):
         user = self.get_login_user()

@@ -29,7 +29,7 @@
 <div style="margin-top: 8px;">
     <small class="text-muted">
         Written by
-        <a href="/{{note.author.get().username}}" class="unstyled">{{note.author.get().username.capitalize()}}</a>
+        <a href="/{{note.get_author().username}}" class="unstyled">{{note.get_author().username.capitalize()}}</a>
         on {{note.date.strftime("%d %b %Y")}}
     </small>
 </div>

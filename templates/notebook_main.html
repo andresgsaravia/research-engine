@@ -59,7 +59,7 @@
                 {% endif %}
             </h3>
             <small class="text-muted" style="margin-bottom: 10px; display: block;">
-                Writen by <a href="/{{note.author.get().username}}">{{note.author.get().username.capitalize()}}</a>
+                Writen by <a href="/{{note.get_author().username}}">{{note.get_author().username.capitalize()}}</a>
                 on {{note.date.strftime("%d %b %Y")}}
             </small>
             <div>
