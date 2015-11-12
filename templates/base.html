@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/pygments.css" />
     <style class="text/css">
       a.skiptocontent:link, a.skiptocontent:hover, a.skiptocontent:visited {display: inline-block;position: absolute;left: -400px;font-size: 0.8em;text-decoration: none; opacity:0}
       a.skiptocontent:active, a.skiptocontent:focus {display: inline-block;position: absolute;left: 9px;background-color:white; opacity:1}
@@ -129,6 +130,7 @@
     {% if intro_p %}<script type="text/javascript" src="/js/intro.min.js"></script>{% endif %}
     <script type="text/javascript">
       $("table").addClass("table table-hover");
+      $("table.codehilitetable").removeClass("table table-hover");
     </script>
   </body>
 </html>

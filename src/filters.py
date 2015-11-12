@@ -48,6 +48,6 @@ def md(value, wiki_p_id = ""):
                           'iframe' : ['width', 'height', 'src', 'frameborder', 'allowfullscreen']}.items())
     value = re.sub(DOI_REGEXP, make_doi_link, value)     # doi links
     if wiki_p_id: value = re.sub(WIKILINKS_RE, make_sub_repl(wiki_p_id), value) 
-    value = markdown.markdown(value, extensions = ['extra', 'toc(title=Contents)', 'nl2br', 'mathjax', 'tables'])
+    value = markdown.markdown(value, extensions = ['extra', 'toc(title=Contents)', 'nl2br', 'mathjax', 'tables', 'codehilite'])
     value = bleach.clean(value, tags = allowed_tags, attributes = allowed_attrs)
     return value
