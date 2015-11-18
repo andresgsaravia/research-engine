@@ -200,4 +200,4 @@ class EditImage(projects.ProjectBlobstoreUpload):
                 blobstore.BlobInfo.get(image.image_key).delete()
                 image.image_key = new_image[0].key()
             image.put()
-            self.redirect("/%s/images/%s" % (projectid, imageid))
+            self.redirect("/%s/images/" % projectid)
