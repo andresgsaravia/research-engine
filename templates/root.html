@@ -1,217 +1,204 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>{{APP_NAME}}</title>
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-<script type="text/javascript">
-  MathJax.Hub.Config({
-  "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
-  TeX: {equationNumbers: {autoNumber: "AMS"} }
-  });
-</script>
-
-<style>
-
-</style>
+    <title>{{APP_NAME}}</title>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+        "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+        TeX: {equationNumbers: {autoNumber: "AMS"} }
+      });
+    </script>
 {% endblock %}
 
-
 {% block content %}
-
-{% if user %}
-<div class="container">
-  <div class="row">
-
-    <div class="col-md-5" role="menu">
-	<h2 role="heading" id="main-content" class="page-heading">Your projects</h2>
-
-	<hr>
-
+      {% if user %}
+      <div class="container">
+	<div class="row">
+	  <div class="col-md-5" role="menu"> <!-- Left side (projects)  -->
+	    <h2 role="heading" id="main-content" class="page-heading">Your projects</h2>
+	    <hr>
 	    {% if projects %}
 	    {% for p in projects %}
-		<a class="project-link" href="/{{p.key.integer_id()}}">
-			<h3>{{p.name | safe}}</h3>
-			<p>
-				{{p.description | safe | truncate(190)}}
-			</p>
-		</a>
-		<!--div class="panel panel-default">
-	      <div class="panel-heading">
-		<h4 class="panel-title">
-		  <a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a>
-		  <a class="accordion-toggle pull-right" data-toggle="collapse" data-parent="#accordion1" href="#{{p.key.integer_id()}}"
-		     aria-label="Click for description." role="button">
-		    <span class="glyphicon glyphicon-info-sign"></span></a>
-		</h4>
-	      </div>
-	      <div class="panel-collapse collapse" id="{{p.key.integer_id()}}">
-		<div class="panel-body">
-		  {{p.description | md | safe}}
-		  <p class="text-muted pull-right">Last updated: {{p.last_updated.strftime("%d %b %Y")}}</p>
-		</div>
-	      </div>
-	    </div-->
+	    <a class="project-link" href="/{{p.key.integer_id()}}">
+	      <h3>{{p.name | safe}}</h3>
+	      <p>{{p.description | safe | truncate(190)}}</p>
+	    </a>
 	    {% endfor %}
 	    {% else %}
 	    <div class="pull-left" style="line-height: 34px">
-		Start by creating a new research project:
+	      Start by creating a new research project:
             </div>
 	    {% endif %}
-
-	<a class="btn btn-default btn-new pull-right" href="/new_project" role="button">Create new project</a>
-    </div>
-
-    <div class="col-md-7">
-      <h2 role="heading" id="main-content">Recent activity</h2>
-      <hr>
-      {% if p_updates %}
-      <ul class="list-group" role="log">
-	{% for u in p_updates %}
-	<li class="list-group-item" role="listitem" tabindex="0"><small class="text-muted pull-right">{{u.date.strftime("%d %b %Y")}}</small>
-	  <img src="{{u.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{u.description_html(u.key.parent().get()) | safe}}</li>
-	{% endfor %}
-      </ul>
+	    <a class="btn btn-default btn-new pull-right" href="/new_project" role="button">Create new project</a>
+	  </div>  <!-- Left side (projects)  -->
+	  <div class="col-md-7"> <!-- Right side (activity)  -->
+	    <h2 role="heading" id="main-content">Recent activity</h2>
+	    <hr>
+	    {% if p_updates %}
+	    <ul class="list-group" role="log">
+	      {% for u in p_updates %}
+	      <li class="list-group-item" role="listitem" tabindex="0"><small class="text-muted pull-right">{{u.date.strftime("%d %b %Y")}}</small>
+		<img src="{{u.author.get().get_profile_image(20)}}" aria-hidden="true"/> {{u.description_html(u.key.parent().get()) | safe}}</li>
+	      {% endfor %}
+	    </ul>
+	    {% else %}
+	    <p>There's no recent activity in your projects</p>
+	    {% endif %}
+	  </div> <!-- Right side (activity)  -->
+	</div> <!-- row  -->
+      </div>
       {% else %}
-      <p>There's no recent activity in your projects</p>
-      {% endif %}
-    </div>
-  </div>
-
-</div>
-
-{% else %}
-<div class="jumbotron page-intro">
-  <div class="container">
-    <h1 role="heading" id="main-content" class="title">{{APP_NAME}}</h1>
-
-    <p role="banner" class="sub-title">All your research neatly organized in one place, easy to share and reuse.</p>
-    <div class="actions">
-      <a class="btn btn-default btn-lg" href="/login" role="button">Sign In</a>
-      <a class="btn btn-default btn-lg" href="/signup" role="button">Sign Up</a>
-      <a class="btn btn-default btn-lg btn-grey" href="/auth/google" role="button">Sign In with Google</a>
-    </div>
-  </div>
-</div>
-
-<div id="overview">
+      <div class="jumbotron page-intro">
 	<div class="container">
-		<p class="lead text-center" role="banner">
-			Doing research can get you drowned in data, notebooks, articles, lab notes and more.<br/>
-			This makes collaborations prone to miscommunications, duplicated effort and reduced productivity.<br/>
-			Organize and communicate your work giving it extra value to you and your colleagues.
-		</p>
+	  <h1 role="heading" id="main-content" class="title">{{APP_NAME}}</h1>
+	  <p role="banner" class="sub-title">All your research neatly organized in one place, easy to share and reuse.</p>
+	  <div class="actions">
+	    <a class="btn btn-default btn-lg" href="/login" role="button">Sign In</a>
+	    <a class="btn btn-default btn-lg" href="/signup" role="button">Sign Up</a>
+	    <a class="btn btn-default btn-lg btn-grey" href="/auth/google" role="button">Sign In with Google</a>
+	  </div>
 	</div>
-</div>
+      </div>
 
-<div id="features">
+      <div id="overview">
+	<div class="container">
+	  <p class="lead text-center" role="banner">
+	    Doing research can get you drowned in data, notebooks, articles, lab notes and more.<br/>
+	    This makes collaborations prone to miscommunications, duplicated effort and reduced productivity.<br/>
+	    Organize and communicate your work giving it extra value to you and your colleagues.
+	  </p>
+	</div>
+      </div>
+
+      <div id="features">
 	<div class="container">
 	  <div class="row text-center" role="list">
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-th fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-th fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Multiple projects
-            </h2>
-            <p>
-                   Split your work in different projects according to the topic, scope and/or collaborators.
-                   If you work on different topics and/or with different people you can easily contribute and keep track of
-                   each individual project. We will provide you with some statistics to help you identify your most productive
-                   areas and potential problems.
-            </p>
-        </div>
+              </h2>
+              <p>
+                Split your work in different projects according to the topic, scope and/or collaborators.
+                If you work on different topics and/or with different people you can easily contribute and keep track of
+                each individual project. We will provide you with some statistics to help you identify your most productive
+                areas and potential problems.
+              </p>
+            </div>
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Different tools
-            </h2>
-            <p>
+              </h2>
+              <p>
                 Making research means dealing with many different kinds of information like reviewing journal articles,
                 keeping a notebook with your progress, collecting many datasets, writing collaborative articles, etc.
                 We tailor an appropriate tool for each need while keeping everthing neatly integrated in the same research project.
-            </p>
-        </div>
+              </p>
+            </div>
 	    <div class="clearfix visible-xs"></div>
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Visibility control
-            </h2>
-            <p>
+              </h2>
+              <p>
                 You decide if you want an <a href="https://en.wikipedia.org/wiki/Open_science">Open Science</a> project, a
                 completely closed project or something in-between. You control the visibility of your contributions in broad
                 strokes or finely grained.
-            </p>
-        </div>
+              </p>
+            </div>
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-users fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-users fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Easier collaborations
-            </h2>
-	      <p>Work closely with your colleagues with a constant eye in their recent contributions and keeping them up to date with your own progress. Make collaborative writings easily with our version control and discussion systems and integrate a common knowledge repository.</p></div>
+              </h2>
+	      <p>
+		Work closely with your colleagues with a constant eye in their recent contributions and keeping them up to
+		date with your own progress. Make collaborative writings easily with our version control and discussion
+		systems and integrate a common knowledge repository.
+	      </p>
+	    </div>
 	  </div>
 	  <div class="row text-center" role="list">
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-comment fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-comment fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Public outreach
-            </h2>
-	      <p>Communicate your research to the general public and raise awareness about its importance. Make your work better known and understood by beign able to share and explain with as much detail as you wish. </p></div>
+              </h2>
+	      <p>
+		Communicate your research to the general public and raise awareness about its importance. Make your work better
+		known and understood by beign able to share and explain with as much detail as you wish.
+	      </p>
+	    </div>
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Know your progress
-            </h2>
-	      <p>If you work on several simultaneous projects you can track of your progress in each one of them. This could make more evident if there is a problem with some specific area in your work and help you take prompt action.</p></div>
+              </h2>
+	      <p>
+		If you work on several simultaneous projects you can track of your progress in each one of them. This could make
+		more evident if there is a problem with some specific area in your work and help you take prompt action.
+	      </p>
+	    </div>
 	    <div class="clearfix visible-xs"></div>
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-calculator fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-calculator fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 Math friendly
-            </h2>
-            <p>We know making research means using a lot of math, so we want to make it as easy as possible for you to write it. We use <a href="http://www.mathjax.org">Mathjax</a> support so you have a very powerful $\LaTeX$ environment at your disposal.</p></div>
+              </h2>
+              <p>We know making research means using a lot of math, so we want to make it as easy as possible for you to write it.
+		We use <a href="http://www.mathjax.org">Mathjax</a> support so you have a very powerful $\LaTeX$ environment at your disposal.
+	      </p>
+	    </div>
 	    <div class="col-xs-6 col-md-3" role="listitem">
-            <h2 role="heading">
+              <h2 role="heading">
                 <span class="fa-stack">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-ellipsis-h fa-stack-1x fa-inverse"></i>
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-ellipsis-h fa-stack-1x fa-inverse"></i>
                 </span>
                 <br>
                 More to come!
-            </h2>
-            <p>We are just getting started, this means we are improving each day and are looking eagerly for suggestions and new ideas. If you have a suggestion or there's a feature you would like to have, please <a href="{{APP_REPO}}">let us know!</a></p></div>
+              </h2>
+              <p>We are just getting started, this means we are improving each day and are looking eagerly for suggestions and new ideas. If you
+		have a suggestion or there's a feature you would like to have, please <a href="{{APP_REPO}}">let us know!</a>
+	      </p>
+	    </div>
 	  </div>
 	</div>
-</div>
+      </div> <!-- features  -->
 
-<!-- Hide navbar on home page until user scrolls down -->
-<script>
+      <!-- Hide navbar on home page until user scrolls down -->
+      <script>
     $(document).ready(function() {
         // Hide the navbar when the page loads
         $(".navbar").hide("slide", {"direction": "up"}, 400, function() {
@@ -221,41 +208,35 @@
         // Only show the navbar when the user scrolls down
         $(document).scroll(function() {
             if ($(this).scrollTop() > 1) {
-                $(".navbar").show("slide", {"direction": "up"});
+		$(".navbar").show("slide", {"direction": "up"});
             } else {
-                $(".navbar").hide("slide", {"direction": "up"});
+		$(".navbar").hide("slide", {"direction": "up"});
             }
         });
     });
-</script>
+      </script>
 
-<style>
-    .navbar {
-        position: fixed;
-        width: 100%;
-    }
+      <style>
+      .navbar {
+          position: fixed;
+          width: 100%;
+      }
+      .navbar-mod {
+    	  background: #556666;
 
-    .navbar-mod {
-    	background: #556666;
-
-        -webkit-box-shadow: 0 4px 4px -2px #333;
-        -moz-box-shadow: 0 4px 4px -2px #333;
-        box-shadow: 0 4px 4px -2px #333;
-    }
-
-    #footer {
-        background: #fff;
-    }
-
-    #footer > * {
-        background: #fff;
-    }
-
-    #page-content {
-        margin-bottom: 0px;
-    }
-</style>
-
-{% endif %}
-
+          -webkit-box-shadow: 0 4px 4px -2px #333;
+          -moz-box-shadow: 0 4px 4px -2px #333;
+          box-shadow: 0 4px 4px -2px #333;
+      }
+      #footer {
+          background: #fff;
+      }
+      #footer > * {
+          background: #fff;
+      }
+      #page-content {
+          margin-bottom: 0px;
+      }
+      </style>
+      {% endif %}
 {% endblock %}

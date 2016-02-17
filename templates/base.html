@@ -10,40 +10,36 @@
       a.skiptocontent:link, a.skiptocontent:hover, a.skiptocontent:visited {display: inline-block;position: absolute;left: -400px;font-size: 0.8em;text-decoration: none; opacity:0}
       a.skiptocontent:active, a.skiptocontent:focus {display: inline-block;position: absolute;left: 9px;background-color:white; opacity:1}
     </style>
-
     <!-- Import Roboto, Raleway & Titillium Web from Google Web Fonts -->
-    <link href='//fonts.googleapis.com/css?family=Roboto:400,700|Titillium+Web|Raleway' rel='stylesheet' type='text/css'>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,700|Titillium+Web|Raleway" rel="stylesheet" type="text/css">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-
     {% if intro_p %}<link href="/css/introjs.min.css" rel="stylesheet"/>{% endif %}
-    {% block head %}
-    {% endblock %}
+    {% block head %}{% endblock %}
   </head>
 
   <body{% if intro_p %} onload="introJs().start();"{% endif %}>
     {% if fb_p %}<div id="fb-root"></div>
     <script>
       window.fbAsyncInit = function() {
-        // init the FB JS SDK
-        FB.init({
-          appId      : '{{FACEBOOK_APP_ID}}',                // App ID from the app dashboard
-          status     : true,                                 // Check Facebook Login status
-          xfbml      : true                                  // Look for social plugins on the page
-        });
+      // init the FB JS SDK
+      FB.init({
+      appId      : '{{FACEBOOK_APP_ID}}',                // App ID from the app dashboard
+      status     : true,                                 // Check Facebook Login status
+      xfbml      : true                                  // Look for social plugins on the page
+      });
 
-        // Additional initialization code such as adding Event Listeners goes here
+      // Additional initialization code such as adding Event Listeners goes here
       };
 
       // Load the SDK asynchronously
       (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/all.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
     </script>{% endif %}
-
     <a href="#main-content" class="skiptocontent">Skip to main content</a>
     <div id="wrap">
 
@@ -60,8 +56,8 @@
 
 	  <div class="collapse navbar-collapse navbar-ex1-collapse">
 	    {% if user %}
-	    <ul class="nav navbar-nav">
-	      <li class="dropdown">
+	    <ul class="nav navbar-nav"> <!-- navbar left  -->
+	      <li class="dropdown"> <!-- Projects dropdown  -->
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		  {% if list_of_projects %}
@@ -72,20 +68,30 @@
 		  <li><a href="/new_project" role="button">Create a new project</a></li>
 		  {% endif %}
 		</ul>
-	      </li>
+	      </li> <!-- Projects dropdown  -->
+	      <li class="dropdown"> <!-- Groups dropdown  -->
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Groups <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+		  {% if list_of_groups %}
+		  {% for g in list_of_groups %}
+		  <li><a href="/{{g.key.integer_id()}}">{{g.name | safe}}</a></li>
+		  {% endfor %}
+		  {% else %}
+		  <li><a href="/new_group" role="button">Create or join a group</a></li>
+		  {% endif %}
+		</ul>
+	      </li> <!-- Groups dropdown  -->
 	      <li><a href="/{{user.username}}/outreach">Outreach</a></li>
-	    </ul>
-	    <ul class="nav navbar-nav navbar-right">
+	    </ul> <!-- navbar left  -->
+	    <ul class="nav navbar-nav navbar-right"> <!-- navbar right  -->
 	      <li><a href="/{{user.username}}"><img src="{{user.get_profile_image(20)}}" aria-hidden="true"/> {{user.username}}</a></li>
 	      <li><a href="/settings" title="Settings"><i class="fa fa-wrench"></i></a></li>
 	      <li><a href="/logout" title="Logout"><i class="fa fa-sign-out"></i></a></li>
-	    </ul>
+	    </ul>  <!-- navbar right  -->
 	    {% else %} <!-- if user -->
 	    <ul class="nav navbar-nav navbar-right">
-            <li id="signin-navbar"><a href="/login">Sign in</a></li>
-            <li id="signup-navbar"><a href="/signup">Sign up</a></li>
-		</ul>
-	      </li>
+              <li id="signin-navbar"><a href="/login">Sign in</a></li>
+              <li id="signup-navbar"><a href="/signup">Sign up</a></li>
 	    </ul>
 	    {% endif %}  <!-- if user -->
 	  </div>
@@ -94,26 +100,25 @@
 
       <!-- CONTENT -->
       <div id="page-content">
-          {% block content %}
-          {% endblock %}
+      {% block content %}{% endblock %}
       </div>
 
-    <!-- FOOTER -->
-    <div id="footer">
-        <div>
-            <div class="container">
-                <div class="links">
-                    <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a>
-                    <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">GitHub</a>
-                    <a href="/terms" title="Terms of Service">Terms of Service</a>
-                </div>
-                <span>{{APP_NAME}} (v. {{APP_VERSION}})</span> is an open source project. You can find its source code at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a>
-                <br>
-                Powered by <a href="https://developers.google.com/appengine/">Google App Engine</a>.
-            </div>
-        </div>
-    </div>
-</div>
+      <!-- FOOTER -->
+      <div id="footer">
+	<div>
+	  <div class="container">
+	    <div class="links">
+              <a href="{{GOOGLE_PLUS_PAGE}}" rel="publisher" aria-label="Follow us on Google+">Google+</a>
+              <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">GitHub</a>
+              <a href="/terms" title="Terms of Service">Terms of Service</a>
+	    </div>
+	    <span>{{APP_NAME}} (v. {{APP_VERSION}})</span> is an open source project. You can find its source code at its <a title="Contributions, testings and bug reports are welcome!" href="{{APP_REPO}}">public repository</a> under a <a title="Please make sure you understand this license before using this project's source code." href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3 license.</a>
+	    <br>
+	    Powered by <a href="https://developers.google.com/appengine/">Google App Engine</a>.
+	  </div>
+	</div>
+      </div> <!-- footer  -->
+    </div> <!-- #wrap  -->
 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
