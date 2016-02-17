@@ -75,6 +75,7 @@ class RegisteredUsers(ndb.Model):
     email = ndb.StringProperty(required = False)
     about_me = ndb.TextProperty(required = False)
     my_projects = ndb.KeyProperty(repeated = True)                   # keys to Projects (defined in projects.py)
+    my_groups = ndb.KeyProperty(repeated = True)                     # keys to Groups (defined in groups.py)
     profile_image_url = ndb.StringProperty(required = False)
     gplusid = ndb.StringProperty(required = False)
     gplus_profile_json = ndb.JsonProperty(required = False)
@@ -91,6 +92,19 @@ class RegisteredUsers(ndb.Model):
         if len(projects_list) > 0:
             projects_list.sort(key=lambda p: p.last_updated, reverse=True)
         return projects_list
+
+    def list_of_groups(self):
+        groups_list = []
+        for g_key in self.my_groups:
+            group = g_key.get()
+            if group:
+                groups_list.append(group)
+            else:
+                logging.warning("RegisteredUser with key (%s) contains a broken reference to group %s"
+                                % (self.key, g_key))
+        if len(groups_list) > 0:
+            groups_list.sort(key=lambda g: g.last_updated, reverse=True)
+        return groups_list
 
     def set_gplus_profile(self):
         assert self.gplusid
