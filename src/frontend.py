@@ -1,7 +1,7 @@
 # frontend.py
 
 import webapp2
-import generic, projects
+import generic, projects, groups
 import bibliography, code, collab_writing, datasets, forum, images, notebooks, wiki
 
 class RootPage(generic.GenericPage):

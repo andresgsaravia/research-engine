@@ -2,7 +2,7 @@
 # For creating, managing and updating groups.
 
 from google.appengine.ext import ndb
-import generic, email_messages
+import generic, email_messages, projects
 
 UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview tab
 
@@ -44,11 +44,11 @@ class Groups(ndb.Model):
         requesting_handler.log_and_put(user, "Adding a new group to my_groups property")
         return True
 
-    def list_updates(self, requesting_handler, user = None, n = UPDATES_TO_DISPLAY):
+    def list_updates(self, requesting_handler, n = UPDATES_TO_DISPLAY):
         assert type(n) == int
         assert n > 0
         requesting_handler.log_read(GroupUpdates, "Requesting %s updates. " % n)
-        updates = GroupsUpdates.query(ancestor = self.key).order(-GroupUpdates.date).fetch(n)
+        updates = GroupUpdates.query(ancestor = self.key).order(-GroupUpdates.date).fetch(n)
         return updates
 
 # Should have a Group as parent
@@ -61,8 +61,7 @@ class GroupUpdates(ndb.Model):
         return generic.render_str("group_activity.html",
                                   author = self.author.get(),
                                   item = self.item,
-                                  group = self.key.parent().get(),
-                                  show_project_p = show_project_p)
+                                  group = self.key.parent().get())
 
 
 ######################
@@ -108,7 +107,7 @@ class NewGroupPage(generic.GenericPage):
             have_error = True
             kw["error"] = "Please provide a name."
             kw["name_class"] = "has-error"
-        groups = Groups.query(Groups.name == kw["g_name"]).get()
+        groups = Groups.query(Groups.name == kw["g_name"]).fetch()
         if groups:
             for g in groups:
                 if user.key in g.members:
@@ -122,6 +121,19 @@ class NewGroupPage(generic.GenericPage):
                            description = kw["g_description"],
                            members = [user.key])
             group.put()
+            user.my_groups.append(group.key)
+            user.put()
             self.redirect("/g/%s" % group.key.integer_id())
-            
-                    
+
+class ViewGroupPage(GroupPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        self.render("group_base.html", group = group, user = user,
+                    updates = group.list_updates(self))

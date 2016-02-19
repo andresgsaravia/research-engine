@@ -68,13 +68,13 @@
 		  <li><a href="/new_project" role="button">Create a new project</a></li>
 		  {% endif %}
 		</ul>
-	      </li> <!-- Projects dropdown  -->
+	      </li> <!-- Groups dropdown  -->
 	      <li class="dropdown"> <!-- Groups dropdown  -->
 	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Groups <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		  {% if list_of_groups %}
 		  {% for g in list_of_groups %}
-		  <li><a href="/{{g.key.integer_id()}}">{{g.name | safe}}</a></li>
+		  <li><a href="/g/{{g.key.integer_id()}}">{{g.name | safe}}</a></li>
 		  {% endfor %}
 		  {% else %}
 		  <li><a href="/new_group" role="button">Create a new group</a></li>

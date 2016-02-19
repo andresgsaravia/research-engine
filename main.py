@@ -104,6 +104,8 @@ routes = [
     Route('/<projectid:[0-9]+>', 'src.frontend.OverviewPage'),
     # Groups
     Route('/new_group', 'src.groups.NewGroupPage'),
+    Route('/g/<groupid:[0-9]+>', 'src.groups.ViewGroupPage'),
+
     Route('/<username:.+>/outreach', 'src.outreach.MainPage'),
     Route('/<username:.+>/outreach/new_post', 'src.outreach.NewPostPage'),
     Route('/<username:.+>/outreach/<postid:[0-9]+>/edit', 'src.outreach.EditPostPage'),

@@ -270,7 +270,9 @@ class GenericPage(webapp2.RequestHandler):
         kw["APP_REPO"] = APP_REPO
         kw["GOOGLE_PLUS_PAGE"] = GOOGLE_PLUS_PAGE
         kw['user'] = self.get_login_user()
-        if kw["user"]: kw["list_of_projects"] = kw["user"].list_of_projects()
+        if kw["user"]:
+            kw["list_of_projects"] = kw["user"].list_of_projects()
+            kw["list_of_groups"]   = kw["user"].list_of_groups()
         self.write(self.render_str(template, **kw))
 
     # for simpleauth

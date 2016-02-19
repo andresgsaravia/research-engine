@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link href="/css/group.css" rel="stylesheet" />
+    <title>{{group.name}}</title>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+      MathJax.Hub.Config({
+      "tex2jax": { inlineMath: [ [ '$', '$' ] ], processEscapes: true },
+      TeX: {equationNumbers: {autoNumber: "AMS"} }
+      });
+    </script>
+    <style class="text/css">img{max-width:100%;height:auto;}</style>
+    {% block g_head %}
+    {% endblock %}
+{% endblock %}
+
+    {% block content %}
+    <br>
+    <div class="container">
+      <div class="row">
+        <div id="project-nav" class="col-sm-1">
+          <a href="/g/{{group.key.integer_id()}}" class="{{overview_tab_class}} icon-btn">
+            <i class="fa fa-dashboard"></i><br>
+            Overview
+          </a>
+          <a href="/g/{{group.key.integer_id()}}/calendar" class="{{notebooks_tab_class}} icon-btn">
+            <i class="fa fa-calendar"></i><br>
+	    Calendar
+          </a>
+          <a href="/g/{{group.key.integer_id()}}/bibliography" class="{{bibliography_tab_class}} icon-btn">
+            <i class="fa fa-folder-o"></i><br>
+            Bibliography
+          </a>
+	  <a href="/g/{{group.key.integer_id()}}/files" class="{{bibliography_tab_class}} icon-btn">
+            <i class="fa fa-files-o"></i><br>
+            Files
+          </a>
+        </div>
+	
+        <div class="col-sm-11" style="padding-left: 30px;">
+          <!-- Group content -->
+          {% block g_content %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    {% endblock %}
