@@ -18,7 +18,7 @@ class Groups(ndb.Model):
     started = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
-    def list_of_members(self, requesting_handler):
+    def list_members(self, requesting_handler):
         members_list = []
         for u_key in self.members:
             requesting_handler.log_read(generic.RegisteredUsers, "Getting an author from a Group's list of authors. ")
@@ -135,5 +135,6 @@ class ViewGroupPage(GroupPage):
         if not group or not group.user_is_member(user):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
-        self.render("group_base.html", group = group, user = user,
+        self.render("group_overview.html", group = group, user = user,
+                    members = group.list_members(self),
                     updates = group.list_updates(self))
