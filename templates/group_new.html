@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{user.username.capitalize()}} / New Group</title>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container" style="max-width:720px;">
+    <h2 role="heading" id="main-content" class="page-title-centered">Create a New Group</h2>
+
+  <form method="post" action="/new_group" role="form">
+    <div class="form-group {{name_class}}">
+      <label for="gName">Group name</label>
+      <input type="text" class="form-control"
+	     name="g_name" value="{{g_name}}" placeholder="Enter name" id="gName" autofocus/>
+    </div>
+    <div class="form-group">
+      <label for="gDescription">Description (optional)</label>
+      <textarea class="form-control" rows="15" name="g_description" id="gDescription"
+		placeholder="Enter a description of the group">{{g_description}}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-default btn-new">Create new group</button>
+    <button type="button" class="btn btn-default btn-new" onClick="window.location = '/{{user.username}}'">Cancel</button>
+    {% if error %}
+    <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span>
+      {{error}}
+    </div>
+    {% endif %}
+  </form>
+
+  <br>
+
+</div>
+
+{% endblock %}
