@@ -105,6 +105,7 @@ routes = [
     # Groups
     Route('/new_group', 'src.groups.NewGroupPage'),
     Route('/g/<groupid:[0-9]+>', 'src.groups.ViewGroupPage'),
+    Route('/g/<groupid:[0-9]+>/calendar', 'src.groups.CalendarPage'),
 
     Route('/<username:.+>/outreach', 'src.outreach.MainPage'),
     Route('/<username:.+>/outreach/new_post', 'src.outreach.NewPostPage'),

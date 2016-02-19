@@ -12,10 +12,10 @@ UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview
 ###########################
 
 class Groups(ndb.Model):
-    name = ndb.StringProperty(required = True)
-    description = ndb.TextProperty(required = False)
-    members = ndb.KeyProperty(repeated = True)
-    started = ndb.DateTimeProperty(auto_now_add = True)
+    name         = ndb.StringProperty(required = True)
+    description  = ndb.TextProperty(required = False)
+    members      = ndb.KeyProperty(repeated = True)
+    started      = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
     def list_members(self, requesting_handler):
@@ -53,15 +53,24 @@ class Groups(ndb.Model):
 
 # Should have a Group as parent
 class GroupUpdates(ndb.Model):
-    date = ndb.DateTimeProperty(auto_now_add = True)
+    date   = ndb.DateTimeProperty(auto_now_add = True)
     author = ndb.KeyProperty(kind = generic.RegisteredUsers, required = True)
-    item = ndb.KeyProperty(required = True)
+    item   = ndb.KeyProperty(required = True)
 
     def description_html(self, show_group_p = True):
         return generic.render_str("group_activity.html",
                                   author = self.author.get(),
                                   item = self.item,
                                   group = self.key.parent().get())
+
+# Should have a Group as parent
+class CalendarTask(ndb.Model):
+    start_date  = ndb.DateTimeProperty(required = True)
+    end_date    = ndb.DateTimeProperty(required = False)
+    added       = ndb.DateTimeProperty(auto_now_add = True)
+    author      = ndb.KeyProperty(required = True)
+    title       = ndb.StringProperty(required = True)
+    description = ndb.TextProperty(required = False)
 
 
 ######################
@@ -138,3 +147,16 @@ class ViewGroupPage(GroupPage):
         self.render("group_overview.html", group = group, user = user,
                     members = group.list_members(self),
                     updates = group.list_updates(self))
+
+
+class CalendarPage(GroupPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        self.render("group_calendar.html", group = group, user = user)

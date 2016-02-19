@@ -1,0 +1,41 @@
+{% extends "group_base.html" %}
+
+{% block g_content %}
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Calendar</h4>
+      </div>
+      <div class="modal-body">
+	<p>Here you can add events and tasks with due dates for all the group to see</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="project-tab-header">
+  Calendar
+  <a href="#group-menu" class="skiptocontent">Skip to group menu</a>
+  <div class="actions">
+    <a href="#helpModal" data-toggle="modal">
+      <span class="fa fa-question-circle"></span>
+    </a>
+  </div>
+</h2>
+
+<div class="project-tab-actions">
+  <a href="/g/{{group.key.integer_id()}}/calendar/new">
+    New task
+  </a>
+</div>
+
+{% if tasks %}
+{% for task in tasks %}
+<p>{{task.title}}</p>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
