@@ -1,7 +1,7 @@
 # users.py
 # All related to user login/signup and preferences storage.
 
-import generic, projects, email_messages, secrets, simpleauth
+import generic, projects, email_messages, secrets, simpleauth, groups
 import bibliography, code, collab_writing, datasets, forum, images, notebooks, wiki
 import hashlib, re, logging, json
 from google.appengine.api import mail, urlfetch

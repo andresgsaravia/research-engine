@@ -1,0 +1,8 @@
+Collaboration invitation
+
+User {{inviting.username.capitalize()}} <{{DOMAIN_PREFIX}}/{{inviting.username}}> has invited you to be a member of the group {{group.name}} at {{APP_NAME}} <{{DOMAIN_PREFIX}}>.
+
+If you want to accept the invitation please click on the following link:
+<{{accept_link}}>
+
+If you don't want to start this collaboration now please just disregard this email.

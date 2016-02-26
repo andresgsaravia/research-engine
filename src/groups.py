@@ -160,3 +160,60 @@ class CalendarPage(GroupPage):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
         self.render("group_calendar.html", group = group, user = user)
+
+
+class AdminPage(GroupPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        self.render("group_admin.html", group = group, user = user, members = group.list_members(self))
+ 
+    def post(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        kw = {"action" :self.request.get("action")}
+        if kw["action"] == "invite":
+            kw["username"] = self.request.get("username")
+            invited_user = self.get_user_by_username(kw["username"].lower())
+            if not invited_user:
+                kw["error_message"] = "No username <em>%s</em> found" % kw["username"]
+            elif not group.user_is_member(user):
+                kw["error_message"] = "You are not a member of this group"
+            elif invited_user.key in group.members:
+                kw["error_message"] = "%s is already a member of %s" % (invited_user.username.capitalize(), group.name)
+            else:
+                email_messages.send_invitation_to_group(group = group,
+                                                        inviting = user,
+                                                        invited = invited_user)
+                kw["message"] = "Invitation sent to <em>%s</em>" % invited_user.username.capitalize()
+        else:
+            kw["error_message"] = "Something went wring while processing your request."
+        self.render("group_admin.html", group = group, user = user, members = group.list_members(self), **kw)
+
+
+class InvitedPage(GroupPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        h = self.request.get("h")
+        if h and (generic.hash_str(user.salt + str(group.key)) == h) and not group.user_is_member(user):
+            group.add_member(self, user)
+        self.redirect("/g/%s" % groupid)
