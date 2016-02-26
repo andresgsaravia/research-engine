@@ -52,8 +52,12 @@ class Groups(ndb.Model):
         updates = GroupUpdates.query(ancestor = self.key).order(-GroupUpdates.date).fetch(n)
         return updates
 
-    def new_event_update(self, event):
-        pass
+    def new_update(self, item):
+        new_update = GroupUpdates(author = item.author,
+                                  item   = item.key,
+                                  parent = self.key)
+        new_update.put()
+        self.put()
 
 # Should have a Group as parent
 class GroupUpdates(ndb.Model):
@@ -214,8 +218,8 @@ class CalendarNewTask(CalendarPage):
                                        description = kw["description"],
                                        parent = group.key)
             new_event.put()
-            group.new_event_update(event)
-            event.send_email_notifications()
+            group.new_update(new_event)
+            new_event.send_email_notifications()
             self.redirect("/g/%s/calendar" % groupid)
 
 

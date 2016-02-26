@@ -55,7 +55,7 @@
     {% for u in updates %}
     <div class="list-group-item">
       <img src="{{u.author.get().get_profile_image(20)}}" aria-hidden="true"/>
-      {{u.description_html(group, show_group_p = False) | safe}}
+      {{u.description_html(show_group_p = False) | safe}}
       <span class="text-muted pull-right">
         {{u.date.strftime("%d %b %H:%M")}}
       </span>
@@ -63,7 +63,7 @@
     {% endfor %}
   </div>
   {% else %}
-  <em>There has been no activity in this project yet</em>
+  <em>There has been no activity in this group yet</em>
   {% endif %}
 </div>
 
