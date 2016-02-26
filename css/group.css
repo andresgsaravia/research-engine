@@ -1,0 +1,8 @@
+.events-row {
+    border-bottom: 1px solid #EEEEEE;
+    padding: 10px 0;
+}
+
+.event-date {
+    font-weight: bold;
+}

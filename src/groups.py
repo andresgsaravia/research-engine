@@ -19,10 +19,9 @@ class Groups(ndb.Model):
     started      = ndb.DateTimeProperty(auto_now_add = True)
     last_updated = ndb.DateTimeProperty(auto_now = True)
 
-    def list_members(self, requesting_handler):
+    def list_members(self):
         members_list = []
         for u_key in self.members:
-            requesting_handler.log_read(generic.RegisteredUsers, "Getting an author from a Group's list of authors. ")
             member = u_key.get()
             if member:
                 members_list.append(member)
@@ -79,7 +78,13 @@ class CalendarEvents(ndb.Model):
     description = ndb.TextProperty(required = False)
 
     def send_email_notifications(self):
-        pass
+        group   = self.key.parent().get()
+        members = group.list_members()
+        author  = self.author.get()
+        for member in members:
+            email_messages.send_new_calendar_event_notification(user = member, author = author,
+                                                                group = group, event = self)
+            
 
 ######################
 ##   Web Handlers   ##
@@ -156,7 +161,7 @@ class ViewGroupPage(GroupPage):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
         self.render("group_overview.html", group = group, user = user,
-                    members = group.list_members(self),
+                    members = group.list_members(),
                     updates = group.list_updates(self))
 
 
@@ -233,7 +238,7 @@ class AdminPage(GroupPage):
         if not group or not group.user_is_member(user):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
-        self.render("group_admin.html", group = group, user = user, members = group.list_members(self))
+        self.render("group_admin.html", group = group, user = user, members = group.list_members())
  
     def post(self, groupid):
         user = self.get_login_user()
@@ -261,7 +266,7 @@ class AdminPage(GroupPage):
                 kw["message"] = "Invitation sent to <em>%s</em>" % invited_user.username.capitalize()
         else:
             kw["error_message"] = "Something went wring while processing your request."
-        self.render("group_admin.html", group = group, user = user, members = group.list_members(self), **kw)
+        self.render("group_admin.html", group = group, user = user, members = group.list_members(), **kw)
 
 
 class InvitedPage(GroupPage):

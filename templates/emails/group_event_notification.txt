@@ -1,0 +1,8 @@
+# New event at {{group.name}} #
+
+{{author.username.capitalize()}} has created a new event at {{group.name}}:
+
+- *Date:* {{event.start_date.strftime("%d %b %Y %H:%M (%A)")}}
+- *Description:* {{event.description}}
+
+<{{APP_URL}}/g/{{group.key.integer_id()}}/calendar>

@@ -34,15 +34,18 @@
 
 {% if events %}
 
-<table class="table table-striped">
+<div class="events-wrapper">
   {% for event in events %}
-  <tr>
-    <td>{{event.start_date.strftime("%d %b %Y %H:%M (%A)")}}<td>
-    <td>{{event.description}}</td>
-    <td>{{event.author.get().username.capitalize()}}</td>
-  </tr>
+  <div class="row events-row">
+    <div class="col-sm-2"><span class="event-date">{{event.start_date.strftime("%d %b %Y %H:%M (%A)")}}</span></div>
+    <div class="col-sm-8">{{event.description | md | safe}}</div>
+    <div class="col-sm-2">
+      <img src="{{event.author.get().get_profile_image(20)}}" width="20" aria-hidden="true"/>
+      {{event.author.get().username.capitalize()}}
+    </div>
+  </div>
   {% endfor %}
-</table>
+</div>
 
 
 {% endif %}
