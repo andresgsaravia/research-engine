@@ -105,6 +105,7 @@ routes = [
     # Groups
     Route('/new_group', 'src.groups.NewGroupPage'),
     Route('/g/<groupid:[0-9]+>', 'src.groups.ViewGroupPage'),
+    Route('/g/<groupid:[0-9]+>/calendar/new', 'src.groups.CalendarNewTask'),
     Route('/g/<groupid:[0-9]+>/calendar', 'src.groups.CalendarPage'),
     Route('/g/<groupid:[0-9]+>/admin', 'src.groups.AdminPage'),
     Route('/g/<groupid:[0-9]+>/invited', 'src.groups.InvitedPage'),

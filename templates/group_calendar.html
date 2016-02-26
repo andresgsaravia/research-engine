@@ -28,14 +28,23 @@
 
 <div class="project-tab-actions">
   <a href="/g/{{group.key.integer_id()}}/calendar/new">
-    New task
+    New event
   </a>
 </div>
 
-{% if tasks %}
-{% for task in tasks %}
-<p>{{task.title}}</p>
-{% endfor %}
+{% if events %}
+
+<table class="table table-striped">
+  {% for event in events %}
+  <tr>
+    <td>{{event.start_date.strftime("%d %b %Y %H:%M (%A)")}}<td>
+    <td>{{event.description}}</td>
+    <td>{{event.author.get().username.capitalize()}}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+
 {% endif %}
 
 {% endblock %}

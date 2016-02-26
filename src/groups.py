@@ -1,6 +1,7 @@
 # groups.py
 # For creating, managing and updating groups.
 
+from datetime import datetime, timedelta
 from google.appengine.ext import ndb
 import generic, email_messages, projects
 
@@ -51,6 +52,9 @@ class Groups(ndb.Model):
         updates = GroupUpdates.query(ancestor = self.key).order(-GroupUpdates.date).fetch(n)
         return updates
 
+    def new_event_update(self, event):
+        pass
+
 # Should have a Group as parent
 class GroupUpdates(ndb.Model):
     date   = ndb.DateTimeProperty(auto_now_add = True)
@@ -64,14 +68,14 @@ class GroupUpdates(ndb.Model):
                                   group = self.key.parent().get())
 
 # Should have a Group as parent
-class CalendarTask(ndb.Model):
-    start_date  = ndb.DateTimeProperty(required = True)
-    end_date    = ndb.DateTimeProperty(required = False)
+class CalendarEvents(ndb.Model):
+    start_date  = ndb.DateTimeProperty(required = True)     # Maybe later I'll add an "end_date"
     added       = ndb.DateTimeProperty(auto_now_add = True)
     author      = ndb.KeyProperty(required = True)
-    title       = ndb.StringProperty(required = True)
     description = ndb.TextProperty(required = False)
 
+    def send_email_notifications(self):
+        pass
 
 ######################
 ##   Web Handlers   ##
@@ -135,6 +139,9 @@ class NewGroupPage(generic.GenericPage):
             self.redirect("/g/%s" % group.key.integer_id())
 
 class ViewGroupPage(GroupPage):
+    def render(self, *a, **kw):
+        GroupPage.render(self, overview_tab_class = "active", *a, **kw)
+
     def get(self, groupid):
         user = self.get_login_user()
         if not user:
@@ -150,6 +157,9 @@ class ViewGroupPage(GroupPage):
 
 
 class CalendarPage(GroupPage):
+    def render(self, *a, **kw):
+        GroupPage.render(self, calendar_tab_class = "active", *a, **kw)
+
     def get(self, groupid):
         user = self.get_login_user()
         if not user:
@@ -159,7 +169,54 @@ class CalendarPage(GroupPage):
         if not group or not group.user_is_member(user):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
-        self.render("group_calendar.html", group = group, user = user)
+        display_date = datetime.today() - timedelta(days=1)
+        events = CalendarEvents.query(ancestor = group.key).filter(CalendarEvents.start_date > display_date).order(CalendarEvents.start_date).fetch()
+        self.render("group_calendar.html", group = group, user = user, events = events)
+
+
+class CalendarNewTask(CalendarPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        self.render("group_calendar_new_task.html", group = group, user = user)
+
+    def post(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        kw = {"date" : self.request.get("date"),
+              "description" : self.request.get("description")}
+        have_error = False
+        if not kw["date"] :
+            have_error = True
+            kw["error_message"] = "Please select a date for the event."
+            kw["date_class"] = "has-error"
+        elif not kw["description"]:
+            have_error = True
+            kw["error_message"] = "Please provide a description for the event."
+            kw["description_class"] = "has-error"
+        if have_error:
+            self.render("group_calendar_new_task.html", group = group, user = user, **kw)
+        else:
+            new_event = CalendarEvents(start_date = datetime.strptime(kw["date"], "%d.%m.%Y %H:%M"),
+                                       author = user.key,
+                                       description = kw["description"],
+                                       parent = group.key)
+            new_event.put()
+            group.new_event_update(event)
+            event.send_email_notifications()
+            self.redirect("/g/%s/calendar" % groupid)
 
 
 class AdminPage(GroupPage):
