@@ -109,6 +109,7 @@ routes = [
     Route('/g/<groupid:[0-9]+>/calendar', 'src.groups.CalendarPage'),
     Route('/g/<groupid:[0-9]+>/admin', 'src.groups.AdminPage'),
     Route('/g/<groupid:[0-9]+>/invited', 'src.groups.InvitedPage'),
+    Route('/g/<groupid:[0-9]+>/bibliography', 'src.groups.BiblioPage'),
 
     Route('/<username:.+>/outreach', 'src.outreach.MainPage'),
     Route('/<username:.+>/outreach/new_post', 'src.outreach.NewPostPage'),

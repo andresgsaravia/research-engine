@@ -4,6 +4,7 @@
 from datetime import datetime, timedelta
 from google.appengine.ext import ndb
 import generic, email_messages, projects
+import bibliography   # I should move stuff from bibliography to a more generic module
 
 UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview tab
 
@@ -283,3 +284,59 @@ class InvitedPage(GroupPage):
         if h and (generic.hash_str(user.salt + str(group.key)) == h) and not group.user_is_member(user):
             group.add_member(self, user)
         self.redirect("/g/%s" % groupid)
+
+
+class BiblioPage(GroupPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        bibitems = bibliography.BiblioItems.query(ancestor = group.key).order(-bibliography.BiblioItems.last_updated).fetch()
+        self.render("group_biblio.html", user = user, group = group, bibitems = bibitems)
+
+    def post(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        have_error = False
+        kw = {"identifier" : self.request.get("identifier").strip(),
+              "kind" : self.request.get("kind")}
+        if not kw["identifier"]:
+            have_error = True
+            kw["error_message"] = "Please write an appropiate value on the seach field. "
+            kw["identifier_class"] = "has-error"
+        else:
+            # Check if already present
+            bibitem = bibliography.BiblioItems.query(bibliography.BiblioItems.kind == kw["kind"],
+                                        bibliography.BiblioItems.identifier == kw["identifier"],
+                                        ancestor = group.key).get()
+            if not bibitem:
+                item_dom, error_message = bibliography.get_dom(kw["identifier"], kw["kind"])
+                if error_message: 
+                    have_error = True
+                else:
+                    metadata = bibliography.parse_xml(item_dom, kw["kind"])
+                    bibitem = bibliography.BiblioItems(title = metadata["title"],
+                                                       link = bibliography.make_link(kw["identifier"], kw["kind"]),
+                                                       kind = kw["kind"],
+                                                       identifier = kw["identifier"],
+                                                       metadata = metadata,
+                                                       parent = group.key)
+        # Add to the library
+        if have_error:
+            self.render("biblio_new.html", project = project, error_message = error_message, identifier = identifier, kind = kind)
+        else:
+            bibitem.put()
+            self.redirect("/g/%s/bibliography" % groupid)
+
+

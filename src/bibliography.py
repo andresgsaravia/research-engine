@@ -1,7 +1,7 @@
 # bibliography.py
 # Bibliography review for a given project
 
-import generic, projects
+import generic, projects, groups
 import urllib2
 from xml.dom import minidom
 from google.appengine.ext import ndb
@@ -68,6 +68,7 @@ def parse_xml(dom, kind):
         res["publication"] = "arXiv"
         res["title"] = dom.getElementsByTagName("entry")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
         res["date"]  = dom.getElementsByTagName("entry")[0].getElementsByTagName("published")[0].childNodes[0].nodeValue
+        res["summary"]  = dom.getElementsByTagName("entry")[0].getElementsByTagName("summary")[0].childNodes[0].nodeValue
         res["authors"] = []
         for a in dom.getElementsByTagName("entry")[0].getElementsByTagName("author"):
             res["authors"].append(a.getElementsByTagName("name")[0].childNodes[0].nodeValue)

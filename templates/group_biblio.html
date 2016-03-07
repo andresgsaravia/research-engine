@@ -1,0 +1,113 @@
+{% extends "group_base.html" %}
+
+{% block g_head %}
+<script type="text/javascript">
+  var changeIdName = function () {
+  var selectBox = document.getElementById("selectBox");
+  var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+  var d = document.getElementById("inputId");
+  if (selectedValue === "article") {
+   d.placeholder = "DOI";
+  } else if (selectedValue === "arXiv") {
+   d.placeholder = "arXiv id";
+  } else {
+   d.placeholder = "";
+  }};
+</script>
+{% endblock %}
+
+{% block g_content %}
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Calendar</h4>
+      </div>
+      <div class="modal-body">
+	<p>Here you can add articles for everyone in the group to see.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="project-tab-header">
+  Bibliography
+  <a href="#group-menu" class="skiptocontent">Skip to group menu</a>
+  <div class="actions">
+    <a href="#helpModal" data-toggle="modal">
+      <span class="fa fa-question-circle"></span>
+    </a>
+  </div>
+</h2>
+
+<h3>Add new</h3>
+<form method="post" class="form-inline" role="form">
+  <div class="form-group">
+    <label for="selectBox" class="control-label">Kind of publication</label>
+    <select name="kind" id="selectBox" onChange="changeIdName();" class="form-control">
+      <option value="arXiv">arXiv preprint</option>
+      <option value="article">Published article</option>
+    </select>
+  </div>
+  <div class="form-group{% if error_message %} has-error{% endif %}">
+    <label for="inputId" class="control-label">Identifier 
+      <span class="glyphicon glyphicon-question-sign" title="This is either the article's DOI or its arXiv ID"></span></label>
+    <input type="text" name="identifier" value="{{identifier}}" id="inputId" class="form-control {{identifier_class}}"
+	   placeholder="arXiv id" autofocus />
+  </div>
+  <button type="submit" class="btn btn-success">Search and add</button>
+  <p class="text-danger">{{error_message}}</p>
+</form>
+
+<hr />
+
+{% if bibitems %}
+<div class="panel-group project-tab-list" id="caccordion">
+  {% for i in bibitems %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <span class="pull-right">
+          <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
+            <span class="fa fa-chevron-down"></span>
+            <span class="fa fa-chevron-up" hidden></span>
+          </span>
+        </span>
+          {{i.title | safe}}
+      </h4>
+    </div>
+    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+      <div class="panel-body">
+        {% if i.kind == "article" %}
+        <strong>{{i.metadata["publication"]}}</strong> ({{i.metadata["date"]}})
+        <p>
+          <a href="{{i.link}}">
+            doi:{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span>
+          </a>
+        </p>
+        {% elif i.kind == "arXiv" %}
+        <strong>arXiv preprint</strong> ({{i.metadata["date"]}})
+        <p>
+          <a href="{{i.link}}">{{i.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
+        </p>
+        {% endif %}
+	
+	<p>{{i.metadata["summary"]}}</p>
+        <h4 style="margin-top: 15px;">Authors</h4>
+        <div>
+          {% for a in i.metadata["authors"] %}
+          <span style="margin-right: 15px">{{a}}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% endif %}
+
+{% endblock %}
