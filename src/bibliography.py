@@ -187,7 +187,9 @@ class NewItemPage(BiblioPage):
             error_message = "Please write an appropiate value on the seach field. "
         else:
             # Check if already present
-            previous = BiblioItems.query(BiblioItems.kind == kind, BiblioItems.identifier == identifier).get()
+            previous = BiblioItems.query(BiblioItems.kind == kind,
+                                         BiblioItems.identifier == identifier,
+                                         ancestor = project.key).get()
             if previous:
                 have_error = True
                 error_message = "That item has been already added."
