@@ -287,6 +287,9 @@ class InvitedPage(GroupPage):
 
 
 class BiblioPage(GroupPage):
+    def render(self, *a, **kw):
+        GroupPage.render(self, bibliography_tab_class = "active", *a, **kw)
+
     def get(self, groupid):
         user = self.get_login_user()
         if not user:
@@ -321,8 +324,8 @@ class BiblioPage(GroupPage):
                                         bibliography.BiblioItems.identifier == kw["identifier"],
                                         ancestor = group.key).get()
             if not bibitem:
-                item_dom, error_message = bibliography.get_dom(kw["identifier"], kw["kind"])
-                if error_message: 
+                item_dom, kw["error_message"] = bibliography.get_dom(kw["identifier"], kw["kind"])
+                if kw["error_message"]: 
                     have_error = True
                 else:
                     metadata = bibliography.parse_xml(item_dom, kw["kind"])
@@ -334,7 +337,8 @@ class BiblioPage(GroupPage):
                                                        parent = group.key)
         # Add to the library
         if have_error:
-            self.render("biblio_new.html", project = project, error_message = error_message, identifier = identifier, kind = kind)
+            kw["bibitems"] = bibliography.BiblioItems.query(ancestor = group.key).order(-bibliography.BiblioItems.last_updated).fetch()
+            self.render("group_biblio.html", user = user, group = group, **kw)
         else:
             bibitem.put()
             self.redirect("/g/%s/bibliography" % groupid)
