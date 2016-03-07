@@ -1,6 +1,6 @@
 Collaboration invitation
 
-User {{inviting.username.capitalize()}} <{{DOMAIN_PREFIX}}/{{inviting.username}}> has invited you to collaborate with the project {{project.name}} <{{DOMAIN_PREFIX}}/{{inviting.username}}/{{project.key.integer_id()}}> at {{APP_NAME}} <{{DOMAIN_PREFIX}}>.
+User {{inviting.username.capitalize()}} <{{DOMAIN_PREFIX}}/{{inviting.username}}> has invited you to collaborate with the project {{project.name}} <{{DOMAIN_PREFIX}}/{{project.key.integer_id()}}> at {{APP_NAME}} <{{DOMAIN_PREFIX}}>.
 
 If you want to accept the invitation please click on the following link:
 <{{accept_link}}>
