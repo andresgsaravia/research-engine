@@ -67,7 +67,7 @@
 {% if bibitems %}
 <div class="panel-group project-tab-list" id="caccordion">
   {% for i in bibitems %}
-  <div class="panel panel-default">
+  <div class="panel panel-default bibitem">
     <div class="panel-heading">
       <h4 class="panel-title">
         <span class="pull-right">
@@ -79,7 +79,7 @@
           {{i.title | safe}}
       </h4>
     </div>
-    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+    <div class="panel-collapse collapse bibitem-body" id="{{i.key.integer_id()}}">
       <div class="panel-body">
         {% if i.kind == "article" %}
         <strong>{{i.metadata["publication"]}}</strong> ({{i.metadata["date"]}})

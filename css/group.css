@@ -6,3 +6,10 @@
 .event-date {
     font-weight: bold;
 }
+
+.bibitem:nth-child(even) > .panel-heading,
+.bibitem:nth-child(even) > .bibitem-body
+{
+    background: rgb(245,245,245);
+}
+    
