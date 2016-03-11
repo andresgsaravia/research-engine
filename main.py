@@ -34,6 +34,7 @@ routes = [
     Route('/logout', handler='src.users.AuthHandler:logout', name='logout'),
     # Cron jobs
     Route('/cron/send_email_notifications', 'src.email_messages.SendNotifications'),
+    Route('/cron/send_group_biblio_notifications', 'src.groups.SendBiblioNotifications'),
     ##
     #  Projects
     ##

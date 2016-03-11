@@ -344,3 +344,14 @@ class BiblioPage(GroupPage):
             self.redirect("/g/%s/bibliography" % groupid)
 
 
+class SendBiblioNotifications(GroupPage):
+    def get(self):
+        all_groups = Groups.query()
+        for group in all_groups:
+            one_week_ago = datetime.today() - timedelta(days=7)
+            bibitems = bibliography.BiblioItems.query(ancestor = group.key)
+            bibitems.filter(bibliography.BiblioItems.last_updated > one_week_ago).order(-bibliography.BiblioItems.last_updated).fetch()
+            if bibitems:
+                for user in group.members:
+                    email_messages.send_group_biblio_notification(group = group, user = user.get(), bibitems = bibitems)
+                

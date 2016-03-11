@@ -1,0 +1,10 @@
+# Weekly bibliography review for {{group.name}}
+
+{% for i in bibitems %}
+* {{i.title.strip() | safe}}
+  {% if i.kind == "article" %}{{i.metadata["publication"]}} ({{i.metadata["date"]}}) <{{i.link}}>{% elif i.kind == "arXiv" %}arXiv ({{i.metadata["date"]}}) <{{i.link}}>{% endif %}
+
+  {{i.metadata["summary"]}}
+
+  Authors: {{ i.metadata["authors"] | join(', ') }}
+{% endfor %}

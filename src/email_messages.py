@@ -110,6 +110,19 @@ def send_new_calendar_event_notification(user, author, group, event):
     message.send()
     return
 
+def send_group_biblio_notification(group, user, bibitems):
+    kw = {"group"    : group,
+          "user"     : user,
+          "bibitems" : bibitems,
+          "APP_URL"  : generic.APP_URL}
+    message = mail.EmailMessage(sender  = PRETTY_ADMIN_EMAIL,
+                                to      = user.email,
+                                subject = "Weekly bibliography review for %s" % group.name,
+                                body    = generic.render_str("emails/group_biblio_notification.txt", **kw),
+                                html    = generic.render_str("emails/group_biblio_notification.html", **kw))
+    logging.debug("EMAIL: Sending an email with an event notification to user %s" % user.username)
+    message.send()
+    return
 
 ###
 ### Beware!! Uglyness below! 
