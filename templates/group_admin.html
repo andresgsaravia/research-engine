@@ -1,0 +1,48 @@
+{% extends "group_base.html" %}
+
+{% block g_content %}
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Admin</h4>
+      </div>
+      <div class="modal-body">
+	<p>Here you can make changes to the groups settings as well as adding more members to it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="project-tab-header">
+  Admin
+  <a href="#group-menu" class="skiptocontent">Skip to group menu</a>
+  <div class="actions">
+    <a href="#helpModal" data-toggle="modal">
+      <span class="fa fa-question-circle"></span>
+    </a>
+  </div>
+</h2>
+
+{% if error_message %}<div>{{error_message | safe}}</div>{% endif %}
+{% if message %}<div>{{message | safe}}</div>{% endif %}
+
+<h2>Members of {{group.name}}</h2>
+<ul>
+  {% for a in members %}
+  <li><a href="/{{a.username}}"><img src="{{a.get_profile_image(20)}}" aria-hidden="true"/> {{a.username.capitalize()}}</a></li>
+  {% endfor %}
+</ul>
+
+<form class="form-inline" method="post">
+  <input type="hidden" value="invite" name="action">
+  <label>Invite a new user to {{group.name}}</label>
+  <input type="text" name="username" placeholder="username"/>
+  <input type="submit">
+</form>
+
+
+
+{% endblock %}
