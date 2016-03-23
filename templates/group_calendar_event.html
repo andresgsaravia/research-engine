@@ -31,7 +31,7 @@
   </div>
 </h2>
 
-<h3>Add new event</h3>
+<h3>{{title}}</h3>
 <form method="post" role="form">
   <div class="row">
     <div class="col-sm-4">
@@ -43,7 +43,12 @@
 		name="description" placeholder="Description of the event">{{description}}</textarea>
     </div>
   </div>
-  <button type="submit" class="btn btn-default">Create event</button>
+  {% if notify_checkbox %}
+  <label>
+    <input type="checkbox" name="notify" checked /> Send a notification email with the changes
+  </label><br />
+  {% endif %}
+  <button type="submit" class="btn btn-default">{{btn_text}}</button>
   {% if error_message %}<div style="margin-top:1em;" class="alert alert-danger" role="aler">{{error_message}}</div>{% endif %}
 </form>
 

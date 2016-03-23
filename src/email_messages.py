@@ -95,15 +95,18 @@ def send_invitation_to_group(group, inviting, invited):
     message.send()
     return
 
-def send_new_calendar_event_notification(user, author, group, event):
-    kw = {"user" : user,
-          "author" : author,
-          "group" : group,
-          "event" : event,
-          "APP_URL" : generic.APP_URL}
+def send_new_calendar_event_notification(user, author, group, event, update):
+    kw = {"user"    : user,
+          "author"  : author,
+          "group"   : group,
+          "event"   : event,
+          "APP_URL" : generic.APP_URL,
+          "update"  : update,
+          "subject" : "An event has changed in your group " if update else "New event in your group "}
+    kw["subject"] = kw["subject"] + group.name
     message = mail.EmailMessage(sender  = PRETTY_ADMIN_EMAIL,
                                 to      = user.email,
-                                subject = "New event in group %s" % group.name,
+                                subject = kw["subject"],
                                 body    = generic.render_str("emails/group_event_notification.txt", **kw),
                                 html    = generic.render_str("emails/group_event_notification.html", **kw))
     logging.debug("EMAIL: Sending an email with an event notification to user %s" % user.username)

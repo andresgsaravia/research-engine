@@ -16,8 +16,8 @@
   </head>
   <body>
     <div class="wrapper">
-      <h3>New event at {{group.name}}</h3>
-      <p><a href="{{APP_URL}}/{{author.username}}">{{author.username.capitalize()}}</a> has created a new event at <em>{{group.name}}.</em></p>
+      <h3>{{subject}}</h3>
+      <p><a href="{{APP_URL}}/{{author.username}}">{{author.username.capitalize()}}</a> has {% if update %}changed an{% else %}created a new{% endif %} event at <em>{{group.name}}.</em></p>
       <p><strong>Date:</strong> {{event.start_date.strftime("%d %b %Y %H:%M (%A)")}}</p>
       <p><strong>Description:</strong> {{event.description}}</p>
       <p><a href="{{APP_URL}}/g/{{group.key.integer_id()}}/calendar">Group's calendar</a>

@@ -42,6 +42,10 @@
     <div class="col-sm-2">
       <img src="{{event.author.get().get_profile_image(20)}}" width="20" aria-hidden="true"/>
       {{event.author.get().username.capitalize()}}
+      <a class="btn-muted pull-right"
+	 href="/g/{{group.key.integer_id()}}/_edit_event/{{event.key.integer_id()}}">
+        <span class="fa fa-pencil"></span>
+      </a>
     </div>
   </div>
   {% endfor %}

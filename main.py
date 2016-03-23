@@ -108,6 +108,7 @@ routes = [
     Route('/g/<groupid:[0-9]+>', 'src.groups.ViewGroupPage'),
     Route('/g/<groupid:[0-9]+>/calendar/new', 'src.groups.CalendarNewTask'),
     Route('/g/<groupid:[0-9]+>/calendar', 'src.groups.CalendarPage'),
+    Route('/g/<groupid:[0-9]+>/_edit_event/<eventid:[0-9]+>', 'src.groups.EditEvent'),
     Route('/g/<groupid:[0-9]+>/admin', 'src.groups.AdminPage'),
     Route('/g/<groupid:[0-9]+>/invited', 'src.groups.InvitedPage'),
     Route('/g/<groupid:[0-9]+>/bibliography', 'src.groups.BiblioPage'),

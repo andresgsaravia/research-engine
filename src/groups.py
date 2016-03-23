@@ -7,7 +7,7 @@ import generic, email_messages, projects
 import bibliography   # I should move stuff from bibliography to a more generic module
 
 UPDATES_TO_DISPLAY = 30           # number of updates to display in the Overview tab
-
+DATETIME_STR = "%d.%m.%Y %H:%M"   # For converting to and from python's datetime and datetimepicker.js
 
 ###########################
 ##   Datastore Objects   ##
@@ -59,6 +59,7 @@ class Groups(ndb.Model):
         new_update.put()
         self.put()
 
+
 # Should have a Group as parent
 class GroupUpdates(ndb.Model):
     date   = ndb.DateTimeProperty(auto_now_add = True)
@@ -78,13 +79,14 @@ class CalendarEvents(ndb.Model):
     author      = ndb.KeyProperty(required = True)
     description = ndb.TextProperty(required = False)
 
-    def send_email_notifications(self):
+    def send_email_notifications(self, update = False):
         group   = self.key.parent().get()
         members = group.list_members()
         author  = self.author.get()
         for member in members:
             email_messages.send_new_calendar_event_notification(user = member, author = author,
-                                                                group = group, event = self)
+                                                                group = group, event = self,
+                                                                update = update)
             
 
 ######################
@@ -194,7 +196,8 @@ class CalendarNewTask(CalendarPage):
         if not group or not group.user_is_member(user):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
-        self.render("group_calendar_new_task.html", group = group, user = user)
+        self.render("group_calendar_event.html", group = group, user = user,
+                    title = "Add new event", btn_text = "Create event")
 
     def post(self, groupid):
         user = self.get_login_user()
@@ -205,8 +208,10 @@ class CalendarNewTask(CalendarPage):
         if not group or not group.user_is_member(user):
             self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
             return
-        kw = {"date" : self.request.get("date"),
-              "description" : self.request.get("description")}
+        kw = {"date"        : self.request.get("date"),
+              "description" : self.request.get("description"),
+              "title"       : "Add new event",
+              "btn_text"    : "Create event"}
         have_error = False
         if not kw["date"] :
             have_error = True
@@ -217,15 +222,71 @@ class CalendarNewTask(CalendarPage):
             kw["error_message"] = "Please provide a description for the event."
             kw["description_class"] = "has-error"
         if have_error:
-            self.render("group_calendar_new_task.html", group = group, user = user, **kw)
+            self.render("group_calendar_event.html", group = group, user = user, **kw)
         else:
-            new_event = CalendarEvents(start_date = datetime.strptime(kw["date"], "%d.%m.%Y %H:%M"),
+            new_event = CalendarEvents(start_date = datetime.strptime(kw["date"], DATETIME_STR),
                                        author = user.key,
                                        description = kw["description"],
                                        parent = group.key)
             new_event.put()
             group.new_update(new_event)
             new_event.send_email_notifications()
+            self.redirect("/g/%s/calendar" % groupid)
+
+
+class EditEvent(CalendarPage):
+    def get(self, groupid, eventid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        event = CalendarEvents.get_by_id(int(eventid), parent = group.key)
+        if not event:
+            self.render("404.html", info = "Event %s not found." % eventid)
+        self.render("group_calendar_event.html", group = group, user = user,
+                    title = "Edit event", btn_text = "Save changes", notify_checkbox = True,
+                    date = datetime.strftime(event.start_date, DATETIME_STR),
+                    description = event.description)
+
+
+    def post(self, groupid, eventid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group or not group.user_is_member(user):
+            self.render("404.html", info = "Group %s not found or you are not a member of this group." % groupid)
+            return
+        event = CalendarEvents.get_by_id(int(eventid), parent = group.key)
+        if not event:
+            self.render("404.html", info = "Event %s not found." % eventid)
+        kw = {"date"            : self.request.get("date"),
+              "description"     : self.request.get("description"),
+              "title"           : "Edit event",
+              "btn_text"        : "Save changes",
+              "notify_checkbox" : self.request.get("notify") == "on"}
+        have_error = False
+        if not kw["date"] :
+            have_error = True
+            kw["error_message"] = "Please select a date for the event."
+            kw["date_class"] = "has-error"
+        elif not kw["description"]:
+            have_error = True
+            kw["error_message"] = "Please provide a description for the event."
+            kw["description_class"] = "has-error"
+        if have_error:
+            self.render("group_calendar_event.html", group = group, user = user, **kw)
+        else:
+            event.start_date = datetime.strptime(kw["date"], DATETIME_STR)
+            event.description = kw["description"]
+            event.put()
+            if kw["notify_checkbox"]:
+                event.send_email_notifications(update = True)
             self.redirect("/g/%s/calendar" % groupid)
 
 
