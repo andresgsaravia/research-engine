@@ -26,8 +26,8 @@
   </div>
 </h2>
 
-{% if error_message %}<div>{{error_message}}</div>{% endif %}
-{% if message %}<div>{{message}}</div>{% endif %}
+{% if error_message %}<div>{{error_message | safe}}</div>{% endif %}
+{% if message %}<div>{{message | safe}}</div>{% endif %}
 
 <h2>Members of {{group.name}}</h2>
 <ul>
