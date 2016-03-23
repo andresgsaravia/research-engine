@@ -68,11 +68,23 @@
 		  {% for p in list_of_projects %}
 		  <li><a href="/{{p.key.integer_id()}}">{{p.name | safe}}</a></li>
 		  {% endfor %}
-		  {% else %}
-		  <li><a href="/new_project" role="button">Create a new project</a></li>
+		  <li role="separator" class="divider"></li>
 		  {% endif %}
+		  <li><a href="/new_project" role="button">Create a new project</a></li>
 		</ul>
 	      </li>
+	      <li class="dropdown"> <!-- Groups dropdown  -->
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Groups <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+		  {% if list_of_groups %}
+		  {% for g in list_of_groups %}
+		  <li><a href="/g/{{g.key.integer_id()}}">{{g.name | safe}}</a></li>
+		  {% endfor %}
+		  <li role="separator" class="divider"></li>
+		  {% endif %}
+		  <li><a href="/new_group" role="button">Create a new group</a></li>
+		</ul>
+	      </li> <!-- Groups dropdown  -->
 	      <li><a href="/{{user.username}}/outreach">Outreach</a></li>
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
