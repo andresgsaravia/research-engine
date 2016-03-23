@@ -79,10 +79,10 @@ class CalendarEvents(ndb.Model):
     author      = ndb.KeyProperty(required = True)
     description = ndb.TextProperty(required = False)
 
-    def send_email_notifications(self, update = False):
+    def send_email_notifications(self, update = False, edit_author = False):
         group   = self.key.parent().get()
         members = group.list_members()
-        author  = self.author.get()
+        author  = self.author.get() if (not edit_author) else edit_author
         for member in members:
             email_messages.send_new_calendar_event_notification(user = member, author = author,
                                                                 group = group, event = self,
@@ -286,7 +286,7 @@ class EditEvent(CalendarPage):
             event.description = kw["description"]
             event.put()
             if kw["notify_checkbox"]:
-                event.send_email_notifications(update = True)
+                event.send_email_notifications(update = True, edit_author = user)
             self.redirect("/g/%s/calendar" % groupid)
 
 
