@@ -32,12 +32,6 @@ indexes:
   properties:
   - name: start_date
 
-- kind: CalendarEvents
-  ancestor: yes
-  properties:
-  - name: start_date
-    direction: desc
-
 - kind: CodeComments
   ancestor: yes
   properties:
