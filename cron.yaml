@@ -1,8 +1,8 @@
 cron:
-- description: daily email notifications
-  url: /cron/send_email_notifications
-  schedule: every day 00:00
-
 - description: group_biblio_notifications
   url: /cron/send_group_biblio_notifications
   schedule: every friday 23:59
+
+- description: pending_emails
+  url: /cron/send_pending_emails
+  schedule: every 5 minutes

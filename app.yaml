@@ -1,5 +1,5 @@
 application: research-engine
-version: 1-5-3
+version: 1-5-4
 runtime: python27
 api_version: 1
 threadsafe: true

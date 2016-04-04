@@ -35,6 +35,7 @@ routes = [
     # Cron jobs
     Route('/cron/send_email_notifications', 'src.email_messages.SendNotifications'),
     Route('/cron/send_group_biblio_notifications', 'src.groups.SendBiblioNotifications'),
+    Route('/cron/send_pending_emails', 'src.email_messages.SendPendingEmails'),
     ##
     #  Projects
     ##

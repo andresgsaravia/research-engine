@@ -2,26 +2,41 @@
 # Perhaps later this will be a little smarter...
 
 from google.appengine.api import mail
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 import logging
 import generic
 
 PRETTY_ADMIN_EMAIL = generic.APP_NAME + " <" + generic.ADMIN_EMAIL + ">"
 
 
+###########################
+##   Datastore Objects   ##
+###########################
+
+class EmailsToSend(ndb.Model):
+    sender  = ndb.StringProperty(default = PRETTY_ADMIN_EMAIL)
+    to      = ndb.StringProperty(required = True)
+    subject = ndb.StringProperty(required = True)
+    body    = ndb.TextProperty(required = True)
+    html    = ndb.TextProperty(default = "") 
+
+
 ######################
 ##   Web Handlers   ##
 ######################
 
-class SendNotifications(generic.GenericPage):
+class SendPendingEmails(generic.GenericPage):
     def get(self):
-        logging.debug("CRON: Handler %s has been requested by cron" % self.__class__.__name__)
-        for u in generic.RegisteredUsers.query().iter():
-            notifications_list = []
-            for n in generic.EmailNotifications.query(generic.EmailNotifications.sent == False, ancestor = u.key).order(generic.EmailNotifications.date).iter():
-                notifications_list.append(n)
-            send_notifications(notifications_list, u)
-        self.write("Done")
+        emails = EmailsToSend.query().fetch()
+        for email in emails:
+            em = mail.EmailMessage(sender  = email.sender,
+                                   to      = email.to,
+                                   subject = email.subject,
+                                   body    = email.body,
+                                   html    = email.html)
+            logging.debug("EMAIL: Sending a pending email to %s" % email.to)
+            em.send()
+            email.key.delete()
 
 
 ##########################
@@ -104,14 +119,14 @@ def send_new_calendar_event_notification(user, author, group, event, update):
           "update"  : update,
           "subject" : "An event has changed in your group " if update else "New event in your group "}
     kw["subject"] = kw["subject"] + group.name
-    message = mail.EmailMessage(sender  = PRETTY_ADMIN_EMAIL,
-                                to      = user.email,
-                                subject = kw["subject"],
-                                body    = generic.render_str("emails/group_event_notification.txt", **kw),
-                                html    = generic.render_str("emails/group_event_notification.html", **kw))
-    logging.debug("EMAIL: Sending an email with an event notification to user %s" % user.username)
-    message.send()
+    message = EmailsToSend(sender  = PRETTY_ADMIN_EMAIL,
+                           to      = user.email,
+                           subject = kw["subject"],
+                           body    = generic.render_str("emails/group_event_notification.txt", **kw),
+                           html    = generic.render_str("emails/group_event_notification.html", **kw))
+    message.put()
     return
+
 
 def send_group_biblio_notification(group, user, bibitems):
     kw = {"group"    : group,
