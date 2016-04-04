@@ -3,7 +3,7 @@
 import logging, webapp2
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
-ADMIN_EMAIL = "admin@gcdc2013-research-engine.appspotmail.com"
+ADMIN_EMAIL = "admin@research-engine.appspotmail.com"
 
 class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
