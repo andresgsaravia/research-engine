@@ -1,7 +1,7 @@
 # collaborative_writing.py
 
 from google.appengine.ext import ndb
-import generic, projects, filters
+import generic, projects, filters, groups
 
 ###########################
 ##   Datastore Objects   ##
