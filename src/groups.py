@@ -408,11 +408,15 @@ class BiblioPage(GroupPage):
 class SendBiblioNotifications(GroupPage):
     def get(self):
         all_groups = Groups.query()
+        one_week_ago = datetime.today() - timedelta(days=7)
         for group in all_groups:
-            one_week_ago = datetime.today() - timedelta(days=7)
             bibitems = bibliography.BiblioItems.query(ancestor = group.key)
-            bibitems.filter(bibliography.BiblioItems.last_updated > one_week_ago).order(-bibliography.BiblioItems.last_updated).fetch()
-            if bibitems:
+            bibitems.order(-bibliography.BiblioItems.last_updated).fetch(100)
+            items = []
+            for bib in bibitems:
+                if bib.last_updated > one_week_ago:
+                    items.append(bib)
+            if items:
                 for user in group.members:
-                    email_messages.send_group_biblio_notification(group = group, user = user.get(), bibitems = bibitems)
-                
+                    email_messages.send_group_biblio_notification(group = group, user = user.get(), bibitems = items)
+                    
