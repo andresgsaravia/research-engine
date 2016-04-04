@@ -1,6 +1,13 @@
+# Version 1.5.2 (4 April 2016)
+
 ## New features
 
 - Can edit group event details (issue #221)
+
+## Fixes
+
+- Weekly bibliography review email with too many items (issue #224)
+- Mathjax rendering in HTML export of a collaborative writing (issue #225)
 
 
 # Version 1.5.1 (25 March 2016)
