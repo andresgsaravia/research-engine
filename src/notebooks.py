@@ -562,3 +562,30 @@ class NotebookUtils(NotebookPage):
             return
         notes = NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).fetch()
         self.render("notebook_index.html", project = project, notebook = notebook, notes = notes)
+
+    def html_export(self, projectid, nbid):
+        "Generates a printer-friendly version of the notebook."
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        notebook = self.get_notebook(project, nbid)
+        if not notebook:
+            self.error(404)
+            self.render("404.html", info = 'Notebook with key <em>%s</em> not found' % nbid)
+            return
+        if not (notebook.is_open_p() or (user and project.user_is_author(user))):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
+        d = self.request.get("d")
+        if d == "desc":
+            notes = NotebookNotes.query(ancestor = notebook.key).order(-NotebookNotes.date).fetch()
+        else:
+            notes = NotebookNotes.query(ancestor = notebook.key).order(NotebookNotes.date).fetch()
+        content = generic.render_str("notebook_printable.html",
+                                     project = project, notebook = notebook, notes = notes)
+        self.render("html_export.html", title = notebook.name, content = content)
+
+

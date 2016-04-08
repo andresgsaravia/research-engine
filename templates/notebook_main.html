@@ -1,105 +1,110 @@
 {% extends "project_base.html" %}
 
 {% block p_content %}
-    <!-- Notebook index modal  -->
-    <div class="modal fade" id="nbIndexModal" tabindex="-1" role="dialog" aria-labelledby="nbIndexModalLabel{{notebook.key.integer_id()}}" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content"></div>
-        </div>
-    </div>
+<!-- Notebook index modal  -->
+<div class="modal fade" id="nbIndexModal" tabindex="-1" role="dialog" aria-labelledby="nbIndexModalLabel{{notebook.key.integer_id()}}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>
 
-    <!-- Note book title -->
-    <h2 class="project-tab-header">
-        <!-- Link to parent element (i.e. all notebooks) -->
-        <div class="parent-link">
-            <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a>
-        </div>
+<!-- Notebook title -->
+<h2 class="project-tab-header">
+  <!-- Link to parent element (i.e. all notebooks) -->
+  <div class="parent-link">
+    <a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a>
+  </div>
 
-        {{notebook.name | safe}}
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+  {{notebook.name | safe}}
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
-        {% if writable_p %}
-            <div class="actions">
-                <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
-                    <span class="glyphicon glyphicon-cog"></span>
-                </a>
-            </div>
-        {% endif %}
-    </h2>
+  {% if writable_p %}
+  <div class="actions">
+    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/edit">
+      <span class="glyphicon glyphicon-cog"></span>
+    </a>
+  </div>
+  {% endif %}
+</h2>
 
-    <div class="project-tab-actions">
-        {% if writable_p %}
-            <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
-                New note
-            </a>
-        {% endif %}
-        <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index" data-toggle="modal" data-target="#nbIndexModal">
-            <span class="fa fa-list"></span> Index
-        </a>
-    </div>
+<div class="dropdown pull-right" style="margin-top:5px;">
+  <button class="dropdown-toggle btn btn-link" type="button" id="dropdownPrint"
+	  style="color:#777;font-weight:bold;"
+	  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <span class="fa fa-print"></span> Printable version
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownPrint">
+    <li><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/html_export?d=asc">Ascending date</a></li>
+    <li><a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/html_export?d=desc">Descending date</a></li>
+  </ul>
+</div>
+<div class="project-tab-actions">
+  {% if writable_p %}
+  <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/new_note">
+    New note
+  </a>
+  {% endif %}
+  <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/_utils/index" data-toggle="modal" data-target="#nbIndexModal">
+    <span class="fa fa-list"></span> Index
+  </a>
+</div>
+  
+<div style="margin-top: 25px;">
+  {% if notebook.is_open_p() %}
+  <img src="{{notebook.claims_logo('icons')}}"/> {{notebook.claims_text()}}
+  {% else %}
+  <span class="glyphicon glyphicon-eye-close"></span> This is a closed notebook. Only project members can see it.
+  {% endif %}
+</div>
 
-    <div style="margin-top: 25px;">
-        {% if notebook.is_open_p() %}
-            <img src="{{notebook.claims_logo('icons')}}"/> {{notebook.claims_text()}}
-        {% else %}
-            <span class="glyphicon glyphicon-eye-close"></span> This is a closed notebook. Only project members can see it.
-        {% endif %}
-    </div>
-
-    {% for note in notes %}
-        <div class="card-list-item">
-            <h3 style="margin-bottom: 4px;">
-                <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">
-                    {{note.title}}
-                </a>
-                {% if writable_p %}
-                    <a class="btn-muted pull-right" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">
-                      <span class="fa fa-pencil"></span>
-                    </a>
-                {% endif %}
-            </h3>
-            <small class="text-muted" style="margin-bottom: 10px; display: block;">
-                Writen by <a href="/{{note.get_author().username}}">{{note.get_author().username.capitalize()}}</a>
-                on {{note.date.strftime("%d %b %Y")}}
-            </small>
-            <div>
-                {{note.content | md | safe}}
-
-                <br>
-
-                <div class="card-list-item-actions">
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">{{note.get_number_of_comments()}} comments</a>
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">Add comment</a>
-                </div>
-
-                <!--div class="pull-right">
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">
-                    <span class="glyphicon glyphicon-comment"></span> {{note.get_number_of_comments()}} comments</a>
-                    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">
-                    <span class="glyphicon glyphicon-plus-sign"></span> New comment</a>
-                </div-->
-            </div>
-        </div>
-    {% endfor %}
-
-
-    {% if page>0 or more_p %}
-    <ul class="pager">
-      {% if page>0 %}
-        <li class="previous">
-          <a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">
-    	Previous page
-          </a>
-        </li>
-        {% endif %}
-        {% if more_p %}
-      <li class="next">
-        <a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">
-          Next page
-        </a>
-      </li>
-      {% endif %}
-    </ul>
+{% for note in notes %}
+<div class="card-list-item">
+  <h3 style="margin-bottom: 4px;">
+    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">
+      {{note.title}}
+    </a>
+    {% if writable_p %}
+    <a class="btn-muted pull-right" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}/edit">
+      <span class="fa fa-pencil"></span>
+    </a>
     {% endif %}
+  </h3>
+  <small class="text-muted" style="margin-bottom: 10px; display: block;">
+    Writen by <a href="/{{note.get_author().username}}">{{note.get_author().username.capitalize()}}</a>
+    on {{note.date.strftime("%d %b %Y")}}
+  </small>
+  <div>
+    {{note.content | md | safe}}
+
+    <br>
+
+    <div class="card-list-item-actions">
+      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}#comments">{{note.get_number_of_comments()}} comments</a>
+      <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}?new_comment=True">Add comment</a>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+{% if page>0 or more_p %}
+<ul class="pager">
+  {% if page>0 %}
+  <li class="previous">
+    <a id="prev-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page - 1}}">
+      Previous page
+    </a>
+  </li>
+  {% endif %}
+  {% if more_p %}
+  <li class="next">
+    <a id="next-link" href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}?page={{page + 1}}">
+      Next page
+    </a>
+  </li>
+  {% endif %}
+</ul>
+{% endif %}
 
 {% endblock %}

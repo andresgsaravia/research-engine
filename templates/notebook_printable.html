@@ -1,0 +1,21 @@
+<h1 class="text-center">{{notebook.name}}</h1>
+
+{% for note in notes %}
+
+<hr />
+<div style="margin:0 20px;">
+  <h3 class="text-center">
+    <a href="/{{project.key.integer_id()}}/notebooks/{{notebook.key.integer_id()}}/{{note.key.integer_id()}}">
+      {{note.title}}
+    </a>
+  </h3>
+  <small class="text-muted text-center" style="margin-bottom: 10px; display: block;">
+    Writen by <a href="/{{note.get_author().username}}">{{note.get_author().username.capitalize()}}</a>
+    on {{note.date.strftime("%d %b %Y")}}
+  </small>
+  <div class="text-justify">
+    {{note.content | md | safe}}
+  </div>
+</div>
+
+{% endfor %}

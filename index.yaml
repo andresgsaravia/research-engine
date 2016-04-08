@@ -110,6 +110,11 @@ indexes:
   ancestor: yes
   properties:
   - name: date
+
+- kind: NotebookNotes
+  ancestor: yes
+  properties:
+  - name: date
     direction: desc
 
 - kind: Notebooks
