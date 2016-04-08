@@ -2,6 +2,7 @@
 ## New features
 
 - Can edit group event details (issue #221)
+- Printable version of notebooks in ascending and descending date order for the notebooks
 
 ## Fixes
 
