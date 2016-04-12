@@ -22,6 +22,10 @@
 
   <body>
     {{content | safe}}
+    <script type="text/javascript">
+      $("table").addClass("table table-hover");
+      $("table.codehilitetable").removeClass("table table-hover");
+    </script>
   </body>
 </html>
 
