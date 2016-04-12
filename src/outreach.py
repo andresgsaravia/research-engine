@@ -2,7 +2,7 @@
 # All related to public outreach
 
 from google.appengine.ext import ndb
-import generic, projects, secrets
+import generic, projects, secrets, groups
 
 POSTS_PER_PAGE = 10
 

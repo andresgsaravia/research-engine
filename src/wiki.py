@@ -3,7 +3,7 @@
 
 from google.appengine.ext import ndb
 import re
-import generic, projects
+import generic, projects, groups
 
 ###########################
 ##   Datastore Objects   ##

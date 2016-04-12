@@ -1,7 +1,7 @@
 # datasets.py
 # A module inside each project for uploading and managing datasets
 
-import generic, projects
+import generic, projects, groups
 
 from google.appengine.ext import ndb,blobstore
 from google.appengine.ext.webapp import blobstore_handlers

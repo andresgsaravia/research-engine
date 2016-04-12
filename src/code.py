@@ -3,7 +3,7 @@
 
 from google.appengine.api import urlfetch
 from google.appengine.ext import ndb
-import generic, projects
+import generic, projects, groups
 import json, re
 
 GITHUB_REPO_RE = r'^https://github.com/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$'

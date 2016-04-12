@@ -2,7 +2,7 @@
 # All related to Notebooks and Notes inside a project.
 
 from google.appengine.ext import ndb
-import generic, projects
+import generic, projects, groups
 import logging
 
 NOTES_PER_PAGE = 5   # Number of notes displayed in a single page while viewing a notebook. Perhaps later this will be user-customizable.

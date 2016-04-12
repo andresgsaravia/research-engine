@@ -2,7 +2,7 @@
 # For the forums inside each project.
 
 from google.appengine.ext import ndb
-import generic, projects, secrets
+import generic, projects, secrets, groups
 
 
 ###########################

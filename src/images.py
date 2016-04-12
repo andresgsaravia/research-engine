@@ -5,7 +5,7 @@ from google.appengine.api import images
 from google.appengine.ext import ndb, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 import urllib
-import generic, projects
+import generic, projects, groups
 
 
 ###########################
