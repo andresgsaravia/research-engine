@@ -1,4 +1,5 @@
 
+
 ## New features
 
 - Can edit group event details (issue #221)
@@ -9,6 +10,7 @@
 - Send notifications of new events in a group every 5 minutes insted of instantaneously (hopefully this fixes #222)
 - Weekly bibliography review email with too many items (issue #224)
 - Mathjax rendering in HTML export of a collaborative writing (issue #225)
+- HTML export of empty collaborative writings (mentioned at issue #223)
 
 
 # Version 1.5.1 (25 March 2016)

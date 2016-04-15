@@ -436,5 +436,9 @@ class WritingUtils(WritingPage):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
         last_revision = self.get_last_revision(writing)
-        content = filters.md("# " + writing.title + "\n" + last_revision.content)
+        content = filters.md("# " +
+                             writing.title +
+                             "\n" +
+                             (last_revision.content if last_revision else ""))
         self.render("html_export.html", title = writing.title, content = content)
+        
