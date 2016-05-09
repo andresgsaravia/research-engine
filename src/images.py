@@ -7,6 +7,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 import urllib
 import generic, projects, groups
 
+IMAGES_PER_PAGE = 10
 
 ###########################
 ##   Datastore Objects   ##
@@ -32,9 +33,14 @@ class Images(ndb.Model):
 ######################
 
 class ImagesPage(projects.ProjectPage):
-    def get_images_list(self, project):
+    def get_all_images_index(self, project):
         self.log_read(Images, "Fetching all the images inside a project")
-        return Images.query(ancestor = project.key).order(-Images.date).fetch()
+        return Images.query(ancestor = project.key).order(-Images.date).fetch(projection = [Images.date, Images.title])
+
+    def get_images_list(self, project, page = 0, log_message = ''):
+        assert type(page) == int
+        self.log_read(Images, "Fetching a page with %s results. %s" % (IMAGES_PER_PAGE, log_message))
+        return Images.query(ancestor = project.key).order(-Images.date).fetch_page(IMAGES_PER_PAGE, offset = IMAGES_PER_PAGE * page)
 
     def get_image(self, project, imageid, log_message = ''):
         self.log_read(Images, log_message)
@@ -52,8 +58,13 @@ class MainPage(ImagesPage):
             self.error(404)
             self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
             return
-        images = self.get_images_list(project)
-        self.render("images_main.html", project = project, user = user, images = images) 
+        kw = {"page" : self.request.get("page")}
+        try:
+            kw["page"] = int(kw["page"])
+        except ValueError:
+            kw["page"] = 0
+        kw["images"], kw["next_page_cursor"], kw["more_p"] = self.get_images_list(project, kw["page"])
+        self.render("images_main.html", project = project, user = user, **kw) 
 
 
 class NewImagePage(ImagesPage):
@@ -236,6 +247,6 @@ class ImagesUtils(ImagesPage):
         if not (user and project.user_is_author(user)):
             self.render("project_page_not_visible.html", project = project, user = user)
             return
-        images = self.get_images_list(project)
+        images = self.get_all_images_index(project)
         self.render("images_index.html", project = project, images = images)
         pass

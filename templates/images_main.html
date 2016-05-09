@@ -1,102 +1,127 @@
 {% extends "project_base.html" %}
 
 {% block p_content %}
-    <!-- Help modal -->
-    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Images</h4>
-                </div>
-                <div class="modal-body">
-                    <p>This section is used to store any knid of image that you want to embed in some part of your project.</p>
-                    <p>It can be for example a plot, a diagram or a picture</p>
-                    <p>For now we just store them here so you can embed them in some other place, usually images have little value on their own and must be properly contextualized.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Images index modal  -->
-    <div class="modal fade" id="imgIndexModal" tabindex="-1" role="dialog" aria-labelledby="imgIndexModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-	<div class="modal-content"></div>
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Images</h4>
+      </div>
+      <div class="modal-body">
+        <p>This section is used to store any knid of image that you want to embed in some part of your project.</p>
+        <p>It can be for example a plot, a diagram or a picture</p>
+        <p>For now we just store them here so you can embed them in some other place, usually images have little value on their own and must be properly contextualized.</p>
       </div>
     </div>
+  </div>
+</div>
 
-    <h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
-        Images
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+<!-- Images index modal  -->
+<div class="modal fade" id="imgIndexModal" tabindex="-1" role="dialog" aria-labelledby="imgIndexModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>
 
-        <div class="actions">
-            <a href="#helpModal" data-toggle="modal">
-                <span class="fa fa-question-circle"></span>
-            </a>
-        </div>
-    </h2>
+<h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
+  Images
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+  
+  <div class="actions">
+    <a href="#helpModal" data-toggle="modal">
+      <span class="fa fa-question-circle"></span>
+    </a>
+  </div>
+</h2>
 
-    {% if (user and project.user_is_author(user)) %}
-        <div class="project-tab-actions">
-            <a href="/{{project.key.integer_id()}}/images/new">
-                Upload image
-            </a>
-	    <a href="/{{project.key.integer_id()}}/images/_utils/index" data-toggle="modal" data-target="#imgIndexModal">
-	      <span class="fa fa-list"></span> Index
-	    </a>
-        </div>
-    {% endif %}
+{% if (user and project.user_is_author(user)) %}
+<div class="project-tab-actions">
+  <a href="/{{project.key.integer_id()}}/images/new">
+    Upload image
+  </a>
+  <a href="/{{project.key.integer_id()}}/images/_utils/index" data-toggle="modal" data-target="#imgIndexModal">
+    <span class="fa fa-list"></span> Index
+  </a>
+</div>
+{% endif %}
 
-    <div class="panel-group" id="taccordion">
-        {% for i in images %}
-            {% if i.is_open_p() or (user and project.user_is_author(user)) %}
-                <div class="col-sm-4" >
-                    <div class="imageTitle">{{i.title}}</div>
-                    <a data-toggle="modal" href="#{{i.key.integer_id()}}" title="{{i.title}}">
-                        <img class="img-thumbnail" src="{{i.url()}}" />
-                    </a>
-                </div>
-
-                <!-- image modal -->
-                <div class="modal fade" id="{{i.key.integer_id()}}" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title">{{i.title | safe}}</h4>
-                            </div>
-                            <div class="modal-body">
-                                <small>
-                                    <span class="pull-left glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}" title="This image is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span>
-                                </small>
-                                {% if i.author == user.key %}
-                                    <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}/edit">
-                                        <span class="fa fa-pencil"></span> Edit
-                                    </a>
-                                {% endif %}
-                                    <a href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}" target="_blank"><img src="{{i.url()}}" /></a>
-                                {{i.description | md | safe }}
-                                <p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p>
-                                <ul class="nav nav-pills">
-                                    <li>
-                                        <a href="/{{i.author.get().username}}">
-                                            <img src="{{i.author.get().get_profile_image(20)}}" aria-hidden="true"/>
-                                            {{i.author.get().username.capitalize()}}
-                                        </a>
-                                    </li>
-                                </ul>
-                                <br />
-                                <p style="overflow:auto;">
-                                    Embed this image as <br />
-                                    <span style="font-family:monospace;background-color:#DDD;">
-                                        &lt;img src="{{i.url()}}" title="{{i.title}}" /&gt;
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- / image modal -->
-            {% endif %}
-        {% endfor %}
+<div class="panel-group" id="taccordion">
+  <div class="row">
+    {% for i in images %}
+    {% if i.is_open_p() or (user and project.user_is_author(user)) %}
+    <div class="col-sm-4" >
+      <div class="imageTitle">{{i.title}}</div>
+      <a data-toggle="modal" href="#{{i.key.integer_id()}}" title="{{i.title}}">
+	<img class="img-thumbnail" src="{{i.url()}}" />
+      </a>
     </div>
+    
+    <!-- image modal -->
+    <div class="modal fade" id="{{i.key.integer_id()}}" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+	<div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">{{i.title | safe}}</h4>
+          </div>
+          <div class="modal-body">
+            <small>
+              <span class="pull-left glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
+		    title="This image is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span>
+            </small>
+            {% if i.author == user.key %}
+            <a class="btn btn-success pull-right" href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}/edit">
+              <span class="fa fa-pencil"></span> Edit
+            </a>
+            {% endif %}
+            <a href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}" target="_blank"><img src="{{i.url()}}" /></a>
+            {{i.description | md | safe }}
+            <p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p>
+            <ul class="nav nav-pills">
+              <li>
+		<a href="/{{i.author.get().username}}">
+                  <img src="{{i.author.get().get_profile_image(20)}}" aria-hidden="true"/>
+                  {{i.author.get().username.capitalize()}}
+		</a>
+              </li>
+            </ul>
+            <br />
+            <p style="overflow:auto;">
+              Embed this image as <br />
+              <span style="font-family:monospace;background-color:#DDD;">
+		&lt;img src="{{i.url()}}" title="{{i.title}}" /&gt;
+              </span>
+            </p>
+          </div>
+	</div>
+      </div>
+    </div> <!-- / image modal -->
+    {% endif %}
+    {% endfor %}  <!-- Loop through all the images  -->
+  </div>
+</div> <!-- .panel-group -->
+
+
+{% if page>0 or more_p %}
+<hr />
+<ul class="pager">
+  {% if page>0 %}
+  <li class="previous">
+    <a id="prev-link" href="/{{project.key.integer_id()}}/images?page={{page - 1}}">
+      Previous page
+    </a>
+  </li>
+  {% endif %}
+  {% if more_p %}
+  <li class="next">
+    <a id="next-link" href="/{{project.key.integer_id()}}/images?page={{page + 1}}">
+      Next page
+    </a>
+  </li>
+  {% endif %}
+</ul>
+{% endif %}
+
 {% endblock %}

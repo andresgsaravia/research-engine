@@ -4,6 +4,8 @@
 
 - Can edit group event details (issue #221)
 - Printable version of notebooks in ascending and descending date order for the notebooks
+- Pagination in the images' view for a project (isse #216).
+- Index of all the images in a project
 
 ## Fixes
 

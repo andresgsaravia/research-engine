@@ -101,6 +101,13 @@ indexes:
   - name: date
     direction: desc
 
+- kind: Images
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
+  - name: title
+
 - kind: NoteComments
   ancestor: yes
   properties:
