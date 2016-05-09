@@ -34,3 +34,7 @@ pip-log.txt
 
 # SimpleAuth
 secrets.py
+
+# gcloud stuff
+source-context.json
+source-contexts.json
