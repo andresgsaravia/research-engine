@@ -1,0 +1,48 @@
+{% extends "project_base.html" %}
+
+{% block p_content %}
+<h2 class="project-tab-header no-action-bar">
+  <div class="parent-link">
+    <a href="/{{project.key.integer_id()}}/images">
+      Images
+    </a>
+  </div>
+
+  {{image.title}}
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+
+  {% if image_editable_p %}
+  <div class="actions">
+    <a href="/{{project.key.integer_id()}}/images/{{image.key.integer_id()}}/edit">
+      <span class="fa fa-pencil"></span>
+    </a>
+  </div>
+  {% endif %}
+</h2>
+
+<a href="{{image.url()}}">
+  <img src="{{image.url()}}" class="img img-responsive" />
+</a>
+
+{{image.description | md | safe }}
+<p class="text-muted pull-right">
+  Date: {{image.date.strftime("%d %b %Y")}}</p>
+<ul class="nav nav-pills">
+  <li>
+    <a href="/{{image.author.get().username}}">
+      <img src="{{image.author.get().get_profile_image(20)}}" aria-hidden="true"/>
+      {{image.author.get().username.capitalize()}}
+    </a>
+  </li>
+</ul>
+<br />
+<p style="overflow:auto;">
+  Embed this image as <br />
+  <span style="font-family:monospace;background-color:#DDD;">
+    &lt;img src="{{image.url()}}" title="{{image.title}}" /&gt;
+  </span>
+</p>
+
+</div>
+
+{% endblock %}

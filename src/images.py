@@ -82,6 +82,27 @@ class NewImagePage(ImagesPage):
                "action" : "New", "button_text" : "Upload image"}
          self.render("image_upload.html", **kw)
 
+
+class ViewImagePage(ImagesPage):
+    def get(self, projectid, imageid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/%s/images/%s/edit" % (projectid, imageid))
+            return
+        project = self.get_project(projectid)
+        if not project: 
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        image = self.get_image(project, imageid)
+        if not image:
+            self.error(404)
+            self.render("404.html", info = 'Image with key <em>%s</em> not found' % imageid)
+            return
+        self.render("image_view.html", user = user, project = project, image = image,
+                    image_editable_p = (user and project.user_is_author(user)))
+    
+
 class UploadNewImage(projects.ProjectBlobstoreUpload):
     def post(self,projectid):
         user = self.get_login_user()
@@ -201,3 +222,20 @@ class EditImage(projects.ProjectBlobstoreUpload):
                 image.image_key = new_image[0].key()
             image.put()
             self.redirect("/%s/images/" % projectid)
+
+
+class ImagesUtils(ImagesPage):
+    def index(self, projectid):
+        "Returns an HTML index for all the images in this project"
+        user = self.get_login_user()
+        project = self.get_project(projectid)
+        if not project:
+            self.error(404)
+            self.render("404.html", info = 'Project with key <em>%s</em> not found' % projectid)
+            return
+        if not (user and project.user_is_author(user)):
+            self.render("project_page_not_visible.html", project = project, user = user)
+            return
+        images = self.get_images_list(project)
+        self.render("images_index.html", project = project, images = images)
+        pass

@@ -18,6 +18,13 @@
         </div>
     </div>
 
+    <!-- Images index modal  -->
+    <div class="modal fade" id="imgIndexModal" tabindex="-1" role="dialog" aria-labelledby="imgIndexModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+	<div class="modal-content"></div>
+      </div>
+    </div>
+
     <h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
         Images
         <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
@@ -34,6 +41,9 @@
             <a href="/{{project.key.integer_id()}}/images/new">
                 Upload image
             </a>
+	    <a href="/{{project.key.integer_id()}}/images/_utils/index" data-toggle="modal" data-target="#imgIndexModal">
+	      <span class="fa fa-list"></span> Index
+	    </a>
         </div>
     {% endif %}
 
@@ -64,7 +74,7 @@
                                         <span class="fa fa-pencil"></span> Edit
                                     </a>
                                 {% endif %}
-                                    <a href="{{i.url()}}" target="_blank"><img src="{{i.url()}}" /></a>
+                                    <a href="/{{project.key.integer_id()}}/images/{{i.key.integer_id()}}" target="_blank"><img src="{{i.url()}}" /></a>
                                 {{i.description | md | safe }}
                                 <p class="text-muted pull-right">Date: {{i.date.strftime("%d %b %Y")}}</p>
                                 <ul class="nav nav-pills">
