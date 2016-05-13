@@ -406,6 +406,7 @@ class ProjectBlobstoreUpload(generic.GenericBlobstoreUpload):
         # Log project update
         p_update = ProjectUpdates(parent = project.key, author = author.key, item = item.key)
         self.log_and_put(p_update)
+        self.log_and_put(project)
         for i in list_of_things_to_update:
             self.log_and_put(i)
         return
