@@ -7,7 +7,7 @@ import hashlib, re, logging, json
 from google.appengine.api import mail, urlfetch
 from webapp2_extras import auth
 
-LOGIN_COOKIE_MAXAGE = 604800 # In seconds; 604800s = 1 week
+LOGIN_COOKIE_MAXAGE = 2 * 604800 # In seconds; 604800s = 1 week
 EMAIL_RE = r'^[\S]+@[\S]+\.[\S]+$'
 USERNAME_RE = r'^[a-zA-Z][a-zA-Z0-9_-]{2,20}$'
 PASSWORD_RE = r'^.{3,20}$'
