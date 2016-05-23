@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -15,7 +17,6 @@
     </style>
     <!-- Import Roboto, Raleway & Titillium Web from Google Web Fonts -->
     <link href="//fonts.googleapis.com/css?family=Roboto:400,700|Titillium+Web|Raleway" rel="stylesheet" type="text/css">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     {% if intro_p %}<link href="/css/introjs.min.css" rel="stylesheet"/>{% endif %}
     {% block head %}{% endblock %}
   </head>
@@ -123,7 +124,6 @@
       </div> <!-- footer  -->
     </div> <!-- #wrap  -->
 
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     {% if not user %}<script languaje="javascript">document.getElementById("goback").value = window.location.pathname</script>{% endif %}
     {% if plusone_p %}
     <script type="text/javascript">
