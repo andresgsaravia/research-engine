@@ -13,7 +13,7 @@
 - Weekly bibliography review email with too many items (issue #224)
 - Mathjax rendering in HTML export of a collaborative writing (issue #225)
 - HTML export of empty collaborative writings (mentioned at issue #223)
-
+- Wrong link for CC licenses (issue #226)
 
 # Version 1.5.1 (25 March 2016)
 
