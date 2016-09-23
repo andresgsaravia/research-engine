@@ -67,10 +67,12 @@ routes = [
     Route('/<projectid:[0-9]+>/forum/<threadid:[0-9]+>', 'src.forum.ThreadPage'),
     # Wiki
     Route('/<projectid:[0-9]+>/wiki/page/<wikiurl:.+>', 'src.wiki.ViewWikiPage'),
+    Route('/<projectid:[0-9]+>/wiki/page', 'src.wiki.RedirectMainPage'),
     Route('/<projectid:[0-9]+>/wiki/edit/<wikiurl:.+>', 'src.wiki.EditWikiPage'),
     Route('/<projectid:[0-9]+>/wiki/history/<wikiurl:.+>/rev/<revid:[0-9]+>', 'src.wiki.RevisionWikiPage'),
     Route('/<projectid:[0-9]+>/wiki/history/<wikiurl:.+>', 'src.wiki.HistoryWikiPage'),
     Route('/<projectid:[0-9]+>/wiki/talk/<wikiurl:.+>', 'src.wiki.TalkWikiPage'),
+    Route('/<projectid:[0-9]+>/wiki', 'src.wiki.RedirectMainPage'),
     # Datasets
     Route('/<projectid:[0-9]+>/datasets', 'src.datasets.MainPage'),
     Route('/<projectid:[0-9]+>/datasets/new', 'src.datasets.NewDataSetPage'),

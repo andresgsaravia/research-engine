@@ -66,7 +66,12 @@ class GenericWikiPage(projects.ProjectPage):
     def get_comments_list(self, wikipage):
         self.log_read(WikiComments, "Fetching all the comments in the Talk page for a wiki page. ")
         return WikiComments.query(ancestor = wikipage.key).order(-WikiComments.date).fetch()
-        
+
+
+class RedirectMainPage(GenericWikiPage):
+    def get(self, projectid):
+        self.redirect("/%s/wiki/page/Main_Page" % projectid)
+
 
 class ViewWikiPage(GenericWikiPage):
     def get(self, projectid, wikiurl):
