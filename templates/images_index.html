@@ -1,16 +1,16 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" arial-hidden="true">&times;</button>
   <h4 class="modal-title" id="imgIndexModal">Images at {{project.name}}</h4>
-</div>  
-<div class="modal-body">  
+</div>
+<div class="modal-body">
   <ul>
     {% for image in images %}
     <li>
-      <small class="text-muted">{{image.date.strftime("%d %b %Y")}}</small> 
+      <small class="text-muted">{{image.date.strftime("%d %b %Y")}}</small>
       <a href="/{{project.key.integer_id()}}/images/{{image.key.integer_id()}}">{{image.title}}</a></li>
     {% endfor %}
   </ul>
-</div>  
-<div class="modal-footer">  
-  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>  
-</div>  
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>

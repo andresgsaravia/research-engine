@@ -18,11 +18,17 @@
   <button type="submit" class="btn btn-success">Save changes</button>
   <button onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/writings/{{writing.key.integer_id()}}'}"
 	  type="button" class="btn btn-default">Cancel</button>
-  {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message}}</div>{% endif %}
-  <div class="help-block">
-    <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p>
-  </div>
 </form>
+
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+</div>
+
+{% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message}}</div>{% endif %}
+<div class="help-block">
+  <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</p>
+</div>
+
 
 <p>Below is a preview of how the page will be renderer when you save it.</p>
 <div class="panel panel-default">
@@ -31,5 +37,5 @@
   </div>
 </div>
 
-<script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}

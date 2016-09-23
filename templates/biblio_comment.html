@@ -1,54 +1,54 @@
 {% extends "project_base.html" %}
 
 {% block p_content %}
-    <h2 class="project-tab-header no-action-bar">
-        <div class="parent-link">
-            <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
-        </div>
+<h2 class="project-tab-header no-action-bar">
+  <div class="parent-link">
+    <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+  </div>
 
-        {{item.title | safe}}
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    </h2>
+  {{item.title | safe}}
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+</h2>
 
-    {% if item.kind == "article" %}
-        <strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})
-        <p>
-            <a href="{{item.link}}">
-                doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span>
-            </a>
-        </p>
-    {% elif item.kind == "arXiv" %}
-        <strong>arXiv preprint</strong> ({{i.metadata["date"]}})
-        <p>
-            <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
-        </p>
-    {% endif %}
+{% if item.kind == "article" %}
+<strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})
+<p>
+  <a href="{{item.link}}">
+    doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span>
+  </a>
+</p>
+{% elif item.kind == "arXiv" %}
+<strong>arXiv preprint</strong> ({{i.metadata["date"]}})
+<p>
+  <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
+</p>
+{% endif %}
 
-    <h4 style="margin-top: 16px;">Authors</h4>
-    <div>
-        {% for a in item.metadata["authors"] %}
-            <span style="margin-right: 15px">{{a}}</span>
-        {% endfor %}
-    </div>
+<h4 style="margin-top: 16px;">Authors</h4>
+<div>
+  {% for a in item.metadata["authors"] %}
+  <span style="margin-right: 15px">{{a}}</span>
+  {% endfor %}
+</div>
 
-    <h3 style="margin-top: 60px">
-        <small>
-            <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">
-                <span class="fa fa-chevron-left" style="font-size: 0.85em"></span> All comments<!--
-            --></a>
-        </small>
-        <br>
-        Linked comment
-    </h3>
+<h3 style="margin-top: 60px">
+  <small>
+    <a href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}">
+      <span class="fa fa-chevron-left" style="font-size: 0.85em"></span> All comments<!--
+										       --></a>
+  </small>
+  <br>
+  Linked comment
+</h3>
 
-    <div class="project-tab-comment">
-        {{comment.content | md | safe}}
+<div class="project-tab-comment">
+  {{comment.content | md | safe}}
 
-        <div>
-            <small class="text-muted">
-                By <a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a>
-                on {{comment.date.strftime("%d %b %Y")}}
-            </small>
-        </div>
-    </div>
+  <div>
+    <small class="text-muted">
+      By <a href="/{{comment.author.get().username}}">{{comment.author.get().username.capitalize()}}</a>
+      on {{comment.date.strftime("%d %b %Y")}}
+    </small>
+  </div>
+</div>
 {% endblock %}

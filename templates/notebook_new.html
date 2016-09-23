@@ -1,7 +1,7 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-<script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}
 
 {% block breadcrumbs %}{% if action=="New" %}<li class="active">Notebooks</li>{% else %}<li><a href="/{{project.key.integer_id()}}/notebooks">Notebooks</a></li><li class="active">{{notebook.name}}</li>{% endif %}{% endblock %}

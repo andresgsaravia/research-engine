@@ -1,49 +1,53 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-    <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}
 
 {% block p_content %}
-    <h2 class="project-tab-header no-action-bar">
-        <div class="parent-link">
-            <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">
-                {{datac.name | safe}}
-            </a>
-        </div>
+<h2 class="project-tab-header no-action-bar">
+  <div class="parent-link">
+    <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">
+      {{datac.name | safe}}
+    </a>
+  </div>
 
-        Edit Settings
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    </h2>
+  Edit Settings
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+</h2>
 
-    <form method="post" role="form">
-        <div class="form-group {{nClass}}">
-            <input class="form-control" type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus {% if visitor_p %}disabled{% endif %}/>
-        </div>
-        <div class="form-group {{cClass}}">
-            <textarea class="form-control" name="description" rows="10" id="inputText" onKeyUp="Preview('inputText','previewArea');"
-                      placeholder="Description of the dataset" {% if visitor_p %}disabled{% endif %}>{{description}}</textarea>
-        </div>
-        <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Save changes</button>
-        <button onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'"
-                type="button" class="btn btn-default"{% if visitor_p %}disabled{% endif %}>Cancel</button>
+<form method="post" role="form">
+  <div class="form-group {{nClass}}">
+    <input class="form-control" type="text" name="title" value="{{name}}" placeholder="Title of the dataset" autofocus {% if visitor_p %}disabled{% endif %}/>
+  </div>
+  <div class="form-group {{cClass}}">
+    <textarea class="form-control" name="description" rows="10" id="inputText" onKeyUp="Preview('inputText','previewArea');"
+              placeholder="Description of the dataset" {% if visitor_p %}disabled{% endif %}>{{description}}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Save changes</button>
+  <button onClick="window.location = '/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}'"
+          type="button" class="btn btn-default"{% if visitor_p %}disabled{% endif %}>Cancel</button>
+</form>
 
-        {% if error_message %}
-            <p class="text-danger">{{error_message}}</p>
-        {% endif %}
-        {% if visitor_p %}
-            <p class="text-warning">
-                {% if user %}You are not a member of this project{% else %}Please log in first{% endif %}.
-            </p>
-        {% endif %}
-    </form>
 
-    <br>
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+</div>
 
-    <div>Below is a preview of how the page will be renderer when you save it.</div>
-    <div class="panel panel-default">
-        <div class="panel-body" id="previewArea">
-            <em>Start typing above to see a preview here.</em>
-        </div>
-    </div>
+{% if error_message %}<p class="alert alert-danger">{{error_message}}</p>{% endif %}
+{% if visitor_p %}
+<p class="alert alert-warning">
+  {% if user %}You are not a member of this project{% else %}Please log in first{% endif %}.
+</p>
+{% endif %}
+
+
+<br>
+
+<div>Below is a preview of how the page will be renderer when you save it.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    <em>Start typing above to see a preview here.</em>
+  </div>
+</div>
 {% endblock %}

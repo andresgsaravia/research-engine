@@ -2,7 +2,7 @@
 
 
 {% block p_head %}
-  <script type="text/javascript" src="/js/preview.js"></script>
+  <script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}
 
     
@@ -15,28 +15,34 @@
     </div>
     <div class="form-group">
       <label for="summary">Summary of changes (optional)</label>
-      <input id="summary" type="text" name="summary" class="form-control"
-	     placeholder="Summary with at most 160 characters (optional)" maxlength="160" {% if visitor_p %}disabled{% endif %}/>
+	<input id="summary" type="text" name="summary" class="form-control"
+	       placeholder="Summary with at most 160 characters (optional)" maxlength="160" {% if visitor_p %}disabled{% endif %}/>
     </div>
     <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Save</button>
     <button type="button" class="btn btn-default"
 	   onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{project.key.integer_id()}}/wiki/page/{{wikiurl}}'}">Cancel
     </button>
-    {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
-    {% if visitor_p %}<p class="text-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
-
-    <div class="help-block">
-      <p>You can link to another page in this wiki using the syntax: <code>[[another page]]</code> or, if you want a link to another page but displaying a different text link, you can write <code>[[another page | this text will be displayed]]</code>. This will not be rendered in the preview below.</p>
-      <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some more editing help (opens in a new window).</p> 
-    </div>
-
   </form>
 
-<p>Below is a preview of how the page will be rendered when you save it.</p>
-<div class="panel panel-default">
-  <div class="panel-body" id="previewArea">
-    <em>Start typing above to see a preview here.</em>
+  {% if error_message %}<br/><p class="alert alert-danger">{{error_message}}</p>{% endif %}
+  {% if visitor_p %}<br/><p class="alert alert-warning">{% if user %}You are not a member of this project{% else %}Please log in first{% endif %}</p>{% endif %}
+
+  
+  <div class="checkbox">
+    <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
   </div>
-</div>
+
+  
+  <div class="help-block">
+    <p>You can link to another page in this wiki using the syntax: <code>[[another page]]</code> or, if you want a link to another page but displaying a different text link, you can write <code>[[another page | this text will be displayed]]</code>. This will not be rendered in the preview below.</p>
+    <p>Click <a href="/static/edit_help.html" target="_blank">here</a> to view some more editing help (opens in a new window).</p>
+  </div>
+
+  <p>Below is a preview of how the page will be rendered when you save it.</p>
+  <div class="panel panel-default">
+    <div class="panel-body" id="previewArea">
+      <em>Start typing above to see a preview here.</em>
+    </div>
+  </div>
 
 {% endblock %}

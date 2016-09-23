@@ -1,7 +1,7 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-<script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}
 
 {% block breadcrumbs %}{% if action=="New" %}<li class="active">Images</li>{% else %}<li><a href="/{{project.key.integer_id()}}/images">Images</a></li><li class="active">{{image.title}}</li>{% endif %}{% endblock %}
@@ -33,7 +33,7 @@
     <label for="image">{% if action == "New" %}Image{% else %}New image{% endif %}</label>
     <input type="file" name="image" id="image" class="form-control" />
   </div>
-  
+
   <div class="form-group">
     <div class="radio">
       <label>
@@ -50,19 +50,24 @@
       </label>
     </div>
   </div>
-  
+
   <button type="submit" class="btn btn-success" {% if visitor_p %}disabled="disabled"{% endif %}>{{button_text}}</button>
   <button type="button" class="btn btn-default"
 	  onClick="if (confirm('Are you sure you want to cancel?')) {window.location = '/{{project.key.integer_id()}}/images'}">Cancel</button>
-  {% if error_message %}
-  <div class="alert alert-danger alert-dismissable" style="margin-top:5px;">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    {{error_message | safe}}</div>{% endif %}
-  <span class="help-block">
-    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-  </span>
 </form>
 
+
+{% if error_message %}
+<div class="alert alert-danger alert-dismissable" style="margin-top:5px;">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  {{error_message | safe}}</div>{% endif %}
+<span class="help-block">
+  Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+</span>
+
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+</div>
 
 <div>Below is a preview of how the page will be renderer when you save it.</div>
 <div class="panel panel-default">

@@ -1,99 +1,99 @@
 {% extends "project_base.html" %}
 
 {% block p_content %}
-    <!-- Help modal -->
-    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Source Code</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Many times making research means writing or using a lot of code. There are already many great services for hosting and managing source code like <a href="https://github.com">GitHub</a> or <a href="https://code.gogle.com">Google Code</a> so we don't provide any of those capabilities here. What those serviced don't provide is a place to discuss the applicability of a particular algorithm to a concrete research prblem.</p>
-                    <p>In this section you can add a link to a code already hosted on GitHub (we will integrate Google Code soon) and discuss it with your colleagues.</p>
-                    <p>This is one of the most underdeveloped sections of {{APP_NAME}} but in the near future we plan to incorporate here a way of using <a href="https://cloud.google.com/products/compute-engine">Google's Compute Engine</a> to run simulations and data analysis for your project.</p>
-                </div>
-            </div>
-        </div>
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Source Code</h4>
+      </div>
+      <div class="modal-body">
+        <p>Many times making research means writing or using a lot of code. There are already many great services for hosting and managing source code like <a href="https://github.com">GitHub</a> or <a href="https://code.gogle.com">Google Code</a> so we don't provide any of those capabilities here. What those serviced don't provide is a place to discuss the applicability of a particular algorithm to a concrete research prblem.</p>
+        <p>In this section you can add a link to a code already hosted on GitHub (we will integrate Google Code soon) and discuss it with your colleagues.</p>
+        <p>This is one of the most underdeveloped sections of {{APP_NAME}} but in the near future we plan to incorporate here a way of using <a href="https://cloud.google.com/products/compute-engine">Google's Compute Engine</a> to run simulations and data analysis for your project.</p>
+      </div>
     </div>
+  </div>
+</div>
 
-    <h2 class="project-tab-header{% if visitor_p %} no-action-bar{% endif %}">
-        Source Code
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+<h2 class="project-tab-header{% if visitor_p %} no-action-bar{% endif %}">
+  Source Code
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
-        <div class="actions">
-            <a href="#helpModal" data-toggle="modal">
-                <span class="fa fa-question-circle"></span>
-            </a>
-        </div>
-    </h2>
+  <div class="actions">
+    <a href="#helpModal" data-toggle="modal">
+      <span class="fa fa-question-circle"></span>
+    </a>
+  </div>
+</h2>
 
-    {% if not visitor_p %}
-        <div class="project-tab-actions">
-            <a href="/{{project.key.integer_id()}}/code/new">
-                New repository
-            </a>
-        </div>
-    {% endif %}
+{% if not visitor_p %}
+<div class="project-tab-actions">
+  <a href="/{{project.key.integer_id()}}/code/new">
+    New repository
+  </a>
+</div>
+{% endif %}
 
-    <div class="panel-group project-tab-list" id="caccordion">
-        {% for i in items %}
-            {% if i.is_open_p() or (user and project.user_is_author(user)) %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <span class="pull-right">
-                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
-                                    {{i.get_number_of_comments()}} comments
-                                </div>
+<div class="panel-group project-tab-list" id="caccordion">
+  {% for i in items %}
+  {% if i.is_open_p() or (user and project.user_is_author(user)) %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <span class="pull-right">
+          <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+            {{i.get_number_of_comments()}} comments
+          </div>
 
-                                <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
-                                    <span class="fa fa-chevron-down"></span>
-                                    <span class="fa fa-chevron-up" hidden></span>
-                                </span>
-                            </span>
+          <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#caccordion" href="#{{i.key.integer_id()}}">
+            <span class="fa fa-chevron-down"></span>
+            <span class="fa fa-chevron-up" hidden></span>
+          </span>
+        </span>
 
-                            <a href="/{{project.key.integer_id()}}/code/{{i.key.integer_id()}}">
-                                <small>
-                                    <span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
-                                          title="This writing is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span>
-                                </small>
-                                {{i.name | safe}}
-                            </a>
-                        </h4>
-                    </div>
-                    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
-                        <div class="panel-body">
-                            {{i.description | md | safe }}
-
-                            <div class="text-muted">
-                                <small>
-                                    Last updated on {{i.last_updated.strftime("%d %b %Y")}}
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+        <a href="/{{project.key.integer_id()}}/code/{{i.key.integer_id()}}">
+          <small>
+            <span class="glyphicon glyphicon-eye-{% if i.is_open_p() %}open{% else %}close{% endif %}"
+                  title="This writing is {% if not i.is_open_p() %}not {% endif %}publicly visible."></span>
+          </small>
+          {{i.name | safe}}
+        </a>
+      </h4>
     </div>
+    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+      <div class="panel-body">
+        {{i.description | md | safe }}
 
-    <!-- Accordion open/close animation -->
-    <script>
-        $(".accordion-toggle").click(function() {
-            if (!$(this).children(".fa-chevron-down").is(":hidden")) {
-                $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
-                    $(this).show();
-                });
-                $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
-                    $(this).hide();
-                });
-            }
+        <div class="text-muted">
+          <small>
+            Last updated on {{i.last_updated.strftime("%d %b %Y")}}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
 
-            $(this).children(".fa").each(function() {
-                $(this).toggle();
-            });
-        });
-    </script>
+<!-- Accordion open/close animation -->
+<script>
+  $(".accordion-toggle").click(function() {
+  if (!$(this).children(".fa-chevron-down").is(":hidden")) {
+  $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
+  $(this).show();
+  });
+  $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
+  $(this).hide();
+  });
+  }
+
+  $(this).children(".fa").each(function() {
+  $(this).toggle();
+  });
+  });
+</script>
 {% endblock %}

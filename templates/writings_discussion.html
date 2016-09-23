@@ -1,6 +1,6 @@
 {% extends "writings_base.html" %}
 
-    
+
 {% block w_content %}
 
 {% if user and project.user_is_author(user) %}
@@ -12,8 +12,14 @@
   <div class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</div>
   <input type="hidden" name="action" value="new_comment" />
   <button type="submit" class="btn btn-success">Post comment</button>
-  {% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
 </form>
+
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+</div>
+{% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+
+
 <hr />
 
 <p>Below is a preview of how your comment will look when you post it.</p>
@@ -65,5 +71,5 @@
   </div>
   {% endfor %}
 </div>
-<script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}

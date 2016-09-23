@@ -10,7 +10,7 @@
       TeX: {equationNumbers: {autoNumber: "AMS"} }
       });
     </script>
-    <script type="text/javascript" src="/js/preview.js"></script>
+    <script type="text/javascript" src="/js/edit_utils.js"></script>
     <style class="text/css">img{max-width:100%;height:auto;}</style>
 {% endblock %}
 
@@ -42,12 +42,18 @@
     <button type="submit" class="btn btn-success">Save changes</button>
     <button type="button" class="btn btn-default"
 	    onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '/{{user.username}}/outreach/{{postid}}'}">Cancel</button>
-    {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
-    {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
-    <span class="help-block">
-      Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-    </span>
   </form>
+
+  {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
+  {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
+  <span class="help-block">
+    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+  </span>
+  
+  <div class="checkbox">
+    <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+  </div>
+  
 
   <div>Below is a preview of how the page will be renderer when you save it.</div>
   <div class="panel panel-default">

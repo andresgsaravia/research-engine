@@ -1,54 +1,56 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-    <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}
 
 {% block p_content %}
-    <h2 class="project-tab-header no-action-bar">
-        <div class="parent-link">
-            <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">
-                {{datac.name | safe}}
-            </a>
-        </div>
+<h2 class="project-tab-header no-action-bar">
+  <div class="parent-link">
+    <a href="/{{project.key.integer_id()}}/datasets/{{dataset.key.integer_id()}}/{{datac.key.integer_id()}}">
+      {{datac.name | safe}}
+    </a>
+  </div>
 
-        Edit Revision
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    </h2>
+  Edit Revision
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+</h2>
 
-    <form method="post" action="{{upload_url}}" enctype="multipart/form-data" role="form">
-        <div class="form-group">
-            <label for="descriptionText">Description of the revision</label>
-            <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');" class="form-control" rows="10"
-                      placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="current-file">Current data file</label>
-            <p id="current-file" class="form-control"> <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</p>
-        </div>
-        <div class="form-group">
-            <label for="new-file">New data file (optional)</label>
-            <input id="new-file" type="file" name="file" class="form-control" {% if disabled_p %}disabled{% endif %}/>
-        </div>
-        <p class="text-warning">WARNING: If you upload a new file, the previous file will be lost.</p>
-        <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Update revision</button>
-        <button type="button" class="btn btn-default" onClick="window.location = '{{cancel_url}}'" {% if disabled_p %}disabled{% endif %}>Cancel</button>
+<form method="post" action="{{upload_url}}" enctype="multipart/form-data" role="form">
+  <div class="form-group">
+    <label for="descriptionText">Description of the revision</label>
+    <textarea name="meta" id="descriptionText" onKeyUp="Preview('descriptionText','previewArea');" class="form-control" rows="10"
+              placeholder="Use this space to document information about the data file you are uploading. For example you could describe the experimental setup or the simulation parameters used." {% if disabled_p %}disabled{% endif %}>{{rev.meta}}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="current-file">Current data file</label>
+    <p id="current-file" class="form-control"> <a href="/file/{{rev.datafile}}">{{blob_info.filename}}</a> ({{"%.2f" % size}}kB)</p>
+  </div>
+  <div class="form-group">
+    <label for="new-file">New data file (optional)</label>
+    <input id="new-file" type="file" name="file" class="form-control" {% if disabled_p %}disabled{% endif %}/>
+  </div>
+  <p class="text-warning">WARNING: If you upload a new file, the previous file will be lost.</p>
+  <button type="submit" class="btn btn-success" {% if disabled_p %}disabled{% endif %}>Update revision</button>
+  <button type="button" class="btn btn-default" onClick="window.location = '{{cancel_url}}'" {% if disabled_p %}disabled{% endif %}>Cancel</button>
+</form>
 
-        {% if error_message %}
-            <p class="text-danger">
-                {{error_message}}
-            </p>
-        {% endif %}
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'descriptionText');"/> Use monospace font while editing</label>
+</div>
 
-        <div class="help-block">
-            The text will be processed as markdown syntax, click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-        </div>
-    </form>
+{% if error_message %}<p class="alert alert-danger">{{error_message}}</p>{% endif %}
 
-    <div>Below is a preview of how the page will be renderer when you save it.</div>
-    <div class="panel panel-default">
-        <div class="panel-body" id="previewArea">
-            <em>Start typing above to see the preview here.</em>
-        </div>
-    </div>
+<div class="help-block">The text will be processed as markdown syntax, click
+  <a href="/static/edit_help.html" target="_blank">here</a>
+  to view some editing help (opens in a new window).
+</div>
+
+
+<div>Below is a preview of how the page will be renderer when you save it.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    <em>Start typing above to see the preview here.</em>
+  </div>
+</div>
 {% endblock %}

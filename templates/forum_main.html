@@ -3,102 +3,102 @@
 
 {% block p_content %}
 
-    <!-- Help modal -->
-    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Forum</h4>
-                </div>
-                <div class="modal-body">
-                    <p>This section provides you with a simple <em>questions and answers</em> system which can be used to discuss ideas with your collaborators and the general public.</p>
-                    <p>This is the only section in your project open to users that are not collaborators in the project.</p>
-                    <p>Here you can have broad discussions about your project and make "announcements" or "progress reports" to the public.</p>
-                </div>
-            </div>
-        </div>
+<!-- Help modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Forum</h4>
+      </div>
+      <div class="modal-body">
+        <p>This section provides you with a simple <em>questions and answers</em> system which can be used to discuss ideas with your collaborators and the general public.</p>
+        <p>This is the only section in your project open to users that are not collaborators in the project.</p>
+        <p>Here you can have broad discussions about your project and make "announcements" or "progress reports" to the public.</p>
+      </div>
     </div>
+  </div>
+</div>
 
-    <h2 class="project-tab-header{% if not user %} no-action-bar{% endif %}">
-        Forum
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+<h2 class="project-tab-header{% if not user %} no-action-bar{% endif %}">
+  Forum
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
 
-        <div class="actions">
-            <a href="#helpModal" data-toggle="modal">
-                <span class="fa fa-question-circle"></span>
-            </a>
-        </div>
-    </h2>
+  <div class="actions">
+    <a href="#helpModal" data-toggle="modal">
+      <span class="fa fa-question-circle"></span>
+    </a>
+  </div>
+</h2>
 
-    {% if user %}
-        <div class="project-tab-actions">
-            <a href="/{{project.key.integer_id()}}/forum/new_thread">
-                New thread
-            </a>
-        </div>
-    {% endif %}
+{% if user %}
+<div class="project-tab-actions">
+  <a href="/{{project.key.integer_id()}}/forum/new_thread">
+    New thread
+  </a>
+</div>
+{% endif %}
 
-    <div class="panel-group project-tab-list" id="taccordion">
-        {% for i in items %}
-            {% if i.is_open_p() or (user and project.user_is_author(user)) %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <span class="pull-right">
-                                <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
-                                    {{i.get_number_of_comments()}} replies
-                                </div>
+<div class="panel-group project-tab-list" id="taccordion">
+  {% for i in items %}
+  {% if i.is_open_p() or (user and project.user_is_author(user)) %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <span class="pull-right">
+          <div style="margin-right: 20px; display: inline-block; font-size: 0.8em;" class="text-muted">
+            {{i.get_number_of_comments()}} replies
+          </div>
 
-                                <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#taccordion" href="#{{i.key.integer_id()}}">
-                                    <span class="fa fa-chevron-down"></span>
-                                    <span class="fa fa-chevron-up" hidden></span>
-                                </span>
-                            </span>
+          <span class="accordion-toggle btn-muted" data-toggle="collapse" data-parent="#taccordion" href="#{{i.key.integer_id()}}">
+            <span class="fa fa-chevron-down"></span>
+            <span class="fa fa-chevron-up" hidden></span>
+          </span>
+        </span>
 
-                            <a href="/{{project.key.integer_id()}}/forum/{{i.key.integer_id()}}">
-                                {{i.title | safe}}
-                            </a>
-                        </h4>
-                    </div>
-                    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
-                        <div class="panel-body">
-                            {{i.content | md | safe }}
-
-                            <div class="text-muted">
-                                <small>
-                                    <span>
-                                        Owned by <a href="/{{i.author.get().username}}">{{i.author.get().username.capitalize()}}</a>
-                                    </span>
-
-                                    <span style="margin-left: 12px;">
-                                        Last active on {{i.last_updated.strftime("%d %b %Y")}}
-                                    </span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+        <a href="/{{project.key.integer_id()}}/forum/{{i.key.integer_id()}}">
+          {{i.title | safe}}
+        </a>
+      </h4>
     </div>
+    <div class="panel-collapse collapse" id="{{i.key.integer_id()}}">
+      <div class="panel-body">
+        {{i.content | md | safe }}
 
-    <!-- Accordion open/close animation -->
-    <script>
-        $(".accordion-toggle").click(function() {
-            if (!$(this).children(".fa-chevron-down").is(":hidden")) {
-                $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
-                    $(this).show();
-                });
-                $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
-                    $(this).hide();
-                });
-            }
+        <div class="text-muted">
+          <small>
+            <span>
+              Owned by <a href="/{{i.author.get().username}}">{{i.author.get().username.capitalize()}}</a>
+            </span>
 
-            $(this).children(".fa").each(function() {
-                $(this).toggle();
-            });
-        });
-    </script>
+            <span style="margin-left: 12px;">
+              Last active on {{i.last_updated.strftime("%d %b %Y")}}
+            </span>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+
+<!-- Accordion open/close animation -->
+<script>
+  $(".accordion-toggle").click(function() {
+  if (!$(this).children(".fa-chevron-down").is(":hidden")) {
+  $(this).closest(".panel-group").find(".fa-chevron-down").each(function() {
+  $(this).show();
+  });
+  $(this).closest(".panel-group").find(".fa-chevron-up").each(function() {
+  $(this).hide();
+  });
+  }
+
+  $(this).children(".fa").each(function() {
+  $(this).toggle();
+  });
+  });
+</script>
 
 {% endblock %}

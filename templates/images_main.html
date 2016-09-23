@@ -28,7 +28,7 @@
 <h2 class="project-tab-header{% if not (user and project.user_is_author(user)) %} no-action-bar{% endif %}">
   Images
   <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-  
+
   <div class="actions">
     <a href="#helpModal" data-toggle="modal">
       <span class="fa fa-question-circle"></span>
@@ -57,7 +57,7 @@
 	<img class="img-thumbnail" src="{{i.url()}}" />
       </a>
     </div>
-    
+
     <!-- image modal -->
     <div class="modal fade" id="{{i.key.integer_id()}}" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">

@@ -1,9 +1,8 @@
 {% extends "wiki_base.html" %}
 
-    
 {% block w_content %}
 
-  {% if user and project.user_is_author(user) %}
+{% if user and project.user_is_author(user) %}
 <form method="post" role="form">
   <div class="form-group">
     <textarea name="comment" class="form-control" rows="10" placeholder="Write a new comment here." id="inputText"
@@ -12,12 +11,18 @@
   <div class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</div>
   <input type="hidden" name="action" value="new_comment" />
   <button type="submit" class="btn btn-success">Post comment</button>
-  {% if error_message %}
-  <div class="alert alert-danger alert-dismissable" style="margin-top:5px;">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    {{error_message | safe}}</div>{% endif %}
-
 </form>
+
+{% if error_message %}
+<div class="alert alert-danger alert-dismissable" style="margin-top:5px;">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  {{error_message | safe}}</div>
+{% endif %}
+
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+</div>
+
 
 <br />
 <p>Below is a preview of how your comment will look like when you post it.</p>
@@ -70,5 +75,5 @@
   </div>
   {% endfor %}
 </div>
-<script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}

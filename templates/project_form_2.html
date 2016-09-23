@@ -2,7 +2,7 @@
 
 {% block p_head %}
   {% if markdown_p %}
-  <script type="text/javascript" src="/js/preview.js"></script>
+  <script type="text/javascript" src="/js/edit_utils.js"></script>
   {% endif %}
 {% endblock %}
 
@@ -22,7 +22,7 @@
     <textarea name="content" id="inputText" placeholder="{{content_placeholder}}" class="form-control" rows="17"
 	      onKeyUp="Preview('inputText','previewArea');" {% if disabled_p %}disabled{% endif %}>{{content_value}}</textarea>
   </div>
-  
+
   {% if open_choice_p %}
   <div class="radio">
     <label>
@@ -39,19 +39,23 @@
     </label>
   </div>
     {% endif %}
-  
+
   <button type="submit" class="btn btn-success" {% if disabled_p %}disabled="disabled"{% endif %}>{{submit_button_text}}</button>
   <button type="button" class="btn btn-default"
 	  onClick="if (confirm('This will discard all unsaved changes.')) {window.location = '{{cancel_url}}'}">Cancel</button>
-  {% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
-  {% if markdown_p %}
-  <span class="help-block">
-    Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-  </span>
-  {% endif %}
-  
 </form>
 
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'inputText');"/> Use monospace font while editing</label>
+</div>
+
+
+{% if error_message %}<div class="alert alert-danger" style="margin-top:10px;">{{error_message | safe}}</div>{% endif %}
+{% if markdown_p %}
+<span class="help-block">
+  Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+</span>
+{% endif %}
 {% if info_message %}<div style="margin-top:10px;" class="alert alert-success">{{info_message | safe}}</div>{% endif %}
 
 {% if markdown_p %}

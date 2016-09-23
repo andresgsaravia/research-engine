@@ -1,142 +1,146 @@
 {% extends "project_base.html" %}
 
 {% block p_head %}
-    <script type="text/javascript" src="/js/preview.js"></script>
+<script type="text/javascript" src="/js/edit_utils.js"></script>
 {% endblock %}
 
 {% block p_content %}
-    <h2 class="project-tab-header no-action-bar">
-        <div class="parent-link">
-            <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+<h2 class="project-tab-header no-action-bar">
+  <div class="parent-link">
+    <a href="/{{project.key.integer_id()}}/bibliography">Bibliography</a>
+  </div>
+
+  {{item.title | safe}}
+  <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
+</h2>
+
+{% if (user and project.user_is_author(user)) %}
+<form method="post" role="form"
+      onsubmit="return confirm('Are you sure you want to make this bibliography item discussion {% if item.is_open_p() %}not {% endif %}publicly visible?');">
+  <button class="btn btn-sm btn-default pull-right" title="This bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible. Click to toggle"
+	  type="submit">
+    <span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"></span></button>
+  <input type="hidden" name="action" value="toggle_visibility" />
+</form>
+{% endif %}
+
+{% if item.kind == "article" %}
+<strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})
+<p>
+  <a href="{{item.link}}">
+    doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span>
+  </a>
+</p>
+{% elif item.kind == "arXiv" %}
+<strong>arXiv preprint</strong> ({{item.metadata["date"]}})
+<p>
+  <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
+</p>
+{% endif %}
+
+<h4 style="margin-top: 16px;">Authors</h4>
+<div>
+  {% for a in item.metadata["authors"] %}
+  <span style="margin-right: 15px">{{a}}</span>
+  {% endfor %}
+</div>
+
+<h3 style="margin-top: 60px">
+  {{item.get_number_of_comments()}} comments
+</h3>
+
+{% for c in comments %}
+<div class="project-tab-comment">
+
+  <a class="btn-muted pull-right" style="margin-left: 10px" href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" title="Link to this comment only">
+    <span class="fa fa-link fa-flip-horizontal" style="font-size: 1.3em;"></span>
+  </a>
+
+  {% if c.author == user.key %}
+  <!-- Edit modal trigger -->
+  <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
+    <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
+  </a>
+  {% endif %}
+
+  <!-- Edit comment modal -->
+  <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit comment</h4>
         </div>
-
-        {{item.title | safe}}
-        <a href="#project-menu" class="skiptocontent">Skip to project menu</a>
-    </h2>
-
-    {% if (user and project.user_is_author(user)) %}
-    <form method="post" role="form"
-	  onsubmit="return confirm('Are you sure you want to make this bibliography item discussion {% if item.is_open_p() %}not {% endif %}publicly visible?');">
-      <button class="btn btn-sm btn-default pull-right" title="This bibliography item is {% if not item.is_open_p() %}not {% endif %}publicly visible. Click to toggle"
-	      type="submit">
-	<span class="glyphicon glyphicon-eye-{% if item.is_open_p() %}open{% else %}close{% endif %}"></span></button>
-      <input type="hidden" name="action" value="toggle_visibility" />
-    </form>
-    {% endif %}
-
-    {% if item.kind == "article" %}
-        <strong>{{item.metadata["publication"]}}</strong> ({{item.metadata["date"]}})
-        <p>
-            <a href="{{item.link}}">
-                doi:{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span>
-            </a>
-        </p>
-    {% elif item.kind == "arXiv" %}
-        <strong>arXiv preprint</strong> ({{item.metadata["date"]}})
-        <p>
-            <a href="{{item.link}}">{{item.identifier}} <span class="glyphicon glyphicon-new-window"></span></a>
-        </p>
-    {% endif %}
-
-    <h4 style="margin-top: 16px;">Authors</h4>
-    <div>
-        {% for a in item.metadata["authors"] %}
-            <span style="margin-right: 15px">{{a}}</span>
-        {% endfor %}
-    </div>
-
-    <h3 style="margin-top: 60px">
-        {{item.get_number_of_comments()}} comments
-    </h3>
-
-    {% for c in comments %}
-        <div class="project-tab-comment">
-
-            <a class="btn-muted pull-right" style="margin-left: 10px" href="/{{project.key.integer_id()}}/bibliography/{{item.key.integer_id()}}/{{c.key.integer_id()}}" title="Link to this comment only">
-                <span class="fa fa-link fa-flip-horizontal" style="font-size: 1.3em;"></span>
-            </a>
-
-            {% if c.author == user.key %}
-                <!-- Edit modal trigger -->
-                <a class="btn-muted pull-right" role="button" data-toggle="modal" data-target="#{{c.key.integer_id()}}">
-                    <span class="fa fa-pencil" style="font-size: 1.3em;"></span>
-                </a>
-            {% endif %}
-
-            <!-- Edit comment modal -->
-            <div class="modal fade" id="{{c.key.integer_id()}}" tabindex="-1" role="dialog" aria-labelledby="{{c.key.integer_id()}}Label" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="{{c.key.integer_id()}}">Edit comment</h4>
-                        </div>
-                        <form method="post" role="form">
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <textarea id="commentText" name="comment" class="form-control" rows="15">{{c.content}}</textarea>
-                                    <input type="hidden" name="action" value="edit_comment" />
-                                    <input type="hidden" name="commentid" value="{{c.key.integer_id()}}" />
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
-
-            {{c.content | md | safe}}
-
-            <div>
-                <small class="text-muted">
-                    By <a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a>
-                    on {{c.date.strftime("%d %b %Y")}}
-                </small>
-            </div>
-        </div>
-    {% endfor %}
-    {% if not comments | length %}
-        <div class="text-muted" style="margin-top: 5px;">There are no comments currently.</div>
-    {% endif %}
-
-    {% if user and project.user_is_author(user) %}
         <form method="post" role="form">
+          <div class="modal-body">
             <div class="form-group">
-                <label for="newCommentText">
-                    <h3 style="margin-top: 60px">Leave a reply...</h3>
-                </label>
-                <textarea name="comment" id="newCommentText" class="form-control" rows="10" placeholder="What do you think about this{% if item.kind == 'article' %} article{% endif %}?"
-                      onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{content_value}}</textarea>
-            </div>
-            <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post comment</button>
-            <input type="hidden" name="action" value="make_comment" />
-            {% if error_message %}
-                <p class="text-danger">
-                    {{error_message}}
-                </p>
-            {% endif %}
-            {% if visitor_p %}
-                <p class="text-warning">
-                    {% if user %}
-                        You are not a member of this project.
-                    {% else %}
-                        Please log in first.
-                    {% endif %}
-                </p>
-            {% endif %}
-            <div class="help-block">
-                Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
-            </div>
-        </form>
+              <textarea name="comment" class="form-control" rows="15" id="{{c.key.integer_id()}}Text">{{c.content}}</textarea>
+              <input type="hidden" name="action" value="edit_comment" />
+              <input type="hidden" name="commentid" value="{{c.key.integer_id()}}" />	        
+	      <div class="checkbox">
+		<label><input type="checkbox" onchange="toggleMonospace(this.checked, '{{c.key.integer_id()}}Text');"/> Use monospace font while editing</label>
+	      </div>
 
-        <div>This is a preview of how the text will be renderer when you post it.</div>
-        <div class="panel panel-default">
-            <div class="panel-body" id="previewArea">
-                <em>Start typing above to see the preview here.</em>
             </div>
-        </div>
-    {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  {{c.content | md | safe}}
+
+  <div>
+    <small class="text-muted">
+      By <a href="/{{c.author.get().username}}">{{c.author.get().username.capitalize()}}</a>
+      on {{c.date.strftime("%d %b %Y")}}
+    </small>
+  </div>
+</div>
+{% endfor %}
+{% if not comments | length %}
+<div class="text-muted" style="margin-top: 5px;">There are no comments currently.</div>
+{% endif %}
+
+{% if user and project.user_is_author(user) %}
+<form method="post" role="form">
+  <div class="form-group">
+    <label for="newCommentText">
+      <h3 style="margin-top: 60px">Leave a reply...</h3>
+    </label>
+    <textarea name="comment" id="newCommentText" class="form-control" rows="10" placeholder="What do you think about this{% if item.kind == 'article' %} article{% endif %}?"
+              onKeyUp="Preview('newCommentText','previewArea');"{% if visitor_p %}disabled{% endif %}>{{content_value}}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success" {% if visitor_p %}disabled{% endif %}>Post comment</button>
+  <input type="hidden" name="action" value="make_comment" />
+</form>
+
+{% if error_message %}<p class="text-danger">{{error_message}}</p>{% endif %}
+{% if visitor_p %}
+<p class="text-warning">
+  {% if user %}You are not a member of this project.
+  {% else %}Please log in first.
+  {% endif %}
+</p>
+{% endif %}
+<div class="help-block">
+  Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).
+</div>
+
+<div class="checkbox">
+  <label><input type="checkbox" onchange="toggleMonospace(this.checked, 'newCommentText');"/> Use monospace font while editing</label>
+</div>
+
+
+<div>This is a preview of how the text will be renderer when you post it.</div>
+<div class="panel panel-default">
+  <div class="panel-body" id="previewArea">
+    <em>Start typing above to see the preview here.</em>
+  </div>
+</div>
+{% endif %}
 {% endblock %}
