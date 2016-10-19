@@ -1,4 +1,8 @@
 
+# Version 1.6.1 (19 October 2016)
+
+## New features
+	- Message board for groups
 
 # Version 1.6.0 (23 September 2016)
 

@@ -89,6 +89,17 @@ indexes:
   - name: last_updated
     direction: desc
 
+- kind: GroupBoardMessages
+  ancestor: yes
+  properties:
+  - name: last_modified
+
+- kind: GroupBoardMessages
+  ancestor: yes
+  properties:
+  - name: last_modified
+    direction: desc
+
 - kind: GroupUpdates
   ancestor: yes
   properties:

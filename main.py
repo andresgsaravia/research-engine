@@ -118,6 +118,9 @@ routes = [
     Route('/g/<groupid:[0-9]+>/admin', 'src.groups.AdminPage'),
     Route('/g/<groupid:[0-9]+>/invited', 'src.groups.InvitedPage'),
     Route('/g/<groupid:[0-9]+>/bibliography', 'src.groups.BiblioPage'),
+    Route('/g/<groupid:[0-9]+>/board/<messageid:[0-9]+>/_edit', 'src.groups.BoardPageEdit'),
+    Route('/g/<groupid:[0-9]+>/board/new', 'src.groups.BoardPageNew'),
+    Route('/g/<groupid:[0-9]+>/board', 'src.groups.BoardPage'),
 
     Route('/<username:.+>/outreach', 'src.outreach.MainPage'),
     Route('/<username:.+>/outreach/new_post', 'src.outreach.NewPostPage'),

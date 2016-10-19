@@ -1,6 +1,14 @@
 {% if not hide_username_p %}<a href="/{{author.username}}">{{author.username.capitalize()}}</a>{% endif %}
 
 {% if item.kind() == "CalendarEvents" %}
-added a new <strong>event</strong> to the <a href="/g/{{group.key.integer_id()}}/calendar">calendar</a>{% if show_group_p %} from group <a href="/g/{{group.key.integer_id()}}">{{group.name}}</a>{% endif %}.
+added a new <strong>event</strong> to the <a href="/g/{{group.key.integer_id()}}/calendar">calendar</a>
+
+{% elif item.kind() == "GroupBoardMessages" %}
+added a new <strong>message</strong> to the <a href="/g/{{group.key.integer_id()}}/board">message board</a>
 
 {% endif %}
+
+{% if show_group_p %} from group <a href="/g/{{group.key.integer_id()}}">{{group.name}}</a>{% endif %}.
+
+
+

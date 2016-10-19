@@ -1,0 +1,49 @@
+{% extends "group_base.html" %}
+
+{% block g_head %}
+<script type="text/javascript" src="/js/edit_utils.js"></script>
+{% endblock %}
+
+{% block g_content %}
+
+<div class="container" style="max-width:720px;">
+    <h2 role="heading" id="main-content" class="page-title-centered">Create a New Message</h2>
+
+  <form method="post" role="form">
+    <div class="form-group {{title_class}}">
+      <label for="mTitle">Title</label>
+      <input type="text" class="form-control"
+	     name="m_title" value="{{m_title}}" placeholder="Enter a title" id="mTitle" autofocus/>
+    </div>
+    <div class="form-group {{content_class}}">
+      <label for="mContent">Message content</label>
+      <textarea class="form-control" rows="15" name="m_content" id="mContent"
+		onKeyUp="Preview('mContent','previewArea');"
+		placeholder="Enter the content of your message here">{{m_content}}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-default btn-new">
+      {% if btn_text %}{{btn_text}}{% else %}Create new message{% endif %}</button>
+    <button type="button" class="btn btn-default btn-new"
+	    onClick="window.location = '/g/{{group.key.integer_id()}}/board'">Cancel</button>
+    {% if error %}
+    <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span>
+      {{error}}
+    </div>
+    {% endif %}
+  </form>
+  
+  <br>
+  <div>Below is a preview of how the text will be renderer when you save it. </div>
+  <div class="panel panel-default">
+    <div class="panel-body" id="previewArea">
+      <em>Start typing above to see a preview here.</em>
+    </div>
+  </div>
+
+  
+</div>
+
+{% endblock %}

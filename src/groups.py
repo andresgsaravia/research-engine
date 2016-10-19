@@ -87,7 +87,17 @@ class CalendarEvents(ndb.Model):
             email_messages.send_new_calendar_event_notification(user = member, author = author,
                                                                 group = group, event = self,
                                                                 update = update)
+
+# Should have a Group as parent
+class GroupBoardMessages(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add = True)
+    last_modified = ndb.DateTimeProperty(auto_now = True)
+    author = ndb.KeyProperty(required = True)
+    title = ndb.StringProperty(required = True)
+    content = ndb.TextProperty(required = True)
             
+    def get_author(self):
+        return self.author.get()
 
 ######################
 ##   Web Handlers   ##
@@ -110,6 +120,8 @@ class GroupPage(generic.GenericPage):
         if other_to_update: self.log_and_put(other_to_update)
         return
 
+    def get_message(self, group, messageid):
+        return GroupBoardMessages.get_by_id(int(messageid), parent = group.key)
 
 class NewGroupPage(generic.GenericPage):
     def get(self):
@@ -372,6 +384,9 @@ class BiblioPage(GroupPage):
         if not group:
             self.render("404.html", info = "Group %s not found." % groupid)
             return
+        if not group.user_is_member(user):
+            self.redirect("/g/%s" % groupid)
+            return
         have_error = False
         kw = {"identifier" : self.request.get("identifier").strip(),
               "kind" : self.request.get("kind")}
@@ -420,3 +435,120 @@ class SendBiblioNotifications(GroupPage):
                 for user in group.members:
                     email_messages.send_group_biblio_notification(group = group, user = user.get(), bibitems = items)
                     
+class BoardPage(GroupPage):
+    def render(self, *a, **kw):
+        GroupPage.render(self, board_tab_class = "active", *a, **kw)
+
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        messages = GroupBoardMessages.query(ancestor = group.key).order(-GroupBoardMessages.last_modified).fetch()
+        self.render("group_board.html", user = user, group = group, messages = messages)
+
+
+class BoardPageNew(BoardPage):
+    def get(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        if not group.user_is_member(user):
+            self.redirect("/g/%s" % groupid)
+            return
+        self.render("group_board_form.html", user = user, group = group)
+
+    def post(self, groupid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        if not group.user_is_member(user):
+            self.redirect("/g/%s" % groupid)
+            return
+        kw = {"m_title"   : self.request.get("m_title").strip(),
+              "m_content" : self.request.get("m_content")}
+        have_error = False
+        if not kw["m_title"]:
+            have_error = True
+            kw["title_class"] = "has-error"
+        if not kw["m_content"]:
+            have_error = True
+            kw["content_class"] = "has-error"
+        if have_error:
+            self.render("group_board_form.html", user = user, group = group, **kw)
+        else:
+            new_message = GroupBoardMessages(title = kw["m_title"],
+                                             content = kw["m_content"],
+                                             parent = group.key,
+                                             author = user.key)
+            new_message.put()
+            group.new_update(new_message)
+            self.redirect("/g/%s/board" % groupid)
+
+
+class BoardPageEdit(BoardPage):
+    def get(self, groupid, messageid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        if not group.user_is_member(user):
+            self.redirect("/g/%s" % groupid)
+            return
+        message = self.get_message(group, messageid)
+        if not message:
+            self.render("404.html", info = "Message %s not found" % messageid)
+            return
+        self.render("group_board_form.html", user = user, group = group, btn_text = "Save changes",
+                    m_title = message.title, m_content = message.content)
+
+    def post(self, groupid, messageid):
+        user = self.get_login_user()
+        if not user:
+            self.redirect("/login?goback=/g/%s/bibliography" % groupid)
+            return
+        group = self.get_group(groupid)
+        if not group:
+            self.render("404.html", info = "Group %s not found." % groupid)
+            return
+        if not group.user_is_member(user):
+            self.redirect("/g/%s" % groupid)
+            return
+        message = self.get_message(group, messageid)
+        if not message:
+            self.render("404.html", info = "Message %s not found" % messageid)
+            return
+        kw = {"m_title"   : self.request.get("m_title").strip(),
+              "m_content" : self.request.get("m_content")}
+        have_error = False
+        if not kw["m_title"]:
+            have_error = True
+            kw["title_class"] = "has-error"
+        if not kw["m_content"]:
+            have_error = True
+            kw["content_class"] = "has-error"
+        if have_error:
+            self.render("group_board_form.html", user = user, group = group, btn_text = "Save changes", **kw)
+        else:
+            message.title = kw["m_title"]
+            message.content = kw["m_content"]
+            message.put()
+            self.redirect("/g/%s/board" % groupid)
