@@ -185,6 +185,8 @@ class SettingsPage(generic.GenericPage):
         kw = {"usern"    : self.request.get("usern").strip(),
               "email"    : self.request.get("email").strip(),
               "about_me" : self.request.get("about_me").strip(),
+              "passwd"   : self.request.get("passwd").strip(),
+              "repPasswd": self.request.get("repPasswd").strip(),
               "gplusid"  : user.gplusid if user.gplusid else '',
               "plusone_p": True}
         have_error = False
@@ -192,25 +194,33 @@ class SettingsPage(generic.GenericPage):
         if user.username != kw["usern"]:
             u2 = self.get_user_by_username(kw["usern"], "Checking if new username is available. ")
             if u2 or (not re.match(USERNAME_RE, kw["usern"])):
-                kw["error_username"] = "*"
+                kw["uname_error_p"] = True
                 kw['error'] = "Sorry, that username is not available. "
                 have_error = True
         if user.email != kw["email"]:
             u2 = self.get_user_by_email(kw["email"], "Checking if new email is available. ")
             if u2:
-                kw["error_email"] = "*"
+                kw["email_error_p"] = True
                 kw["error"] += "That email is already in use by someone. "
                 have_error = True
         if not re.match(EMAIL_RE, kw["email"]):
-                kw["error_email"] = "*"
+                kw["email_error_p"] = True
                 kw["error"] += "That doesn't seem like a valid email. "
                 have_error = True
+        if kw["passwd"] and (kw["passwd"] != kw["repPasswd"]):
+            kw["passwd_error_p"] = True
+            kw["error"] = "The new password doesn't match. Please type it again"
+            have_error = True
         if have_error:
             self.render("settings.html", **kw)
         else:
             user.username = kw["usern"] 
             user.email = kw["email"]
             user.about_me = kw["about_me"]
+            if kw["passwd"]:
+                salt = generic.make_salt()
+                user.salt = salt
+                user.password_hash = generic.hash_str(kw["passwd"] + salt)
             if user.gplusid: user.set_gplus_profile()
             self.log_and_put(user, "Updating settings.")
             user.set_profile_image_url("google" if user.gplus_profile_json else "gravatar")
