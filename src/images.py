@@ -26,7 +26,11 @@ class Images(ndb.Model):
         return self.open_p
 
     def url(self, size=0):
-        return images.get_serving_url(self.image_key) + "=s" + str(size)
+        try:
+            return images.get_serving_url(self.image_key) + "=s" + str(size)
+        except images.TransformationError:
+            return ""
+
 
 ######################
 ##   Web Handlers   ##
