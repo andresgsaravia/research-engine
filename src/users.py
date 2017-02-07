@@ -180,7 +180,7 @@ class SettingsPage(generic.GenericPage):
     def post(self):
         user = self.get_login_user()
         if not user:
-            self.redirect("/login", goback = "/settings")
+            self.redirect("/login?goback=/settings")
             return
         kw = {"usern"    : self.request.get("usern").strip(),
               "email"    : self.request.get("email").strip(),
