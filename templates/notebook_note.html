@@ -34,7 +34,7 @@
   </small>
 </div>
 
-<h3 style="margin-bottom: 0; margin-top: 60px;">Comments</h3>
+<h3 id="comments" style="margin-bottom: 0; margin-top: 60px;">Comments</h3>
 
 {% for c in comments %}
 <div class="project-tab-comment">
@@ -87,7 +87,7 @@
 <h3 style="margin-top: 60px">Leave a comment...</h3>
 <form method="post" role="form">
   <div class="form-group">
-    <textarea id="newCommentText" name="comment" class="form-control" rows="15"
+    <textarea id="newCommentText" name="comment" class="form-control" rows="15" {% if new_comment %}autofocus{% endif %}
 	      onKeyUp="Preview('newCommentText','previewArea');">{{comment_value}}</textarea>
   </div>
   <span class="help-block">Click <a href="/static/edit_help.html" target="_blank">here</a> to view some editing help (opens in a new window).</span>
