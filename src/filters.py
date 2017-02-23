@@ -44,7 +44,7 @@ def md(value, wiki_p_id = ""):
                                           'iframe', 'img', 'mathjax', 'p', 'pre', 'span', 'style', 'sub', 'sup','table', 'tbody', 'tfoot',
                                           'td', 'th', 'thead', 'tr']
     allowed_attrs = dict(bleach.ALLOWED_ATTRIBUTES.items() + 
-                         {'*' : ['class', 'id', 'align', 'style'],
+                         {'*' : ['class', 'id', 'align', 'style', 'role', 'data-target', 'data-ride', 'data-slide-to', 'data-slide', 'data-interval'],
                           'img': ['alt', 'src', 'title', 'width', 'height'],
                           'iframe' : ['width', 'height', 'src', 'frameborder', 'allowfullscreen'],
                           'style' : ['type']}.items())
